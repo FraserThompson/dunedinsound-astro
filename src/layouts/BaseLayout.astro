@@ -1,0 +1,29 @@
+---
+import GlobalStyle from 'src/components/GlobalStyle.astro'
+import SiteContainer from 'src/components/SiteContainer.astro'
+import SiteFooter from 'src/components/SiteFooter.astro'
+import SiteHeader from 'src/components/SiteHeader.astro'
+import '../Theme.css.ts'
+import './BaseLayout.css'
+---
+
+<GlobalStyle />
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+		<script type="application/javascript">
+			var global = window
+		</script>
+	</head>
+	<body>
+		<SiteContainer>
+			<SiteHeader />
+			<slot />
+		</SiteContainer>
+		<SiteFooter />
+	</body>
+</html>

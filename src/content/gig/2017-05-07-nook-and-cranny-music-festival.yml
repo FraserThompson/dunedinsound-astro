@@ -1,0 +1,70 @@
+title: Nook and Cranny Music Festival
+date: 2017-05-07T12:30:00.000Z
+venue: dunedin_public_library
+aspectratio: threebytwo
+artists:
+  - id: the_flukes
+  - id: spinster
+    vid:
+      - title: In the Stairwell
+        link: 4wS-cCX5z7E
+  - id: seafog
+  - id: agent_ewok
+    vid:
+      - link: cynYrcnByrk
+  - id: boaz_anema
+    vid:
+      - title: Elevator
+        link: wBg3hpD7VLw
+      - title: Stairwell
+        link: bcfMUoTMxc8
+  - id: black_boy_peaches
+    vid:
+      - link: vzC2QIw36qE
+  - id: valley_bluegrass
+    vid:
+      - title: Stairwell
+        link: 4812J60S9FQ
+  - id: tom_csima
+    vid:
+      - link: tJ_iMmE5-XE
+  - id: william_henry_meung
+  - id: barabajagal
+    vid:
+      - title: Elevator
+        link: ojR4sm8jYjk
+      - title: Inside
+        link: QgdgZJUqRbo
+  - id: dunedin_scottish_fiddle_orchestra
+  - id: bill_martin
+    vid:
+      - link: 4YlFdBBN_cY
+  - id: southern_consort_of_voices
+    vid:
+      - title: Stairwell
+        link: zb1l6901XxI
+  - id: robots_in_love
+    vid:
+      - link: MglapygtRHw
+  - id: soaked_oats
+  - id: whaea_soul
+  - id: the_bamboo
+    vid:
+      - title: Stairwell
+        link: RErxxjbEjrU
+  - id: the_phil_corfield_band
+  - id: bb6
+  - id: the_intersectionists
+    vid:
+      - link: 0vtrcM5PuXE
+  - id: kelvin_cummings
+    vid:
+      - title: Elevator
+        link: E-fT4PNMhwU
+  - id: person_will
+    vid:
+      - link: DVNbrwRfgdU
+  - id: goeknil_m_biner_and_tom_mcgrath
+  - id: the_mentalist_collective
+  - id: undecided
+  - id: the_generators

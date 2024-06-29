@@ -1,0 +1,41 @@
+---
+import type { ResponsiveImage } from 'src/util/image'
+import BackgroundImage from './BackgroundImage.astro'
+import { BannerWrapper, BackgroundContent, BannerTitle, BannerContent, bannerHeight } from './Banner.css'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
+
+interface Props {
+	id?: string
+	title?: string
+	height?: string
+	backgroundImage?: ResponsiveImage
+	backgroundImageVertical?: ResponsiveImage
+}
+
+const { title, id, height, backgroundImage, backgroundImageVertical } = Astro.props
+---
+
+<div
+	class={BannerWrapper}
+	id={id}
+	style={assignInlineVars({
+		[bannerHeight]: height
+	})}
+>
+	{backgroundImage && <BackgroundImage responsiveImage={backgroundImage} verticalImage={backgroundImageVertical} />}
+	{
+		title && (
+			<div class={BannerContent}>
+				{title && (
+					<div class={BannerTitle}>
+						{title && <h1 class="big">{title}</h1>}
+						<h2>{<slot name="subtitle" />}</h2>
+					</div>
+				)}
+				<slot />
+			</div>
+		)
+	}
+	<div class={BackgroundContent}><slot name="background" /></div>
+	<slot name="customContent" />
+</div>

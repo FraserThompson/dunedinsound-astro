@@ -1,0 +1,94 @@
+---
+import type { ResponsiveImage } from "src/util/image";
+
+interface Props {
+  verticalImage?: ResponsiveImage;
+  responsiveImage: ResponsiveImage | ResponsiveImage[];
+}
+
+const { verticalImage, responsiveImage } = Astro.props;
+
+const cssVars = {
+  portraitDisplay: verticalImage ? "none" : "block",
+};
+---
+
+<div class="wrapper">
+  {
+    !Array.isArray(responsiveImage) && (
+      <img
+        class="backgroundImage"
+        style={{ width: "100%", zIndex: 0, height: "100%" }}
+        srcset={responsiveImage.srcset}
+        alt=""
+      />
+    )
+  }
+  {
+    verticalImage && !Array.isArray(verticalImage) && (
+      <img
+        class="backgroundImageVertical"
+        style={{ width: "100%", zIndex: 0, height: "100%" }}
+        srcset={verticalImage.srcset}
+        alt=""
+      />
+    )
+  }
+  {
+    Array.isArray(responsiveImage) &&
+			responsiveImage.map((responsiveImage, i) => (
+        <img
+          class="backgroundImage"
+          style={{ width: "100%", zIndex: 0, height: "100%" }}
+          src={responsiveImage.srcset}
+          alt=""
+        />
+      ))
+  }
+</div>
+
+<style define:vars={cssVars}>
+  .wrapper {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+
+		.backgroundImage {
+			object-fit: cover;
+		}
+
+    .backgroundImage:nth-of-type(2) {
+      display: none;
+    }
+    .backgroundImage:nth-of-type(3) {
+      display: none;
+    }
+
+    @media screen and (orientation: landscape) {
+      .backgroundImageVertical {
+        display: none;
+      }
+    }
+
+    @media screen and (orientation: portrait) {
+      .backgroundImage {
+        display: vars(--portraitDisplay);
+      }
+      .backgroundImageVertical {
+        display: block;
+      }
+    }
+
+    @media (--xs) {
+      .backgroundImage:nth-of-type(2) {
+        display: block;
+      }
+      .backgroundImage:nth-of-type(3) {
+        display: block;
+      }
+    }
+  }
+</style>

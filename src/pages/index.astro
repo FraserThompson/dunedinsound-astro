@@ -1,0 +1,52 @@
+---
+import GridContainer from 'src/components/GridContainer'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { loadAndFormatCollection } from 'src/util/collection'
+import Tile from 'src/components/Tile.astro'
+import { theme } from 'src/Theme.css.css'
+
+const gigs = await loadAndFormatCollection('gig')
+---
+
+<BaseLayout>
+	<GridContainer>
+		<div class="featured-gig">test</div>
+		<div class="two-side-gigs">test</div>
+		<div class="everything-else">
+			<GridContainer>
+				{
+					gigs.map((gig) => (
+						<Tile href={`${gig.extra.absolutePath}`} responsiveImage={gig.extra.cover} title={gig.entry.data.title} containerHeight="33vh" />
+					))
+				}
+			</GridContainer>
+			<GridContainer xs={6} sm={6} md={6} lg={6}>
+				<Tile containerHeight="10vh" href="/gigs" backgroundColor={theme.foregroundColor}> More Gigs </Tile>
+				<Tile containerHeight="10vh" href="/blog" backgroundColor={theme.secondaryColor}> More Articles </Tile>
+			</GridContainer>
+		</div>
+	</GridContainer>
+</BaseLayout>
+
+<style>
+	.featured-gig {
+		grid-column: span 12;
+	}
+	.two-side-gigs {
+		grid-column: span 12;
+	}
+	.everything-else {
+		grid-column: span 12;
+	}
+	@media --md {
+		.featured-gig {
+			grid-column: span 8;
+		}
+		.two-side-gigs {
+			grid-column: span 4;
+		}
+		.everything-else {
+			grid-column: span 12;
+		}
+	}
+</style>

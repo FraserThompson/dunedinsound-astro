@@ -1,0 +1,31 @@
+---
+import { shareButton } from './ShareButton.css'
+interface Props {
+	shareData: any
+}
+
+const { shareData } = Astro.props
+---
+
+<share-button class={shareButton} data-shareData={JSON.stringify(shareData)}> Share </share-button>
+
+<script>
+	class ShareButton extends HTMLElement {
+		constructor() {
+			super()
+			if (!this.dataset.shareData) return
+
+			const shareData = JSON.parse(this.dataset.shareData)
+			const button = this.querySelector('button')
+
+			button?.addEventListener('click', () => {
+				try {
+					navigator.share(shareData)
+				} catch {
+					console.error('Something went wrong.')
+				}
+			})
+		}
+	}
+	customElements.define('share-button', ShareButton, { extends: 'button' })
+</script>

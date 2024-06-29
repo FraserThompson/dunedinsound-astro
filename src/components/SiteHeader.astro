@@ -1,0 +1,29 @@
+---
+import Menu from './Menu.tsx'
+import { headerWrapper, headerMobile, header, brand } from './SiteHeader.css'
+
+const links = [
+	{ title: 'Home', href: '/' },
+	{ title: 'Gigs', href: '/gigs' },
+	{ title: 'Artists', href: '/artists' },
+	{ title: 'Venues', href: '/venues' },
+	{ title: 'Articles', href: '/blog' },
+	{
+		title: 'VAULT SESSIONS',
+		href: '/vaultsessions',
+		id: 'vaultSessionsHeaderLink'
+	}
+]
+
+const currentPath = new URL(Astro.request.url).pathname
+---
+
+<div class={headerWrapper}>
+	<div class={headerMobile}>
+		<Menu currentPath={currentPath} links={links} horizontal={true} />
+	</div>
+	<div class={header}>
+		<a href="/" class={brand}>Ōtepoti Gig Archives</a>
+		<Menu currentPath={currentPath} links={links} horizontal={true} />
+	</div>
+</div>

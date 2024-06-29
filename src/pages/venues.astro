@@ -1,0 +1,14 @@
+---
+import GridContainer from 'src/components/GridContainer'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { loadAndFormatCollection } from 'src/util/collection'
+import Tile from 'src/components/Tile.astro'
+
+const venues = await loadAndFormatCollection('venue')
+---
+
+<BaseLayout>
+	<GridContainer>
+		{venues.map((venue) => <a href={venue.extra.absolutePath}><h3>{venue.entry.id}</h3></a>)}
+	</GridContainer>
+</BaseLayout>

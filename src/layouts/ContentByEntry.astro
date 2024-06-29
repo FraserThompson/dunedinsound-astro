@@ -1,0 +1,39 @@
+---
+import GridContainer from 'src/components/GridContainer'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
+
+interface Props {
+	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
+}
+
+const { entry } = Astro.props
+
+const gigs = await loadAndFormatCollection('gig', ({ data }) => {
+	const matchByArtist = data.artists?.find((artist: any) => artist.id.id === entry.entry.id)
+	const matchByVenue = data.venue === entry.entry.id
+	return matchByArtist || matchByVenue
+})
+
+const blogs = await loadAndFormatCollection('blog', ({ data }) => {
+	const matchByTag = data.tags?.find((tag: any) => tag === entry.entry.id)
+	return matchByTag
+})
+
+const vaultSessions = await loadAndFormatCollection('vaultsession', ({ data }) => {
+	const matchByArtist = data.artist === entry.entry.id
+	return matchByArtist
+})
+---
+
+<BaseLayout>
+	<GridContainer>
+		{
+			gigs.map((gig) => (
+				<a href={gig.extra.absolutePath}>
+					<h2>{gig.entry.id}</h2>
+				</a>
+			))
+		}
+	</GridContainer>
+</BaseLayout>

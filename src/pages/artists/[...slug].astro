@@ -1,0 +1,19 @@
+---
+import ContentByEntry from 'src/layouts/ContentByEntry.astro'
+import { loadAndFormatCollection } from 'src/util/collection.ts'
+
+export async function getStaticPaths() {
+	const entries = await loadAndFormatCollection('artist')
+	return entries.map((entry) => ({
+		params: { slug: entry.extra.slug },
+		props: {
+			entry
+		}
+	}))
+}
+
+const { entry } = Astro.props
+
+---
+
+{<ContentByEntry entry={entry}/>}

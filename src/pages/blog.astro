@@ -1,0 +1,21 @@
+---
+import GridContainer from 'src/components/GridContainer'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { loadAndFormatCollection } from 'src/util/collection'
+import Tile from 'src/components/Tile.astro'
+import { theme } from 'src/Theme.css.css'
+
+const blogs = await loadAndFormatCollection('blog')
+---
+
+<BaseLayout>
+	<GridContainer>
+		{
+			blogs.map((blog) => (
+				<a href={blog.extra.absolutePath}>
+					<h3>{blog.entry.id}</h3>
+				</a>
+			))
+		}
+	</GridContainer>
+</BaseLayout>

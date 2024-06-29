@@ -1,0 +1,18 @@
+---
+import { loadAndFormatCollection } from 'src/util/collection.ts'
+import Blog from '../../layouts/Blog.astro'
+
+export async function getStaticPaths() {
+	const entries = await loadAndFormatCollection('blog')
+	return entries.map((entry) => ({
+		params: { slug: entry.extra.slug },
+		props: {
+			entry
+		}
+	}))
+}
+
+const { entry } = Astro.props
+---
+
+{<Blog entry={entry}/>}

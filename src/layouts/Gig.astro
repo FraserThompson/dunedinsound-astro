@@ -1,0 +1,61 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import Banner from 'src/components/Banner.astro'
+import type { ProcessedEntry } from 'src/util/collection.ts'
+import BannerOverlay from 'src/components/gig/BannerOverlay.astro'
+import ImageGallery from 'src/components/ImageGallery'
+import Player from 'src/components/Player'
+import PlayerContainer from 'src/components/PlayerContainer.astro'
+import Menu from 'src/components/Menu.tsx'
+
+interface Props {
+	entry: ProcessedEntry<'gig'>
+}
+const { entry } = Astro.props
+---
+
+<BaseLayout>
+	<Banner id="top" title={entry.entry.data.title} backgroundImage={entry.extra.cover}>
+		<div slot="subtitle">
+			at{' '}
+			{
+				entry.extra.venue && (
+					<a href={`/venues/${entry.extra.venue.id}`} class="highlighted">
+						{entry.extra.venue.data.title}
+					</a>
+				)
+			}
+			<p>
+				<small>{entry.entry.data.date}</small>
+			</p>
+		</div>
+		<div slot="customContent">
+			<BannerOverlay thisPost={entry} nextPost={entry.next} prevPost={entry.prev} />
+		</div>
+		<Menu horizontal={true} links={entry.extra.artists.map((artist) => ({ title: artist.data.title, href: '' }))} />
+		{
+			entry.extra.audio && (
+				<PlayerContainer>
+					<Player artistAudio={Object.values(entry.extra.audio)} client:load />
+				</PlayerContainer>
+			)
+		}
+	</Banner>
+	{
+		entry.extra.artists.map((artist) => (
+			<>
+				<h2>{artist.data.title}</h2>
+				{entry.extra.images[artist.id] && (
+					<ImageGallery title={entry.entry.data.title} images={entry.extra.images[artist.id]} client:load />
+				)}
+			</>
+		))
+	}
+</BaseLayout>
+
+<style>
+	h1,
+	h2 {
+		color: white;
+	}
+</style>

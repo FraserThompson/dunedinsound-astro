@@ -1,0 +1,14 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import type { ProcessedEntry } from 'src/util/collection.ts'
+
+interface Props {
+	entry: ProcessedEntry<'blog'>
+}
+const { entry } = Astro.props
+const { Content, headings } = await entry.entry.render();
+---
+
+<BaseLayout>
+	<Content/>
+</BaseLayout>

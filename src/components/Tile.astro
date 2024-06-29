@@ -1,0 +1,89 @@
+---
+import BackgroundImage from './BackgroundImage.astro'
+import type { ResponsiveImage } from 'src/util/image'
+import {
+	tileWrapper,
+	titleWrapper,
+	tileContent,
+	tileTitle,
+	tileSubtitle,
+	background,
+	height,
+	width,
+	heightHover,
+	fontSize
+} from './Tile.css'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
+
+interface Props {
+	href: string
+	responsiveImage?: ResponsiveImage
+	title?: string
+	prefix?: string
+	label?: string
+	subtitle?: string
+	feature?: boolean
+	backgroundColor?: string
+	containerHeight?: string
+	containerWidth?: string
+	hoverHeight?: string
+}
+
+const {
+	href,
+	responsiveImage,
+	title,
+	prefix,
+	label,
+	subtitle,
+	feature,
+	backgroundColor,
+	containerHeight,
+	containerWidth,
+	hoverHeight
+} = Astro.props
+---
+
+<div
+	class={tileWrapper}
+	style={assignInlineVars({
+		[background]: backgroundColor || `radial-gradient(circle, black 0%, green 70%)`,
+		[height]: containerHeight,
+		[width]: containerWidth,
+		[heightHover]: hoverHeight
+	})}
+>
+	<a href={href} target="_blank" title={title}>
+		{responsiveImage && <BackgroundImage responsiveImage={responsiveImage} />}
+		<div class={titleWrapper}>
+			<div class={tileContent}>
+				{
+					title && (
+						<h2
+							class={tileTitle}
+							style={assignInlineVars({
+								[fontSize]: feature ? '2em' : '1.2em'
+							})}
+						>
+							{prefix && <span style={{ fontWeight: 200, color: '#9b9b9b' }}>{prefix}</span>}
+							{title}
+						</h2>
+					)
+				}
+				{
+					label && (
+						<h4 style={{ color: '#9b9b9b', textShadow: '1px 1px 1px black' }}>
+							<strong>{label}</strong>
+						</h4>
+					)
+				}
+				{subtitle && <h4 class={tileSubtitle} set:html={subtitle} />}
+			</div>
+		</div>
+		<div class="textContent">
+			<div>
+				<slot />
+			</div>
+		</div>
+	</a>
+</div>

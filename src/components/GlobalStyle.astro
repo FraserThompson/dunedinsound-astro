@@ -1,0 +1,40 @@
+---
+
+---
+
+<style is:global>
+
+  progress {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .showMobile {
+    display: inline-block !important;
+  }
+
+  .hideMobile {
+    display: none !important;
+  }
+
+  @media (--md) {
+    .showMobile {
+      display: none !important;
+    }
+    .hideMobile {
+      display: flex !important;
+    }
+  }
+
+  figcaption {
+    font-style: italic;
+  }
+
+	.visible {
+		display: inline-block;
+	}
+
+	.hidden {
+		display: none;
+	}
+</style>

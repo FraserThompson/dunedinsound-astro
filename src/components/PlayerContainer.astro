@@ -1,0 +1,108 @@
+---
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa'
+import { playerWrapper, openButtonWrapper, openButton, player } from './PlayerContainer.css'
+
+interface Props {
+	minimizedAlways?: boolean
+}
+
+const { minimizedAlways } = Astro.props
+---
+
+<player-wrapper class={playerWrapper} data-minimizedAlways={minimizedAlways}>
+	<div class={openButtonWrapper} id="open-button-wrapper" title="Audio Player">
+		<button class={openButton} id="open-button">
+			<span>AUDIO</span>
+			<span class="up-icon">
+				<FaChevronUp />
+			</span>
+			<span class="down-icon hidden">
+				<FaChevronDown />
+			</span>
+		</button>
+	</div>
+	<div id="player">
+		<slot class={player} />
+	</div>
+</player-wrapper>
+
+<script>
+	import { calculateScrollHeaderOffset } from 'src/util/helpers'
+
+	class PlayerWrapper extends HTMLElement {
+		_internals: any
+		minimizedAlways: boolean
+		openButton: HTMLElement | null
+		openButtonWrapper: HTMLElement | null
+		upIcon: HTMLElement | null
+		downIcon: HTMLElement | null
+
+		constructor() {
+			super()
+
+			this._internals = this.attachInternals()
+			this.minimizedAlways = !!this.dataset.minimizedAlways
+
+			this.openButton = this.querySelector('button#open-button')
+			this.openButtonWrapper = this.querySelector('#open-button-wrapper')
+			this.upIcon = this.querySelector('.up-icon')
+			this.downIcon = this.querySelector('.down-icon')
+		}
+
+		get open() {
+			return this._internals.states.has('open')
+		}
+
+		set open(flag) {
+			if (flag) {
+				this.upIcon?.classList.add('hidden')
+				this.downIcon?.classList.remove('hidden')
+				this._internals.states.add('open')
+			} else {
+				this.upIcon?.classList.remove('hidden')
+				this.downIcon?.classList.add('hidden')
+				this._internals.states.delete('open')
+			}
+		}
+
+		get minimized() {
+			return this._internals.states.has('minimized')
+		}
+
+		set minimized(flag) {
+			if (flag) {
+				this._internals.states.add('minimized')
+				this.openButtonWrapper?.classList.add('minimized')
+			} else {
+				this._internals.states.delete('minimized')
+				this.openButtonWrapper?.classList.remove('minimized')
+			}
+		}
+
+		onScroll = () => {
+			if (this.minimizedAlways) return
+
+			const bannerHeight = calculateScrollHeaderOffset(window) || 30
+
+			if (window.scrollY >= bannerHeight) {
+				this.minimized = true
+			} else {
+				this.minimized = false
+			}
+		}
+
+		connectedCallback() {
+			this.openButton &&
+				this.openButton.addEventListener('click', () => {
+					this.open = !this.open
+				})
+			window.addEventListener('scroll', this.onScroll, { passive: true })
+		}
+
+		disconnectedCallback() {
+			window.removeEventListener('scroll', this.onScroll)
+		}
+	}
+
+	customElements.define('player-wrapper', PlayerWrapper)
+</script>

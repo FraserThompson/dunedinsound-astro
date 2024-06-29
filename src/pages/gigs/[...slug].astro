@@ -1,0 +1,19 @@
+---
+import Gig from 'src/layouts/Gig.astro'
+import { loadAndFormatCollection } from 'src/util/collection.ts'
+
+export async function getStaticPaths() {
+	const entries = await loadAndFormatCollection('gig')
+	return entries.map((entry) => ({
+		params: { slug: entry.extra.slug },
+		props: {
+			entry
+		}
+	}))
+}
+
+const { entry } = Astro.props
+
+---
+
+{<Gig entry={entry}/>}
