@@ -56,7 +56,7 @@ const subheaderHeight = '30px'
 
 const foregroundColor = '#3f92f7'
 const primaryColor = '#0F0E0E'
-const contrastColor2 = '#622196'
+const contrastColor2 = '#96ff7d'
 const textColor = '#ccc'
 
 createGlobalTheme(':root', theme, {
@@ -74,7 +74,7 @@ createGlobalTheme(':root', theme, {
 		lightForeground: lighten(0.2, foregroundColor),
   },
   font: {
-		baseSize: '18px',
+		baseSize: '16px',
 		baseLineHeight: '1.61rem',
 		family: '-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;',
 		bodyWeight: '400',

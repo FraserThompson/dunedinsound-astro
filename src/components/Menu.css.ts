@@ -15,15 +15,28 @@ export const MenuWrapper = style({
 	scrollBehavior: 'smooth'
 })
 
+const MenuLiBase = style({
+	selectors: {
+		'&.active, &:active': {
+			backgroundColor: theme.color.secondary,
+			color: theme.color.lightText
+		}
+	}
+})
+
 export const MenuLi = styleVariants({
 	horizontal: [
+		MenuLiBase,
 		{
-			display: 'inline-block',
+			display: 'inline-flex',
+			alignItems: 'center'
 		}
 	],
 	vertical: [
+		MenuLiBase,
 		{
-			display: 'block',
+			display: 'flex',
+			alignItems: 'center'
 		}
 	]
 })

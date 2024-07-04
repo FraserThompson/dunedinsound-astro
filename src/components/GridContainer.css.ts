@@ -1,4 +1,4 @@
-import { createVar, style, globalStyle } from '@vanilla-extract/css'
+import { createVar, style } from '@vanilla-extract/css'
 
 export const colXs = createVar()
 export const colSm = createVar()
@@ -7,14 +7,14 @@ export const colLg = createVar()
 
 export const centered = createVar()
 
-export const GridWrapper = style({
+export const gridWrapper = style({
 	display: 'grid',
 	gridTemplateColumns: 'repeat(12, [col-start] 1fr)',
-	justifyItems: centered,
+	justifyItems: centered && 'center',
 	gridAutoFlow: 'dense'
 })
 
-globalStyle(`${GridWrapper} > *`, {
+export const GridChild = style({
 	gridColumn: colXs,
 	'@media': {
 		'screen and (--xs)': {
@@ -25,6 +25,14 @@ globalStyle(`${GridWrapper} > *`, {
 		},
 		'screen and (--lg)': {
 			gridColumn: colLg
+		}
+	},
+	selectors: {
+		'&:only-child': {
+			gridColumn: 'col-start 4 / span 6 !important'
+		},
+		'&:last-child:nth-child(odd)': {
+			gridColumn: 'col-start 4 / span 6 !important'
 		}
 	}
 })

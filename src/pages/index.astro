@@ -3,7 +3,8 @@ import GridContainer from 'src/components/GridContainer'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
 import Tile from 'src/components/Tile.astro'
-import { theme } from 'src/Theme.css.css'
+import { GridChild } from 'src/components/GridContainer.css'
+import { theme } from 'src/Theme.css'
 
 const gigs = await loadAndFormatCollection('gig')
 ---
@@ -16,13 +17,23 @@ const gigs = await loadAndFormatCollection('gig')
 			<GridContainer>
 				{
 					gigs.map((gig) => (
-						<Tile href={`${gig.extra.absolutePath}`} responsiveImage={gig.extra.cover} title={gig.entry.data.title} containerHeight="33vh" />
+						<Tile
+							href={`${gig.extra.absolutePath}`}
+							responsiveImage={gig.extra.cover}
+							title={gig.entry.data.title}
+							containerHeight="33vh"
+							className={GridChild}
+						/>
 					))
 				}
 			</GridContainer>
 			<GridContainer xs={6} sm={6} md={6} lg={6}>
-				<Tile containerHeight="10vh" href="/gigs" backgroundColor={theme.foregroundColor}> More Gigs </Tile>
-				<Tile containerHeight="10vh" href="/blog" backgroundColor={theme.secondaryColor}> More Articles </Tile>
+				<Tile className={GridChild} containerHeight="10vh" href="/gigs" backgroundColor={theme.color.foreground}>
+					More Gigs
+				</Tile>
+				<Tile className={GridChild} containerHeight="10vh" href="/blog" backgroundColor={theme.color.secondary}>
+					More Articles
+				</Tile>
 			</GridContainer>
 		</div>
 	</GridContainer>

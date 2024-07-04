@@ -21,8 +21,8 @@ const { minimizedAlways } = Astro.props
 			</span>
 		</button>
 	</div>
-	<div id="player">
-		<slot class={player} />
+	<div id="player" class={player}>
+		<slot />
 	</div>
 </player-wrapper>
 
@@ -32,6 +32,7 @@ const { minimizedAlways } = Astro.props
 	class PlayerWrapper extends HTMLElement {
 		_internals: any
 		minimizedAlways: boolean
+		player: HTMLElement | null
 		openButton: HTMLElement | null
 		openButtonWrapper: HTMLElement | null
 		upIcon: HTMLElement | null
@@ -47,6 +48,7 @@ const { minimizedAlways } = Astro.props
 			this.openButtonWrapper = this.querySelector('#open-button-wrapper')
 			this.upIcon = this.querySelector('.up-icon')
 			this.downIcon = this.querySelector('.down-icon')
+			this.player = this.querySelector('#player')
 		}
 
 		get open() {
@@ -58,10 +60,14 @@ const { minimizedAlways } = Astro.props
 				this.upIcon?.classList.add('hidden')
 				this.downIcon?.classList.remove('hidden')
 				this._internals.states.add('open')
+				this.player?.classList.add('open')
+				this.openButtonWrapper?.classList.add('open')
 			} else {
 				this.upIcon?.classList.remove('hidden')
 				this.downIcon?.classList.add('hidden')
 				this._internals.states.delete('open')
+				this.player?.classList.remove('open')
+				this.openButtonWrapper?.classList.remove('open')
 			}
 		}
 
@@ -73,9 +79,11 @@ const { minimizedAlways } = Astro.props
 			if (flag) {
 				this._internals.states.add('minimized')
 				this.openButtonWrapper?.classList.add('minimized')
+				this.player?.classList.add('minimized')
 			} else {
 				this._internals.states.delete('minimized')
 				this.openButtonWrapper?.classList.remove('minimized')
+				this.player?.classList.remove('minimized')
 			}
 		}
 

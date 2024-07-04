@@ -3,7 +3,7 @@ import GridContainer from 'src/components/GridContainer'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
 import Tile from 'src/components/Tile.astro'
-import { theme } from 'src/Theme.css.css'
+import { GridChild } from 'src/components/GridContainer.css'
 
 const gigs = await loadAndFormatCollection('gig')
 ---
@@ -12,7 +12,7 @@ const gigs = await loadAndFormatCollection('gig')
 	<GridContainer>
 		{
 			gigs.map((gig) => (
-				<a href={gig.extra.absolutePath}>
+				<a class={GridChild} href={gig.extra.absolutePath}>
 					<h3>{gig.entry.id}</h3>
 				</a>
 			))

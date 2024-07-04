@@ -1,12 +1,12 @@
-import { useState, useEffect, useCallback, useMemo } from 'preact/compat'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'preact/compat'
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Download, Zoom } from "yet-another-react-lightbox/plugins";
 import FlexGridContainer from '../components/FlexGridContainer'
-import { createBrowserHistory } from 'history'
 import MasonryContainer from '../components/MasonryContainer'
 import type { ResponsiveImage } from 'src/util/image'
 import Image2 from './Image2'
+import browserHistory from 'src/util/history';
 
 interface Props {
 	images: ResponsiveImage[]
@@ -27,14 +27,14 @@ export default ({ images, imageCaptions, gridSize, title, imageCaption, masonry 
 	const [selectedImage, setSelectedImage] = useState(0)
 	const [directLinked, setDirectLinked] = useState(false)
 
-	const history = typeof window !== 'undefined' && createBrowserHistory()
+	const history = useRef(browserHistory)
 
 	useEffect(() => {
 		if (!history) return;
-		handleURLChange(history.location)
-		const unlisten = history.listen((location) => handleURLChange(location.location))
-		return () => unlisten()
-	})
+		handleURLChange(history.current?.location)
+		const unlisten = history.current?.listen((location) => handleURLChange(location.location))
+		return () => unlisten && unlisten()
+	}, [history])
 
 	/**
 	 * When the URL params change put the correct image in the lightbox.
@@ -54,8 +54,8 @@ export default ({ images, imageCaptions, gridSize, title, imageCaption, masonry 
 		(imageIndex: number, event: any) => {
 			if (!history) return;
 			event.preventDefault()
-			history.push({
-				pathname: history.location.pathname,
+			history.current?.push({
+				pathname: history.current?.location.pathname,
 				search: `?image=${imageIndex}`,
 			}, { lightboxOpen: true })
 		},
@@ -63,14 +63,14 @@ export default ({ images, imageCaptions, gridSize, title, imageCaption, masonry 
 	))
 
 	const closeLightbox = useCallback(() =>
-		(history && (!directLinked ? history.back() : history.replace({ pathname: history.location.pathname, search: '' })))
+		(history && (!directLinked ? history.current?.back() : history.current?.replace({ pathname: history.current?.location.pathname, search: '' })))
 		, [history])
 
 	const gotoLightboxImage = useCallback(
 		(imageIndex: number) => {
 			if (!history) return;
-			history.replace({
-				pathname: history.location.pathname,
+			history.current?.replace({
+				pathname: history.current?.location.pathname,
 				search: `?image=${imageIndex}`,
 			}, { lightboxOpen: true })
 		},
@@ -124,8 +124,8 @@ export default ({ images, imageCaptions, gridSize, title, imageCaption, masonry 
 						scrollToZoom: true
 					}}
 					render={{
-						slideHeader: () => <h2>{title}</h2>,
-						slideFooter: () => <h4>{imageCaptions ? getImageCaption(selectedImage) : imageCaption}</h4>,
+						slideHeader: () => <div style={{ position: "absolute", padding: "8px", top: "0px" }}><h2>{title}</h2></div>,
+						slideFooter: () => <div style={{ position: "absolute", padding: "8px", bottom: "0px" }}><h4>{imageCaptions ? getImageCaption(selectedImage) : imageCaption}</h4></div>,
 					}}
 				/>
 			)}

@@ -7,10 +7,17 @@ import ImageGallery from 'src/components/ImageGallery'
 import Player from 'src/components/Player'
 import PlayerContainer from 'src/components/PlayerContainer.astro'
 import Menu from 'src/components/Menu.tsx'
+import Divider from 'src/components/Divider'
+import YoutubeResponsive from 'src/components/YoutubeResponsive'
+import GridContainer from 'src/components/GridContainer'
+import { GridChild } from 'src/components/GridContainer.css'
+import DropdownMenu from 'src/components/DropdownMenu'
+import { socialLinksToMenuItems } from 'src/util/helpers.ts'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
 }
+
 const { entry } = Astro.props
 ---
 
@@ -26,12 +33,10 @@ const { entry } = Astro.props
 				)
 			}
 			<p>
-				<small>{entry.entry.data.date}</small>
+				<small>{entry.entry.data.date.toLocaleDateString()}</small>
 			</p>
 		</div>
-		<div slot="customContent">
-			<BannerOverlay thisPost={entry} nextPost={entry.next} prevPost={entry.prev} />
-		</div>
+		<BannerOverlay thisPost={entry} nextPost={entry.next} prevPost={entry.prev} slot="customContent" />
 		<Menu horizontal={true} links={entry.extra.artists.map((artist) => ({ title: artist.data.title, href: '' }))} />
 		{
 			entry.extra.audio && (
@@ -41,21 +46,73 @@ const { entry } = Astro.props
 			)
 		}
 	</Banner>
-	{
-		entry.extra.artists.map((artist) => (
-			<>
-				<h2>{artist.data.title}</h2>
-				{entry.extra.images[artist.id] && (
-					<ImageGallery title={entry.entry.data.title} images={entry.extra.images[artist.id]} client:load />
-				)}
-			</>
-		))
-	}
+	<div>
+		<DropdownMenu
+			list={entry.extra.artists.map((artist) => ({
+				hash: `${artist.id}`,
+				title: artist.data.title,
+				additionalLinks: [...socialLinksToMenuItems(artist.data.links), { href: `/artists/${artist.id}`, title: '>' }]
+			}))}
+			direction="down"
+			client:load
+		/>
+		{
+			entry.extra.artists.map((artist, i) => (
+				<div class="artist" id={artist.id}>
+					<Divider href={`#${artist.id}`} color="black" backgroundColor="white" sticky={true}>
+						{artist.data.title}
+					</Divider>
+					<GridContainer xs={12} sm={6} md={6} lg={6} center={true}>
+						{entry.entry.data.artists[i].vid?.map((vid, i) => (
+							<YoutubeResponsive className={GridChild} videoId={vid.link} client:load />
+						))}
+					</GridContainer>
+					{entry.extra.images[artist.id] && (
+						<ImageGallery title={entry.entry.data.title} images={entry.extra.images[artist.id]} client:load />
+					)}
+				</div>
+			))
+		}
+	</div>
+
+	<style>
+		h1,
+		h2 {
+			color: white;
+		}
+	</style>
 </BaseLayout>
 
-<style>
-	h1,
-	h2 {
-		color: white;
+<script>
+	import browserHistory from 'src/util/history.ts'
+
+	// Add the intersectionObserver which highlights the artist they're on in the menu
+	const artistElements = document.querySelectorAll('.artist')
+
+	const options = {
+		rootMargin: '0px 0px -97%'
 	}
-</style>
+
+	const callback = (entries: IntersectionObserverEntry[]) => {
+		if (location.search) return
+
+		entries.forEach((entry) => {
+			if (entry.isIntersecting) {
+				const el = entry.target
+				browserHistory?.replace({
+					hash: '#' + el.id
+				})
+			} else {
+				const bannerHeight = document.querySelector('.banner')?.clientHeight || 0
+				if (window.pageYOffset < bannerHeight) {
+					browserHistory?.replace({
+						hash: ''
+					})
+				}
+			}
+		})
+	}
+
+	const observer = new IntersectionObserver(callback, options)
+	artistElements.forEach((el) => observer.observe(el))
+</script>

@@ -17,6 +17,7 @@ import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
 	href: string
+	className?: string
 	responsiveImage?: ResponsiveImage
 	title?: string
 	prefix?: string
@@ -31,6 +32,7 @@ interface Props {
 
 const {
 	href,
+	className,
 	responsiveImage,
 	title,
 	prefix,
@@ -45,7 +47,7 @@ const {
 ---
 
 <div
-	class={tileWrapper}
+	class={`${tileWrapper} ${className}`}
 	style={assignInlineVars({
 		[background]: backgroundColor || `radial-gradient(circle, black 0%, green 70%)`,
 		[height]: containerHeight,

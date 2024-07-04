@@ -16,7 +16,7 @@ const { title, id, height, backgroundImage, backgroundImageVertical } = Astro.pr
 ---
 
 <div
-	class={BannerWrapper}
+	class={`${BannerWrapper} banner`}
 	id={id}
 	style={assignInlineVars({
 		[bannerHeight]: height

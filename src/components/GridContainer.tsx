@@ -1,5 +1,5 @@
 import React from 'preact/compat'
-import { GridWrapper, colXs, colSm, colMd, colLg, centered } from './GridContainer.css'
+import { gridWrapper, colXs, colSm, colMd, colLg, centered } from './GridContainer.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
@@ -8,11 +8,11 @@ interface Props {
 	sm?: number,
 	md?: number,
 	lg?: number,
-	center?: string
+	center?: boolean
 }
 
 const GridContainer: React.FC<Props> = ({ children, xs = 12, sm = 6, md = 4, lg = 4, center }) =>
-	<div className={GridWrapper} style={assignInlineVars({
+	<div className={gridWrapper} style={assignInlineVars({
 		[colXs]: `span ${xs}`,
 		[colSm]: `span ${sm}`,
 		[colMd]: `span ${md}`,
@@ -22,4 +22,4 @@ const GridContainer: React.FC<Props> = ({ children, xs = 12, sm = 6, md = 4, lg 
 		{children}
 	</div>
 
-export default GridContainer;
+export default GridContainer

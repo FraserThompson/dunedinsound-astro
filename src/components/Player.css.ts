@@ -128,10 +128,10 @@ export const TransportButton = style({
 			height: '18px',
 			marginTop: '3px'
 		},
-		'&.buttonStyle:hover:enabled': {
+		'&:hover:enabled': {
 			filter: 'brightness(0.8)'
 		},
-		'&.buttonStyle:disabled': {
+		'&:disabled': {
 			filter: 'opacity(0.2)'
 		},
 		'&.left': {
@@ -193,6 +193,30 @@ export const LengthWrapper = style({
 	backgroundColor: 'black'
 })
 
-export const TracklistWrapper = style([MenuWrapper, {
-	
-}])
+export const TracklistWrapper = style({
+	overflowY: 'auto',
+	maxHeight: '90vh',
+	backgroundColor: 'black',
+	margin: '5px',
+	border: '3px groove #585662',
+	paddingLeft: '0px',
+	paddingRight: '0px'
+})
+
+export const TracklistTrack = style({
+	lineHeight: '1.5rem',
+	paddingLeft: '3px',
+	paddingRight: '3px',
+	listStyle: 'none',
+	textAlign: 'left',
+	selectors: {
+		'&.active': {
+			backgroundColor: '#0818c4'
+		}
+	}
+})
+
+globalStyle(`${TracklistTrack} .title`, {
+	fontFamily: 'monospace',
+	color: '#28da1d'
+})

@@ -1,9 +1,10 @@
 import type React from "preact/compat"
 import { MenuLink, MenuLi, MenuWrapper } from "./Menu.css"
 
-interface MenuLink {
-	title: string
+export interface MenuLink {
+	title?: string
 	href: string
+	image?: string
 	id?: string
 }
 
@@ -16,6 +17,14 @@ interface Props {
 	horizontal?: boolean
 }
 
+/**
+ * A simple menu with links to hrefs.
+ * 
+ * Content can include an image or a title or both.
+ * 
+ * @param props 
+ * @returns 
+ */
 const Menu: React.FC<Props> = (props) => {
 	const isActive = (href: string) => {
 		if (!props.currentPath) {
@@ -33,6 +42,7 @@ const Menu: React.FC<Props> = (props) => {
 					id={link.id}
 				>
 					{' '}{link.title}{' '}
+					{link.image && <img src={link.image} />}
 				</a>
 			</li>
 		))}

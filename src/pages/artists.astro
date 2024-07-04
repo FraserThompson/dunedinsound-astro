@@ -3,13 +3,19 @@ import GridContainer from 'src/components/GridContainer'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
 import Tile from 'src/components/Tile.astro'
-import { theme } from 'src/Theme.css.css'
+import { GridChild } from 'src/components/GridContainer.css'
 
 const artists = await loadAndFormatCollection('artist')
 ---
 
 <BaseLayout>
 	<GridContainer>
-		{artists.map((artist) => <a href={artist.extra.absolutePath}><h3>{artist.entry.id}</h3></a>)}
+		{
+			artists.map((artist) => (
+				<a class={GridChild} href={artist.extra.absolutePath}>
+					<h3>{artist.entry.id}</h3>
+				</a>
+			))
+		}
 	</GridContainer>
 </BaseLayout>

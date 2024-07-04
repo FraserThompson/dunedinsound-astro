@@ -39,7 +39,7 @@ const artistAudioculture = z.object({
   image: z.string().optional(),
 });
 
-const webLinks = z.object({
+export const webLinks = z.object({
   facebook: z.string().optional(),
   bandcamp: z.string().optional(),
   website: z.string().optional(),

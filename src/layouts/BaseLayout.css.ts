@@ -36,38 +36,42 @@ globalStyle('h1, h2, h3, h4, h5, h6', {
 	textRendering: 'optimizeLegibility'
 })
 
+globalStyle('p, span', {
+	fontSize: theme.font.baseSize
+})
+
 globalStyle('h1, h2', {
 	textShadow: '-1px -1px 0 rgba(0, 0, 0, 0.3)'
 })
 
 globalStyle('h1', {
-	fontSize: theme.font.baseLineHeight,
+	fontSize: `calc(${theme.font.baseLineHeight} * 1.1)`,
 	lineHeight: '1.1'
 })
 
 globalStyle('h2', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 0.85)`,
+	fontSize: `calc(${theme.font.baseLineHeight} * 1)`,
 	lineHeight: '1.1'
 })
 
 globalStyle('h3', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 0.75)`,
+	fontSize: `calc(${theme.font.baseLineHeight} * 1)`,
 	lineHeight: '1.1'
 })
 
 globalStyle('h4', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 0.65)`,
+	fontSize: `calc(${theme.font.baseLineHeight} * 1)`,
 	fontWeight: '200',
 	lineHeight: '1.1'
 })
 
 globalStyle('h5', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 0.55)`,
+	fontSize: `calc(${theme.font.baseLineHeight} * 1)`,
 	lineHeight: '1.1'
 })
 
 globalStyle('h6', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 0.45)`,
+	fontSize: `calc(${theme.font.baseLineHeight} * 1)`,
 	lineHeight: '1.1'
 })
 
@@ -93,4 +97,8 @@ globalStyle('a', {
 	textDecoration: 'none',
 	overflow: 'hidden',
 	backgroundColor: 'transparent'
+})
+
+globalStyle('a:hover', {
+	color: theme.color.lightContrast2
 })

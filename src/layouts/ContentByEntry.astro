@@ -2,6 +2,7 @@
 import GridContainer from 'src/components/GridContainer'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
+import { GridChild } from 'src/components/GridContainer.css'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
@@ -30,7 +31,7 @@ const vaultSessions = await loadAndFormatCollection('vaultsession', ({ data }) =
 	<GridContainer>
 		{
 			gigs.map((gig) => (
-				<a href={gig.extra.absolutePath}>
+				<a class={GridChild} href={gig.extra.absolutePath}>
 					<h2>{gig.entry.id}</h2>
 				</a>
 			))

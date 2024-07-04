@@ -1,5 +1,5 @@
-import { style, } from '@vanilla-extract/css'
-import { lighten } from 'polished';
+import { globalStyle, style } from '@vanilla-extract/css'
+import { lighten } from 'polished'
 
 export const RoundButton = style({
 	zIndex: 11,
@@ -11,10 +11,15 @@ export const RoundButton = style({
 	outline: 0,
 	width: '40px',
 	height: '40px',
-	'selectors': {
+	selectors: {
 		'&:hover:not(.active)': {
 			color: lighten(0.2, '#bfced9'),
-			borderColor:lighten(0.2, '#abb6c5')
+			borderColor: lighten(0.2, '#abb6c5')
 		}
 	}
+})
+
+globalStyle(`${RoundButton} > svg`, {
+	width: '100%',
+	height: '100%'
 })

@@ -46,10 +46,12 @@ export const openButtonWrapper = style({
 	width: '100%',
 	bottom: `calc(${theme.dimensions.headerHeightMobile} + 100px)`,
 	left: '0px',
-	fontFamily: 'monospace',
 	selectors: {
 		'&.minimized': {
 			display: 'inline-block'
+		},
+		'&.open': {
+			position: 'static'
 		}
 	},
 	'@media': {
@@ -60,6 +62,8 @@ export const openButtonWrapper = style({
 })
 
 export const openButton = style({
+	fontFamily: 'monospace',
+	fontSize: theme.font.baseSize,
 	pointerEvents: 'auto',
 	boxShadow: '-2px -1px 3px rgb(0 0 0 / 32%), 3px 1px 3px rgb(0 0 0 / 42%)',
 	transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
@@ -80,5 +84,15 @@ export const openButton = style({
 })
 
 export const player = style({
-	filter: 'drop-shadow(2px 2px 10px black)'
+	filter: 'drop-shadow(2px 2px 10px black)',
+	pointerEvents: 'auto',
+	visibility: 'visible',
+	opacity: '1',
+	selectors: {
+		'&.minimized:not(.open)': {
+			pointerEvents: 'none',
+			visibility: 'hidden',
+			opacity: '0'
+		}
+	}
 })

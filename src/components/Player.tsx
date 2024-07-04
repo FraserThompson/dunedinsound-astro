@@ -23,7 +23,7 @@ import { FaPlayCircle, FaPauseCircle, FaBackward, FaForward, FaDownload } from '
 import { RoundButton } from './RoundButton.css'
 import LoadingSpinner from './LoadingSpinner.tsx'
 import { timeToSeconds } from '../util/helpers'
-import { AudioWrapper, LengthWrapper, PlayerWrapper, Titlebar, TracklistWrapper, TransportButton, WaveWrapper } from './Player.css.ts'
+import { AudioWrapper, LengthWrapper, PlayerWrapper, Titlebar, TracklistTrack, TracklistWrapper, TransportButton, WaveWrapper } from './Player.css.ts'
 import WaveSurfer from 'wavesurfer.js'
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.esm.js'
 import { MenuLink, MenuWrapper } from './Menu.css.ts'
@@ -228,19 +228,19 @@ const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = 
 			<div className={AudioWrapper[barebones ? 'barebones' : 'normal']}>
 				{!barebones && (
 					<div>
-						<div className={TransportButton} disabled={!ready} id="prev" onClick={() => previous()}>
+						<button className={TransportButton} disabled={!ready} id="prev" onClick={() => previous()}>
 							<FaBackward />
-						</div>
+						</button>
 						<button disabled={!ready} className={playing ? `${RoundButton} active` : RoundButton} onClick={() => wavesurfer && wavesurfer.playPause()}>
 							{!playing ? <FaPlayCircle /> : <FaPauseCircle />}
 						</button>
-						<div className={TransportButton} disabled={!ready} id="next" onClick={() => next()}>
+						<button className={TransportButton} disabled={!ready} id="next" onClick={() => next()}>
 							<FaForward />
-						</div>
+						</button>
 					</div>
 				)}
 				<div className={WaveWrapper} id="waveform" ref={waveformRef}>
-					{ready && <div className={LengthWrapper} style={{ left: '0px' }}>{currentTime && formatTime(currentTime)}</div>}
+					{ready && <div className={LengthWrapper} style={{ left: '0px' }}>{currentTime ? formatTime(currentTime) : "00:00"}</div>}
 					{ready && <div className={LengthWrapper} style={{ right: '0px' }}>{duration && formatTime(duration)}</div>}
 				</div>
 				{!ready && (
@@ -251,14 +251,14 @@ const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = 
 			</div>
 
 			{!barebones && (
-				<ul className={MenuWrapper}>
+				<ul className={TracklistWrapper}>
 					{artistAudio.map((item, index) => (
 						<div key={item.title}>
-							<li className={selectedArtist == index ? MenuLink['vertical'] + ' active' : MenuLink['vertical']} onClick={() => selectArtist(index)} style={{ cursor: "pointer" }}>
+							<li className={selectedArtist == index ? TracklistTrack + ' active' : TracklistTrack} onClick={() => selectArtist(index)} style={{ cursor: "pointer" }}>
 								<span className="title">
 									{index + 1}. {item.title}
 								</span>
-								<span className="listButton">
+								<span className="listButton" style={{ float: "right" }}>
 									<a title={'Download MP3: ' + item.title} href={item.files[0]} target="_blank">
 										<FaDownload />
 									</a>
