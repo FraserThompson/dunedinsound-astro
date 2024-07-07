@@ -28,6 +28,7 @@ export const theme = createThemeContract({
   },
 	borders: {
 		primary: '',
+		contrast: ''
 	},
 	breakpoints: {
 		xs: '',
@@ -56,6 +57,7 @@ const subheaderHeight = '30px'
 
 const foregroundColor = '#3f92f7'
 const primaryColor = '#0F0E0E'
+const contrastColor = '#FAF9F9'
 const contrastColor2 = '#96ff7d'
 const textColor = '#ccc'
 
@@ -65,7 +67,7 @@ createGlobalTheme(':root', theme, {
 		primary: primaryColor, // smoky black
 		foreground: '#3f92f7', // lightblue
 		secondary: '#367e80', // teal
-		contrast: '#FAF9F9', // ice white
+		contrast: contrastColor, // ice white
 		contrast2: contrastColor2, // purple
 		text: textColor,
 		lightText: lighten(0.5, textColor),
@@ -88,11 +90,12 @@ createGlobalTheme(':root', theme, {
 	},
 	borders: {
 		primary: `1px solid ${darken(0.025, primaryColor)}`,
+		contrast: `1px solid ${contrastColor}`
 	},
 	dimensions: {
 		basePadding: '0.86558rem',
-		headerHeight,
-		headerHeightMobile,
+		headerHeight: headerHeight,
+		headerHeightMobile: headerHeightMobile,
 		headerHeightMobileTwice: `calc(${headerHeightMobile} + ${headerHeightMobile})`,
 		headerHeightMobileWithSubheader: `calc(${headerHeightMobile}  + ${subheaderHeight} + 1px)`,
 		headerHeightWithSubheader: `calc(${headerHeight} + ${subheaderHeight} + 1px)`,

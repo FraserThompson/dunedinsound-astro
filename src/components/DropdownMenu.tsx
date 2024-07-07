@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { FaBars } from 'react-icons/fa'
-import { dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownMenu, dropdownTop, dropdownWrapper } from './DropdownMenu.css'
+import { dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownWrapper } from './DropdownMenu.css'
 import { scrollTo } from 'src/util/helpers'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import type { MenuLink } from './Menu'
@@ -75,11 +75,16 @@ const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top }) => {
 			<ul className={`${dropdownMenu} ${open ? 'open' : ''} ${direction}`}>
 				{list.map((item) =>
 					<li className={`${dropdownLi} ${selectedItem == item.hash ? 'active' : ''}`}>
-						<a className="menu-title" onClick={(e: any) => item.hash && select(e, item.hash)} href={`${item.href ? item.href : item.hash ? ('#' + item.hash) : ''}`}>
+						<a className={`${dropdownLink} menu-title`} onClick={(e: any) => item.hash && select(e, item.hash)} href={`${item.href ? item.href : item.hash ? ('#' + item.hash) : ''}`}>
 							{item.title}
 						</a>
-						<span style={{ marginLeft: "auto" }}>
-							{item.additionalLinks?.map((link) => <a href={link.href}>{link.title} {link.image && <img src={link.image} />}</a>)}
+						<span style={{ marginLeft: "auto", display: "flex" }}>
+							{item.additionalLinks?.map((link) =>
+								<a style={{ paddingRight: "8px" }} href={link.href}>
+									{link.title}
+									{link.image && <img style={{ height: "25px" }} src={link.image} />}
+								</a>
+							)}
 						</span>
 					</li>
 				)}

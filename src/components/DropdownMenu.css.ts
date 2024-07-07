@@ -1,6 +1,6 @@
 import { createVar, fallbackVar, style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
-import { MenuLi, MenuWrapper } from './Menu.css'
+import { MenuLi, MenuLink, MenuWrapper } from './Menu.css'
 
 export const dropdownTop = createVar()
 
@@ -59,12 +59,17 @@ export const dropdownMenu = style([
 			},
 			'&.up': {
 				transform: `translateY(${theme.dimensions.headerHeight})`
-			},
-			'&.down': {
-				transform: `translateY(-${theme.dimensions.headerHeight})`
 			}
 		}
 	}
 ])
 
-export const dropdownLi = style([MenuLi['vertical'], {}])
+export const dropdownLi = style([
+	MenuLi['vertical'],
+	{
+		paddingLeft: theme.dimensions.basePadding,
+		paddingRight: theme.dimensions.basePadding
+	}
+])
+
+export const dropdownLink = style([MenuLink['vertical']])

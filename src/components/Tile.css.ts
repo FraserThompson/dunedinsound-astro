@@ -1,4 +1,4 @@
-import { createVar, globalStyle, style } from '@vanilla-extract/css'
+import { createVar, fallbackVar, globalStyle, style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 export const background = createVar()
@@ -8,17 +8,25 @@ export const heightHover = createVar()
 export const fontSize = createVar()
 
 export const tileWrapper = style({
-	background,
+	background: fallbackVar(background, 'radial-gradient(circle, black 0%, #161616 70%)'),
 	color: theme.color.text,
 	position: 'relative',
 	display: 'block',
-	height,
-	width,
+	height: fallbackVar(height, '40vh'),
+	width: fallbackVar(width, '100%'),
 	overflow: 'hidden',
+})
+
+export const tileInner = style({
+	height: '100%',
+	width: '100%',
+	position: 'relative',
 	transition: 'height 100ms ease-in-out',
 	selectors: {
 		'&:hover': {
-			height: heightHover
+			height: fallbackVar(height, '42vh'),
+			color: theme.color.lightText,
+			textDecoration: 'none'
 		}
 	}
 })
@@ -56,15 +64,20 @@ globalStyle(`${tileTextContent} > div`, {
 export const tileTitle = style({
 	marginLeft: '0',
 	marginBottom: '5px',
-	color: '#a7a7a7',
-	fontSize: fontSize,
-	textShadow: '1px 1px 1px black'
+	color: 'inherit',
+	textShadow: '1px 1px 1px black',
+	transition: 'color 100ms ease-in-out',
 })
 
 export const tileSubtitle = style({
 	margin: '0px',
 	marginTop: 'auto',
 	lineHeight: '0.9',
-	color: '#9b9b9b',
-	textShadow: '1px 1px 1px black'
+	textShadow: '1px 1px 1px black',
+	transition: 'color 100ms ease-in-out',
+})
+
+export const tileLabel = style({
+	textShadow: '1px 1px 1px black',
+	transition: 'color 100ms ease-in-out',
 })

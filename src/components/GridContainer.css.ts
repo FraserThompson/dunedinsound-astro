@@ -15,24 +15,16 @@ export const gridWrapper = style({
 })
 
 export const GridChild = style({
-	gridColumn: colXs,
+	gridColumn: `span ${colXs}`,
 	'@media': {
 		'screen and (--xs)': {
-			gridColumn: colSm
+			gridColumn: `span ${colSm}`
 		},
 		'screen and (--md)': {
-			gridColumn: colMd
+			gridColumn: `span ${colMd}`
 		},
 		'screen and (--lg)': {
-			gridColumn: colLg
-		}
-	},
-	selectors: {
-		'&:only-child': {
-			gridColumn: 'col-start 4 / span 6 !important'
-		},
-		'&:last-child:nth-child(odd)': {
-			gridColumn: 'col-start 4 / span 6 !important'
+			gridColumn: `span ${colLg}`
 		}
 	}
 })

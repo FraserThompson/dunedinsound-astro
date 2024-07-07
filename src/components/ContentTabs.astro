@@ -1,0 +1,99 @@
+---
+import { tabsWrapper, tabButton, tabContent } from './ContentTabs.css'
+/**
+ * Tabs which switch between content.
+ *
+ * - Array of tab titles and ids
+ * - Child elements for the tab content with data-tabid corresponding to the tab ID
+ */
+
+interface TabDefinition {
+	title: string
+	id: string
+}
+
+interface Props {
+	tabs: TabDefinition[]
+}
+
+const { tabs } = Astro.props
+---
+
+<content-tabs>
+	<div class=`tabs ${tabsWrapper}`>
+		{
+			tabs.map((tab, i) => (
+				<button class={`${tabButton} ${i === 0 ? 'active' : ''}`} data-tabid={tab.id}>
+					{tab.title}
+				</button>
+			))
+		}
+	</div>
+	<div class=`content ${tabContent}`>
+		<slot />
+	</div>
+</content-tabs>
+
+<script>
+	class ContentTabs extends HTMLElement {
+		_internals: any
+		tabs: HTMLElement | null
+		content: HTMLElement | null
+		#selectedTabId: string | undefined
+
+		constructor() {
+			super()
+			this._internals = this.attachInternals()
+			this.tabs = this.querySelector('.tabs')
+			this.content = this.querySelector('.content')
+		}
+
+		set selectedTabId(tab: string) {
+			this.#selectedTabId = tab
+		}
+
+		get selectedTabId(): string | undefined {
+			return this.#selectedTabId
+		}
+
+		private getTabContent(tabid: string) {
+			return this.content?.querySelector(`[data-tabid="${tabid}"]`)
+		}
+
+		private getTabButton(tabid: string) {
+			return this.tabs?.querySelector(`[data-tabid="${tabid}"]`)
+		}
+
+		public selectTab(tabid: string) {
+			const oldTabContent = this.selectedTabId ? this.getTabContent(this.selectedTabId) : undefined
+			const newTabContent = this.getTabContent(tabid)
+
+			const oldTabButton = this.selectedTabId ? this.getTabButton(this.selectedTabId) : undefined
+			const newTabButton = this.getTabButton(tabid)
+
+			newTabContent?.classList.add('active')
+			oldTabContent?.classList.remove('active')
+
+			newTabButton?.classList.add('active')
+			oldTabButton?.classList.remove('active')
+
+			this.selectedTabId = tabid
+		}
+
+		private tabClick = (e: MouseEvent) => {
+			if (!(e.target instanceof HTMLButtonElement)) return
+			const tabid = e.target?.dataset.tabid || ''
+			this.selectTab(tabid)
+		}
+
+		connectedCallback() {
+			const firstTab = this.tabs?.querySelector('button')?.dataset.tabid
+			firstTab && this.selectTab(firstTab)
+			this.tabs?.querySelectorAll('button').forEach((tab) => {
+				tab.addEventListener('click', this.tabClick)
+			})
+		}
+	}
+
+	customElements.define('content-tabs', ContentTabs)
+</script>

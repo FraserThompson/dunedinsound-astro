@@ -1,8 +1,13 @@
 ---
-import GridContainer from 'src/components/GridContainer'
+import FlexGridContainer from 'src/components/FlexGridContainer'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
-import { GridChild } from 'src/components/GridContainer.css'
+import Tile from 'src/components/Tile.astro'
+import DropdownMenu from 'src/components/DropdownMenu.tsx'
+import Divider from 'src/components/Divider.tsx'
+import ContentTabs from 'src/components/ContentTabs.astro'
+import Banner from 'src/components/Banner.astro'
+import { theme } from 'src/Theme.css'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
@@ -12,9 +17,13 @@ const { entry } = Astro.props
 
 const gigs = await loadAndFormatCollection('gig', ({ data }) => {
 	const matchByArtist = data.artists?.find((artist: any) => artist.id.id === entry.entry.id)
-	const matchByVenue = data.venue === entry.entry.id
+	const matchByVenue = data.venue.id === entry.entry.id
 	return matchByArtist || matchByVenue
 })
+
+// For some reason this groups them in reversed order, so we reverse the array later
+const gigsByYear = Object.groupBy(gigs, (gig) => gig.entry.data.date.getFullYear())
+const years = Object.keys(gigsByYear).reverse()
 
 const blogs = await loadAndFormatCollection('blog', ({ data }) => {
 	const matchByTag = data.tags?.find((tag: any) => tag === entry.entry.id)
@@ -22,19 +31,86 @@ const blogs = await loadAndFormatCollection('blog', ({ data }) => {
 })
 
 const vaultSessions = await loadAndFormatCollection('vaultsession', ({ data }) => {
-	const matchByArtist = data.artist === entry.entry.id
+	const matchByArtist = data.artist.id === entry.entry.id
 	return matchByArtist
 })
+
+const entryData = entry.entry.data
+const entryExtra = entry.extra
+
+let tabs = [{ title: `Gigs (${gigs.length})`, id: 'gigs' }]
+blogs.length > 0 && tabs.push({ title: `Articles (${blogs.length})`, id: 'blogs' })
+vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessions' })
 ---
 
 <BaseLayout>
-	<GridContainer>
-		{
-			gigs.map((gig) => (
-				<a class={GridChild} href={gig.extra.absolutePath}>
-					<h2>{gig.entry.id}</h2>
-				</a>
-			))
-		}
-	</GridContainer>
+	<Banner
+		title={entryData.title + ('origin' in entryData ? ` (${entryData.origin})` : '')}
+		backgroundImage={entryExtra.cover}
+	>
+		<div slot="subtitle"></div>
+	</Banner>
+	<ContentTabs tabs={tabs}>
+		<div data-tabid="gigs">
+			<DropdownMenu
+				direction="down"
+				top={theme.dimensions.headerHeightWithSubheader}
+				list={years.map((year) => ({ title: year, href: `#y${year}` }))}
+				client:load
+			/>
+			{
+				Object.entries(gigsByYear).reverse().map(([year, gigs]) => (
+					<div id={`y${year}`}>
+						<Divider
+							backgroundColor={theme.color.foreground}
+							href={`#y${year}`}
+							sticky={theme.dimensions.headerHeightWithSubheader}
+							smoothScroll={true}
+							client:load
+						>
+							{year} ({gigs?.length})
+						</Divider>
+						<FlexGridContainer>
+							{gigs?.map((gig) => (
+								<Tile
+									href={gig.extra.absolutePath}
+									title={gig.entry.data.title}
+									label={gig.entry.data.date.toLocaleDateString()}
+									responsiveImage={gig.extra.cover}
+								/>
+							))}
+						</FlexGridContainer>
+					</div>
+				))
+			}
+		</div>
+		<div data-tabid="blogs">
+			<FlexGridContainer>
+				{
+					blogs.map((blog) => (
+						<Tile
+							href={blog.extra.absolutePath}
+							title={blog.entry.data.title}
+							label={blog.entry.data.date.toLocaleDateString()}
+							responsiveImage={blog.extra.cover}
+						/>
+					))
+				}
+			</FlexGridContainer>
+		</div>
+		<div data-tabid="vaultsessions">
+			<FlexGridContainer>
+				{
+					vaultSessions.map((vaultsession) => (
+						<Tile
+							href={vaultsession.extra.absolutePath}
+							title={vaultsession.entry.data.title}
+							label={vaultsession.entry.data.date.toLocaleDateString()}
+							responsiveImage={vaultsession.extra.cover}
+						/>
+					))
+				}
+			</FlexGridContainer>
+		</div>
+	</ContentTabs>
 </BaseLayout>

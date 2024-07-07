@@ -45,26 +45,32 @@ export const calculateScrollHeaderOffset = (window: any, modifierDesktop = 0, mo
 }
 
 /**
- * Scrolls to any anchor on the page.
+ * Click listener for an anchor element.
+ * Scrolls to any anchor on the page. If no anchor supplied, scrolls to the clicked's href.
+ * 
  * @param e
  * @param anchor
  * @param headerOffset
  * @param behavior
  * @returns
  */
-export const scrollTo = (e: any, anchor: string, headerOffset?: number, behavior: ScrollBehavior = 'smooth') => {
-	e && e.preventDefault() && e.stopPropagation()
+export const scrollTo = (e: MouseEvent, anchor?: string, headerOffset?: number, behavior: ScrollBehavior = 'smooth') => {
+	if (!(e.target instanceof HTMLAnchorElement)) return
 
-	const element = typeof document !== 'undefined' && document.getElementById(anchor)
+	e.preventDefault()
+	e.stopPropagation()
+
+	const scrollTarget = anchor || e.target?.hash
+
+	const element = document.querySelector(scrollTarget)
+
 	if (!element) return
 
 	if (!headerOffset) {
 		element && element.scrollIntoView({ behavior: behavior })
 	} else {
-		if (typeof window !== `undefined`) {
-			const y = element.getBoundingClientRect().top + window.scrollY
-			window.scrollTo(0, y - headerOffset)
-		}
+		const y = element.getBoundingClientRect().top + window.scrollY
+		window.scrollTo(0, y - headerOffset)
 	}
 }
 

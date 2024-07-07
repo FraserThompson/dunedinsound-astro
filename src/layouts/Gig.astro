@@ -9,8 +9,7 @@ import PlayerContainer from 'src/components/PlayerContainer.astro'
 import Menu from 'src/components/Menu.tsx'
 import Divider from 'src/components/Divider'
 import YoutubeResponsive from 'src/components/YoutubeResponsive'
-import GridContainer from 'src/components/GridContainer'
-import { GridChild } from 'src/components/GridContainer.css'
+import FlexGridContainer from 'src/components/FlexGridContainer'
 import DropdownMenu from 'src/components/DropdownMenu'
 import { socialLinksToMenuItems } from 'src/util/helpers.ts'
 
@@ -19,36 +18,39 @@ interface Props {
 }
 
 const { entry } = Astro.props
+
+const entryData = entry.entry.data
+const entryExtra = entry.extra
 ---
 
 <BaseLayout>
-	<Banner id="top" title={entry.entry.data.title} backgroundImage={entry.extra.cover}>
+	<Banner id="top" title={entryData.title} backgroundImage={entryExtra.cover}>
 		<div slot="subtitle">
 			at{' '}
 			{
-				entry.extra.venue && (
-					<a href={`/venues/${entry.extra.venue.id}`} class="highlighted">
-						{entry.extra.venue.data.title}
+				entryExtra.venue && (
+					<a href={`/venues/${entryExtra.venue.id}`} class="highlighted">
+						{entryExtra.venue.data.title}
 					</a>
 				)
 			}
 			<p>
-				<small>{entry.entry.data.date.toLocaleDateString()}</small>
+				<small>{entryData.date.toLocaleDateString()}</small>
 			</p>
 		</div>
 		<BannerOverlay thisPost={entry} nextPost={entry.next} prevPost={entry.prev} slot="customContent" />
-		<Menu horizontal={true} links={entry.extra.artists.map((artist) => ({ title: artist.data.title, href: '' }))} />
+		<Menu horizontal={true} links={entryExtra.artists.map((artist) => ({ title: artist.data.title, href: '' }))} />
 		{
-			entry.extra.audio && (
+			entryExtra.audio && (
 				<PlayerContainer>
-					<Player artistAudio={Object.values(entry.extra.audio)} client:load />
+					<Player artistAudio={Object.values(entryExtra.audio)} client:load />
 				</PlayerContainer>
 			)
 		}
 	</Banner>
 	<div>
 		<DropdownMenu
-			list={entry.extra.artists.map((artist) => ({
+			list={entryExtra.artists.map((artist) => ({
 				hash: `${artist.id}`,
 				title: artist.data.title,
 				additionalLinks: [...socialLinksToMenuItems(artist.data.links), { href: `/artists/${artist.id}`, title: '>' }]
@@ -57,18 +59,18 @@ const { entry } = Astro.props
 			client:load
 		/>
 		{
-			entry.extra.artists.map((artist, i) => (
+			entryExtra.artists.map((artist, i) => (
 				<div class="artist" id={artist.id}>
 					<Divider href={`#${artist.id}`} color="black" backgroundColor="white" sticky={true}>
 						{artist.data.title}
 					</Divider>
-					<GridContainer xs={12} sm={6} md={6} lg={6} center={true}>
-						{entry.entry.data.artists[i].vid?.map((vid, i) => (
-							<YoutubeResponsive className={GridChild} videoId={vid.link} client:load />
+					<FlexGridContainer xs={12} sm={6} md={6} lg={6} maxWidth="1080px">
+						{entryData.artists[i].vid?.map((vid, i) => (
+							<YoutubeResponsive videoId={vid.link} client:load />
 						))}
-					</GridContainer>
-					{entry.extra.images[artist.id] && (
-						<ImageGallery title={entry.entry.data.title} images={entry.extra.images[artist.id]} client:load />
+					</FlexGridContainer>
+					{entryExtra.images[artist.id] && (
+						<ImageGallery title={entryData.title} images={entryExtra.images[artist.id]} client:load />
 					)}
 				</div>
 			))

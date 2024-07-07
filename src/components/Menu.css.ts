@@ -3,8 +3,8 @@ import { lighten } from 'polished'
 import { theme } from 'src/Theme.css'
 
 export const MenuWrapper = style({
-	paddingLeft: theme.dimensions.basePadding,
-	paddingRight: theme.dimensions.basePadding,
+	paddingLeft: 0,
+	paddingRight: 0,
 	textAlign: 'left',
 	backgroundColor: theme.color.primary,
 	backgroundClip: 'padding-box',

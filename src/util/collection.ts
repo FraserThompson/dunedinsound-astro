@@ -55,7 +55,9 @@ export interface ProcessedEntry<C extends CollectionKey> {
  */
 export async function loadAndFormatCollection<C extends CollectionKey>(name: C, filter?: (arg: any) => void) {
 	const entries = await getCollection(name, filter)
-	return await Promise.all(entries.map(async (entry, i) => await processEntry(entry, entries, i)))
+	const processedEntries = await Promise.all(entries.map(async (entry, i) => await processEntry(entry, entries, i)))
+	// If there's a date sort it newest to oldest
+	return processedEntries.sort((a,b) => b.entry.data?.date - a.entry.data?.date)
 }
 
 async function processEntry<C extends CollectionKey>(

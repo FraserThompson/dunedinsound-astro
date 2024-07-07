@@ -11,12 +11,17 @@ interface Props {
 	center?: boolean
 }
 
-const GridContainer: React.FC<Props> = ({ children, xs = 12, sm = 6, md = 4, lg = 4, center }) =>
+/**
+ * Children of the grid should use the gridChild class.
+ * @param param0 
+ * @returns 
+ */
+const GridContainer: React.FC<Props> = ({ children, xs = 12, sm = 6, md = 3, lg = 3, center }) =>
 	<div className={gridWrapper} style={assignInlineVars({
-		[colXs]: `span ${xs}`,
-		[colSm]: `span ${sm}`,
-		[colMd]: `span ${md}`,
-		[colLg]: `span ${lg}`,
+		[colXs]: `${xs}`,
+		[colSm]: `${sm}`,
+		[colMd]: `${md}`,
+		[colLg]: `${lg}`,
 		[centered]: center ? "center" : "initial"
 	})}>
 		{children}
