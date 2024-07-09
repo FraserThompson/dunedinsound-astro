@@ -55,9 +55,8 @@ export interface ProcessedEntry<C extends CollectionKey> {
  */
 export async function loadAndFormatCollection<C extends CollectionKey>(name: C, filter?: (arg: any) => void) {
 	const entries = await getCollection(name, filter)
-	const processedEntries = await Promise.all(entries.map(async (entry, i) => await processEntry(entry, entries, i)))
-	// If there's a date sort it newest to oldest
-	return processedEntries.sort((a,b) => b.entry.data?.date - a.entry.data?.date)
+	const sortedEntries = sortCollectionByDate(entries)
+	return await Promise.all(sortedEntries.map(async (entry, i) => await processEntry(entry, entries, i)))
 }
 
 async function processEntry<C extends CollectionKey>(
@@ -200,4 +199,13 @@ export function getEntryPath(title: string, collection: string): string {
 	const slug = getEntrySlug(title, collection)
 	const slugType = collection !== 'blog' ? collection + 's' : collection
 	return '/' + slugType + '/' + slug
+}
+
+/**
+ * Sorts a collection of entries by date (descending)
+ * @param entries 
+ * @returns 
+ */
+export function sortCollectionByDate<C extends CollectionKey>(entries: CollectionEntry<C>[]) {
+	return entries.sort((a,b) => b.data?.date - a.data?.date)
 }

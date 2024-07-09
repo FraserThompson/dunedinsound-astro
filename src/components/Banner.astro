@@ -6,7 +6,7 @@ import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
 	id?: string
-	title?: string
+	title: string
 	height?: string
 	backgroundImage?: ResponsiveImage
 	backgroundImageVertical?: ResponsiveImage
@@ -23,19 +23,17 @@ const { title, id, height, backgroundImage, backgroundImageVertical } = Astro.pr
 	})}
 >
 	{backgroundImage && <BackgroundImage responsiveImage={backgroundImage} verticalImage={backgroundImageVertical} />}
-	{
-		title && (
-			<div class={BannerContent}>
-				{title && (
-					<div class={BannerTitle}>
-						{title && <h1 class="big">{title}</h1>}
-						<h2>{<slot name="subtitle" />}</h2>
-					</div>
-				)}
-				<slot />
-			</div>
-		)
-	}
-	<div class={BackgroundContent}><slot name="background" /></div>
+	<div class={BannerContent}>
+		<div class={BannerTitle}>
+			<h1 style={{ marginBottom: '0px' }}>{title}</h1>
+		</div>
+		<div style={{ border: '2px inset', backgroundColor: "black" }}>
+			<slot name="subtitle" />
+			<slot />
+		</div>
+	</div>
+	<div class={BackgroundContent}>
+		<slot name="background" />
+	</div>
 	<slot name="customContent" />
 </div>

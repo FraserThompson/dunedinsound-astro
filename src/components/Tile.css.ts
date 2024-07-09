@@ -1,4 +1,4 @@
-import { createVar, fallbackVar, globalStyle, style } from '@vanilla-extract/css'
+import { createVar, fallbackVar, globalStyle, style, styleVariants } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 export const background = createVar()
@@ -7,14 +7,26 @@ export const width = createVar()
 export const heightHover = createVar()
 export const fontSize = createVar()
 
-export const tileWrapper = style({
+const tileWrapperBase = style({
 	background: fallbackVar(background, 'radial-gradient(circle, black 0%, #161616 70%)'),
 	color: theme.color.text,
 	position: 'relative',
 	display: 'block',
 	height: fallbackVar(height, '40vh'),
-	width: fallbackVar(width, '100%'),
-	overflow: 'hidden',
+	overflow: 'hidden'
+})
+
+/**
+ * This is because we want NO width property set at all when its used in a Shuffle board.
+ */
+export const tileWrapper = styleVariants({
+	fixedWidth: [
+		tileWrapperBase,
+		{
+			width: width
+		}
+	],
+	noWidth: [tileWrapperBase]
 })
 
 export const tileInner = style({
@@ -66,7 +78,7 @@ export const tileTitle = style({
 	marginBottom: '5px',
 	color: 'inherit',
 	textShadow: '1px 1px 1px black',
-	transition: 'color 100ms ease-in-out',
+	transition: 'color 100ms ease-in-out'
 })
 
 export const tileSubtitle = style({
@@ -74,10 +86,10 @@ export const tileSubtitle = style({
 	marginTop: 'auto',
 	lineHeight: '0.9',
 	textShadow: '1px 1px 1px black',
-	transition: 'color 100ms ease-in-out',
+	transition: 'color 100ms ease-in-out'
 })
 
 export const tileLabel = style({
 	textShadow: '1px 1px 1px black',
-	transition: 'color 100ms ease-in-out',
+	transition: 'color 100ms ease-in-out'
 })

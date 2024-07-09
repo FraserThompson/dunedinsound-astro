@@ -18,26 +18,30 @@ const { thisPost, nextPost, prevPost } = Astro.props
 	{
 		prevPost && (
 			<div class="nextPrevWrapper prev hideMobile">
-				<div class="icon">{'>'}</div>
-				<Tile
-					title={prevPost.data.title}
-					label={prevPost.data.date.toString()}
-					containerHeight="100%"
-					href={getEntryPath(prevPost.data.title, prevPost.collection)}
-				/>
+				<div class="icon prev">{'>'}</div>
+				<div class="tile">
+					<Tile
+						title={prevPost.data.title}
+						label={prevPost.data.date.toLocaleDateString()}
+						containerHeight="100%"
+						href={getEntryPath(prevPost.data.title, prevPost.collection)}
+					/>
+				</div>
 			</div>
 		)
 	}
 	{
 		nextPost ? (
 			<div class="nextPrevWrapper next hideMobile">
-				<div class="icon">{'<'}</div>
-				<Tile
-					title={nextPost.data.title}
-					label={nextPost.data.date.toString()}
-					containerHeight="100%"
-					href={getEntryPath(nextPost.data.title, nextPost.collection)}
-				/>
+				<div class="icon next">{'>'}</div>
+				<div class="tile">
+					<Tile
+						title={nextPost.data.title}
+						label={nextPost.data.date.toLocaleDateString()}
+						containerHeight="100%"
+						href={getEntryPath(nextPost.data.title, nextPost.collection)}
+					/>
+				</div>
 			</div>
 		) : (
 			<div class="label">LATEST GIG</div>
@@ -79,10 +83,11 @@ const { thisPost, nextPost, prevPost } = Astro.props
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			.prev {
+			font-size: 42px;
+			&.prev {
 				right: 10vw;
 			}
-			.next {
+			&.next {
 				left: 10vw;
 			}
 			height: 100%;
@@ -90,15 +95,16 @@ const { thisPost, nextPost, prevPost } = Astro.props
 		.tile {
 			position: absolute;
 			width: 100%;
+			height: 100%;
 			opacity: 0;
 			transition: opacity 300ms ease-in-out;
 		}
 		&:hover {
-			.prev {
+			&.prev {
 				right: 0px;
 				box-shadow: -6px 0px 12px rgba(0, 0, 0, 0.5);
 			}
-			.next {
+			&.next {
 				left: 0px;
 				box-shadow: 6px 0px 12px rgba(0, 0, 0, 0.5);
 			}

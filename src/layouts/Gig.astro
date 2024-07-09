@@ -25,7 +25,7 @@ const entryExtra = entry.extra
 
 <BaseLayout>
 	<Banner id="top" title={entryData.title} backgroundImage={entryExtra.cover}>
-		<div slot="subtitle">
+		<h2 slot="subtitle">
 			at{' '}
 			{
 				entryExtra.venue && (
@@ -37,9 +37,11 @@ const entryExtra = entry.extra
 			<p>
 				<small>{entryData.date.toLocaleDateString()}</small>
 			</p>
-		</div>
+		</h2>
 		<BannerOverlay thisPost={entry} nextPost={entry.next} prevPost={entry.prev} slot="customContent" />
-		<Menu horizontal={true} links={entryExtra.artists.map((artist) => ({ title: artist.data.title, href: '' }))} />
+		<div>
+			{entryExtra.artists.map((artist) => <a href={`#${artist.id}`}>{artist.data.title}</a>)}
+		</div>
 		{
 			entryExtra.audio && (
 				<PlayerContainer>

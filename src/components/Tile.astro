@@ -30,6 +30,7 @@ interface Props {
 	containerHeight?: string
 	containerWidth?: string
 	hoverHeight?: string
+	dataAttributes?: any
 }
 
 const {
@@ -44,17 +45,19 @@ const {
 	backgroundColor,
 	containerHeight,
 	containerWidth,
-	hoverHeight
+	hoverHeight,
+	dataAttributes
 } = Astro.props
 ---
 
 <div
-	class={`${tileWrapper} ${className}`}
+	class={`${tileWrapper[containerWidth ? 'fixedWidth' : 'noWidth']} ${className} tile`}
 	style={assignInlineVars({
 		[background]: backgroundColor,
 		[height]: containerHeight,
 		[width]: containerWidth
 	})}
+	{...dataAttributes}
 >
 	<div
 		class={tileInner}
@@ -68,22 +71,22 @@ const {
 				<div class={tileContent}>
 					{
 						title && (
-							<h2
+							<h3
 								class={tileTitle}
 								style={assignInlineVars({
-									[fontSize]: feature ? '2em' : '1.2em'
+									[fontSize]: feature ? '2em' : undefined
 								})}
 							>
 								{prefix && <span style={{ fontWeight: 200 }}>{prefix}</span>}
 								{title}
-							</h2>
+							</h3>
 						)
 					}
 					{
 						label && (
-							<h2 class={tileLabel}>
+							<h3 class={tileLabel}>
 								<strong>{label}</strong>
-							</h2>
+							</h3>
 						)
 					}
 					{subtitle && <h4 class={tileSubtitle} set:html={subtitle} />}

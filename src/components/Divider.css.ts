@@ -7,6 +7,7 @@ export const dividerBackgroundColor = createVar()
 export const stickyTop = createVar()
 
 const dividerBase = style({
+	height: theme.dimensions.subheaderHeight,
 	color: fallbackVar(dividerColor, 'black'),
 	lineHeight: '2',
 	verticalAlign: 'middle',

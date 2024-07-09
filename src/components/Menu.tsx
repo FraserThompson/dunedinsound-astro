@@ -20,7 +20,7 @@ interface Props {
 /**
  * A simple menu with links to hrefs.
  * 
- * Content can include an image or a title or both.
+ * Content can include an image or a title, if both are present it will prefer the image.
  * 
  * @param props 
  * @returns 
@@ -39,9 +39,10 @@ const Menu: React.FC<Props> = (props) => {
 				<a
 					className={`${MenuLink[menuType]} ${isActive(link.href) ? 'active' : ''}`}
 					href={link.href}
+					title={link.title}
 					id={link.id}
 				>
-					{' '}{link.title}{' '}
+					{!link.image && link.title}
 					{link.image && <img src={link.image} />}
 				</a>
 			</li>

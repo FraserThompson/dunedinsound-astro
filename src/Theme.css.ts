@@ -51,8 +51,8 @@ export const theme = createThemeContract({
 	}
 });
 
-const headerHeight = '3.22rem'
-const headerHeightMobile = '2.415rem'
+const headerHeight = '40px'
+const headerHeightMobile = '40px'
 const subheaderHeight = '30px'
 
 const foregroundColor = '#3f92f7'

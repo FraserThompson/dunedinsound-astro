@@ -80,16 +80,20 @@ export const scrollTo = (e: MouseEvent, anchor?: string, headerOffset?: number, 
  * @returns
  */
 export const socialLinksToMenuItems = (links?: z.infer<typeof webLinks>): MenuLink[] => {
+
+	if (!links) return []
+
 	const iconMap: { [key: string]: string } = {
 		bandcamp: bcIcon.src,
 		instagram: instaIcon.src,
 		facebook: fbIcon.src
 	}
 
-	return links
-		? Object.entries(links).map(([type, artistLink]) => ({
-				href: typeof artistLink !== 'string' ? artistLink.link : artistLink,
-				image: iconMap[type] || undefined
-		  }))
-		: []
+	const menuItems = Object.entries(links).map(([type, artistLink]) => ({
+		href: typeof artistLink !== 'string' ? artistLink.link : artistLink,
+		title: type.toUpperCase(),
+		image: iconMap[type] || undefined
+	}))
+
+	return menuItems
 }

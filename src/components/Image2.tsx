@@ -1,3 +1,4 @@
+import type React from "preact/compat"
 import type { ResponsiveImage } from 'src/util/image';
 import { ImageStyle, ImageWrapper } from './Image2.css';
 

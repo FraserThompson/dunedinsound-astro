@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import type React from "preact/compat"
+import { useState, useEffect, useCallback } from "preact/compat"
 import YouTube from 'react-youtube'
 import { FaRegPlayCircle } from 'react-icons/fa'
 import { placeholderLink, placeholderOverlay, placeholderOverlayTitle, watchOnYoutubeLink, youtubeWrapper } from './YoutubeResponsive.css'

@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react'
+import type React from "preact/compat"
+import { useRef, useState, useEffect, useCallback } from "preact/compat"
 import { FaBars } from 'react-icons/fa'
 import { dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownWrapper } from './DropdownMenu.css'
 import { scrollTo } from 'src/util/helpers'
@@ -26,6 +27,7 @@ interface Props {
 /**
  * A dropdown (or up) menu which can either hrefs, or hashes on the current page.
  * If hashes are present it will scroll to them smoothly, but won't update the URL.
+ * It also highlights menu items based on the URL hash.
  * 
  * @param param0 
  * @returns 
@@ -58,7 +60,7 @@ const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top }) => {
 	)
 
 	const select = useCallback((e: any, hash: string) => {
-		scrollTo(e, hash)
+		scrollTo(e, '#' + hash)
 		setOpen(false)
 	}, [])
 
@@ -74,14 +76,18 @@ const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top }) => {
 			</a>
 			<ul className={`${dropdownMenu} ${open ? 'open' : ''} ${direction}`}>
 				{list.map((item) =>
-					<li className={`${dropdownLi} ${selectedItem == item.hash ? 'active' : ''}`}>
-						<a className={`${dropdownLink} menu-title`} onClick={(e: any) => item.hash && select(e, item.hash)} href={`${item.href ? item.href : item.hash ? ('#' + item.hash) : ''}`}>
+					<li className={`${dropdownLi} ${(item.hash && selectedItem === item.hash) ? 'active' : ''}`}>
+						<a 
+							className={`${dropdownLink} menu-title`}
+							onClick={(e: any) => item.hash && select(e, item.hash)}
+							href={`${item.href ? item.href : item.hash ? ('#' + item.hash) : ''}`}
+						>
 							{item.title}
 						</a>
 						<span style={{ marginLeft: "auto", display: "flex" }}>
 							{item.additionalLinks?.map((link) =>
 								<a style={{ paddingRight: "8px" }} href={link.href}>
-									{link.title}
+									{!link.image && link.title}
 									{link.image && <img style={{ height: "25px" }} src={link.image} />}
 								</a>
 							)}

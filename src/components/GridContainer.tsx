@@ -9,6 +9,7 @@ interface Props {
 	md?: number,
 	lg?: number,
 	center?: boolean
+	id?: string
 }
 
 /**
@@ -16,8 +17,8 @@ interface Props {
  * @param param0 
  * @returns 
  */
-const GridContainer: React.FC<Props> = ({ children, xs = 12, sm = 6, md = 3, lg = 3, center }) =>
-	<div className={gridWrapper} style={assignInlineVars({
+const GridContainer: React.FC<Props> = ({ children, xs = 12, sm = 6, md = 3, lg = 3, center, id }) =>
+	<div className={gridWrapper} id={id} style={assignInlineVars({
 		[colXs]: `${xs}`,
 		[colSm]: `${sm}`,
 		[colMd]: `${md}`,

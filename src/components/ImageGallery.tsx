@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'preact/compat'
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'preact/compat'
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Download, Zoom } from "yet-another-react-lightbox/plugins";
@@ -22,7 +22,7 @@ interface Props {
  * 
  * We use URL navigation for lightbox navigation so the browser back button works.
  */
-export default ({ images, imageCaptions, gridSize, title, imageCaption, masonry }: Props) => {
+const ImageGallery: React.FC<Props> = ({ images, imageCaptions, gridSize, title, imageCaption, masonry }: Props) => {
 	const [lightboxOpen, setLightboxOpen] = useState(false)
 	const [selectedImage, setSelectedImage] = useState(0)
 	const [directLinked, setDirectLinked] = useState(false)
@@ -132,4 +132,6 @@ export default ({ images, imageCaptions, gridSize, title, imageCaption, masonry 
 		</>
 	)
 }
+
+export default ImageGallery
 

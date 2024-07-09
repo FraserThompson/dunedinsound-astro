@@ -29,7 +29,7 @@ export const dropdownButtonIcon = style({
 	height: theme.dimensions.subheaderHeight,
 	alignItems: 'center',
 	float: 'right',
-	color: theme.color.secondary
+	color: "black"
 })
 
 export const dropdownMenu = style([

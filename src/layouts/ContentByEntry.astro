@@ -7,6 +7,8 @@ import DropdownMenu from 'src/components/DropdownMenu.tsx'
 import Divider from 'src/components/Divider.tsx'
 import ContentTabs from 'src/components/ContentTabs.astro'
 import Banner from 'src/components/Banner.astro'
+import ActiveIndicator from 'src/components/ActiveIndicator.astro'
+import { socialLinksToMenuItems } from 'src/util/helpers'
 import { theme } from 'src/Theme.css'
 
 interface Props {
@@ -48,40 +50,68 @@ vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessio
 		title={entryData.title + ('origin' in entryData ? ` (${entryData.origin})` : '')}
 		backgroundImage={entryExtra.cover}
 	>
-		<div slot="subtitle"></div>
+		<div slot="subtitle">
+			{
+				entryData.died !== undefined && (
+					<ActiveIndicator
+						born={entryData.date}
+						died={entryData.died}
+						inactiveText={entry.entry.collection === 'artist' ? 'Inactive' : 'Defunct'}
+					/>
+				)
+			}
+		</div>
+		{
+			entryData.links &&
+				socialLinksToMenuItems(entryData.links).map((item) => (
+					<a href={item.href} style={{ padding: theme.dimensions.basePadding }}>
+						{item.title}
+					</a>
+				))
+		}
+		{entryData.description && <Fragment set:html={entryData.description} />}
+		{
+			entryData.links && 'audioculture' in entryData.links && (
+				<blockquote cite={entryData.links['audioculture']?.link}>
+					"{entryData.links['audioculture']?.snippet}" - <span>Audioculture</span>
+				</blockquote>
+			)
+		}
 	</Banner>
 	<ContentTabs tabs={tabs}>
 		<div data-tabid="gigs">
 			<DropdownMenu
 				direction="down"
 				top={theme.dimensions.headerHeightWithSubheader}
-				list={years.map((year) => ({ title: year, href: `#y${year}` }))}
+				list={years.map((year) => ({ title: year, hash: `y${year}` }))}
 				client:load
 			/>
 			{
-				Object.entries(gigsByYear).reverse().map(([year, gigs]) => (
-					<div id={`y${year}`}>
-						<Divider
-							backgroundColor={theme.color.foreground}
-							href={`#y${year}`}
-							sticky={theme.dimensions.headerHeightWithSubheader}
-							smoothScroll={true}
-							client:load
-						>
-							{year} ({gigs?.length})
-						</Divider>
-						<FlexGridContainer>
-							{gigs?.map((gig) => (
-								<Tile
-									href={gig.extra.absolutePath}
-									title={gig.entry.data.title}
-									label={gig.entry.data.date.toLocaleDateString()}
-									responsiveImage={gig.extra.cover}
-								/>
-							))}
-						</FlexGridContainer>
-					</div>
-				))
+				Object.entries(gigsByYear)
+					.reverse()
+					.map(([year, gigs]) => (
+						<div id={`y${year}`}>
+							<Divider
+								backgroundColor={theme.color.foreground}
+								href={`#y${year}`}
+								sticky={theme.dimensions.headerHeightWithSubheader}
+								smoothScroll={true}
+								client:load
+							>
+								{year} ({gigs?.length})
+							</Divider>
+							<FlexGridContainer>
+								{gigs?.map((gig) => (
+									<Tile
+										href={gig.extra.absolutePath}
+										title={gig.entry.data.title}
+										label={gig.entry.data.date.toLocaleDateString()}
+										responsiveImage={gig.extra.cover}
+									/>
+								))}
+							</FlexGridContainer>
+						</div>
+					))
 			}
 		</div>
 		<div data-tabid="blogs">

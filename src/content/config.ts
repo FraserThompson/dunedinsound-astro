@@ -58,6 +58,7 @@ const Venue = defineCollection({
     description: z.string().optional(),
     links: webLinks.optional(),
     died: z.date().optional(),
+		date: z.date().optional(),
 		hidden: z.boolean().optional()
   }),
 });
@@ -68,6 +69,7 @@ const Artist = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
+		date: z.date().optional(),
     links: webLinks.optional(),
     origin: z.string().optional(),
     died: z.date().optional(),

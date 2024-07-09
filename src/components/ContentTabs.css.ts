@@ -5,7 +5,6 @@ import { theme } from 'src/Theme.css'
 export const tabsWrapper = style([
 	dividerWrapper['sticky'],
 	{
-		height: theme.dimensions.headerHeightMobile,
 		padding: 0,
 		zIndex: 7
 	}

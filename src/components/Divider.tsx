@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from "preact/compat"
 import { dividerWrapper, dividerColor, dividerBackgroundColor, stickyTop } from './Divider.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import { scrollTo } from 'src/util/helpers'

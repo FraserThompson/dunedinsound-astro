@@ -50,28 +50,28 @@ globalStyle('h1', {
 })
 
 globalStyle('h2', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 1)`,
+	fontSize: `calc(${theme.font.baseLineHeight} * 0.8)`,
 	lineHeight: '1.1'
 })
 
 globalStyle('h3', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 1)`,
+	fontSize: `calc(${theme.font.baseLineHeight} * 0.8)`,
 	lineHeight: '1.1'
 })
 
 globalStyle('h4', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 1)`,
+	fontSize: `calc(${theme.font.baseLineHeight} * 0.8)`,
 	fontWeight: '200',
 	lineHeight: '1.1'
 })
 
 globalStyle('h5', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 1)`,
+	fontSize: `calc(${theme.font.baseLineHeight} * 0.8)`,
 	lineHeight: '1.1'
 })
 
 globalStyle('h6', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 1)`,
+	fontSize: `calc(${theme.font.baseLineHeight} * 0.8)`,
 	lineHeight: '1.1'
 })
 
