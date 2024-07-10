@@ -1,18 +1,23 @@
 ---
 import FlexGridContainer from 'src/components/FlexGridContainer'
+import type { ProcessedEntry } from 'src/util/collection.ts'
 import BaseLayout from '../layouts/BaseLayout.astro'
-import { loadAndFormatCollection } from 'src/util/collection'
+import { loadAndFormatCollection, processEntry } from 'src/util/collection'
+import { ResponsiveImage } from 'src/util/image'
 import Tile from 'src/components/Tile.astro'
+import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import { getCollection } from 'astro:content'
 
 const artists = await loadAndFormatCollection('artist')
 
 export interface ArtistMetadata {
-	totalCount: Number
+	totalCount: number
+	cover?: ResponsiveImage
 	lastGig?: Date
 }
 
 let artistMetadata: { [key: string]: ArtistMetadata } = {}
+let origins: { [key: string]: number } = {}
 
 for (const artist of artists) {
 	const artistId = artist.entry.id
@@ -21,18 +26,30 @@ for (const artist of artists) {
 		gig.data.artists.find((gigArtist) => gigArtist.id.id === artistId)
 	)
 
+	// Process the latest gig to get its images
+	const loadedGig: ProcessedEntry<'gig'> | undefined = artistGigs.length ? await processEntry(artistGigs[0]) : undefined
+	const artistImages = loadedGig?.extra.images[artistId] || undefined
+
 	artistMetadata[artistId] = {
 		totalCount: artistGigs.length || 0,
+		cover: artistImages ? artistImages[0] : undefined,
 		lastGig: artistGigs[artistGigs.length - 1]?.data.date
 	}
+
+	const origin = artist.entry.data.origin || 'Dunedin'
+	if (!origins[origin]) origins[origin] = 0
+	origins[origin]++
 }
 ---
 
 <BaseLayout>
-	<shuffle-filters>
-		<input class="filter" type="text" data-filter="title=value" />
-		<span>Sort by: </span>
+	<ShuffleFilters>
 		<div>
+			<span>Search: </span>
+			<input class="filter" type="text" data-filter="title=value" placeholder="Search artists" />
+		</div>
+		<div>
+			<span>Sort by: </span>
 			<button class="sort" data-sortby="title"> Title </button>
 			<button class="sort" data-sortby="lastgig" data-reversesort="true"> Last Played </button>
 			<button class="sort" data-sortby="numbergigs" data-reversesort="true"> Most Gigs </button>
@@ -43,16 +60,26 @@ for (const artist of artists) {
 				Hide inactive
 			</label>
 		</div>
-		<select class="filter" name="countries" data-filter="origin=value">
-			<option value={'all'}>All origins ({artists.length})</option>
-		</select>
-	</shuffle-filters>
+		<div>
+			<select class="filter" name="countries" data-filter="origin=value">
+				<option value={'all'}>All origins ({artists.length})</option>
+				{
+					origins &&
+						Object.keys(origins).map((country) => (
+							<option value={country}>
+								{country} ({origins[country]})
+							</option>
+						))
+				}
+			</select>
+		</div>
+	</ShuffleFilters>
 	<FlexGridContainer xs={6} sm={4} md={3} lg={2} id="artist-grid" fixedWidth={true}>
 		{
 			artists.map((artist) => (
 				<Tile
 					href={artist.extra.absolutePath}
-					responsiveImage={artist.extra.cover}
+					responsiveImage={artistMetadata[artist.entry.id]?.cover}
 					title={artist.entry.data.title + (artist.entry.data.origin ? ` (${artist.entry.data.origin})` : '')}
 					subtitle={`${artistMetadata[artist.entry.id]?.totalCount} gigs`}
 					containerHeight={'15vh'}
@@ -64,159 +91,8 @@ for (const artist of artists) {
 						'data-active': artist.entry.data.died === undefined ? 'true' : 'false',
 						'data-origin': artist.entry.data.origin || 'Dunedin'
 					}}
-				>
-					<h3>{artist.entry.id}</h3>
-				</Tile>
+				/>
 			))
 		}
 	</FlexGridContainer>
 </BaseLayout>
-
-<script>
-	import Shuffle from 'shufflejs'
-
-	/**
-	 * Encapsulates the filter and sort elements for Shuffle.js
-	 * 
-	 * Sort elements: 
-	 *  - class: sort
-	 *  - data-sortby: name of the data attribute it should sort by.
-	 *  - data-reversesort (optional): sort in reverse order
-	 * Filter elements:
-	 *  - class: filter
-	 *  - data-filter: the filter to filter by in the x=y format. Eg title=banana.
-	 *    If y is literally "value", it will instead check against the elements value.
-	 *  - text filters do a partial text search
-	 */
-	class ShuffleFilters extends HTMLElement {
-		_internals: any
-		shuffleBoard: HTMLElement | null
-		sortButtons: NodeListOf<HTMLElement> | null
-		filterElements: NodeListOf<HTMLElement> | null
-		shuffleInstance: Shuffle | null
-
-		activeSort: string | null
-		activeFilters: Set<string> | undefined
-
-		constructor() {
-			super()
-
-			this._internals = this.attachInternals()
-
-			this.sortButtons = this.querySelectorAll('.sort')
-			this.filterElements = this.querySelectorAll('.filter')
-
-			this.shuffleBoard = document.querySelector('#artist-grid')
-
-			this.activeSort = this.sortButtons[0]?.getAttribute('data-sortby')
-			this.activeFilters = new Set()
-
-			this.shuffleInstance =
-				this.shuffleBoard &&
-				new Shuffle(this.shuffleBoard, {
-					itemSelector: '.tile',
-					delimiter: ','
-				})
-		}
-
-		/**
-		 * Filters the shuffleboard based on currently active filters.
-		 * @param el 
-		 * @param e 
-		 */
-		private shuffleFilter(el: HTMLElement, e: any) {
-			// No active filters? Show everything
-			if (this.activeFilters?.size === 0) return true
-
-			// Test all active filters and if any are true, return true
-			const filterResult: boolean[] = []
-
-			this.activeFilters?.forEach((filter) => {
-				const [attr, val] = filter.split('=')
-
-				// Value check
-				if (val && val == 'value') {
-					if (e.target.getAttribute('type') === 'text') {
-						filterResult.push(!!el.getAttribute(`data-${attr}`)?.includes(e.target.value?.toLowerCase()))
-					} else {
-						filterResult.push(el.getAttribute(`data-${attr}`) == e.target.value?.toLowerCase())
-					}
-				}
-				// Static conditional
-				else if (attr && val) {
-					filterResult.push(el.getAttribute(`data-${attr}`) == val)
-				}
-			})
-
-			return filterResult.every((result) => result === true)
-		}
-
-		/**
-		 * Handler for the sort buttons being clicked.
-		 */
-		public sortButtonHandler(e: MouseEvent) {
-			if (!(e.target instanceof HTMLButtonElement)) return
-
-			const sortby = e.target.getAttribute('data-sortby')
-			const reversesort = e.target.getAttribute('data-reversesort')
-
-			e.target.classList.add('active')
-			this.querySelector(`button[data-sortby="${this.activeSort}"]`)?.classList.remove('active')
-
-			this.activeSort = sortby
-
-			this.shuffleInstance?.sort({
-				reverse: reversesort ? true : false,
-				by: (el) => el.getAttribute(`data-${sortby}`)?.toLowerCase()
-			})
-		}
-
-		/**
-		 * Handler for the filter elements changing.
-		 */
-		public filterElementHandler(e: any) {
-			const filter = e.target.getAttribute(`data-filter`)
-
-			let isActive = false;
-
-			const type = e.target.getAttribute('type')
-
-			// Text filters are active if there's text.
-			// Otherwise, it's a toggle.
-			switch (type) {
-				case "text":
-					isActive = e.target.value.length !== 0
-					break;
-				default:
-					isActive = !this.activeFilters?.has(filter)
-			}
-
-			if (isActive) {
-				this.activeFilters?.add(filter)
-			} else {
-				this.activeFilters?.delete(filter)
-			}
-
-			this.shuffleInstance?.filter((el) => this.shuffleFilter(el, e))
-		}
-
-		connectedCallback() {
-			// Sort button listeners
-			this.sortButtons?.forEach((button) => {
-				button.addEventListener('mousedown', (e: MouseEvent) => this.sortButtonHandler(e))
-			})
-
-			// Filter element listeners
-			this.filterElements?.forEach((el) => {
-				const event = el.getAttribute('type') === 'text' ? 'keyup' : 'change'
-				el.addEventListener(event, (e: any) => this.filterElementHandler(e))
-			})
-		}
-
-		disconnectedCallback() {
-			this.shuffleInstance?.destroy()
-		}
-	}
-
-	customElements.define('shuffle-filters', ShuffleFilters)
-</script>

@@ -59,10 +59,10 @@ export async function loadAndFormatCollection<C extends CollectionKey>(name: C, 
 	return await Promise.all(sortedEntries.map(async (entry, i) => await processEntry(entry, entries, i)))
 }
 
-async function processEntry<C extends CollectionKey>(
+export async function processEntry<C extends CollectionKey>(
 	entry: CollectionEntry<C>,
-	entries: any,
-	i: number
+	entries?: any,
+	i?: number
 ): Promise<ProcessedEntry<C>> {
 	const title = entry.data.title
 
@@ -75,8 +75,8 @@ async function processEntry<C extends CollectionKey>(
 		absolutePath: getEntryPath(postSlug, entry.collection),
 		cover: await getCover(entry)
 	}
-	const prev = i + 1 === entries.length ? undefined : entries[i + 1]
-	const next = i === 0 ? undefined : entries[i - 1]
+	const prev = !i || i + 1 === entries.length ? undefined : entries[i + 1]
+	const next = !i || i === 0 ? undefined : entries[i - 1]
 
 	switch (entry.collection) {
 		case 'gig':
@@ -203,9 +203,9 @@ export function getEntryPath(title: string, collection: string): string {
 
 /**
  * Sorts a collection of entries by date (descending)
- * @param entries 
- * @returns 
+ * @param entries
+ * @returns
  */
 export function sortCollectionByDate<C extends CollectionKey>(entries: CollectionEntry<C>[]) {
-	return entries.sort((a,b) => b.data?.date - a.data?.date)
+	return entries.sort((a, b) => b.data?.date - a.data?.date)
 }

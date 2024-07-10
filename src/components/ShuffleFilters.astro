@@ -1,0 +1,164 @@
+---
+import { shuffleFilter } from './ShuffleFilters.css'
+---
+
+<shuffle-filters class={shuffleFilter}>
+	<slot />
+</shuffle-filters>
+
+<script>
+	import Shuffle from 'shufflejs'
+
+	/**
+	 * Encapsulates the filter and sort elements for Shuffle.js
+	 *
+	 * To use this component, create filter child elements inside it.
+	 *
+	 * Sort elements need:
+	 *  - class: sort
+	 *  - data-sortby: name of the data attribute it should sort by.
+	 *  - data-reversesort (optional): sort in reverse order
+	 *
+	 * Filter elements need:
+	 *  - class: filter
+	 *  - data-filter: the filter to filter by in the x=y format. Eg title=banana.
+	 *    If y is literally "value", it will instead check againstS the elements value.
+	 *  - text filters do a partial text search
+	 */
+	class ShuffleFilters extends HTMLElement {
+		_internals: any
+		shuffleBoard: HTMLElement | null
+		sortButtons: NodeListOf<HTMLElement> | null
+		filterElements: NodeListOf<HTMLInputElement> | null
+		shuffleInstance: Shuffle | null
+
+		activeSort: string | null
+		activeFilters: Set<HTMLInputElement> | null
+
+		constructor() {
+			super()
+
+			this._internals = this.attachInternals()
+
+			this.sortButtons = this.querySelectorAll('.sort')
+			this.filterElements = this.querySelectorAll('.filter')
+
+			this.shuffleBoard = document.querySelector('#artist-grid')
+
+			this.activeSort = this.sortButtons[0]?.getAttribute('data-sortby')
+			this.activeFilters = new Set()
+
+			this.shuffleInstance =
+				this.shuffleBoard &&
+				new Shuffle(this.shuffleBoard, {
+					itemSelector: '.tile',
+					delimiter: ','
+				})
+		}
+
+		/**
+		 * Filters the shuffleboard based on currently active filters.
+		 * @param el
+		 */
+		private shuffleFilter(el: HTMLElement) {
+			// No active filters? Show everything
+			if (this.activeFilters?.size === 0) return true
+
+			const filterResult: boolean[] = []
+
+			this.activeFilters?.forEach((filter) => {
+				const filterBy = filter.getAttribute('data-filter')
+				if (!filterBy) return
+
+				const [attr, val] = filterBy.split('=')
+
+				// Value check
+				if (val && val == 'value') {
+					if (filter.getAttribute('type') === 'text') {
+						const filterValue = filter.value?.toLowerCase()
+						filterResult.push(!!el.getAttribute(`data-${attr}`)?.includes(filterValue || ''))
+					} else {
+						const filterValue = filter.value
+						filterResult.push(el.getAttribute(`data-${attr}`) == filterValue)
+					}
+				}
+				// Static conditional
+				else if (attr && val) {
+					filterResult.push(el.getAttribute(`data-${attr}`) == val)
+				}
+			})
+
+			// Test all active filters and if any are true, return true
+			return filterResult.every((result) => result === true)
+		}
+
+		/**
+		 * Handler for the sort buttons being clicked.
+		 */
+		public sortButtonHandler(e: MouseEvent) {
+			if (!(e.target instanceof HTMLButtonElement)) return
+
+			const sortby = e.target.getAttribute('data-sortby')
+			const reversesort = e.target.getAttribute('data-reversesort')
+
+			e.target.classList.add('active')
+			this.querySelector(`button[data-sortby="${this.activeSort}"]`)?.classList.remove('active')
+
+			this.activeSort = sortby
+
+			this.shuffleInstance?.sort({
+				reverse: reversesort ? true : false,
+				by: (el) => el.getAttribute(`data-${sortby}`)?.toLowerCase()
+			})
+		}
+
+		/**
+		 * Handler for the filter elements changing.
+		 */
+		public filterElementHandler(e: any) {
+			const filter = e.target
+			const type = e.target.type
+
+			let isActive = false
+
+			// Whether the filter is active varies on the type
+			switch (type) {
+				case 'text':
+					isActive = filter.value.length !== 0
+					break
+				case 'select-one':
+					isActive = filter.value !== 'all'
+					break
+				default:
+					isActive = !this.activeFilters?.has(filter)
+			}
+
+			if (isActive) {
+				this.activeFilters?.add(filter)
+			} else {
+				this.activeFilters?.delete(filter)
+			}
+
+			this.shuffleInstance?.filter((el) => this.shuffleFilter(el))
+		}
+
+		connectedCallback() {
+			// Sort button listeners
+			this.sortButtons?.forEach((button) => {
+				button.addEventListener('mousedown', (e: MouseEvent) => this.sortButtonHandler(e))
+			})
+
+			// Filter element listeners
+			this.filterElements?.forEach((el) => {
+				const event = el.getAttribute('type') === 'text' ? 'keyup' : 'change'
+				el.addEventListener(event, (e: any) => this.filterElementHandler(e))
+			})
+		}
+
+		disconnectedCallback() {
+			this.shuffleInstance?.destroy()
+		}
+	}
+
+	customElements.define('shuffle-filters', ShuffleFilters)
+</script>

@@ -55,20 +55,22 @@ const headerHeight = '40px'
 const headerHeightMobile = '40px'
 const subheaderHeight = '30px'
 
-const foregroundColor = '#3f92f7'
-const primaryColor = '#0F0E0E'
-const contrastColor = '#FAF9F9'
-const contrastColor2 = '#96ff7d'
+const backgroundColor = '#08090C' // dark navy
+const primaryColor = '#0F0E0E' // smoky black
+const foregroundColor = '#3f92f7' // lightblue
+const secondaryColor = '#367e80'  // teal
+const contrastColor = '#FAF9F9'  // ice white
+const contrastColor2 = '#96ff7d' // purple
 const textColor = '#ccc'
 
 createGlobalTheme(':root', theme, {
   color: {
-		background: '#08090C', // dark navy
-		primary: primaryColor, // smoky black
-		foreground: '#3f92f7', // lightblue
-		secondary: '#367e80', // teal
-		contrast: contrastColor, // ice white
-		contrast2: contrastColor2, // purple
+		background: backgroundColor, 
+		primary: primaryColor, 
+		foreground: foregroundColor,
+		secondary: secondaryColor,
+		contrast: contrastColor,
+		contrast2: contrastColor2,
 		text: textColor,
 		lightText: lighten(0.5, textColor),
 		darkText: invert(textColor),

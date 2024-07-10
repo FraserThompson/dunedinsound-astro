@@ -33,7 +33,7 @@ const { thisPost, nextPost, prevPost } = Astro.props
 	{
 		nextPost ? (
 			<div class="nextPrevWrapper next hideMobile">
-				<div class="icon next">{'>'}</div>
+				<div class="icon next">{'<'}</div>
 				<div class="tile">
 					<Tile
 						title={nextPost.data.title}

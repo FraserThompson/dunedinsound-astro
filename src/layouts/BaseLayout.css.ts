@@ -45,17 +45,17 @@ globalStyle('h1, h2', {
 })
 
 globalStyle('h1', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 1.1)`,
+	fontSize: `calc(${theme.font.baseSize} * 2)`,
 	lineHeight: '1.1'
 })
 
 globalStyle('h2', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 0.8)`,
+	fontSize: `calc(${theme.font.baseSize} * 1.6)`,
 	lineHeight: '1.1'
 })
 
 globalStyle('h3', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 0.8)`,
+	fontSize: `calc(${theme.font.baseSize} * 1.2)`,
 	lineHeight: '1.1'
 })
 
@@ -66,7 +66,7 @@ globalStyle('h4', {
 })
 
 globalStyle('h5', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 0.8)`,
+	fontSize: `calc(${theme.font.baseLineHeight} * 1)`,
 	lineHeight: '1.1'
 })
 
@@ -75,7 +75,7 @@ globalStyle('h6', {
 	lineHeight: '1.1'
 })
 
-globalStyle('button, .button', {
+globalStyle('button', {
 	display: 'inline-block',
 	marginBottom: '0',
 	textAlign: 'center',
@@ -88,11 +88,16 @@ globalStyle('button, .button', {
 	paddingRight: theme.dimensions.basePadding,
 	paddingLeft: theme.dimensions.basePadding,
 	color: theme.color.text,
-	backgroundColor: 'transparent'
+	backgroundColor: theme.color.secondary
+})
+
+globalStyle('button:hover', {
+	color: 'black',
+	backgroundColor: theme.color.lightContrast2
 })
 
 globalStyle('a', {
-	color: theme.color.contrast2,
+	color: theme.color.secondary,
 	transition: 'color 0.1s ease-in-out',
 	textDecoration: 'none',
 	overflow: 'hidden',
