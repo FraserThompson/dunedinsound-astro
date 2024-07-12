@@ -1,8 +1,10 @@
 ---
 import { shuffleFilter } from './ShuffleFilters.css'
+
+const props = Astro.props
 ---
 
-<shuffle-filters class={shuffleFilter}>
+<shuffle-filters {...props} class={shuffleFilter}>
 	<slot />
 </shuffle-filters>
 
@@ -13,26 +15,30 @@ import { shuffleFilter } from './ShuffleFilters.css'
 	 * Encapsulates the filter and sort elements for Shuffle.js
 	 *
 	 * To use this component, create filter child elements inside it.
+	 * 
+	 * This component:
+	 *  - data-boardselector: selector for the shuffle board (default: #shuffle)
+	 *  - data itemselector: selector for the board items (default: .tile)
 	 *
 	 * Sort elements need:
-	 *  - class: sort
 	 *  - data-sortby: name of the data attribute it should sort by.
 	 *  - data-reversesort (optional): sort in reverse order
 	 *
 	 * Filter elements need:
-	 *  - class: filter
 	 *  - data-filter: the filter to filter by in the x=y format. Eg title=banana.
 	 *    If y is literally "value", it will instead check againstS the elements value.
 	 *  - text filters do a partial text search
 	 */
 	class ShuffleFilters extends HTMLElement {
 		_internals: any
+
 		shuffleBoard: HTMLElement | null
-		sortButtons: NodeListOf<HTMLElement> | null
-		filterElements: NodeListOf<HTMLInputElement> | null
 		shuffleInstance: Shuffle | null
 
-		activeSort: string | null
+		sortButtons: NodeListOf<HTMLElement> | null
+		filterElements: NodeListOf<HTMLInputElement> | null
+
+		activeSort: HTMLElement | null
 		activeFilters: Set<HTMLInputElement> | null
 
 		constructor() {
@@ -40,18 +46,19 @@ import { shuffleFilter } from './ShuffleFilters.css'
 
 			this._internals = this.attachInternals()
 
-			this.sortButtons = this.querySelectorAll('.sort')
-			this.filterElements = this.querySelectorAll('.filter')
+			this.sortButtons = this.querySelectorAll('[data-sortby]')
+			this.filterElements = this.querySelectorAll('[data-filter]')
 
-			this.shuffleBoard = document.querySelector('#artist-grid')
+			this.shuffleBoard = document.querySelector(this.getAttribute('data-boardselector') || '#shuffle')
 
-			this.activeSort = this.sortButtons[0]?.getAttribute('data-sortby')
+			this.activeSort = this.sortButtons[0]
+			this.activeSort?.classList.add('active')
 			this.activeFilters = new Set()
 
 			this.shuffleInstance =
 				this.shuffleBoard &&
 				new Shuffle(this.shuffleBoard, {
-					itemSelector: '.tile',
+					itemSelector: this.getAttribute('data-itemselector') || '.tile',
 					delimiter: ','
 				})
 		}
@@ -72,11 +79,11 @@ import { shuffleFilter } from './ShuffleFilters.css'
 
 				const [attr, val] = filterBy.split('=')
 
-				// Value check
+				// Check the value of the filter element
 				if (val && val == 'value') {
 					if (filter.getAttribute('type') === 'text') {
 						const filterValue = filter.value?.toLowerCase()
-						filterResult.push(!!el.getAttribute(`data-${attr}`)?.includes(filterValue || ''))
+						filterResult.push(!!el.getAttribute(`data-${attr}`)?.toLowerCase().includes(filterValue || ''))
 					} else {
 						const filterValue = filter.value
 						filterResult.push(el.getAttribute(`data-${attr}`) == filterValue)
@@ -98,13 +105,13 @@ import { shuffleFilter } from './ShuffleFilters.css'
 		public sortButtonHandler(e: MouseEvent) {
 			if (!(e.target instanceof HTMLButtonElement)) return
 
-			const sortby = e.target.getAttribute('data-sortby')
-			const reversesort = e.target.getAttribute('data-reversesort')
+			const activeSort = e.target
+			const reversesort = activeSort.getAttribute('data-reversesort')
+			const sortby = activeSort.getAttribute('data-sortby')
 
-			e.target.classList.add('active')
-			this.querySelector(`button[data-sortby="${this.activeSort}"]`)?.classList.remove('active')
-
-			this.activeSort = sortby
+			activeSort.classList.add('active')
+			this.activeSort?.classList.remove('active')
+			this.activeSort = activeSort
 
 			this.shuffleInstance?.sort({
 				reverse: reversesort ? true : false,
@@ -124,12 +131,15 @@ import { shuffleFilter } from './ShuffleFilters.css'
 			// Whether the filter is active varies on the type
 			switch (type) {
 				case 'text':
+					// Text filters are active when there is text
 					isActive = filter.value.length !== 0
 					break
 				case 'select-one':
+					// Select filters are active when the value isnt default (all)
 					isActive = filter.value !== 'all'
 					break
 				default:
+					// Otherwise it acts as a toggle
 					isActive = !this.activeFilters?.has(filter)
 			}
 

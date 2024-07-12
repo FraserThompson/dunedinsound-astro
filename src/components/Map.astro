@@ -1,0 +1,109 @@
+---
+import 'mapbox-gl/dist/mapbox-gl.css'
+import SidebarNav from 'src/components/SidebarNav.astro'
+import { theme } from 'src/Theme.css'
+
+const props = Astro.props
+---
+
+<map-wrapper {...props} style={{ position: 'relative', overflow: 'hidden' }}>
+	<SidebarNav>
+		<slot />
+	</SidebarNav>
+	<div id="map" style={{ height: `calc(100vh - ${theme.dimensions.headerHeightMobileTwice})` }}></div>
+</map-wrapper>
+
+<script>
+	import mapboxgl from 'mapbox-gl'
+
+	/**
+	 * Encapsulates a mapbox map.
+	 * 
+	 * data-markers: A stringified array of [lat, lng]'s 
+	 * data-popups: An array of HTML so show in popups on the markers.
+	 * 
+	 * For a sidebar with menu links that select markers on the map, add a menu inside this el.
+	 * Each menu item should have 
+	 *  data-markerindex: The index of the corresponding map marker.
+	 */
+	class MapWrapper extends HTMLElement {
+		_internals: any
+
+		map: mapboxgl.Map
+		markers: mapboxgl.Marker[]
+		sidebarLinks: NodeListOf<HTMLAnchorElement>
+		selectedMarker: mapboxgl.Marker | undefined
+		selectedSidebar: HTMLElement | undefined
+
+		constructor() {
+			super()
+			this._internals = this.attachInternals()
+
+			mapboxgl.accessToken =
+				'pk.eyJ1IjoiZnJhc2VydGhvbXBzb24iLCJhIjoiY2llcnF2ZXlhMDF0cncwa21yY2tyZjB5aCJ9.iVxJbdbZiWVfHItWtZfKPQ'
+
+			this.map = new mapboxgl.Map({
+				container: 'map',
+				style: 'mapbox://styles/mapbox/dark-v11',
+				center: [170.5016047, -45.8745557],
+				zoom: 13
+			})
+
+			this.markers = []
+			this.sidebarLinks = this.querySelectorAll('[data-markerindex]')
+
+			const markers = JSON.parse(this.getAttribute('data-markers') || '') as any
+			const popups = JSON.parse(this.getAttribute('data-popups') || '') as any
+
+			for (const [i, markerCoords] of markers.entries()) {
+				const popup = new mapboxgl.Popup().setHTML(popups[i]).setMaxWidth('300px')
+				popup.on('open', (e: any) => this.markerClick(e, i))
+				const marker = new mapboxgl.Marker().setLngLat(markerCoords).setPopup(popup).addTo(this.map)
+				this.markers?.push(marker)
+			}
+		}
+
+		markerClick(e: any, i: number) {
+			this.selectedSidebar?.classList.remove('active')
+			this.selectedSidebar = this.sidebarLinks[i]
+			this.selectedSidebar?.classList.add('active')
+			this.sidebarLinks[i].scrollIntoView({ behavior: 'smooth' })
+		}
+
+		sidebarClick(e: MouseEvent) {
+			if (!(e.target instanceof HTMLElement)) return
+
+			const index = e.target?.getAttribute('data-markerIndex')
+
+			if (!index) return
+
+			const indexInt = parseInt(index)
+
+			if (!this.markers[indexInt]) return
+
+			this.map.panTo(this.markers[indexInt].getLngLat())
+
+			// Unselect old sidebar item
+			this.selectedSidebar?.classList.remove('active')
+
+			// Select new sidebar item
+			this.selectedSidebar = e.target
+			this.selectedSidebar?.classList.add('active')
+
+			// Close old popup
+			this.selectedMarker?.togglePopup()
+
+			// Open new popup
+			this.selectedMarker = this.markers[indexInt]
+			this.selectedMarker.togglePopup()
+		}
+
+		connectedCallback() {
+			this.sidebarLinks.forEach((link) => link.addEventListener('mousedown', (e) => this.sidebarClick(e)))
+		}
+
+		disconnectedCallback() {}
+	}
+
+	customElements.define('map-wrapper', MapWrapper)
+</script>

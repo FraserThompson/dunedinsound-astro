@@ -1,21 +1,34 @@
 ---
-import GridContainer from 'src/components/GridContainer'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
-import Tile from 'src/components/Tile.astro'
-import { GridChild } from 'src/components/GridContainer.css'
+import { MenuLi, MenuLink, MenuWrapper } from 'src/components/Menu.css'
+import Map from 'src/components/Map.astro'
+import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 
 const venues = await loadAndFormatCollection('venue')
+
+const markers = venues.map((venue) => [venue.entry.data.lng, venue.entry.data.lat])
+const popups = venues.map((venue) => `<h3>${venue.entry.data.title}</h3>`)
 ---
 
 <BaseLayout>
-	<GridContainer>
-		{
-			venues.map((venue) => (
-				<a class={GridChild} href={venue.extra.absolutePath}>
-					<h3>{venue.entry.id}</h3>
-				</a>
-			))
-		}
-	</GridContainer>
+	<ShuffleFilters data-itemselector=".venue" data-boardselector="#venues">
+		<div style={{position: 'relative', left: '400px'}}>
+			<span>Search: </span>
+			<input type="text" data-filter="title=value" placeholder="Search artists" />
+		</div>
+	</ShuffleFilters>
+	<Map data-markers={JSON.stringify(markers)} data-popups={JSON.stringify(popups)}>
+		<ul id="venues" class={MenuWrapper}>
+			{
+				venues.map((venue, i) => (
+					<li class="venue" data-title={venue.entry.data.title} class={MenuLi['vertical']}>
+						<a class={MenuLink['vertical']} data-markerindex={i}>
+							{venue.entry.data.title}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</Map>
 </BaseLayout>

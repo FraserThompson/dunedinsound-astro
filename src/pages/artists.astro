@@ -43,25 +43,25 @@ for (const artist of artists) {
 ---
 
 <BaseLayout>
-	<ShuffleFilters>
+	<ShuffleFilters data-itemselector=".tile" data-boardselector="#artist-grid">
 		<div>
 			<span>Search: </span>
-			<input class="filter" type="text" data-filter="title=value" placeholder="Search artists" />
+			<input type="text" data-filter="title=value" placeholder="Search artists" />
 		</div>
 		<div>
 			<span>Sort by: </span>
-			<button class="sort" data-sortby="title"> Title </button>
-			<button class="sort" data-sortby="lastgig" data-reversesort="true"> Last Played </button>
-			<button class="sort" data-sortby="numbergigs" data-reversesort="true"> Most Gigs </button>
+			<button data-sortby="title"> Title </button>
+			<button data-sortby="lastgig" data-reversesort="true"> Last Played </button>
+			<button data-sortby="numbergigs" data-reversesort="true"> Most Gigs </button>
 		</div>
 		<div>
 			<label>
-				<input class="filter" name="hideInactive" type="checkbox" data-filter="active=true" />
+				<input name="hideInactive" type="checkbox" data-filter="active=true" />
 				Hide inactive
 			</label>
 		</div>
 		<div>
-			<select class="filter" name="countries" data-filter="origin=value">
+			<select name="countries" data-filter="origin=value">
 				<option value={'all'}>All origins ({artists.length})</option>
 				{
 					origins &&
@@ -84,7 +84,7 @@ for (const artist of artists) {
 					subtitle={`${artistMetadata[artist.entry.id]?.totalCount} gigs`}
 					containerHeight={'15vh'}
 					dataAttributes={{
-						'data-title': artist.entry.data.title.toLowerCase(),
+						'data-title': artist.entry.data.title,
 						'data-machinename': artist.entry.id,
 						'data-lastgig': artistMetadata[artist.entry.id]?.lastGig || 0,
 						'data-numbergigs': artistMetadata[artist.entry.id]?.totalCount || 0,

@@ -1,0 +1,15 @@
+---
+import { FaBars } from 'react-icons/fa'
+import { sidebarWrapper, menuButtonWrapper } from './SidebarNav.css'
+---
+
+<button id="sidebar-button" class={menuButtonWrapper}><FaBars /></button>
+<div id="sidebar" class={sidebarWrapper}>
+	<slot />
+</div>
+
+<script>
+	document.getElementById('sidebar-button')?.addEventListener('mousedown', (e) => {
+		document.getElementById('sidebar')?.classList.toggle('open')
+	})
+</script>
