@@ -5,6 +5,12 @@ import SiteFooter from 'src/components/SiteFooter.astro'
 import SiteHeader from 'src/components/SiteHeader.astro'
 import '../Theme.css.ts'
 import './BaseLayout.css'
+
+interface Props {
+	hideFooter?: boolean
+}
+
+const { hideFooter } = Astro.props
 ---
 
 <GlobalStyle />
@@ -20,10 +26,10 @@ import './BaseLayout.css'
 		</script>
 	</head>
 	<body>
-		<SiteContainer>
+		<SiteContainer hideFooter={hideFooter}>
 			<SiteHeader />
 			<slot />
 		</SiteContainer>
-		<SiteFooter />
+		{!hideFooter && <SiteFooter />}
 	</body>
 </html>

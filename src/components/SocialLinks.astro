@@ -1,0 +1,20 @@
+---
+import { socialLinksToMenuItems } from 'src/util/helpers'
+import { theme } from 'src/Theme.css'
+import type { z } from 'astro:content'
+import type { webLinks } from 'src/content/config'
+
+interface Props {
+	links?: z.infer<typeof webLinks>
+}
+
+const { links } = Astro.props
+---
+
+{
+	socialLinksToMenuItems(links).map((item) => (
+		<a href={item.href} style={{ padding: theme.dimensions.basePadding }}>
+			{item.title}
+		</a>
+	))
+}

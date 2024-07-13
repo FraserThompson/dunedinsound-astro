@@ -8,8 +8,8 @@ import Divider from 'src/components/Divider.tsx'
 import ContentTabs from 'src/components/ContentTabs.astro'
 import Banner from 'src/components/Banner.astro'
 import ActiveIndicator from 'src/components/ActiveIndicator.astro'
-import { socialLinksToMenuItems } from 'src/util/helpers'
 import { theme } from 'src/Theme.css'
+import SocialLinks from 'src/components/SocialLinks.astro'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
@@ -61,14 +61,7 @@ vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessio
 				)
 			}
 		</div>
-		{
-			entryData.links &&
-				socialLinksToMenuItems(entryData.links).map((item) => (
-					<a href={item.href} style={{ padding: theme.dimensions.basePadding }}>
-						{item.title}
-					</a>
-				))
-		}
+		{entryData.links && <SocialLinks links={entryData.links} />}
 		{entryData.description && <Fragment set:html={entryData.description} />}
 		{
 			entryData.links && 'audioculture' in entryData.links && (

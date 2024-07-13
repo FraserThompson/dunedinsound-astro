@@ -1,7 +1,13 @@
 ---
 import { siteContainer } from './SiteContainer.css'
+
+interface Props {
+	hideFooter?: boolean
+}
+
+const { hideFooter } = Astro.props
 ---
 
-<div class={siteContainer}>
+<div class={siteContainer[hideFooter ? 'hideFooter' : 'normal']}>
 	<slot />
 </div>

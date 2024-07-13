@@ -4,27 +4,66 @@ import { loadAndFormatCollection } from 'src/util/collection'
 import { MenuLi, MenuLink, MenuWrapper } from 'src/components/Menu.css'
 import Map from 'src/components/Map.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
+import ActiveIndicator from 'src/components/ActiveIndicator.astro'
+import SocialLinks from 'src/components/SocialLinks.astro'
 
 const venues = await loadAndFormatCollection('venue')
 
-const markers = venues.map((venue) => [venue.entry.data.lng, venue.entry.data.lat])
-const popups = venues.map((venue) => `<h3>${venue.entry.data.title}</h3>`)
+const markers = venues.map((venue) => ({
+	coords: [venue.entry.data.lng, venue.entry.data.lat],
+	class: venue.entry.data.died === undefined ? undefined : 'dead-marker'
+}))
 ---
 
-<BaseLayout>
-	<ShuffleFilters data-itemselector=".venue" data-boardselector="#venues">
-		<div style={{position: 'relative', left: '400px'}}>
-			<span>Search: </span>
-			<input type="text" data-filter="title=value" placeholder="Search artists" />
+<BaseLayout hideFooter={true}>
+	<div id="filters-wrapper">
+		<ShuffleFilters data-itemselector=".sidebar-item" data-boardselector="#sidebar-menu">
+			<div>
+				<span>Search: </span>
+				<input type="text" data-filter="title=value" placeholder="Search venues" />
+			</div>
+			<div>
+				<label>
+					<input name="hideInactive" type="checkbox" data-filter="active=true" />
+					Hide dead
+				</label>
+				<label>
+					<input name="hideActive" type="checkbox" data-filter="active=false" />
+					Hide alive
+				</label>
+			</div>
+		</ShuffleFilters>
+	</div>
+	<Map data-markers={JSON.stringify(markers)}>
+		<div slot="popups">
+			{
+				venues.map((venue) => (
+					<div class="popup">
+						<h3>{venue.entry.data.title}</h3>
+						<p style={{ marginTop: '0', marginBottom: '10px' }}>
+							<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} />
+						</p>
+						<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
+							See gigs at this venue
+						</a>
+						<SocialLinks links={venue.entry.data.links} />
+					</div>
+				))
+			}
 		</div>
-	</ShuffleFilters>
-	<Map data-markers={JSON.stringify(markers)} data-popups={JSON.stringify(popups)}>
-		<ul id="venues" class={MenuWrapper}>
+		<ul slot="sidebar" id="sidebar-menu" class={MenuWrapper}>
 			{
 				venues.map((venue, i) => (
-					<li class="venue" data-title={venue.entry.data.title} class={MenuLi['vertical']}>
+					<li
+						data-title={venue.entry.data.title}
+						data-active={venue.entry.data.died === undefined ? 'true' : 'false'}
+						class={`sidebar-item ${MenuLi['vertical']}`}
+					>
 						<a class={MenuLink['vertical']} data-markerindex={i}>
 							{venue.entry.data.title}
+							<div style={{ position: 'absolute', right: '5px', top: '0px' }}>
+								<ActiveIndicator died={venue.entry.data.died} hideText={true} />
+							</div>
 						</a>
 					</li>
 				))
@@ -32,3 +71,20 @@ const popups = venues.map((venue) => `<h3>${venue.entry.data.title}</h3>`)
 		</ul>
 	</Map>
 </BaseLayout>
+
+<style>
+	#filters-wrapper > shuffle-filters {
+		padding-left: 0px;
+		@media (--md) {
+			padding-left: 305px;
+		}
+	}
+</style>
+
+<style is:global>
+	div.dead-marker:before {
+		content: '✝';
+		color: white;
+    font-size: 2.5em;
+	}
+</style>

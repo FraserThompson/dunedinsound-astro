@@ -1,4 +1,22 @@
 ---
+/**
+ * Encapsulates a mapbox map.
+ *
+ * data-markers: A stringified array of [lat, lng]'s to display as markers on the map.
+ *
+ * Sidebar:
+ *  For a sidebar with menu links that select markers on the map, add a menu to the "sidebar" slot.
+ *  Each menu item should have
+ *   data-markerindex: The index of the corresponding map marker.
+ *  The menu must have the same items as the map has markers.
+ *
+ * Popups:
+ *  For popups add elements of class "popup" to the "popups" slot.
+ *  There must be one popup for each marker.
+ *
+ * This will also respond to a shuffle-filter on the page and remove markers based on index.
+ */
+
 import 'mapbox-gl/dist/mapbox-gl.css'
 import SidebarNav from 'src/components/SidebarNav.astro'
 import { theme } from 'src/Theme.css'
@@ -8,24 +26,18 @@ const props = Astro.props
 
 <map-wrapper {...props} style={{ position: 'relative', overflow: 'hidden' }}>
 	<SidebarNav>
-		<slot />
+		<slot name="sidebar" />
 	</SidebarNav>
 	<div id="map" style={{ height: `calc(100vh - ${theme.dimensions.headerHeightMobileTwice})` }}></div>
+	<div style={{ display: 'none' }}>
+		<slot name="popups" />
+	</div>
 </map-wrapper>
 
 <script>
 	import mapboxgl from 'mapbox-gl'
+	import type Shuffle from 'shufflejs'
 
-	/**
-	 * Encapsulates a mapbox map.
-	 * 
-	 * data-markers: A stringified array of [lat, lng]'s 
-	 * data-popups: An array of HTML so show in popups on the markers.
-	 * 
-	 * For a sidebar with menu links that select markers on the map, add a menu inside this el.
-	 * Each menu item should have 
-	 *  data-markerindex: The index of the corresponding map marker.
-	 */
 	class MapWrapper extends HTMLElement {
 		_internals: any
 
@@ -53,12 +65,19 @@ const props = Astro.props
 			this.sidebarLinks = this.querySelectorAll('[data-markerindex]')
 
 			const markers = JSON.parse(this.getAttribute('data-markers') || '') as any
-			const popups = JSON.parse(this.getAttribute('data-popups') || '') as any
+			const popups = this.querySelectorAll('.popup')
 
-			for (const [i, markerCoords] of markers.entries()) {
-				const popup = new mapboxgl.Popup().setHTML(popups[i]).setMaxWidth('300px')
+			for (const [i, markerInfo] of markers.entries()) {
+				const popup = new mapboxgl.Popup().setHTML(popups[i].innerHTML).setMaxWidth('300px')
 				popup.on('open', (e: any) => this.markerClick(e, i))
-				const marker = new mapboxgl.Marker().setLngLat(markerCoords).setPopup(popup).addTo(this.map)
+
+				let el = undefined;
+				if (markerInfo.class) {
+					el = document.createElement('div');
+					el.className = markerInfo.class;
+				}
+
+				const marker = new mapboxgl.Marker(el).setLngLat(markerInfo.coords).setPopup(popup).addTo(this.map)
 				this.markers?.push(marker)
 			}
 		}
@@ -100,6 +119,22 @@ const props = Astro.props
 
 		connectedCallback() {
 			this.sidebarLinks.forEach((link) => link.addEventListener('mousedown', (e) => this.sidebarClick(e)))
+
+			// Support for hiding markers on shuffle filter
+			document.addEventListener(
+				'shuffle-filter',
+				(e: any) => {
+					const shuffle = e.detail as Shuffle
+					shuffle.items.forEach((item, i) => {
+						if (!item.isVisible) {
+							this.markers[i].remove()
+						} else {
+							this.markers[i].addTo(this.map)
+						}
+					})
+				},
+				false
+			)
 		}
 
 		disconnectedCallback() {}
@@ -107,3 +142,12 @@ const props = Astro.props
 
 	customElements.define('map-wrapper', MapWrapper)
 </script>
+
+<style is:global>
+	.mapboxgl-marker svg path {
+		fill: black;
+	}
+	.mapboxgl-popup-content {
+		background: black;
+	}
+</style>

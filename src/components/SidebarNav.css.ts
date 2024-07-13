@@ -24,6 +24,8 @@ export const sidebarWrapper = style({
 	transitionDuration: '0.3s',
 	transitionTimingFunction: 'cubic-bezier(0, 0, 0, 1.2)',
 	willChange: 'transform',
+	scrollbarWidth: 'thin',
+	scrollbarColor: 'gray black',
 	selectors: {
 		'&.open': {
 			visibility: 'visible',

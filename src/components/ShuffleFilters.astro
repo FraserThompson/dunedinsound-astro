@@ -1,4 +1,25 @@
 ---
+/**
+ * Encapsulates the filter and sort elements for Shuffle.js
+ *
+ * To use this component, create filter child elements inside it.
+ *
+ * This component's props:
+ *  - data-boardselector: selector for the shuffle board (default: #shuffle)
+ *  - data itemselector: selector for the board items (default: .tile)
+ *
+ * Sort elements need:
+ *  - data-sortby: name of the data attribute it should sort by.
+ *  - data-reversesort (optional): sort in reverse order
+ *
+ * Filter elements need:
+ *  - data-filter: the filter to filter by in the x=y format. Eg title=banana.
+ *    If y is literally "value", it will instead check againsts the elements value.
+ *  - Note: text filters do a partial text search
+ *
+ * An event is emitted to document on filter. Listen for shuffle-filter.
+ */
+
 import { shuffleFilter } from './ShuffleFilters.css'
 
 const props = Astro.props
@@ -11,24 +32,6 @@ const props = Astro.props
 <script>
 	import Shuffle from 'shufflejs'
 
-	/**
-	 * Encapsulates the filter and sort elements for Shuffle.js
-	 *
-	 * To use this component, create filter child elements inside it.
-	 * 
-	 * This component:
-	 *  - data-boardselector: selector for the shuffle board (default: #shuffle)
-	 *  - data itemselector: selector for the board items (default: .tile)
-	 *
-	 * Sort elements need:
-	 *  - data-sortby: name of the data attribute it should sort by.
-	 *  - data-reversesort (optional): sort in reverse order
-	 *
-	 * Filter elements need:
-	 *  - data-filter: the filter to filter by in the x=y format. Eg title=banana.
-	 *    If y is literally "value", it will instead check againstS the elements value.
-	 *  - text filters do a partial text search
-	 */
 	class ShuffleFilters extends HTMLElement {
 		_internals: any
 
@@ -83,7 +86,12 @@ const props = Astro.props
 				if (val && val == 'value') {
 					if (filter.getAttribute('type') === 'text') {
 						const filterValue = filter.value?.toLowerCase()
-						filterResult.push(!!el.getAttribute(`data-${attr}`)?.toLowerCase().includes(filterValue || ''))
+						filterResult.push(
+							!!el
+								.getAttribute(`data-${attr}`)
+								?.toLowerCase()
+								.includes(filterValue || '')
+						)
 					} else {
 						const filterValue = filter.value
 						filterResult.push(el.getAttribute(`data-${attr}`) == filterValue)
@@ -150,6 +158,10 @@ const props = Astro.props
 			}
 
 			this.shuffleInstance?.filter((el) => this.shuffleFilter(el))
+
+			// Let other components know what's up
+			const event = new CustomEvent('shuffle-filter', { detail: this.shuffleInstance })
+			document.dispatchEvent(event)
 		}
 
 		connectedCallback() {

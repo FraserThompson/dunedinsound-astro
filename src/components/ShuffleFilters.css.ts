@@ -13,12 +13,7 @@ export const shuffleFilter = style({
 	borderBottom: '1px solid black',
 	boxShadow: '0 6px 12px rgba(0, 0, 0, 0.4)',
 	minHeight: theme.dimensions.subheaderHeight,
-	backgroundColor: theme.color.contrast,
-	'@media': {
-		'screen and (--xs)': {
-			top: theme.dimensions.headerHeight
-		}
-	}
+	backgroundColor: theme.color.contrast
 })
 
 globalStyle(`${shuffleFilter} > div`, {

@@ -1,5 +1,4 @@
-import { style, globalStyle, styleVariants } from '@vanilla-extract/css'
-import { lighten } from 'polished'
+import { style, styleVariants } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 export const MenuWrapper = style({
@@ -36,7 +35,8 @@ export const MenuLi = styleVariants({
 		MenuLiBase,
 		{
 			display: 'flex',
-			alignItems: 'center'
+			alignItems: 'center',
+			width: '100%'
 		}
 	]
 })
