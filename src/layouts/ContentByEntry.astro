@@ -51,15 +51,11 @@ vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessio
 		backgroundImage={entryExtra.cover}
 	>
 		<div slot="subtitle">
-			{
-				entryData.died !== undefined && (
-					<ActiveIndicator
-						born={entryData.date}
-						died={entryData.died}
-						inactiveText={entry.entry.collection === 'artist' ? 'Inactive' : 'Defunct'}
-					/>
-				)
-			}
+			<ActiveIndicator
+				born={entryData.date}
+				died={entryData.died}
+				inactiveText={entry.entry.collection === 'artist' ? 'Inactive' : 'Defunct'}
+			/>
 		</div>
 		{entryData.links && <SocialLinks links={entryData.links} />}
 		{entryData.description && <Fragment set:html={entryData.description} />}

@@ -16,24 +16,22 @@ const markers = venues.map((venue) => ({
 ---
 
 <BaseLayout hideFooter={true}>
-	<div id="filters-wrapper">
-		<ShuffleFilters data-itemselector=".sidebar-item" data-boardselector="#sidebar-menu">
-			<div>
-				<span>Search: </span>
-				<input type="text" data-filter="title=value" placeholder="Search venues" />
-			</div>
-			<div>
-				<label>
-					<input name="hideInactive" type="checkbox" data-filter="active=true" />
-					Hide dead
-				</label>
-				<label>
-					<input name="hideActive" type="checkbox" data-filter="active=false" />
-					Hide alive
-				</label>
-			</div>
-		</ShuffleFilters>
-	</div>
+	<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu" hasSidebar={true}>
+		<div>
+			<span>Search: </span>
+			<input type="text" data-filter="title=value" placeholder="Search venues" />
+		</div>
+		<div>
+			<label>
+				<input name="hideInactive" type="checkbox" data-filter="active=true" />
+				Hide dead
+			</label>
+			<label>
+				<input name="hideActive" type="checkbox" data-filter="active=false" />
+				Hide alive
+			</label>
+		</div>
+	</ShuffleFilters>
 	<Map data-markers={JSON.stringify(markers)}>
 		<div slot="popups">
 			{
@@ -72,19 +70,10 @@ const markers = venues.map((venue) => ({
 	</Map>
 </BaseLayout>
 
-<style>
-	#filters-wrapper > shuffle-filters {
-		padding-left: 0px;
-		@media (--md) {
-			padding-left: 305px;
-		}
-	}
-</style>
-
 <style is:global>
 	div.dead-marker:before {
 		content: '✝';
 		color: white;
-    font-size: 2.5em;
+		font-size: 2.5em;
 	}
 </style>

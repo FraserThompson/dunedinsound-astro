@@ -1,21 +1,71 @@
 ---
-import GridContainer from 'src/components/GridContainer'
+import SidebarNav from 'src/components/SidebarNav.astro'
+import GigsMenu from 'src/components/gigs/GigsMenu.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
-import { loadAndFormatCollection } from 'src/util/collection'
 import Tile from 'src/components/Tile.astro'
-import { GridChild } from 'src/components/GridContainer.css'
+import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
+import ShuffleFilters from 'src/components/ShuffleFilters.astro'
+import { theme } from 'src/Theme.css'
 
 const gigs = await loadAndFormatCollection('gig')
+
+interface MonthsGroup {
+	[month: string]: ProcessedEntry<'gig'>[]
+}
+
+export interface SortedGigs {
+	[year: string]: MonthsGroup
+}
+
+const monthMap: { [i: number]: string } = {
+	0: 'January',
+	1: 'February',
+	2: 'March',
+	3: 'April',
+	4: 'May',
+	5: 'June',
+	6: 'July',
+	7: 'August',
+	8: 'September',
+	9: 'October',
+	10: 'November',
+	11: 'December'
+}
+
+const sortedGigs = gigs.reduce((acc, gig) => {
+	const year = gig.entry.data.date.getFullYear()
+	const month = monthMap[gig.entry.data.date.getMonth()]
+
+	if (!acc[year]) {
+		acc[year] = {}
+	}
+	if (!acc[year][month]) {
+		acc[year][month] = []
+	}
+
+	acc[year][month].push(gig)
+
+	return acc
+}, {} as SortedGigs)
 ---
 
 <BaseLayout>
-	<GridContainer>
+	<ShuffleFilters itemselector=".tile" boardselector="#artist-grid" hasSidebar={true}>
+		<div>
+			<span>Search: </span>
+			<input type="text" data-filter="title=value" placeholder="Search artists" />
+		</div>
+	</ShuffleFilters>
+	<SidebarNav top={theme.dimensions.headerHeightWithSubheader}>
+		<GigsMenu sortedGigs={sortedGigs} />
+	</SidebarNav>
+	<div style={{ paddingLeft: '300px' }}>
 		{
 			gigs.map((gig) => (
-				<a class={GridChild} href={gig.extra.absolutePath}>
-					<h3>{gig.entry.id}</h3>
-				</a>
+				<Tile href={gig.extra.absolutePath} responsiveImage={gig.extra.cover}>
+					{gig.entry.data.date}
+				</Tile>
 			))
 		}
-	</GridContainer>
+	</div>
 </BaseLayout>

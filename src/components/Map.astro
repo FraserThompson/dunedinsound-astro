@@ -2,7 +2,7 @@
 /**
  * Encapsulates a mapbox map.
  *
- * data-markers: A stringified array of [lat, lng]'s to display as markers on the map.
+ * data-markers: A stringified array of {coords: [lat, lng], class?: 'classname'} to display as markers on the map.
  *
  * Sidebar:
  *  For a sidebar with menu links that select markers on the map, add a menu to the "sidebar" slot.
@@ -69,12 +69,14 @@ const props = Astro.props
 
 			for (const [i, markerInfo] of markers.entries()) {
 				const popup = new mapboxgl.Popup().setHTML(popups[i].innerHTML).setMaxWidth('300px')
+
+				// @ts-ignore
 				popup.on('open', (e: any) => this.markerClick(e, i))
 
-				let el = undefined;
+				let el = undefined
 				if (markerInfo.class) {
-					el = document.createElement('div');
-					el.className = markerInfo.class;
+					el = document.createElement('div')
+					el.className = markerInfo.class
 				}
 
 				const marker = new mapboxgl.Marker(el).setLngLat(markerInfo.coords).setPopup(popup).addTo(this.map)

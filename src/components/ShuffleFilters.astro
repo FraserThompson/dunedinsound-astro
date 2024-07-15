@@ -20,14 +20,22 @@
  * An event is emitted to document on filter. Listen for shuffle-filter.
  */
 
-import { shuffleFilter } from './ShuffleFilters.css'
+import { filtersWrapper, shuffleFilter } from './ShuffleFilters.css'
 
-const props = Astro.props
+interface Props {
+	hasSidebar?: boolean
+	itemselector?: string
+	boardselector?: string
+}
+
+const { hasSidebar, itemselector, boardselector } = Astro.props
 ---
 
-<shuffle-filters {...props} class={shuffleFilter}>
-	<slot />
-</shuffle-filters>
+<div class={`${filtersWrapper[hasSidebar ? 'sidebar' : 'normal']}`} id="filters-wrapper">
+	<shuffle-filters data-itemselector={itemselector} data-boardselector={boardselector} class={shuffleFilter}>
+		<slot />
+	</shuffle-filters>
+</div>
 
 <script>
 	import Shuffle from 'shufflejs'

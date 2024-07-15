@@ -1,0 +1,37 @@
+---
+import type { SortedGigs } from 'src/pages/gigs.astro'
+import { yearHeader, monthHeader, gigLi, gigLink } from './GigsMenu.css'
+import { MenuLink, MenuWrapper } from '../Menu.css'
+
+interface Props {
+	sortedGigs: SortedGigs
+}
+
+const { sortedGigs } = Astro.props
+---
+
+{
+	Object.entries(sortedGigs)
+		.reverse()
+		.map(([year, months]) => (
+			<ul class={MenuWrapper} style={{ overflow: 'initial' }}>
+				<li class={yearHeader}>
+					<a class={gigLink}>{year}</a>
+				</li>
+				{Object.entries(months).map(([month, gigs]) => (
+					<ul class={MenuWrapper}>
+						{gigs.map((gig) => (
+							<ul class={MenuWrapper}>
+								<li class={gigLi}>
+									<a class={MenuLink['vertical']}>{gig.entry.data.title}</a>
+								</li>
+							</ul>
+						))}
+						<li class={monthHeader}>
+							<a class={gigLink}>{month}</a>
+						</li>
+					</ul>
+				))}
+			</ul>
+		))
+}

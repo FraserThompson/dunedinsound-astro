@@ -1,19 +1,35 @@
-import { globalStyle, style } from '@vanilla-extract/css'
+import { globalStyle, style, styleVariants } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 export const shuffleFilter = style({
-	position: 'sticky',
-	top: '0px',
-	zIndex: '8',
 	paddingLeft: theme.dimensions.basePadding,
 	paddingRight: theme.dimensions.basePadding,
 	display: 'flex',
 	alignItems: 'center',
 	color: 'black',
-	borderBottom: '1px solid black',
-	boxShadow: '0 6px 12px rgba(0, 0, 0, 0.4)',
 	minHeight: theme.dimensions.subheaderHeight,
 	backgroundColor: theme.color.contrast
+})
+
+const filtersWrapperBase = style({
+	zIndex: '8',
+	position: 'sticky',
+	top: theme.dimensions.headerHeight,
+	paddingLeft: '0px'
+})
+
+export const filtersWrapper = styleVariants({
+	normal: [filtersWrapperBase],
+	sidebar: [
+		filtersWrapperBase,
+		{
+			'@media': {
+				'screen and (--md)': {
+					paddingLeft: `calc(${theme.dimensions.sidebarWidth} + 5px)`
+				}
+			}
+		}
+	]
 })
 
 globalStyle(`${shuffleFilter} > div`, {

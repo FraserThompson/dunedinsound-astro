@@ -9,13 +9,7 @@ const siteContainerBase = style({
 	width: '100%',
 	zIndex: '2',
 	position: 'relative',
-	bottom: '0',
-	marginTop: theme.dimensions.headerHeightMobile,
-	'@media': {
-		'screen and (--md)': {
-			marginTop: theme.dimensions.headerHeight
-		}
-	}
+	bottom: '0'
 })
 
 export const siteContainer = styleVariants({

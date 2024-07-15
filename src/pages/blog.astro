@@ -1,21 +1,38 @@
 ---
-import GridContainer from 'src/components/GridContainer'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
-import Tile from 'src/components/Tile.astro'
-import { GridChild } from 'src/components/GridContainer.css'
+import Banner from 'src/components/Banner.astro'
+import TextContainer from 'src/components/TextContainer.astro'
 
 const blogs = await loadAndFormatCollection('blog')
 ---
 
 <BaseLayout>
-	<GridContainer>
+	<TextContainer>
 		{
 			blogs.map((blog) => (
-				<a class={GridChild} href={blog.extra.absolutePath}>
-					<h3>{blog.entry.id}</h3>
-				</a>
+				<div>
+					<h2>
+						<a href={blog.extra.absolutePath}>
+							{blog.entry.data.tags.includes('interview') && 'INTERVIEW: '}
+							{blog.entry.data.title}
+						</a>
+					</h2>
+					<h4>{blog.entry.data.date.toLocaleDateString()}</h4>
+					{blog.extra.cover && (
+						<a href={blog.extra.absolutePath}>
+							<Banner height="20vh" backgroundImage={blog.extra.cover} />
+						</a>
+					)}
+					<p>
+						{blog.entry.data.description}
+						<small>
+							<a href={blog.extra.absolutePath}>More</a>
+						</small>
+					</p>
+					<hr />
+				</div>
 			))
 		}
-	</GridContainer>
+	</TextContainer>
 </BaseLayout>

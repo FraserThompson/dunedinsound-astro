@@ -7,7 +7,8 @@ export const headerWrapper = style({
 	width: '100%',
 	zIndex: '12',
 	boxShadow: '0 6px 12px rgba(0, 0, 0, 0.4)',
-	borderBottom: theme.borders.primary
+	borderBottom: theme.borders.primary,
+	height: theme.dimensions.headerHeight
 })
 
 export const header = style({
@@ -18,7 +19,6 @@ export const header = style({
 	justifyItems: 'center',
 	top: '0px',
 	zIndex: '10',
-	height: theme.dimensions.headerHeightMobile,
 	color: theme.color.text,
 	boxShadow: '0 6px 12px rgba(0, 0, 0, 0.4)',
 	borderBottom: theme.borders.primary,
@@ -27,7 +27,6 @@ export const header = style({
 		'screen and (--md)': {
 			display: 'flex',
 			paddingLeft: '0',
-			height: theme.dimensions.headerHeight
 		}
 	}
 })
@@ -35,7 +34,6 @@ export const header = style({
 export const headerMobile = style({
 	position: 'fixed',
 	bottom: '0',
-	height: theme.dimensions.headerHeightMobile,
 	backgroundColor: theme.color.primary,
 	display: 'flex',
 	justifyContent: 'center',
@@ -52,7 +50,6 @@ export const headerMobile = style({
 
 export const brand = style({
 	marginRight: 'auto',
-	height: theme.dimensions.headerHeightMobile,
 	color: theme.color.text,
 	paddingLeft: theme.dimensions.basePadding,
 	lineHeight: theme.dimensions.headerHeight,
@@ -64,7 +61,6 @@ export const brand = style({
 	},
 	'@media': {
 		'screen and (--md)': {
-			height: theme.dimensions.headerHeight,
 			display: 'block'
 		}
 	}

@@ -7,7 +7,7 @@ export const sidebarWrapper = style({
 	position: 'fixed',
 	backgroundColor: theme.color.primary,
 	height: `calc(100vh - ${theme.dimensions.headerHeightMobileTwice})`,
-	top: theme.dimensions.headerHeightMobile,
+	top: theme.dimensions.headerHeight,
 	left: 0,
 	width: defaultWidth,
 	maxWidth: defaultWidth,
@@ -37,7 +37,7 @@ export const sidebarWrapper = style({
 	'@media': {
 		'screen and (--md)': {
 			top: theme.dimensions.headerHeight,
-			width: '300px',
+			width: theme.dimensions.sidebarWidth,
 			height: `calc(100vh - ${theme.dimensions.headerHeight})`,
 			visibility: 'visible',
 			opacity: 1,
