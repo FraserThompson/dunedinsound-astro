@@ -8,7 +8,6 @@ import {
 	tileContent,
 	tileTitle,
 	tileLabel,
-	tileSubtitle,
 	background,
 	height,
 	width,
@@ -20,52 +19,44 @@ import { assignInlineVars } from '@vanilla-extract/dynamic'
 interface Props {
 	href: string
 	className?: string
+	id?: string
 	responsiveImage?: ResponsiveImage
 	title?: string
 	prefix?: string
 	label?: string
-	subtitle?: string
 	feature?: boolean
 	backgroundColor?: string
 	containerHeight?: string
 	containerWidth?: string
-	hoverHeight?: string
 	dataAttributes?: any
 }
 
 const {
 	href,
 	className,
+	id,
 	responsiveImage,
 	title,
 	prefix,
 	label,
-	subtitle,
 	feature,
 	backgroundColor,
 	containerHeight,
 	containerWidth,
-	hoverHeight,
 	dataAttributes
 } = Astro.props
 ---
 
-<div
-	class={`${tileWrapper[containerWidth ? 'fixedWidth' : 'noWidth']} ${className} tile`}
-	style={assignInlineVars({
-		[background]: backgroundColor,
-		[height]: containerHeight,
-		[width]: containerWidth
-	})}
-	{...dataAttributes}
->
+<div {...dataAttributes} class={`${tileWrapper[containerWidth ? 'fixedWidth' : 'noWidth']} ${className} tile`} id={id}>
 	<div
 		class={tileInner}
 		style={assignInlineVars({
-			[heightHover]: hoverHeight
+			[background]: backgroundColor,
+			[height]: containerHeight,
+			[width]: containerWidth
 		})}
 	>
-		<a href={href} title={title}>
+		<a href={href} title={title} style={{ height: '100%', display: 'block' }}>
 			{responsiveImage && <BackgroundImage responsiveImage={responsiveImage} />}
 			<div class={titleWrapper}>
 				<div class={tileContent}>
@@ -89,12 +80,9 @@ const {
 							</h3>
 						)
 					}
-					{subtitle && <h4 class={tileSubtitle} set:html={subtitle} />}
-				</div>
-			</div>
-			<div class="textContent">
-				<div>
-					<slot />
+					<div style={{ marginTop: 'auto' }}>
+						<slot />
+					</div>
 				</div>
 			</div>
 		</a>

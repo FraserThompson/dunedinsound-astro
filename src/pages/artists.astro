@@ -81,7 +81,6 @@ for (const artist of artists) {
 					href={artist.extra.absolutePath}
 					responsiveImage={artistMetadata[artist.entry.id]?.cover}
 					title={artist.entry.data.title + (artist.entry.data.origin ? ` (${artist.entry.data.origin})` : '')}
-					subtitle={`${artistMetadata[artist.entry.id]?.totalCount} gigs`}
 					containerHeight={'15vh'}
 					dataAttributes={{
 						'data-title': artist.entry.data.title,
@@ -91,7 +90,9 @@ for (const artist of artists) {
 						'data-active': artist.entry.data.died === undefined ? 'true' : 'false',
 						'data-origin': artist.entry.data.origin || 'Dunedin'
 					}}
-				/>
+				>
+					<h4>{artistMetadata[artist.entry.id]?.totalCount} gigs</h4>
+				</Tile>
 			))
 		}
 	</FlexGridContainer>

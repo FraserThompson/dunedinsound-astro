@@ -5,6 +5,7 @@ import fg from 'fast-glob'
 import { getEntry } from 'astro:content'
 import * as path from 'node:path'
 import { ResponsiveImage } from './image'
+import { monthMap } from './helpers'
 
 type EntryExtraCommon = {
 	slug: string
@@ -209,3 +210,33 @@ export function getEntryPath(title: string, collection: string): string {
 export function sortCollectionByDate<C extends CollectionKey>(entries: CollectionEntry<C>[]) {
 	return entries.sort((a, b) => b.data?.date - a.data?.date)
 }
+
+interface MonthsGroup {
+	[month: string]: ProcessedEntry<'gig'>[]
+}
+
+export interface SortedGigs {
+	[year: string]: MonthsGroup
+}
+
+/**
+ * Sorts a collection of gigs by month and year
+ * @param gigs
+ * @returns
+ */
+export const sortGigs = (gigs: ProcessedEntry<'gig'>[]) =>
+	gigs.reduce((acc, gig) => {
+		const year = gig.entry.data.date.getFullYear()
+		const month = monthMap[gig.entry.data.date.getMonth()]
+
+		if (!acc[year]) {
+			acc[year] = {}
+		}
+		if (!acc[year][month]) {
+			acc[year][month] = []
+		}
+
+		acc[year][month].push(gig)
+
+		return acc
+	}, {} as SortedGigs)

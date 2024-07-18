@@ -22,6 +22,8 @@ export const BackgroundContent = style({
 })
 
 export const BannerContent = style({
+	position: 'absolute',
+	zIndex: '8',
 	flexGrow: '1',
 	padding: theme.dimensions.basePadding,
 	paddingTop: '1em',
@@ -47,9 +49,4 @@ export const BannerTitle = style({
 	background: 'linear-gradient(90deg, rgba(0, 0, 0, 0.8), rgba(63, 146, 247, 0.2))',
 	border: '2px inset',
 	padding: '5px'
-})
-
-globalStyle(`${BannerWrapper} > *`, {
-	zIndex: 1,
-	position: 'relative'
 })

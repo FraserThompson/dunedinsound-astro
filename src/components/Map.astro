@@ -2,32 +2,47 @@
 /**
  * Encapsulates a mapbox map.
  *
- * data-markers: A stringified array of {coords: [lat, lng], class?: 'classname'} to display as markers on the map.
+ * markers: Array of {coords: [lat, lng], class?: 'classname'} to display as markers on the map.
  *
- * Sidebar:
- *  For a sidebar with menu links that select markers on the map, add a menu to the "sidebar" slot.
+ * Popups (optional):
+ *  For popups add elements of class "popup" to the "popups" slot.
+ *  There must be one popup for each marker.
+ *
+ * Sidebar (optional):
+ *  For a sidebar with menu links that select markers on the map, add a sidebar to the page.
  *  Each menu item should have
  *   data-markerindex: The index of the corresponding map marker.
  *  The menu must have the same items as the map has markers.
- *
- * Popups:
- *  For popups add elements of class "popup" to the "popups" slot.
- *  There must be one popup for each marker.
  *
  * This will also respond to a shuffle-filter on the page and remove markers based on index.
  */
 
 import 'mapbox-gl/dist/mapbox-gl.css'
-import SidebarNav from 'src/components/SidebarNav.astro'
 import { theme } from 'src/Theme.css'
 
-const props = Astro.props
+interface Marker {
+	coords: number[]
+	class?: string
+}
+
+interface Props {
+	markers: Marker[]
+	zoom?: string
+	center?: number[]
+	nointeract?: boolean
+}
+
+const { markers, zoom, center, nointeract } = Astro.props
+
 ---
 
-<map-wrapper {...props} style={{ position: 'relative', overflow: 'hidden' }}>
-	<SidebarNav>
-		<slot name="sidebar" />
-	</SidebarNav>
+<map-wrapper
+	data-markers={JSON.stringify(markers)}
+	data-center={JSON.stringify(center)}
+	data-nointeract={nointeract ? "true" : undefined}
+	data-zoom={zoom}
+	style={{ position: 'relative', overflow: 'hidden' }}
+>
 	<div id="map" style={{ height: `calc(100vh - ${theme.dimensions.headerHeightMobileTwice})` }}></div>
 	<div style={{ display: 'none' }}>
 		<slot name="popups" />
@@ -54,24 +69,30 @@ const props = Astro.props
 			mapboxgl.accessToken =
 				'pk.eyJ1IjoiZnJhc2VydGhvbXBzb24iLCJhIjoiY2llcnF2ZXlhMDF0cncwa21yY2tyZjB5aCJ9.iVxJbdbZiWVfHItWtZfKPQ'
 
+			const centerAttrib = this.getAttribute('data-center')
+			const center = centerAttrib ? JSON.parse(centerAttrib) : [170.5016047, -45.8745557]
+			const zoom = this.getAttribute('data-zoom') || '13'
+			const interactive = this.getAttribute('data-nointeract') ? false : true
+
 			this.map = new mapboxgl.Map({
 				container: 'map',
 				style: 'mapbox://styles/mapbox/dark-v11',
-				center: [170.5016047, -45.8745557],
-				zoom: 13
+				center: center,
+				zoom: parseInt(zoom),
+				interactive
 			})
 
 			this.markers = []
-			this.sidebarLinks = this.querySelectorAll('[data-markerindex]')
+			this.sidebarLinks = document.querySelectorAll('[data-markerindex]')
 
 			const markers = JSON.parse(this.getAttribute('data-markers') || '') as any
 			const popups = this.querySelectorAll('.popup')
 
 			for (const [i, markerInfo] of markers.entries()) {
-				const popup = new mapboxgl.Popup().setHTML(popups[i].innerHTML).setMaxWidth('300px')
+				const popup = popups && popups[i] && new mapboxgl.Popup().setHTML(popups[i].innerHTML).setMaxWidth('300px')
 
 				// @ts-ignore
-				popup.on('open', (e: any) => this.markerClick(e, i))
+				popup?.on('open', (e: any) => this.markerClick(e, i))
 
 				let el = undefined
 				if (markerInfo.class) {
@@ -88,7 +109,7 @@ const props = Astro.props
 			this.selectedSidebar?.classList.remove('active')
 			this.selectedSidebar = this.sidebarLinks[i]
 			this.selectedSidebar?.classList.add('active')
-			this.sidebarLinks[i].scrollIntoView({ behavior: 'smooth' })
+			this.selectedSidebar?.scrollIntoView({ behavior: 'smooth' })
 		}
 
 		sidebarClick(e: MouseEvent) {

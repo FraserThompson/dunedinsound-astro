@@ -11,25 +11,11 @@ export const shuffleFilter = style({
 	backgroundColor: theme.color.contrast
 })
 
-const filtersWrapperBase = style({
+export const filtersWrapper = style({
 	zIndex: '8',
 	position: 'sticky',
 	top: theme.dimensions.headerHeight,
 	paddingLeft: '0px'
-})
-
-export const filtersWrapper = styleVariants({
-	normal: [filtersWrapperBase],
-	sidebar: [
-		filtersWrapperBase,
-		{
-			'@media': {
-				'screen and (--md)': {
-					paddingLeft: `calc(${theme.dimensions.sidebarWidth} + 5px)`
-				}
-			}
-		}
-	]
 })
 
 globalStyle(`${shuffleFilter} > div`, {

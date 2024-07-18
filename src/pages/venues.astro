@@ -6,6 +6,7 @@ import Map from 'src/components/Map.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import ActiveIndicator from 'src/components/ActiveIndicator.astro'
 import SocialLinks from 'src/components/SocialLinks.astro'
+import SidebarNav from 'src/components/SidebarNav.astro'
 
 const venues = await loadAndFormatCollection('venue')
 
@@ -16,7 +17,7 @@ const markers = venues.map((venue) => ({
 ---
 
 <BaseLayout hideFooter={true}>
-	<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu" hasSidebar={true}>
+	<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu">
 		<div>
 			<span>Search: </span>
 			<input type="text" data-filter="title=value" placeholder="Search venues" />
@@ -32,23 +33,7 @@ const markers = venues.map((venue) => ({
 			</label>
 		</div>
 	</ShuffleFilters>
-	<Map data-markers={JSON.stringify(markers)}>
-		<div slot="popups">
-			{
-				venues.map((venue) => (
-					<div class="popup">
-						<h3>{venue.entry.data.title}</h3>
-						<p style={{ marginTop: '0', marginBottom: '10px' }}>
-							<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} />
-						</p>
-						<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
-							See gigs at this venue
-						</a>
-						<SocialLinks links={venue.entry.data.links} />
-					</div>
-				))
-			}
-		</div>
+	<SidebarNav>
 		<ul slot="sidebar" id="sidebar-menu" class={MenuWrapper}>
 			{
 				venues.map((venue, i) => (
@@ -67,7 +52,27 @@ const markers = venues.map((venue) => ({
 				))
 			}
 		</ul>
-	</Map>
+		<div slot="content">
+			<Map markers={markers}>
+				<div slot="popups">
+					{
+						venues.map((venue) => (
+							<div class="popup">
+								<h3>{venue.entry.data.title}</h3>
+								<p style={{ marginTop: '0', marginBottom: '10px' }}>
+									<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} />
+								</p>
+								<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
+									See gigs at this venue
+								</a>
+								<SocialLinks links={venue.entry.data.links} />
+							</div>
+						))
+					}
+				</div>
+			</Map>
+		</div>
+	</SidebarNav>
 </BaseLayout>
 
 <style is:global>

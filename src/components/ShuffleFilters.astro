@@ -23,15 +23,14 @@
 import { filtersWrapper, shuffleFilter } from './ShuffleFilters.css'
 
 interface Props {
-	hasSidebar?: boolean
 	itemselector?: string
 	boardselector?: string
 }
 
-const { hasSidebar, itemselector, boardselector } = Astro.props
+const { itemselector, boardselector } = Astro.props
 ---
 
-<div class={`${filtersWrapper[hasSidebar ? 'sidebar' : 'normal']}`} id="filters-wrapper">
+<div class={filtersWrapper} id="filters-wrapper">
 	<shuffle-filters data-itemselector={itemselector} data-boardselector={boardselector} class={shuffleFilter}>
 		<slot />
 	</shuffle-filters>

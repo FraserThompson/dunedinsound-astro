@@ -22,7 +22,6 @@ const { title, id, height, backgroundImage, backgroundImageVertical } = Astro.pr
 		[bannerHeight]: height
 	})}
 >
-	{backgroundImage && <BackgroundImage responsiveImage={backgroundImage} verticalImage={backgroundImageVertical} />}
 	<div class={BannerContent}>
 		{
 			title && (
@@ -32,12 +31,13 @@ const { title, id, height, backgroundImage, backgroundImageVertical } = Astro.pr
 			)
 		}
 		<div style={{ border: '2px inset', backgroundColor: 'black' }}>
-			<slot name="subtitle" />
 			<slot />
 		</div>
 	</div>
 	<div class={BackgroundContent}>
-		<slot name="background" />
+		<slot name="background">
+			{backgroundImage && <BackgroundImage responsiveImage={backgroundImage} verticalImage={backgroundImageVertical} />}
+		</slot>
 	</div>
 	<slot name="customContent" />
 </div>

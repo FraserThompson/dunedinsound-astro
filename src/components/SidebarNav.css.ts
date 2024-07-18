@@ -7,7 +7,7 @@ export const sidebarWrapper = style({
 	position: 'fixed',
 	backgroundColor: theme.color.primary,
 	height: `calc(100vh - ${theme.dimensions.headerHeightMobileTwice})`,
-	top: theme.dimensions.headerHeight,
+	top: theme.dimensions.headerHeightWithSubheader,
 	left: 0,
 	width: defaultWidth,
 	maxWidth: defaultWidth,
@@ -26,6 +26,7 @@ export const sidebarWrapper = style({
 	willChange: 'transform',
 	scrollbarWidth: 'thin',
 	scrollbarColor: 'gray black',
+	scrollBehavior: 'smooth',
 	selectors: {
 		'&.open': {
 			visibility: 'visible',
@@ -36,9 +37,7 @@ export const sidebarWrapper = style({
 	},
 	'@media': {
 		'screen and (--md)': {
-			top: theme.dimensions.headerHeight,
 			width: theme.dimensions.sidebarWidth,
-			height: `calc(100vh - ${theme.dimensions.headerHeight})`,
 			visibility: 'visible',
 			opacity: 1,
 			transform: `translateX(0)`,

@@ -66,6 +66,9 @@ vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessio
 				</blockquote>
 			)
 		}
+		<div slot="background">
+			<slot />
+		</div>
 	</Banner>
 	<ContentTabs tabs={tabs}>
 		<div data-tabid="gigs">

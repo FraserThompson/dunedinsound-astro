@@ -1,11 +1,15 @@
 ---
 import { FaBars } from 'react-icons/fa'
 import { sidebarWrapper, menuButtonWrapper } from './SidebarNav.css'
+import { theme } from 'src/Theme.css'
 ---
 
 <button id="sidebar-button" class={menuButtonWrapper}><FaBars /></button>
 <div id="sidebar" class={sidebarWrapper}>
-	<slot />
+	<slot name="sidebar" />
+</div>
+<div style={{ paddingLeft: theme.dimensions.sidebarWidth }}>
+	<slot name="content" />
 </div>
 
 <script>

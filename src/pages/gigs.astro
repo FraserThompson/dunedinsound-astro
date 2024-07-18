@@ -3,69 +3,74 @@ import SidebarNav from 'src/components/SidebarNav.astro'
 import GigsMenu from 'src/components/gigs/GigsMenu.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import Tile from 'src/components/Tile.astro'
-import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
+import { loadAndFormatCollection, sortGigs } from 'src/util/collection'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
-import { theme } from 'src/Theme.css'
+import FlexGridContainer from 'src/components/FlexGridContainer'
 
 const gigs = await loadAndFormatCollection('gig')
-
-interface MonthsGroup {
-	[month: string]: ProcessedEntry<'gig'>[]
-}
-
-export interface SortedGigs {
-	[year: string]: MonthsGroup
-}
-
-const monthMap: { [i: number]: string } = {
-	0: 'January',
-	1: 'February',
-	2: 'March',
-	3: 'April',
-	4: 'May',
-	5: 'June',
-	6: 'July',
-	7: 'August',
-	8: 'September',
-	9: 'October',
-	10: 'November',
-	11: 'December'
-}
-
-const sortedGigs = gigs.reduce((acc, gig) => {
-	const year = gig.entry.data.date.getFullYear()
-	const month = monthMap[gig.entry.data.date.getMonth()]
-
-	if (!acc[year]) {
-		acc[year] = {}
-	}
-	if (!acc[year][month]) {
-		acc[year][month] = []
-	}
-
-	acc[year][month].push(gig)
-
-	return acc
-}, {} as SortedGigs)
+const sortedGigs = sortGigs(gigs)
 ---
 
 <BaseLayout>
-	<ShuffleFilters itemselector=".tile" boardselector="#artist-grid" hasSidebar={true}>
+	<ShuffleFilters itemselector=".tile" boardselector="#gigs">
 		<div>
 			<span>Search: </span>
-			<input type="text" data-filter="title=value" placeholder="Search artists" />
+			<input type="text" data-filter="title=value" placeholder="Search by gig, artist, venue..." />
 		</div>
 	</ShuffleFilters>
-	<SidebarNav top={theme.dimensions.headerHeightWithSubheader}>
-		<GigsMenu sortedGigs={sortedGigs} />
+	<SidebarNav>
+		<GigsMenu sortedGigs={sortedGigs} slot="sidebar" />
+		<FlexGridContainer xs={12} sm={12} md={12} lg={12} id="gigs" slot="content" fixedWidth={true}>
+			{
+				gigs.map((gig) => (
+					<Tile
+						href={gig.extra.absolutePath}
+						responsiveImage={gig.extra.cover}
+						id={encodeURIComponent(gig.entry.id)}
+						label={gig.entry.data.date.toLocaleDateString()}
+						title={gig.entry.data.title}
+						containerHeight="30vh"
+						dataAttributes={{
+							'data-title': `${gig.entry.data.title} ${gig.extra.venue.data.title} ${gig.extra.artists.join(' ')}`
+						}}
+					>
+						<ul>
+							{gig.extra.artists.map((artist) => (
+								<li>{artist.data.title}</li>
+							))}
+						</ul>
+					</Tile>
+				))
+			}
+		</FlexGridContainer>
 	</SidebarNav>
-	<div style={{ paddingLeft: '300px' }}>
-		{
-			gigs.map((gig) => (
-				<Tile href={gig.extra.absolutePath} responsiveImage={gig.extra.cover}>
-					{gig.entry.data.date}
-				</Tile>
-			))
-		}
-	</div>
 </BaseLayout>
+
+<script>
+	import { elementIsVisibleInViewport } from 'src/util/helpers.ts'
+	const gigs = document.querySelectorAll('.tile')
+	const sidebar = document.querySelector('#sidebar')
+
+	const options = {
+		rootMargin: '-80px 0px -99%'
+	}
+
+	const callback = (entries: IntersectionObserverEntry[]) => {
+		entries.forEach((entry) => {
+			const sidebarItem = sidebar?.querySelector(`[href="#${entry.target.id}"]`)
+			if (entry.isIntersecting) {
+				sidebarItem?.classList.add('active')
+				const monthGroup = sidebarItem?.closest('.monthMenu')
+				if (sidebar && sidebarItem && !elementIsVisibleInViewport(sidebarItem)) {
+					// @ts-ignore
+					sidebar.scrollTop = monthGroup?.offsetTop
+				}
+			} else {
+				sidebarItem?.classList.remove('active')
+			}
+		})
+	}
+
+	const observer = new IntersectionObserver(callback, options)
+	gigs.forEach((el) => observer.observe(el))
+</script>

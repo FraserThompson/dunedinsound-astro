@@ -1,5 +1,5 @@
 ---
-import type { SortedGigs } from 'src/pages/gigs.astro'
+import type { SortedGigs } from 'src/util/collection.ts'
 import { yearHeader, monthHeader, gigLi, gigLink } from './GigsMenu.css'
 import { MenuLink, MenuWrapper } from '../Menu.css'
 
@@ -14,16 +14,18 @@ const { sortedGigs } = Astro.props
 	Object.entries(sortedGigs)
 		.reverse()
 		.map(([year, months]) => (
-			<ul class={MenuWrapper} style={{ overflow: 'initial' }}>
+			<ul class={`${MenuWrapper} yearMenu`} style={{ overflow: 'initial' }}>
 				<li class={yearHeader}>
 					<a class={gigLink}>{year}</a>
 				</li>
 				{Object.entries(months).map(([month, gigs]) => (
-					<ul class={MenuWrapper}>
+					<ul class={`${MenuWrapper} monthMenu`}>
 						{gigs.map((gig) => (
 							<ul class={MenuWrapper}>
 								<li class={gigLi}>
-									<a class={MenuLink['vertical']}>{gig.entry.data.title}</a>
+									<a class={MenuLink['vertical']} href={`#${encodeURIComponent(gig.entry.id)}`}>
+										{gig.entry.data.title}
+									</a>
 								</li>
 							</ul>
 						))}

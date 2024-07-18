@@ -1,6 +1,7 @@
 ---
 import ContentByEntry from 'src/layouts/ContentByEntry.astro'
 import { loadAndFormatCollection } from 'src/util/collection.ts'
+import Map from 'src/components/Map.astro'
 
 export async function getStaticPaths() {
 	const artistEntries = await loadAndFormatCollection('venue')
@@ -13,7 +14,13 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props
-
 ---
 
-{<ContentByEntry entry={entry}/>}
+<ContentByEntry entry={entry}>
+	<Map
+		markers={[{ coords: [entry.entry.data.lng, entry.entry.data.lat] }]}
+		center={[entry.entry.data.lng, entry.entry.data.lat]}
+		zoom="16"
+		nointeract={true}
+	/>
+</ContentByEntry>

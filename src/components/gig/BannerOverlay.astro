@@ -47,19 +47,18 @@ const { thisPost, nextPost, prevPost } = Astro.props
 			<div class="label">LATEST GIG</div>
 		)
 	}
-	<ShareButton
-		shareData={{
-			title: 'GIG MEDIA: ' + thisPost.entry.data.title,
-			url: 'https://dunedinsound.com' + thisPost.extra.slug,
-			description: `Photos, audio and video from ${thisPost.entry.data.title}.`
-		}}
-	/>
+	<div style={{ position: 'absolute', bottom: 0 }}>
+		<ShareButton
+			shareData={{
+				title: 'GIG MEDIA: ' + thisPost.entry.data.title,
+				url: 'https://dunedinsound.com' + thisPost.extra.slug,
+				description: `Photos, audio and video from ${thisPost.entry.data.title}.`
+			}}
+		/>
+	</div>
 </div>
 
 <style>
-	.wrapper {
-		position: static;
-	}
 	.nextPrevWrapper {
 		position: absolute;
 		&.prev {

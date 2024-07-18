@@ -11,6 +11,8 @@ import YoutubeResponsive from 'src/components/YoutubeResponsive'
 import FlexGridContainer from 'src/components/FlexGridContainer'
 import DropdownMenu from 'src/components/DropdownMenu'
 import { socialLinksToMenuItems } from 'src/util/helpers.ts'
+import SidebarNav from 'src/components/SidebarNav.astro'
+import { theme } from 'src/Theme.css'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -23,8 +25,9 @@ const entryExtra = entry.extra
 ---
 
 <BaseLayout>
+	<SidebarNav top={theme.dimensions.headerHeight} />
 	<Banner id="top" title={entryData.title} backgroundImage={entryExtra.cover}>
-		<h2 slot="subtitle">
+		<h2>
 			at{' '}
 			{
 				entryExtra.venue && (
@@ -37,7 +40,6 @@ const entryExtra = entry.extra
 				<small>{entryData.date.toLocaleDateString()}</small>
 			</p>
 		</h2>
-		<BannerOverlay thisPost={entry} nextPost={entry.next} prevPost={entry.prev} slot="customContent" />
 		<div>
 			{entryExtra.artists.map((artist) => <a href={`#${artist.id}`}>{artist.data.title}</a>)}
 		</div>
@@ -48,6 +50,7 @@ const entryExtra = entry.extra
 				</PlayerContainer>
 			)
 		}
+		<BannerOverlay thisPost={entry} nextPost={entry.next} prevPost={entry.prev} slot="customContent" />
 	</Banner>
 	<div>
 		<DropdownMenu
@@ -77,14 +80,14 @@ const entryExtra = entry.extra
 			))
 		}
 	</div>
-
-	<style>
-		h1,
-		h2 {
-			color: white;
-		}
-	</style>
 </BaseLayout>
+
+<style>
+	h1,
+	h2 {
+		color: white;
+	}
+</style>
 
 <script>
 	import browserHistory from 'src/util/history.ts'

@@ -99,7 +99,7 @@ createGlobalTheme(':root', theme, {
 		headerHeight: headerHeight,
 		headerHeightMobile: headerHeightMobile,
 		headerHeightMobileTwice: `calc(${headerHeightMobile} + ${headerHeightMobile})`,
-		headerHeightMobileWithSubheader: `calc(${headerHeightMobile}  + ${subheaderHeight} + 1px)`,
+		headerHeightMobileWithSubheader: `calc(${headerHeightMobile} + ${subheaderHeight} + 1px)`,
 		headerHeightWithSubheader: `calc(${headerHeight} + ${subheaderHeight} + 1px)`,
 		headerHeightNeg: `-${headerHeight}`,
 		subheaderHeight,

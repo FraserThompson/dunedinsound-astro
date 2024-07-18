@@ -47,14 +47,19 @@ export const calculateScrollHeaderOffset = (window: any, modifierDesktop = 0, mo
 /**
  * Click listener for an anchor element.
  * Scrolls to any anchor on the page. If no anchor supplied, scrolls to the clicked's href.
- * 
+ *
  * @param e
  * @param anchor
  * @param headerOffset
  * @param behavior
  * @returns
  */
-export const scrollTo = (e: MouseEvent, anchor?: string, headerOffset?: number, behavior: ScrollBehavior = 'smooth') => {
+export const scrollTo = (
+	e: MouseEvent,
+	anchor?: string,
+	headerOffset?: number,
+	behavior: ScrollBehavior = 'smooth'
+) => {
 	if (!(e.target instanceof HTMLAnchorElement)) return
 
 	e.preventDefault()
@@ -80,7 +85,6 @@ export const scrollTo = (e: MouseEvent, anchor?: string, headerOffset?: number, 
  * @returns
  */
 export const socialLinksToMenuItems = (links?: z.infer<typeof webLinks>): MenuLink[] => {
-
 	if (!links) return []
 
 	const iconMap: { [key: string]: string } = {
@@ -96,4 +100,34 @@ export const socialLinksToMenuItems = (links?: z.infer<typeof webLinks>): MenuLi
 	}))
 
 	return menuItems
+}
+
+export const monthMap: { [i: number]: string } = {
+	0: 'January',
+	1: 'February',
+	2: 'March',
+	3: 'April',
+	4: 'May',
+	5: 'June',
+	6: 'July',
+	7: 'August',
+	8: 'September',
+	9: 'October',
+	10: 'November',
+	11: 'December'
+}
+
+/**
+ * Returns true if an element is visible in the viewport.
+ * @param el 
+ * @param partiallyVisible 
+ * @returns 
+ */
+export const elementIsVisibleInViewport = (el: Element, partiallyVisible = false) => {
+	const { top, left, bottom, right } = el.getBoundingClientRect()
+	const { innerHeight, innerWidth } = window
+	return partiallyVisible
+		? ((top > 0 && top < innerHeight) || (bottom > 0 && bottom < innerHeight)) &&
+				((left > 0 && left < innerWidth) || (right > 0 && right < innerWidth))
+		: top >= 0 && left >= 0 && bottom <= innerHeight && right <= innerWidth
 }

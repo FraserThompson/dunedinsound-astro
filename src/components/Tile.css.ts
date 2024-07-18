@@ -8,11 +8,8 @@ export const heightHover = createVar()
 export const fontSize = createVar()
 
 const tileWrapperBase = style({
-	background: fallbackVar(background, 'radial-gradient(circle, black 0%, #161616 70%)'),
 	color: theme.color.text,
 	position: 'relative',
-	display: 'block',
-	height: fallbackVar(height, '40vh'),
 	overflow: 'hidden'
 })
 
@@ -30,13 +27,13 @@ export const tileWrapper = styleVariants({
 })
 
 export const tileInner = style({
-	height: '100%',
+	background: fallbackVar(background, 'radial-gradient(circle, black 0%, #161616 70%)'),
 	width: '100%',
-	position: 'relative',
+	height: fallbackVar(height, '40vh'),
 	transition: 'height 100ms ease-in-out',
+	position: 'relative',
 	selectors: {
 		'&:hover': {
-			height: fallbackVar(height, '42vh'),
 			color: theme.color.lightText,
 			textDecoration: 'none'
 		}
@@ -81,15 +78,11 @@ export const tileTitle = style({
 	transition: 'color 100ms ease-in-out'
 })
 
-export const tileSubtitle = style({
-	margin: '0px',
-	marginTop: 'auto',
-	lineHeight: '0.9',
+export const tileLabel = style({
 	textShadow: '1px 1px 1px black',
 	transition: 'color 100ms ease-in-out'
 })
 
-export const tileLabel = style({
-	textShadow: '1px 1px 1px black',
-	transition: 'color 100ms ease-in-out'
+globalStyle(`${tileInner}:hover .backgroundImage`, {
+	transform: 'scale(1.02, 1.02) !important'
 })
