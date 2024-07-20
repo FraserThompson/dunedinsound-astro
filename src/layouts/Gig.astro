@@ -25,15 +25,17 @@ const entryExtra = entry.extra
 <Banner id="top" title={entryData.title} backgroundImage={entryExtra.cover}>
 	<h3>
 		{entryData.date.toLocaleDateString()}
-		{
-			entryExtra.venue && (
+	</h3>
+	{
+		entryExtra.venue && (
+			<p>
 				<a href={`/venues/${entryExtra.venue.id}`} class="highlighted">
 					<MapIcon />
 					{entryExtra.venue.data.title}
 				</a>
-			)
-		}
-	</h3>
+			</p>
+		)
+	}
 	{
 		entryExtra.audio && (
 			<PlayerContainer>

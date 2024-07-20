@@ -14,7 +14,7 @@ export const shuffleFilter = style({
 })
 
 export const filtersWrapper = style({
-	zIndex: '8',
+	zIndex: '6',
 	position: 'sticky',
 	top: fallbackVar(top, theme.dimensions.headerHeight),
 	paddingLeft: '0px'

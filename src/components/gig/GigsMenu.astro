@@ -12,6 +12,7 @@ import {
 	artistsMenuWrapper
 } from './GigsMenu.css'
 import { makeHash } from 'src/util/helpers'
+import DropdownMenu from '../DropdownMenu'
 
 interface Props {
 	selected?: string
@@ -24,13 +25,26 @@ const { selected } = Astro.props
 ---
 
 <slot />
+
+<DropdownMenu
+	list={Object.keys(sortedGigs)
+		.reverse()
+		.map((year) => ({
+			hash: makeHash(year),
+			title: year
+		}))}
+	direction="down"
+	top={'0px'}
+	client:load
+/>
+
 <gigs-menu data-selected={selected}>
 	{
 		Object.entries(sortedGigs)
 			.reverse()
 			.map(([year, months]) => (
 				<ul class={`${gigsMenuWrapper} yearList`} style={{ overflow: 'initial' }}>
-					<li class={yearHeader}>
+					<li class={yearHeader} id={makeHash(year)}>
 						<a class={yearLink}>{year}</a>
 					</li>
 					{Object.entries(months).map(([month, gigs]) => (

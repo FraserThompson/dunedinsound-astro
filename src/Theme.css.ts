@@ -26,6 +26,7 @@ export const theme = createThemeContract({
 	},
 	borders: {
 		primary: '',
+		secondary: '',
 		contrast: ''
 	},
 	breakpoints: {
@@ -92,6 +93,7 @@ createGlobalTheme(':root', theme, {
 	},
 	borders: {
 		primary: `1px solid ${darken(0.025, primaryColor)}`,
+		secondary: `1px solid ${secondaryColor}`,
 		contrast: `1px solid ${contrastColor}`
 	},
 	dimensions: {

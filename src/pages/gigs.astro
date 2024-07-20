@@ -35,9 +35,9 @@ const gigs = await loadAndFormatCollection('gig')
 							'data-title': `${gig.entry.data.title} ${gig.extra.venue.data.title} ${artistsToString(gig.extra.artists)}`
 						}}
 					>
-						<p>
+						<h5>
 							{artistsToString(gig.extra.artists)} at {gig.extra.venue.data.title}
-						</p>
+						</h5>
 					</Tile>
 				))
 			}
@@ -65,7 +65,7 @@ const gigs = await loadAndFormatCollection('gig')
 				sidebarItem?.classList.add('active')
 				if (sidebar && sidebarItem && !elementIsVisibleInViewport(sidebarItem)) {
 					// @ts-ignore
-					sidebar.scrollTop = monthGroup?.offsetTop
+					//sidebar.scrollTop = monthGroup?.offsetTop
 				}
 			} else {
 				sidebarItem?.classList.remove('active')

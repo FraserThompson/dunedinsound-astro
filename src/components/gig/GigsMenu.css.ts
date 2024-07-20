@@ -24,7 +24,7 @@ export const yearHeader = style([
 		backgroundColor: theme.color.foreground,
 		padding: 0,
 		margin: 0,
-		zIndex: 8,
+		zIndex: 6,
 		fontWeight: 'bold'
 	}
 ])
@@ -48,7 +48,7 @@ export const artistLink = style([
 		selectors: {
 			'&.active': {
 				backgroundColor: theme.color.contrast2,
-				color: "black"
+				color: 'black'
 			}
 		}
 	}
@@ -57,7 +57,13 @@ export const artistLink = style([
 export const monthLink = style([
 	MenuLink['vertical'],
 	{
-		color: 'black'
+		color: 'black',
+		cursor: 'default',
+		selectors: {
+			'&:hover': {
+				color: 'black'
+			}
+		}
 	}
 ])
 

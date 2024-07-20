@@ -5,11 +5,11 @@ import { MenuLi, MenuLink, MenuWrapper } from './Menu.css'
 export const dropdownTop = createVar()
 
 export const dropdownWrapper = style({
-	position: 'fixed',
+	position: 'sticky',
 	top: fallbackVar(dropdownTop, theme.dimensions.headerHeightMobile),
 	zIndex: '7',
 	right: '0',
-	height: theme.dimensions.subheaderHeight,
+	height: '0',
 	'@media': {
 		'screen and (--md)': {
 			top: fallbackVar(dropdownTop, theme.dimensions.headerHeight)

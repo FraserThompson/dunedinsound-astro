@@ -40,8 +40,8 @@ globalStyle('p, span', {
 	fontSize: theme.font.baseSize
 })
 
-globalStyle('h1, h2', {
-	textShadow: '-1px -1px 0 rgba(0, 0, 0, 0.3)'
+globalStyle('h1, h2, h3, h5', {
+	textShadow: '-1px -1px 0 rgba(0, 0, 0, 1)'
 })
 
 globalStyle('h1', {
@@ -60,18 +60,19 @@ globalStyle('h3', {
 })
 
 globalStyle('h4', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 0.8)`,
+	fontSize: `calc(${theme.font.baseSize} * 0.8)`,
 	fontWeight: '200',
 	lineHeight: '1.1'
 })
 
 globalStyle('h5', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 1)`,
+	fontSize: `calc(${theme.font.baseSize} * 1)`,
+	fontWeight: '400',
 	lineHeight: '1.1'
 })
 
 globalStyle('h6', {
-	fontSize: `calc(${theme.font.baseLineHeight} * 0.8)`,
+	fontSize: `calc(${theme.font.baseSize} * 0.8)`,
 	lineHeight: '1.1'
 })
 
@@ -112,3 +113,19 @@ globalStyle('a', {
 globalStyle('a:hover', {
 	color: theme.color.lightSecondary
 })
+
+globalStyle('input[type="text"]', {
+	backgroundImage: 'none',
+	padding: '4px 6px',
+	border: '1px solid #000',
+	minWidth: "190px",
+	boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
+	transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s'
+})
+
+globalStyle('input[type="text"]:focus', {
+	border: theme.borders.secondary,
+	boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6)",
+	outline: 0
+})
+
