@@ -1,0 +1,42 @@
+---
+import { loadAndFormatCollection } from 'src/util/collection'
+import { MenuLi, MenuLink, MenuWrapper } from 'src/components/Menu.css'
+import ActiveIndicator from 'src/components/ActiveIndicator.astro'
+import type { CollectionKey } from 'astro:content'
+
+interface Props {
+	collection: CollectionKey
+	selected?: string
+}
+
+const { selected, collection } = Astro.props
+
+const entries = await loadAndFormatCollection(collection)
+---
+
+<slot />
+
+<ul id="sidebar-menu" class={MenuWrapper}>
+	{
+		entries.map((entry, i) => (
+			<li
+				data-title={entry.entry.data.title}
+				data-active={entry.entry.data.died === undefined ? 'true' : 'false'}
+				class={`sidebar-item ${MenuLi['vertical']} ${entry.entry.id === selected ? 'active' : ''}`}
+			>
+				<a class={MenuLink['vertical']} data-markerindex={i} href={selected ? entry.extra.absolutePath : undefined}>
+					{entry.entry.data.title}
+					<div style={{ position: 'absolute', right: '5px', top: '0px' }}>
+						<ActiveIndicator died={entry.entry.data.died} hideText={true} />
+					</div>
+				</a>
+			</li>
+		))
+	}
+</ul>
+
+<script define:vars={{ selected }}>
+	if (selected) {
+		document.querySelector('#sidebar-menu .active')?.scrollIntoView()
+	}
+</script>

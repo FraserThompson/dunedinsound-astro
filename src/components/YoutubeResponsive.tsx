@@ -1,7 +1,7 @@
 import type React from "preact/compat"
 import { useState, useEffect, useCallback } from "preact/compat"
 import YouTube from 'react-youtube'
-import { FaRegPlayCircle } from 'react-icons/fa'
+import PlayIcon from '~icons/bx/play-circle'
 import { placeholderLink, placeholderOverlay, placeholderOverlayTitle, watchOnYoutubeLink, youtubeWrapper } from './YoutubeResponsive.css'
 
 interface Props {
@@ -49,7 +49,7 @@ const YoutubeResponsive: React.FC<Props> = ({ videoId, className, vanilla, getPl
 						<img src={thumbnail} width="100%" height="auto" />
 						<div className={placeholderOverlay}>
 							<h4 className={placeholderOverlayTitle}>{title}</h4>
-							<FaRegPlayCircle size={"8em"} />
+							<PlayIcon style={{ fontSize: "8em" }} />
 						</div>
 					</a>
 					<a className={watchOnYoutubeLink} href={`https://www.youtube.com/watch?v=${videoId}`} rel="noopener" target="_blank" title="Watch video on YouTube">

@@ -1,5 +1,7 @@
-import { globalStyle, style, styleVariants } from '@vanilla-extract/css'
+import { createVar, fallbackVar, globalStyle, style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
+
+export const top = createVar()
 
 export const shuffleFilter = style({
 	paddingLeft: theme.dimensions.basePadding,
@@ -14,7 +16,7 @@ export const shuffleFilter = style({
 export const filtersWrapper = style({
 	zIndex: '8',
 	position: 'sticky',
-	top: theme.dimensions.headerHeight,
+	top: fallbackVar(top, theme.dimensions.headerHeight),
 	paddingLeft: '0px'
 })
 

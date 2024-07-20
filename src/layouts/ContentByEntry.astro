@@ -1,6 +1,5 @@
 ---
 import FlexGridContainer from 'src/components/FlexGridContainer'
-import BaseLayout from '../layouts/BaseLayout.astro'
 import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
 import Tile from 'src/components/Tile.astro'
 import DropdownMenu from 'src/components/DropdownMenu.tsx'
@@ -10,6 +9,7 @@ import Banner from 'src/components/Banner.astro'
 import ActiveIndicator from 'src/components/ActiveIndicator.astro'
 import { theme } from 'src/Theme.css'
 import SocialLinks from 'src/components/SocialLinks.astro'
+import { artistsToString } from 'src/util/helpers'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
@@ -45,94 +45,100 @@ blogs.length > 0 && tabs.push({ title: `Articles (${blogs.length})`, id: 'blogs'
 vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessions' })
 ---
 
-<BaseLayout>
-	<Banner
-		title={entryData.title + ('origin' in entryData ? ` (${entryData.origin})` : '')}
-		backgroundImage={entryExtra.cover}
-	>
-		<div slot="subtitle">
-			<ActiveIndicator
-				born={entryData.date}
-				died={entryData.died}
-				inactiveText={entry.entry.collection === 'artist' ? 'Inactive' : 'Defunct'}
-			/>
-		</div>
-		{entryData.links && <SocialLinks links={entryData.links} />}
-		{entryData.description && <Fragment set:html={entryData.description} />}
+<Banner
+	title={entryData.title + ('origin' in entryData ? ` (${entryData.origin})` : '')}
+	backgroundImage={entryExtra.cover}
+>
+	<div slot="subtitle">
+		<ActiveIndicator
+			born={entryData.date}
+			died={entryData.died}
+			inactiveText={entry.entry.collection === 'artist' ? 'Inactive' : 'Defunct'}
+		/>
+	</div>
+	{entryData.links && <SocialLinks links={entryData.links} />}
+	{
+		entryData.description && (
+			<p>
+				<Fragment set:html={entryData.description} />
+			</p>
+		)
+	}
+	{
+		entryData.links && 'audioculture' in entryData.links && (
+			<blockquote cite={entryData.links['audioculture']?.link}>
+				"{entryData.links['audioculture']?.snippet}" - <span>Audioculture</span>
+			</blockquote>
+		)
+	}
+	<div slot="background">
+		<slot />
+	</div>
+</Banner>
+<ContentTabs tabs={tabs}>
+	<div data-tabid="gigs">
+		<DropdownMenu
+			direction="down"
+			top={theme.dimensions.headerHeightWithSubheader}
+			list={years.map((year) => ({ title: year, hash: `y${year}` }))}
+			client:load
+		/>
 		{
-			entryData.links && 'audioculture' in entryData.links && (
-				<blockquote cite={entryData.links['audioculture']?.link}>
-					"{entryData.links['audioculture']?.snippet}" - <span>Audioculture</span>
-				</blockquote>
-			)
+			Object.entries(gigsByYear)
+				.reverse()
+				.map(([year, gigs]) => (
+					<div id={`y${year}`}>
+						<Divider
+							backgroundColor={theme.color.foreground}
+							href={`#y${year}`}
+							sticky={theme.dimensions.headerHeightWithSubheader}
+							smoothScroll={true}
+							client:load
+						>
+							{year} ({gigs?.length})
+						</Divider>
+						<FlexGridContainer>
+							{gigs?.map((gig) => (
+								<Tile
+									href={gig.extra.absolutePath}
+									title={gig.entry.data.title}
+									label={gig.entry.data.date.toLocaleDateString()}
+									responsiveImage={gig.extra.cover}
+								>
+									<p>{artistsToString(gig.extra.artists)}</p>
+								</Tile>
+							))}
+						</FlexGridContainer>
+					</div>
+				))
 		}
-		<div slot="background">
-			<slot />
-		</div>
-	</Banner>
-	<ContentTabs tabs={tabs}>
-		<div data-tabid="gigs">
-			<DropdownMenu
-				direction="down"
-				top={theme.dimensions.headerHeightWithSubheader}
-				list={years.map((year) => ({ title: year, hash: `y${year}` }))}
-				client:load
-			/>
+	</div>
+	<div data-tabid="blogs">
+		<FlexGridContainer>
 			{
-				Object.entries(gigsByYear)
-					.reverse()
-					.map(([year, gigs]) => (
-						<div id={`y${year}`}>
-							<Divider
-								backgroundColor={theme.color.foreground}
-								href={`#y${year}`}
-								sticky={theme.dimensions.headerHeightWithSubheader}
-								smoothScroll={true}
-								client:load
-							>
-								{year} ({gigs?.length})
-							</Divider>
-							<FlexGridContainer>
-								{gigs?.map((gig) => (
-									<Tile
-										href={gig.extra.absolutePath}
-										title={gig.entry.data.title}
-										label={gig.entry.data.date.toLocaleDateString()}
-										responsiveImage={gig.extra.cover}
-									/>
-								))}
-							</FlexGridContainer>
-						</div>
-					))
+				blogs.map((blog) => (
+					<Tile
+						href={blog.extra.absolutePath}
+						title={blog.entry.data.title}
+						label={blog.entry.data.date.toLocaleDateString()}
+						responsiveImage={blog.extra.cover}
+					/>
+				))
 			}
-		</div>
-		<div data-tabid="blogs">
-			<FlexGridContainer>
-				{
-					blogs.map((blog) => (
-						<Tile
-							href={blog.extra.absolutePath}
-							title={blog.entry.data.title}
-							label={blog.entry.data.date.toLocaleDateString()}
-							responsiveImage={blog.extra.cover}
-						/>
-					))
-				}
-			</FlexGridContainer>
-		</div>
-		<div data-tabid="vaultsessions">
-			<FlexGridContainer>
-				{
-					vaultSessions.map((vaultsession) => (
-						<Tile
-							href={vaultsession.extra.absolutePath}
-							title={vaultsession.entry.data.title}
-							label={vaultsession.entry.data.date.toLocaleDateString()}
-							responsiveImage={vaultsession.extra.cover}
-						/>
-					))
-				}
-			</FlexGridContainer>
-		</div>
-	</ContentTabs>
-</BaseLayout>
+		</FlexGridContainer>
+	</div>
+	<div data-tabid="vaultsessions">
+		<FlexGridContainer>
+			{
+				vaultSessions.map((vaultsession) => (
+					<Tile
+						href={vaultsession.extra.absolutePath}
+						title={vaultsession.entry.data.title}
+						label={vaultsession.entry.data.date.toLocaleDateString()}
+						responsiveImage={vaultsession.extra.cover}
+					/>
+				))
+			}
+		</FlexGridContainer>
+	</div>
+</ContentTabs>

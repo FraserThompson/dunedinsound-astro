@@ -1,6 +1,6 @@
 import type React from "preact/compat"
 import { useRef, useState, useEffect, useCallback } from "preact/compat"
-import { FaBars } from 'react-icons/fa'
+import MenuIcon from '~icons/bx/menu'
 import { dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownWrapper } from './DropdownMenu.css'
 import { scrollTo } from 'src/util/helpers'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
@@ -71,7 +71,7 @@ const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top }) => {
 			<a className={dropdownButtonWrapper} aria-haspopup="true" onClick={toggleMenu}>
 				<div className={dropdownButtonIcon}>
 					{menuTitle}
-					<FaBars />
+					<MenuIcon />
 				</div>
 			</a>
 			<ul className={`${dropdownMenu} ${open ? 'open' : ''} ${direction}`}>

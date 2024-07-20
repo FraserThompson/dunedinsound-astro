@@ -11,7 +11,6 @@ import {
 	background,
 	height,
 	width,
-	heightHover,
 	fontSize
 } from './Tile.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
@@ -73,14 +72,8 @@ const {
 							</h3>
 						)
 					}
-					{
-						label && (
-							<h3 class={tileLabel}>
-								<strong>{label}</strong>
-							</h3>
-						)
-					}
-					<div style={{ marginTop: 'auto' }}>
+					{label && <h4 class={tileLabel}>{label}</h4>}
+					<div style={{ marginTop: 'auto', textAlign: 'center' }}>
 						<slot />
 					</div>
 				</div>

@@ -1,5 +1,6 @@
 ---
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa'
+import ChevronDownIcon from '~icons/bx/chevron-down'
+import ChevronUpIcon from '~icons/bx/chevron-up'
 import { playerWrapper, openButtonWrapper, openButton, player } from './PlayerContainer.css'
 
 interface Props {
@@ -14,10 +15,10 @@ const { minimizedAlways } = Astro.props
 		<button class={openButton} id="open-button">
 			<span>AUDIO</span>
 			<span class="up-icon">
-				<FaChevronUp />
+				<ChevronUpIcon />
 			</span>
 			<span class="down-icon hidden">
-				<FaChevronDown />
+				<ChevronDownIcon />
 			</span>
 		</button>
 	</div>

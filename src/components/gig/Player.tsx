@@ -19,14 +19,17 @@
 
 import type React from "preact/compat"
 import { useRef, useState, useEffect, useCallback } from "preact/compat"
-import { FaPlayCircle, FaPauseCircle, FaBackward, FaForward, FaDownload } from 'react-icons/fa'
-import { RoundButton } from './RoundButton.css'
-import LoadingSpinner from './LoadingSpinner.tsx'
-import { timeToSeconds } from '../util/helpers'
+import PlayIcon from '~icons/bx/play-circle'
+import PauseIcon from '~icons/bx/pause-circle'
+import ArrowRightIcon from '~icons/bx/skip-next'
+import ArrowLeftIcon from '~icons/bx/skip-previous'
+import DownloadIcon from '~icons/bx/download'
+import { RoundButton } from '../RoundButton.css.ts'
+import LoadingSpinner from '../LoadingSpinner.tsx'
+import { timeToSeconds } from '../../util/helpers.ts'
 import { AudioWrapper, LengthWrapper, PlayerWrapper, Titlebar, TracklistTrack, TracklistWrapper, TransportButton, WaveWrapper } from './Player.css.ts'
 import WaveSurfer from 'wavesurfer.js'
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.esm.js'
-import { MenuLink, MenuWrapper } from './Menu.css.ts'
 import type { ArtistAudio } from "src/util/collection.ts"
 
 interface Props {
@@ -229,13 +232,13 @@ const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = 
 				{!barebones && (
 					<div>
 						<button className={TransportButton} disabled={!ready} id="prev" onClick={() => previous()}>
-							<FaBackward />
+							<ArrowLeftIcon />
 						</button>
 						<button disabled={!ready} className={playing ? `${RoundButton} active` : RoundButton} onClick={() => wavesurfer && wavesurfer.playPause()}>
-							{!playing ? <FaPlayCircle /> : <FaPauseCircle />}
+							{!playing ? <PlayIcon /> : <PauseIcon />}
 						</button>
 						<button className={TransportButton} disabled={!ready} id="next" onClick={() => next()}>
-							<FaForward />
+							<ArrowRightIcon />
 						</button>
 					</div>
 				)}
@@ -260,7 +263,7 @@ const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = 
 								</span>
 								<span className="listButton" style={{ float: "right" }}>
 									<a title={'Download MP3: ' + item.title} href={item.files[0]} target="_blank">
-										<FaDownload />
+										<DownloadIcon />
 									</a>
 								</span>
 							</li>

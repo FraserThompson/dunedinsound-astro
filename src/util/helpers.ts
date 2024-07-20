@@ -6,6 +6,7 @@ import instaIcon from 'src/assets/instagram-icon.png'
 import type { z } from 'astro/zod'
 import type { webLinks } from 'src/content/config'
 import type { MenuLink } from 'src/components/Menu'
+import type { CollectionEntry } from 'astro:content'
 
 /**
  * Turns a 00:00 timestring into total seconds.
@@ -119,9 +120,9 @@ export const monthMap: { [i: number]: string } = {
 
 /**
  * Returns true if an element is visible in the viewport.
- * @param el 
- * @param partiallyVisible 
- * @returns 
+ * @param el
+ * @param partiallyVisible
+ * @returns
  */
 export const elementIsVisibleInViewport = (el: Element, partiallyVisible = false) => {
 	const { top, left, bottom, right } = el.getBoundingClientRect()
@@ -131,3 +132,22 @@ export const elementIsVisibleInViewport = (el: Element, partiallyVisible = false
 				((left > 0 && left < innerWidth) || (right > 0 && right < innerWidth))
 		: top >= 0 && left >= 0 && bottom <= innerHeight && right <= innerWidth
 }
+
+/**
+ * Takes a list of artist entries and turns them into a comma seperated string.
+ * @param artistList
+ * @returns
+ */
+export const artistsToString = (artistList: CollectionEntry<'artist'>[]) => {
+	return artistList.reduce((acc, artist, i) => {
+		acc += artist.data.title + (i < artistList.length - 1 ? ', ' : '')
+		return acc
+	}, '')
+}
+
+/**
+ * Takes a string and encodes it into a hash.
+ * @param string
+ * @returns
+ */
+export const makeHash = (string: string) => 'h' + encodeURIComponent(string)

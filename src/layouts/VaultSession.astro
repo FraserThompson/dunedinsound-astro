@@ -1,5 +1,4 @@
 ---
-import BaseLayout from './BaseLayout.astro'
 import type { ProcessedEntry } from 'src/util/collection.ts'
 
 interface Props {
@@ -8,6 +7,4 @@ interface Props {
 const { entry } = Astro.props
 ---
 
-<BaseLayout>
-	<h3>{entry.entry.id}</h3>
-</BaseLayout>
+<h3>{entry.entry.id}</h3>

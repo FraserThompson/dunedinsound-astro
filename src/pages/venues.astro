@@ -1,12 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
-import { MenuLi, MenuLink, MenuWrapper } from 'src/components/Menu.css'
-import Map from 'src/components/Map.astro'
+import Map from 'src/components/venue/Map.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import ActiveIndicator from 'src/components/ActiveIndicator.astro'
 import SocialLinks from 'src/components/SocialLinks.astro'
 import SidebarNav from 'src/components/SidebarNav.astro'
+import EntryMenu from 'src/components/EntryMenu.astro'
+import { theme } from 'src/Theme.css'
 
 const venues = await loadAndFormatCollection('venue')
 
@@ -33,25 +34,8 @@ const markers = venues.map((venue) => ({
 			</label>
 		</div>
 	</ShuffleFilters>
-	<SidebarNav>
-		<ul slot="sidebar" id="sidebar-menu" class={MenuWrapper}>
-			{
-				venues.map((venue, i) => (
-					<li
-						data-title={venue.entry.data.title}
-						data-active={venue.entry.data.died === undefined ? 'true' : 'false'}
-						class={`sidebar-item ${MenuLi['vertical']}`}
-					>
-						<a class={MenuLink['vertical']} data-markerindex={i}>
-							{venue.entry.data.title}
-							<div style={{ position: 'absolute', right: '5px', top: '0px' }}>
-								<ActiveIndicator died={venue.entry.data.died} hideText={true} />
-							</div>
-						</a>
-					</li>
-				))
-			}
-		</ul>
+	<SidebarNav top={theme.dimensions.headerHeightWithSubheader}>
+		<EntryMenu collection="venue" slot="sidebar" />
 		<div slot="content">
 			<Map markers={markers}>
 				<div slot="popups">

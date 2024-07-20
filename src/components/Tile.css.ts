@@ -4,13 +4,13 @@ import { theme } from 'src/Theme.css'
 export const background = createVar()
 export const height = createVar()
 export const width = createVar()
-export const heightHover = createVar()
 export const fontSize = createVar()
 
 const tileWrapperBase = style({
 	color: theme.color.text,
 	position: 'relative',
-	overflow: 'hidden'
+	overflow: 'clip',
+	scrollMarginTop: theme.dimensions.headerHeightWithSubheader
 })
 
 /**
@@ -40,11 +40,15 @@ export const tileInner = style({
 	}
 })
 
+globalStyle(`${tileInner} > a`, {
+	color: 'white'
+})
+
 export const titleWrapper = style({
 	zIndex: '5',
 	position: 'absolute',
 	bottom: '0px',
-	background: 'radial-gradient(circle at center, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4) 60%)',
+	background: 'radial-gradient(circle, rgba(0,0,0,0.5) 0%, rgba(255,255,255,0) 95%)',
 	height: '100%',
 	width: '100%',
 	display: 'flex'
@@ -54,7 +58,8 @@ export const tileContent = style({
 	width: '100%',
 	marginLeft: '0',
 	display: 'flex',
-	flexDirection: 'column'
+	flexDirection: 'column',
+	padding: theme.dimensions.basePadding
 })
 
 export const tileTextContent = style({
@@ -72,6 +77,7 @@ globalStyle(`${tileTextContent} > div`, {
 
 export const tileTitle = style({
 	marginLeft: '0',
+	textAlign: 'center',
 	marginBottom: '5px',
 	color: 'inherit',
 	textShadow: '1px 1px 1px black',
@@ -80,7 +86,8 @@ export const tileTitle = style({
 
 export const tileLabel = style({
 	textShadow: '1px 1px 1px black',
-	transition: 'color 100ms ease-in-out'
+	transition: 'color 100ms ease-in-out',
+	textAlign: 'center'
 })
 
 globalStyle(`${tileInner}:hover .backgroundImage`, {

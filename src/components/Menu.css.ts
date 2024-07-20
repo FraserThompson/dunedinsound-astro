@@ -1,4 +1,4 @@
-import { style, styleVariants } from '@vanilla-extract/css'
+import { globalStyle, style, styleVariants } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 export const MenuWrapper = style({
@@ -48,7 +48,8 @@ const MenuLinkBase = style({
 	position: 'relative',
 	textDecoration: 'none',
 	whiteSpace: 'nowrap',
-	lineHeight: theme.dimensions.headerHeightMobile,
+	lineHeight: theme.dimensions.headerHeight,
+	height: theme.dimensions.headerHeight,
 	margin: '0px',
 	paddingLeft: theme.dimensions.basePadding,
 	paddingRight: theme.dimensions.basePadding,
@@ -61,12 +62,12 @@ const MenuLinkBase = style({
 			backgroundColor: theme.color.secondary,
 			color: theme.color.lightText
 		}
-	},
-	'@media': {
-		'screen and (--md)': {
-			lineHeight: theme.dimensions.headerHeight
-		}
 	}
+})
+
+
+globalStyle(`${MenuLiBase}.active > ${MenuLinkBase}`, {
+	color: 'white'
 })
 
 export const MenuLink = styleVariants({

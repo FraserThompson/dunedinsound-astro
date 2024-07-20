@@ -1,13 +1,15 @@
-import { style } from '@vanilla-extract/css'
+import { createVar, style, fallbackVar } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 const defaultWidth = '80vh'
 
+export const offsetTop = createVar()
+
 export const sidebarWrapper = style({
 	position: 'fixed',
 	backgroundColor: theme.color.primary,
-	height: `calc(100vh - ${theme.dimensions.headerHeightMobileTwice})`,
-	top: theme.dimensions.headerHeightWithSubheader,
+	height: `calc(100vh - ${fallbackVar(offsetTop, theme.dimensions.headerHeight)})`,
+	top: fallbackVar(offsetTop, theme.dimensions.headerHeight),
 	left: 0,
 	width: defaultWidth,
 	maxWidth: defaultWidth,

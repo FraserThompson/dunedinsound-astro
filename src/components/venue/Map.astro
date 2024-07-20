@@ -33,13 +33,12 @@ interface Props {
 }
 
 const { markers, zoom, center, nointeract } = Astro.props
-
 ---
 
 <map-wrapper
 	data-markers={JSON.stringify(markers)}
 	data-center={JSON.stringify(center)}
-	data-nointeract={nointeract ? "true" : undefined}
+	data-nointeract={nointeract ? 'true' : undefined}
 	data-zoom={zoom}
 	style={{ position: 'relative', overflow: 'hidden' }}
 >
@@ -144,20 +143,24 @@ const { markers, zoom, center, nointeract } = Astro.props
 			this.sidebarLinks.forEach((link) => link.addEventListener('mousedown', (e) => this.sidebarClick(e)))
 
 			// Support for hiding markers on shuffle filter
-			document.addEventListener(
-				'shuffle-filter',
-				(e: any) => {
-					const shuffle = e.detail as Shuffle
-					shuffle.items.forEach((item, i) => {
-						if (!item.isVisible) {
-							this.markers[i].remove()
-						} else {
-							this.markers[i].addTo(this.map)
-						}
-					})
-				},
-				false
-			)
+				document.addEventListener(
+					'shuffle-filter',
+					(e: any) => {
+						const shuffle = e.detail as Shuffle
+
+						// Only hide markers if we have identical number of shuffle items
+						if (shuffle.items.length !== this.markers.length) return
+
+						shuffle.items.forEach((item, i) => {
+							if (!item.isVisible) {
+								this.markers[i].remove()
+							} else {
+								this.markers[i].addTo(this.map)
+							}
+						})
+					},
+					false
+				)
 		}
 
 		disconnectedCallback() {}

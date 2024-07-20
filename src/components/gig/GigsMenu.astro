@@ -1,0 +1,183 @@
+---
+import { loadAndFormatCollection, sortGigs } from 'src/util/collection.ts'
+import {
+	yearHeader,
+	monthHeader,
+	gigLi,
+	gigLink,
+	artistLink,
+	yearLink,
+	monthLink,
+	gigsMenuWrapper,
+	artistsMenuWrapper
+} from './GigsMenu.css'
+import { makeHash } from 'src/util/helpers'
+
+interface Props {
+	selected?: string
+}
+
+const gigs = await loadAndFormatCollection('gig')
+const sortedGigs = sortGigs(gigs)
+
+const { selected } = Astro.props
+---
+
+<slot />
+<gigs-menu data-selected={selected}>
+	{
+		Object.entries(sortedGigs)
+			.reverse()
+			.map(([year, months]) => (
+				<ul class={`${gigsMenuWrapper} yearList`} style={{ overflow: 'initial' }}>
+					<li class={yearHeader}>
+						<a class={yearLink}>{year}</a>
+					</li>
+					{Object.entries(months).map(([month, gigs]) => (
+						<ul class={`${gigsMenuWrapper} monthList`}>
+							<li class={monthHeader}>
+								<a class={monthLink}>{month}</a>
+							</li>
+							{gigs.map((gig) => (
+								<Fragment>
+									<li
+										class={`${gigLi} gigItem ${gig.entry.id === selected ? 'active' : ''}`}
+										data-gig={!selected && makeHash(gig.entry.id)}
+									>
+										<a class={gigLink} href={!selected ? `#${makeHash(gig.entry.id)}` : gig.extra.absolutePath}>
+											{gig.entry.data.title}
+										</a>
+									</li>
+									{gig.entry.id === selected && (
+										<artists-menu>
+											<ul class={artistsMenuWrapper}>
+												{gig.extra.artists.map((artist) => (
+													<li class={gigLi}>
+														<a class={artistLink} href={`#${artist.id}`}>
+															{artist.data.title}
+														</a>
+													</li>
+												))}
+											</ul>
+										</artists-menu>
+									)}
+								</Fragment>
+							))}
+						</ul>
+					))}
+				</ul>
+			))
+	}
+</gigs-menu>
+
+<script>
+	import type Shuffle from 'shufflejs'
+	import { scrollTo, makeHash } from 'src/util/helpers'
+	import browserHistory from 'src/util/history'
+	import type { Location } from 'history'
+
+	class ArtistsMenu extends HTMLElement {
+		unlisten: any
+
+		selectedArtist: Element | undefined
+
+		constructor() {
+			super()
+		}
+
+		handleURLChange(location: Location) {
+			if (location.hash) {
+				const newSelectedId = location.hash
+				const selectedItem = this.querySelector(`[href="${newSelectedId}"]`)
+				if (!selectedItem) return
+
+				this.selectedArtist && this.selectedArtist.classList.remove('active')
+				this.selectedArtist = selectedItem
+				this.selectedArtist && this.selectedArtist.classList.add('active')
+			}
+		}
+
+		connectedCallback() {
+			this.unlisten = browserHistory?.listen((location) => this.handleURLChange(location.location))
+		}
+
+		disconnectedCallback() {
+			this.unlisten && this.unlisten()
+		}
+	}
+
+	class GigsMenu extends HTMLElement {
+		_internals: any
+
+		months: NodeListOf<HTMLElement> | null
+		years: NodeListOf<HTMLElement> | null
+		gigLinks: NodeListOf<HTMLElement> | null
+
+		constructor() {
+			super()
+			this._internals = this.attachInternals()
+
+			this.months = this.querySelectorAll('.monthList')
+			this.years = this.querySelectorAll('.yearList')
+			this.gigLinks = this.querySelectorAll('[data-gig]')
+
+			const selected = this.getAttribute('data-selected')
+			if (selected) {
+				const selectedItem = this.querySelector(`[data-gig="${makeHash(selected)}"]`)
+				selectedItem?.scrollIntoView()
+			}
+		}
+
+		onShuffle(e: any) {
+			const shuffle = e.detail as Shuffle
+
+			shuffle.items.forEach((item) => {
+				const gigId = item.element.id
+				const sidebarItem = this.querySelector(`[data-gig="${gigId}"]`)
+
+				const monthList = sidebarItem?.parentElement
+				if (!monthList) return
+
+				const yearList = monthList.parentElement
+				if (!yearList) return
+
+				// Hide items filtered out by shuffle
+				if (!item.isVisible) {
+					sidebarItem?.classList.add('hidden')
+				} else {
+					sidebarItem?.classList.remove('hidden')
+				}
+
+				// Hide months without any visible gigs
+				const gigsInGroup = monthList.childElementCount - 1
+				const hiddenGigsInGroup = monthList?.querySelectorAll('.gigItem.hidden').length
+
+				if (gigsInGroup === hiddenGigsInGroup) {
+					monthList.classList.add('hidden')
+				} else {
+					monthList.classList.remove('hidden')
+				}
+
+				// Hide years without any visible months
+				const monthsInYear = yearList.childElementCount - 1
+				const hiddenMonthsInGroup = yearList.querySelectorAll('.monthList.hidden').length
+
+				if (monthsInYear === hiddenMonthsInGroup) {
+					yearList.classList.add('hidden')
+				} else {
+					yearList.classList.remove('hidden')
+				}
+			})
+		}
+
+		connectedCallback() {
+			document.addEventListener('shuffle-filter', (e: any) => this.onShuffle(e), false)
+			this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e) => scrollTo(e)))
+		}
+
+		disconnectedCallback() {}
+	}
+
+	customElements.define('gigs-menu', GigsMenu)
+	customElements.define('artists-menu', ArtistsMenu)
+</script>

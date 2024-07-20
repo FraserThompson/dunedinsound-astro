@@ -6,7 +6,6 @@ export const dropdownTop = createVar()
 
 export const dropdownWrapper = style({
 	position: 'fixed',
-	width: '100%',
 	top: fallbackVar(dropdownTop, theme.dimensions.headerHeightMobile),
 	zIndex: '7',
 	right: '0',
@@ -67,8 +66,7 @@ export const dropdownMenu = style([
 export const dropdownLi = style([
 	MenuLi['vertical'],
 	{
-		paddingLeft: theme.dimensions.basePadding,
-		paddingRight: theme.dimensions.basePadding
+		width: "initial"
 	}
 ])
 

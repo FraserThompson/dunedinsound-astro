@@ -1,6 +1,7 @@
 ---
 import { loadAndFormatCollection } from 'src/util/collection.ts'
 import Blog from '../../layouts/Blog.astro'
+import BaseLayout from 'src/layouts/BaseLayout.astro'
 
 export async function getStaticPaths() {
 	const entries = await loadAndFormatCollection('blog')
@@ -15,4 +16,6 @@ export async function getStaticPaths() {
 const { entry } = Astro.props
 ---
 
-{<Blog entry={entry}/>}
+<BaseLayout>
+	<Blog entry={entry} />
+</BaseLayout>

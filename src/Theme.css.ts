@@ -50,7 +50,7 @@ export const theme = createThemeContract({
 	}
 })
 
-const headerHeight = '40px'
+const headerHeight = '30px'
 const headerHeightMobile = '40px'
 const subheaderHeight = '30px'
 
@@ -103,10 +103,10 @@ createGlobalTheme(':root', theme, {
 		headerHeightWithSubheader: `calc(${headerHeight} + ${subheaderHeight} + 1px)`,
 		headerHeightNeg: `-${headerHeight}`,
 		subheaderHeight,
-		sidebarWidth: '300px',
+		sidebarWidth: '320px',
 		viewportHeight: `calc(100vh - ${headerHeight})`,
 		footerHeight: '280px',
 		contentContainerWidth: '740px',
-		defaultBannerHeight: '70vh'
+		defaultBannerHeight: '60vh'
 	}
 })

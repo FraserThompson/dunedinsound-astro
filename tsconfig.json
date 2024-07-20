@@ -8,6 +8,10 @@
     "paths": {
       "react": ["./node_modules/preact/compat/"],
       "react-dom": ["./node_modules/preact/compat/"]
-    }
+    },
+    "types": [
+      "unplugin-icons/types/astro",
+      "unplugin-icons/types/preact",
+    ]
   }
 }

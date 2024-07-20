@@ -1,11 +1,24 @@
 ---
-import { FaBars } from 'react-icons/fa'
-import { sidebarWrapper, menuButtonWrapper } from './SidebarNav.css'
+import MenuIcon from '~icons/bx/menu'
+import { sidebarWrapper, menuButtonWrapper, offsetTop } from './SidebarNav.css'
 import { theme } from 'src/Theme.css'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
+
+interface Props {
+	top?: string
+}
+
+const { top } = Astro.props
 ---
 
-<button id="sidebar-button" class={menuButtonWrapper}><FaBars /></button>
-<div id="sidebar" class={sidebarWrapper}>
+<button id="sidebar-button" class={menuButtonWrapper}><MenuIcon /></button>
+<div
+	id="sidebar"
+	class={sidebarWrapper}
+	style={assignInlineVars({
+		[offsetTop]: top
+	})}
+>
 	<slot name="sidebar" />
 </div>
 <div style={{ paddingLeft: theme.dimensions.sidebarWidth }}>

@@ -1,4 +1,8 @@
 ---
+import EntryMenu from 'src/components/EntryMenu.astro'
+import ShuffleFilters from 'src/components/ShuffleFilters.astro'
+import SidebarNav from 'src/components/SidebarNav.astro'
+import BaseLayout from 'src/layouts/BaseLayout.astro'
 import ContentByEntry from 'src/layouts/ContentByEntry.astro'
 import { loadAndFormatCollection } from 'src/util/collection.ts'
 
@@ -13,7 +17,18 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props
-
 ---
 
-{<ContentByEntry entry={entry}/>}
+<BaseLayout>
+	<SidebarNav>
+		<EntryMenu slot="sidebar" collection="artist" selected={entry.entry.id}>
+			<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu" offsetTop="0px">
+				<div>
+					<span>Search: </span>
+					<input type="text" data-filter="title=value" placeholder="Search artists" />
+				</div>
+			</ShuffleFilters>
+		</EntryMenu>
+		<ContentByEntry entry={entry} slot="content" />
+	</SidebarNav>
+</BaseLayout>

@@ -1,5 +1,5 @@
 import { style, globalStyle, styleVariants } from '@vanilla-extract/css'
-import { MenuWrapper } from './Menu.css'
+import { MenuWrapper } from '../Menu.css'
 
 const PlayerWrapperBase = style({
 	transition: 'all 150ms ease-in-out',
