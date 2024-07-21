@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content'
+import { infoHeader } from './WebsiteInfo.css'
+import { fdir } from 'fdir'
+
+const currentYear = new Date().getFullYear()
+
+const gigs = await getCollection('gig')
+const artists = await getCollection('artist')
+const venues = await getCollection('venue')
+
+const imagesCount = await new fdir().onlyCounts().onlyDirs().glob('**/**/*').crawl('public/media/gig').withPromise()
+const audioCount = await new fdir().onlyCounts().glob('*.mp3').crawl('public/media/gig').withPromise()
+---
+
+<div class={infoHeader}>
+	<div class="content">
+		<div class="title">
+			<h1>THE DUNEDINSOUND.COM UNIVERSE</h1>
+		</div>
+		<table>
+			<tbody>
+				<tr>
+					<td>gigs</td>
+					<td>{gigs.length}</td>
+				</tr>
+				<tr>
+					<td>artists</td>
+					<td>{artists.length}</td>
+				</tr>
+				<tr>
+					<td>venues</td>
+					<td>{venues.length}</td>
+				</tr>
+				<tr>
+					<td>photos</td>
+					<td>{imagesCount.directories}</td>
+				</tr>
+				<tr>
+					<td>audio</td>
+					<td>{audioCount.files}</td>
+				</tr>
+				<tr>
+					<td>years in operation</td>
+					<td>{currentYear - 2014}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

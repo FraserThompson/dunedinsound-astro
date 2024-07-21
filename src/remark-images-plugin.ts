@@ -13,7 +13,6 @@ export function remarkImagesPlugin() {
 
 		// This feels hacky but its the only place i could find the filename
 		const filename = path.basename(file.history[0])
-		console.log(file.history[0])
 
 		// Media path
 		const dir = `public/media/blog/${filename}`

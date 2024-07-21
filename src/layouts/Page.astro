@@ -1,0 +1,20 @@
+---
+import TextContainer from 'src/components/TextContainer.astro'
+import type { ProcessedEntry } from 'src/util/collection.ts'
+
+interface Props {
+	entry: ProcessedEntry<'page'>
+}
+
+const { entry } = Astro.props
+const { Content, headings, remarkPluginFrontmatter } = await entry.entry.render()
+---
+
+{
+	!entry.entry.data.fullWidth && (
+		<TextContainer>
+			<Content />
+		</TextContainer>
+	)
+}
+{entry.entry.data.fullWidth && <Content />}

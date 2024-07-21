@@ -104,6 +104,14 @@ const VaultSession = defineCollection({
   }),
 });
 
+// Page
+const Page = defineCollection({
+  type: "content",
+  schema: z.object({
+    title: z.string(),
+		fullWidth: z.boolean().optional()
+  }),
+});
 
 // Manifest
 const imageVariants = z.array(z.string());
@@ -123,6 +131,7 @@ export const collections = {
   venue: Venue,
   artist: Artist,
 	blog: Blog,
+	page: Page,
 	vaultsession: VaultSession
   //manifest: Manifest
 };

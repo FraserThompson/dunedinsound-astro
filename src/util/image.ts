@@ -1,16 +1,15 @@
-import fg from 'fast-glob'
+import { fdir } from 'fdir'
 import * as path from 'node:path'
 
 /**
  * ResponsiveImage
- * 
+ *
  * Takes an array of image paths and turns it into a helpful object we can
  * use to display a responsive image via srcset attributes.
- * 
+ *
  * Expects the filenames to follow this format: [anything].[width].[webp]
  */
 export class ResponsiveImage {
-
 	// Key value array of width => src
 	public images: { [key: string]: string }
 
@@ -23,39 +22,49 @@ export class ResponsiveImage {
 	constructor(images: string[]) {
 		this.src = ''
 
-		const parsedImages = images.reduce((acc: any, src: string) => {
-			const pathComponents = src.split('.')
-			if (pathComponents.length > 2) {
-				const w = pathComponents[pathComponents.length - 2]
-				acc[0] += `${src} ${w}w,`
-				acc[1][w.toString()] = src
-			} else {
-				this.src = src
-			}
-			return acc
-		}, ['', {}] as any)
+		const parsedImages = images.reduce(
+			(acc: any, src: string) => {
+				src = src.replace('public/', '/')
+				const pathComponents = src.split('.')
+				if (pathComponents.length > 2) {
+					const w = pathComponents[pathComponents.length - 2]
+					acc[0] += `${src} ${w}w,`
+					acc[1][w.toString()] = src
+				} else {
+					this.src = src
+				}
+				return acc
+			},
+			['', {}] as any
+		)
 
 		this.srcset = parsedImages[0]
 		this.images = parsedImages[1]
 	}
-
 }
 
-
 /**
- * Gets all image paths from a directory and returns a ResponsiveImage object containing those.
- * 
+ * Returns a responsive image object from a responsive image directory.
+ *
  * @param imageDir
  * @returns ResponsiveImage object
  */
-export async function getResponsiveImages(imageDir: string): Promise<ResponsiveImage> {
-	const srcs = (await fg.glob(`${imageDir}/*.{jpg,webp}`)).map((img) => img.replace('public/', '/'))
-	return new ResponsiveImage(srcs)
+export async function getResponsiveImages(imageDir: string): Promise<ResponsiveImage | undefined> {
+	const srcs = (
+		await new fdir({
+			pathSeparator: '/',
+			includeBasePath: true
+		})
+			.glob('**@(jpg|webp)')
+			.crawl(imageDir)
+			.withPromise()
+	).map((img) => img.replace('public/', '/'))
+	return srcs.length ? new ResponsiveImage(srcs) : undefined
 }
 
 /**
  * Gets all responsive images from a directory of responsive image directories.
- * 
+ *
  * @param dir Dir to look in
  * @returns Key/value array keyed by image name of ResponsiveImage objects.
  */
@@ -63,14 +72,20 @@ export async function getResponsiveImagesByDir(dir: string) {
 	let images: { [id: string]: ResponsiveImage } = {}
 
 	// Find media dirs for this entry (if it exists)
-	const mediaDirs = await fg.glob(`${dir}/*`, {
-		onlyDirectories: true
+	const mediaDirs = await new fdir({
+		pathSeparator: '/',
+		includeBasePath: true
 	})
+		.group()
+		.glob(`**/**@(jpg|webp)`)
+		.crawl(dir)
+		.withPromise()
 
 	// Get all responsive image entities
-	for (const dir of mediaDirs) {
-		const filename = path.basename(dir)
-		images[filename] = await getResponsiveImages(dir)
+	for (const group of mediaDirs) {
+		if (!group.files.length) continue
+		const filename = path.basename(group.directory)
+		images[filename] = new ResponsiveImage(group.files)
 	}
 
 	return images
@@ -78,12 +93,21 @@ export async function getResponsiveImagesByDir(dir: string) {
 
 /**
  * Gets raw image src's from a directory.
- * 
- * @param imageDir 
+ *
+ * @param imageDir
  * @returns Key value array of filename => src
  */
 export async function getImagesByDir(imageDir: string) {
-	const srcs = await (await fg.glob(`${imageDir}/*.{jpg,webp}`)).map((img) => img.replace('public/', '/'))
+	const srcs = await (
+		await new fdir({
+			pathSeparator: '/',
+			includeBasePath: true,
+			maxDepth: 1
+		})
+			.glob(`**@(jpg|webp)`)
+			.crawl(imageDir)
+			.withPromise()
+	).map((img) => img.replace('public/', '/'))
 
 	const images: { [id: string]: string } = {}
 
@@ -91,8 +115,6 @@ export async function getImagesByDir(imageDir: string) {
 		const filename = path.basename(src, path.extname(src))
 		images[filename] = src
 	}
-
-	console.log(images)
 
 	return images
 }

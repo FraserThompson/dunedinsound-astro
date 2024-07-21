@@ -1,0 +1,21 @@
+---
+import BaseLayout from 'src/layouts/BaseLayout.astro'
+import Page from 'src/layouts/Page.astro'
+import { loadAndFormatCollection } from 'src/util/collection.ts'
+
+export async function getStaticPaths() {
+	const entries = await loadAndFormatCollection('page')
+	return entries.map((entry) => ({
+		params: { slug: entry.extra.slug },
+		props: {
+			entry
+		}
+	}))
+}
+
+const { entry } = Astro.props
+---
+
+<BaseLayout>
+	<Page entry={entry} />
+</BaseLayout>
