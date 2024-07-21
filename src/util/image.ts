@@ -59,7 +59,7 @@ export async function getResponsiveImages(imageDir: string): Promise<ResponsiveI
 			.crawl(imageDir)
 			.withPromise()
 	).map((img) => img.replace('public/', '/'))
-	return srcs.length ? new ResponsiveImage(srcs) : undefined
+	return srcs.length > 1 ? new ResponsiveImage(srcs) : undefined
 }
 
 /**
@@ -68,9 +68,7 @@ export async function getResponsiveImages(imageDir: string): Promise<ResponsiveI
  * @param dir Dir to look in
  * @returns Key/value array keyed by image name of ResponsiveImage objects.
  */
-export async function getResponsiveImagesByDir(dir: string) {
-	let images: { [id: string]: ResponsiveImage } = {}
-
+export async function getResponsiveImagesByDir(dir: string): Promise<{ [id: string]: ResponsiveImage } | undefined> {
 	// Find media dirs for this entry (if it exists)
 	const mediaDirs = await new fdir({
 		pathSeparator: '/',
@@ -80,6 +78,11 @@ export async function getResponsiveImagesByDir(dir: string) {
 		.glob(`**/**@(jpg|webp)`)
 		.crawl(dir)
 		.withPromise()
+
+	// It always returns itself, so this is 1 not 0
+	if (mediaDirs.length === 1) return
+
+	let images: { [id: string]: ResponsiveImage } = {}
 
 	// Get all responsive image entities
 	for (const group of mediaDirs) {

@@ -7,6 +7,7 @@ import type { z } from 'astro/zod'
 import type { webLinks } from 'src/content/config'
 import type { MenuLink } from 'src/components/Menu'
 import type { CollectionEntry } from 'astro:content'
+import { toMachineName } from './names'
 
 /**
  * Turns a 00:00 timestring into total seconds.
@@ -150,4 +151,4 @@ export const artistsToString = (artistList: CollectionEntry<'artist'>[]) => {
  * @param string
  * @returns
  */
-export const makeHash = (string: string) => 'h' + encodeURIComponent(string)
+export const makeHash = (string: string) => 'h' + encodeURIComponent(toMachineName(string))

@@ -9,7 +9,7 @@ export const toMachineName = (string: string, space_character?: string) => {
   space_character = space_character || "_";
   return string
     .toLowerCase()
-    .replace(/[!,.':#?]/g, "")
+    .replace(/[!,.':#()?]/g, "")
     .replace(/\s/g, space_character)
     .replace(/[$]/g, "z");
 };

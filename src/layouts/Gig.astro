@@ -20,8 +20,6 @@ const { entry } = Astro.props
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
-
-console.log(entryExtra.artistImages)
 ---
 
 <Banner id="top" title={entryData.title} backgroundImage={entryExtra.cover}>

@@ -150,7 +150,8 @@ export async function getGigExtra(
 		if (artistName === 'cover' || artistName === entry.id) continue
 
 		// Get all image paths in each responsive image dir
-		artistImages[artistName] = Object.values(await getResponsiveImagesByDir(artistDir))
+		const responsiveImages = await getResponsiveImagesByDir(artistDir)
+		artistImages[artistName] = responsiveImages ? Object.values(responsiveImages) : []
 
 		// Get the audio
 		const audioFiles = (

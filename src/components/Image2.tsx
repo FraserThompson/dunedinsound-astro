@@ -1,3 +1,8 @@
+/*
+	Image2: Image component for displaying responsive images via a srcset.
+	Can also display regular images with the 'image' prop.
+*/
+
 import type React from "preact/compat"
 import type { ResponsiveImage } from 'src/util/image';
 import { ImageStyle, ImageWrapper } from './Image2.css';
@@ -8,10 +13,6 @@ interface Props {
 	alt?: string
 }
 
-/*
-	Image2: Our custom Image component for displaying responsive images.
-	Can also display regular images.
-*/
 const Image2: React.FC<Props> = ({ responsiveImage, alt, image }) =>
 	<div className={ImageWrapper}>
 		<div style="max-width: 800px; display: block;">

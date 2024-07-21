@@ -16,14 +16,15 @@ const widths = [
 	3200
 ]
 
+const quality = 70
+
 const tasks = media.map((filePath) => {
 	async function thing() {
 		const parsedPath = path.parse(filePath)
-		const stats = await fs.stat(filePath)
 
 		if (parsedPath.ext === '.jpg') {
 
-			const contentDigest = `${stats.ino}.${stats.mtimeMs.toString().replace('.', '')}`
+			const inputStats = await fs.stat(filePath)
 
 			const splitPath = parsedPath.dir.split('\\')
 			const relativePath = splitPath.slice(1).join('\\')
@@ -32,13 +33,27 @@ const tasks = media.map((filePath) => {
 				const outputFile = `${parsedPath.name}.${width}`
 
 				const outputPath = `${outputDir}\\${relativePath}\\${parsedPath.name}\\${outputFile}.webp`
+
+				let fileExists = true;
+				try {
+					await fs.access(outputPath)
+				} catch (error) {
+					// File doesn't exist
+					fileExists = false;
+				}
+		
+				if (fileExists) {
+					const existingStats = await fs.stat(outputPath)
+					if (existingStats.mtimeMs >= inputStats.mtimeMs) return
+				}
+
 				console.log(outputPath)
 		
 				const inputBuffer = await fs.readFile(filePath)
 				const pipeline = sharp(inputBuffer)
 		
 				pipeline.resize(width)
-				pipeline.webp({ quality: 70 })
+				pipeline.webp({ quality })
 		
 				const outputBuffer = await pipeline.toBuffer()
 				await fs.outputFile(outputPath, outputBuffer)

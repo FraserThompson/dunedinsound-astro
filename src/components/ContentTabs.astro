@@ -65,6 +65,8 @@ const { tabs } = Astro.props
 		}
 
 		public selectTab(tabid: string) {
+			if (tabid == this.selectedTabId) return
+
 			const oldTabContent = this.selectedTabId ? this.getTabContent(this.selectedTabId) : undefined
 			const newTabContent = this.getTabContent(tabid)
 

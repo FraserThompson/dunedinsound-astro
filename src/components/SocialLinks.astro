@@ -5,16 +5,19 @@ import type { z } from 'astro:content'
 import type { webLinks } from 'src/content/config'
 
 interface Props {
-	links?: z.infer<typeof webLinks>
+	links?: z.infer<typeof webLinks>,
+	className?: string
 }
 
-const { links } = Astro.props
+const { links, className } = Astro.props
 ---
 
+<div class={className}>
 {
 	socialLinksToMenuItems(links).map((item) => (
-		<a href={item.href} style={{ padding: theme.dimensions.basePadding }}>
+		<a href={item.href} style={{ marginRight: theme.dimensions.basePadding }}>
 			{item.title}
 		</a>
 	))
 }
+</div>

@@ -8,6 +8,7 @@ import SocialLinks from 'src/components/SocialLinks.astro'
 import SidebarNav from 'src/components/SidebarNav.astro'
 import EntryMenu from 'src/components/EntryMenu.astro'
 import { theme } from 'src/Theme.css'
+import Image2 from 'src/components/Image2'
 
 const venues = await loadAndFormatCollection('venue')
 
@@ -42,14 +43,23 @@ const markers = venues.map((venue) => ({
 					{
 						venues.map((venue) => (
 							<div class="popup">
-								<h3>{venue.entry.data.title}</h3>
-								<p style={{ marginTop: '0', marginBottom: '10px' }}>
+								<h3 class="center" style={{ marginBottom: '0' }}>
+									{venue.entry.data.title}
+								</h3>
+								<p class="center" style={{ marginTop: '0', marginBottom: '10px' }}>
 									<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} inactiveText={'Defunct'} />
 								</p>
-								<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
-									See gigs at this venue
-								</a>
 								<SocialLinks links={venue.entry.data.links} />
+								{venue.extra.cover && (
+									<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
+										<Image2 responsiveImage={venue.extra.cover} />
+									</a>
+								)}
+								<p class="center">
+									<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
+										See gigs at this venue
+									</a>
+								</p>
 							</div>
 						))
 					}
