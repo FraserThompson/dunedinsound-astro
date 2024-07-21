@@ -1,20 +1,38 @@
 # Dunedinsound Astro
 
+## ResponsiveImages
+
+We are rolling our own system for storing and displaying responsive images.
+
+A responsive image is:
+
+- A directory named after the [image] name without the extension containing...
+- Any number of image proxies which follow this naming convention: [image].[width].jpg/webp
+- A full size image which follows this naming convention: [image].jpg/webp
+
+We import these as `ResponsiveImage` objects and use the `Image2` component to display these.
+
 ## Project Structure
 
-### Gig media directories
+Our media and content is kept seperately so we can avoid bogging down Astro with thousands of images.
 
-Media for each gig is stored in `src/public/media/gigs/[gig id]`. This is so we can process images outside of Astro.
+### Entry media directories
 
-Under this directory there should be a directory per artist containing that artists media.
+Media for each entry should be stored in `src/public/media/[collection_id]/[entry_id]`.
 
 #### Images
 
-In each artist directory there should be one directory per each image. This directory should contain the full image as a `jpg`, and any number of `webp` proxies used for responsive display.
+In each entry media directory there should be ResponsiveImage subdirectories.
 
-The full-size image should follow this naming convention: [image].jpg
+#### Artist media
 
-The proxies should follow this naming convention: [image].[width].jpg
+Gigs follow a slightly different convention: Media should be stored in `src/public/media/[collection]/[entry_id]/[artist_id]`.
+
+#### Blog media
+
+`remark-images-plugin.ts` is responsible for grabbing images associated with each blog and putting them into the frontmatter so we can use them in markdown.
+
+It grabs responsive images from responsive image directories and puts them on 'frontmatter.responsiveImages'. It also grabs raw images from the entry media directory and puts them on the 'frontmatter.images'
 
 #### Audio
 
@@ -36,7 +54,9 @@ These are part of the `manifest` content collection. The idea is thus:
 
 ## CSS
 
-We use PostCSS for CSS pre-processing. This allows us to use nesting, gives us autoprefixes, and other fun stuff.
+We use PostCSS for CSS pre-processing of style tags in Astro components. This allows us to use nesting, gives us autoprefixes, and other fun stuff.
+
+Additionally we use vanilla-extract for dynamic styles.
 
 ### Theme
 
@@ -58,9 +78,9 @@ All commands are run from the root of the project, from a terminal:
 
 | Command                   | Action                                           |
 | :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+| `pnpm install`             | Installs dependencies                            |
+| `pnpm run dev`             | Starts local dev server at `localhost:4321`      |
+| `pnpm run build`           | Build your production site to `./dist/`          |
+| `pnpm run preview`         | Preview your build locally, before deploying     |
+| `pnpm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `pnpm run astro -- --help` | Get help using the Astro CLI                     |

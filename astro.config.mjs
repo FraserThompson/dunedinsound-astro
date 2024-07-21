@@ -3,10 +3,11 @@ import mdx from '@astrojs/mdx'
 import preact from '@astrojs/preact'
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin'
 import Icons from 'unplugin-icons/vite'
+import { remarkImagesPlugin } from './src/remark-images-plugin.ts'
 
 // https://astro.build/config
 export default defineConfig({
-	integrations: [mdx(), preact({ compat: true })],
+	integrations: [mdx({ remarkPlugins: [remarkImagesPlugin] }), preact({ compat: true })],
 	vite: {
 		plugins: [
 			vanillaExtractPlugin(),

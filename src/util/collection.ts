@@ -4,13 +4,14 @@ import { toMachineName } from 'src/util/names'
 import fg from 'fast-glob'
 import { getEntry } from 'astro:content'
 import * as path from 'node:path'
-import { ResponsiveImage } from './image'
+import { getResponsiveImages, getResponsiveImagesByDir, ResponsiveImage } from './image'
 import { monthMap } from './helpers'
 
 type EntryExtraCommon = {
 	slug: string
 	absolutePath: string
 	cover: ResponsiveImage
+	images?: { [id: string]: ResponsiveImage }
 }
 
 interface Track {
@@ -26,7 +27,7 @@ export interface ArtistAudio {
 
 export type EntryExtraMap = {
 	gig: EntryExtraCommon & {
-		images: { [id: string]: ResponsiveImage[] }
+		artistImages: { [id: string]: ResponsiveImage[] }
 		audio: ArtistAudio[]
 		artists: CollectionEntry<'artist'>[]
 		venue: CollectionEntry<'venue'>
@@ -48,15 +49,14 @@ export interface ProcessedEntry<C extends CollectionKey> {
 /**
  * Loads a collection and adds extra generated fields to each entry.
  *
- * Which fields are added depends on the collection type, but all entries
- * will get slug, absolutePath, and cover.
+ * Which fields are added depends on the collection type.
  *
  * @param name Name of the collection to load
  * @returns Array of ProcessedEntry's.
  */
 export async function loadAndFormatCollection<C extends CollectionKey>(name: C, filter?: (arg: any) => void) {
 	const entries = await getCollection(name, filter)
-	const sortedEntries = sortCollectionByDate(entries)
+	const sortedEntries = sortCollectionByDate(entries).filter((thing) => !thing.data.hidden)
 	return await Promise.all(sortedEntries.map(async (entry, i) => await processEntry(entry, entries, i)))
 }
 
@@ -65,17 +65,9 @@ export async function processEntry<C extends CollectionKey>(
 	entries?: any,
 	i?: number
 ): Promise<ProcessedEntry<C>> {
-	const title = entry.data.title
 
-	// To preserve URLs from old site
-	const postSlug = getEntrySlug(title, entry.collection)
+	const extraCommon: EntryExtraCommon = await getCommonExtra(entry)
 
-	// All entries get slug, absolutePath, and cover
-	const extraCommon: EntryExtraCommon = {
-		slug: postSlug,
-		absolutePath: getEntryPath(postSlug, entry.collection),
-		cover: await getCover(entry)
-	}
 	const prev = !i || i + 1 === entries.length ? undefined : entries[i + 1]
 	const next = !i || i === 0 ? undefined : entries[i - 1]
 
@@ -94,6 +86,28 @@ export async function processEntry<C extends CollectionKey>(
 				next,
 				extra: extraCommon as EntryExtraMap[C]
 			}
+	}
+}
+
+/**
+ * Returns the extra fields added to all entries regardless of type.
+ * 
+ * @param entry 
+ * @returns 
+ */
+export async function getCommonExtra<C extends CollectionKey>(	entry: CollectionEntry<C>): Promise<EntryExtraCommon> {
+	const title = entry.data.title
+
+	// To preserve URLs from old site
+	const postSlug = getEntrySlug(title, entry.collection)
+
+	const images = await getResponsiveImagesByDir(`public/media/${entry.collection}/${entry.id}`)
+
+	return {
+		slug: postSlug,
+		absolutePath: getEntryPath(postSlug, entry.collection),
+		cover: await getCover(entry),
+		images: images
 	}
 }
 
@@ -121,7 +135,7 @@ export async function getGigExtra(
 		onlyDirectories: true
 	})
 
-	let images: { [id: string]: ResponsiveImage[] } = {}
+	let artistImages: { [id: string]: ResponsiveImage[] } = {}
 	let audio: ArtistAudio[] = []
 
 	// Get all media from each subdirectory
@@ -136,7 +150,7 @@ export async function getGigExtra(
 		})
 
 		// Get all image paths in each responsive image dir
-		images[artistName] = await Promise.all(imageDirs.map(async (imageDir) => await getImages(imageDir)))
+		artistImages[artistName] = await Promise.all(imageDirs.map(async (imageDir) => await getResponsiveImages(imageDir)))
 
 		// Get the audio
 		const audioFiles = (await fg.glob(`${artistDir}/*.{mp3,json}`)).map((file) => file.replace('public/', '/'))
@@ -152,7 +166,7 @@ export async function getGigExtra(
 
 	return {
 		...extra,
-		images,
+		artistImages,
 		audio,
 		artists,
 		venue
@@ -167,17 +181,7 @@ export async function getGigExtra(
 export async function getCover(entry: CollectionEntry<CollectionKey>): Promise<ResponsiveImage> {
 	const type = entry.collection
 	const dir = `public/media/${type}/${entry.id}/cover`
-	return await getImages(dir)
-}
-
-/**
- * Gets all image paths from a directory.
- * @param imageDir
- * @returns ResponsiveImage object
- */
-export async function getImages(imageDir: string): Promise<ResponsiveImage> {
-	const srcs = (await fg.glob(`${imageDir}/*.{jpg,webp}`)).map((img) => img.replace('public/', '/'))
-	return new ResponsiveImage(srcs)
+	return await getResponsiveImages(dir)
 }
 
 /**

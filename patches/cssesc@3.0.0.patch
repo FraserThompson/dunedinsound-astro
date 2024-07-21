@@ -1,0 +1,12 @@
+diff --git a/cssesc.js b/cssesc.js
+index 1c0928e45667c8edbb565a62d0c613d830ab629a..2556cebfce2521b15a66b3776bedfce6bc49101c 100644
+--- a/cssesc.js
++++ b/cssesc.js
+@@ -107,4 +107,6 @@ cssesc.options = {
+ 
+ cssesc.version = '3.0.0';
+ 
+-module.exports = cssesc;
++if (typeof module !== 'undefined') { 
++	module.exports = cssesc;
++}

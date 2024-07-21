@@ -28,7 +28,7 @@ for (const artist of artists) {
 
 	// Process the latest gig to get its images
 	const loadedGig: ProcessedEntry<'gig'> | undefined = artistGigs.length ? await processEntry(artistGigs[0]) : undefined
-	const artistImages = loadedGig?.extra.images[artistId] || undefined
+	const artistImages = loadedGig?.extra.artistImages[artistId] || undefined
 
 	artistMetadata[artistId] = {
 		totalCount: artistGigs.length || 0,

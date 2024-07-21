@@ -74,8 +74,8 @@ const entryExtra = entry.extra
 						<YoutubeResponsive videoId={vid.link} client:load />
 					))}
 				</FlexGridContainer>
-				{entryExtra.images[artist.id] && (
-					<ImageGallery title={entryData.title} images={entryExtra.images[artist.id]} client:load />
+				{entryExtra.artistImages[artist.id] && (
+					<ImageGallery title={entryData.title} images={entryExtra.artistImages[artist.id]} client:load />
 				)}
 			</div>
 		))

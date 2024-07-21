@@ -7,7 +7,7 @@ interface Props {
 	entry: ProcessedEntry<'blog'>
 }
 const { entry } = Astro.props
-const { Content, headings } = await entry.entry.render()
+const { Content, headings, remarkPluginFrontmatter } = await entry.entry.render()
 ---
 
 <TextContainer>

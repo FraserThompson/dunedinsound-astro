@@ -1,5 +1,6 @@
 import { style, globalStyle, styleVariants } from '@vanilla-extract/css'
 import { MenuWrapper } from '../Menu.css'
+import { theme } from 'src/Theme.css'
 
 const PlayerWrapperBase = style({
 	transition: 'all 150ms ease-in-out',
@@ -54,7 +55,7 @@ export const WaveWrapper = style({
 			transition: 'background-color 100ms ease-in-out',
 			position: 'absolute',
 			bottom: 0,
-			color: 'white',
+			color: theme.color.text,
 			backgroundColor: 'rgba(0, 0, 0, 0.6)',
 			whiteSpace: 'nowrap',
 			overflow: 'hidden',
@@ -118,8 +119,10 @@ export const TransportButton = style({
 	justifyContent: 'center',
 	alignItems: 'center',
 	border: '0',
-	padding: '10px',
+	padding: '0px',
 	color: '#bfced9',
+	backgroundColor: 'transparent',
+	fontSize: '1.5em',
 	selectors: {
 		'&.buttonStyle': {
 			backgroundSize: 'cover',
@@ -167,7 +170,7 @@ export const TransportButton = style({
 
 export const ToggleButton = style({
 	fontFamily: 'monospace',
-	color: 'white',
+	color: theme.color.text,
 	fontSize: '12px',
 	fontWeight: 'bold',
 	marginLeft: '5px',

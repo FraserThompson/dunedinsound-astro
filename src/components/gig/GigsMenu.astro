@@ -56,7 +56,7 @@ const { selected } = Astro.props
 								<Fragment>
 									<li
 										class={`${gigLi} gigItem ${gig.entry.id === selected ? 'active' : ''}`}
-										data-gig={!selected && makeHash(gig.entry.id)}
+										data-gig={makeHash(gig.entry.id)}
 									>
 										<a class={gigLink} href={!selected ? `#${makeHash(gig.entry.id)}` : gig.extra.absolutePath}>
 											{gig.entry.data.title}
@@ -94,9 +94,11 @@ const { selected } = Astro.props
 		unlisten: any
 
 		selectedArtist: Element | undefined
+		links: NodeListOf<HTMLElement> | null
 
 		constructor() {
 			super()
+			this.links = this.querySelectorAll('a')
 		}
 
 		handleURLChange(location: Location) {
@@ -113,6 +115,9 @@ const { selected } = Astro.props
 
 		connectedCallback() {
 			this.unlisten = browserHistory?.listen((location) => this.handleURLChange(location.location))
+			this.links?.forEach((link) => {
+				link.addEventListener('click', (e) => scrollTo(e))
+			})
 		}
 
 		disconnectedCallback() {
@@ -126,6 +131,7 @@ const { selected } = Astro.props
 		months: NodeListOf<HTMLElement> | null
 		years: NodeListOf<HTMLElement> | null
 		gigLinks: NodeListOf<HTMLElement> | null
+		selected: string | null
 
 		constructor() {
 			super()
@@ -135,10 +141,10 @@ const { selected } = Astro.props
 			this.years = this.querySelectorAll('.yearList')
 			this.gigLinks = this.querySelectorAll('[data-gig]')
 
-			const selected = this.getAttribute('data-selected')
-			if (selected) {
-				const selectedItem = this.querySelector(`[data-gig="${makeHash(selected)}"]`)
-				selectedItem?.scrollIntoView()
+			this.selected = this.getAttribute('data-selected')
+			if (this.selected) {
+				const selectedItem = this.querySelector(`[data-gig="${makeHash(this.selected)}"]`)
+				selectedItem?.scrollIntoView({ block: 'center' })
 			}
 		}
 
@@ -186,7 +192,7 @@ const { selected } = Astro.props
 
 		connectedCallback() {
 			document.addEventListener('shuffle-filter', (e: any) => this.onShuffle(e), false)
-			this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e) => scrollTo(e)))
+			!this.selected && this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e) => scrollTo(e)))
 		}
 
 		disconnectedCallback() {}

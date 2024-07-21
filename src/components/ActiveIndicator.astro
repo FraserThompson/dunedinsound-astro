@@ -14,7 +14,7 @@ const { died, born, hideText, inactiveText } = Astro.props
 {
 	died === undefined && (
 		<span class={activeIcon} title="Active">
-			⬤ {!hideText && (!born ? 'Active' : `Active since ${born.toLocaleDateString()}`)}
+			⬤ {!hideText && (!born ? 'Active' : `Active since ${born.getFullYear()}`)}
 		</span>
 	)
 }
@@ -26,7 +26,7 @@ const { died, born, hideText, inactiveText } = Astro.props
 				(died.getFullYear() !== 1600
 					? !born
 						? `${inactiveText} since ${died.getFullYear()}`
-						: `Active ${born.toLocaleDateString()} to ${died.getFullYear()}`
+						: `Active ${born.getFullYear()} to ${died.getFullYear()}`
 					: inactiveText)}
 		</span>
 	)

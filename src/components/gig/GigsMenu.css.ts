@@ -12,7 +12,9 @@ export const gigsMenuWrapper = style([
 export const artistsMenuWrapper = style([
 	MenuWrapper,
 	{
-		borderLeft: `6px solid ${theme.color.secondary}`
+		backgroundColor: 'black',
+		borderLeft: `6px solid ${theme.color.secondary}`,
+		borderBottom: `6px solid ${theme.color.secondary}`
 	}
 ])
 
@@ -32,7 +34,7 @@ export const yearHeader = style([
 export const monthHeader = style([
 	MenuLi['vertical'],
 	{
-		backgroundColor: 'white',
+		backgroundColor: theme.color.contrast,
 		height: theme.dimensions.subheaderHeight
 	}
 ])

@@ -41,7 +41,7 @@ export const tileInner = style({
 })
 
 globalStyle(`${tileInner} > a`, {
-	color: 'white'
+	color: theme.color.text
 })
 
 export const titleWrapper = style({

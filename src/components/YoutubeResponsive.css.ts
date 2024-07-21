@@ -50,7 +50,7 @@ export const placeholderOverlay = style({
 })
 
 export const placeholderOverlayTitle = style({
-	color: 'white',
+	color: theme.color.text,
 	padding: theme.dimensions.basePadding,
 	position: 'absolute',
 	top: '0px',
