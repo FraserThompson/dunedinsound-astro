@@ -11,6 +11,7 @@ import { theme } from 'src/Theme.css'
 import SocialLinks from 'src/components/SocialLinks.astro'
 import { artistsToString } from 'src/util/helpers'
 import ImageGallery from 'src/components/ImageGallery'
+import GigTile from 'src/components/gig/GigTile.astro'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
@@ -105,14 +106,7 @@ vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessio
 						</Divider>
 						<FlexGridContainer>
 							{gigs?.map((gig) => (
-								<Tile
-									href={gig.extra.absolutePath}
-									title={gig.entry.data.title}
-									label={gig.entry.data.date.toLocaleDateString()}
-									responsiveImage={gig.extra.cover}
-								>
-									<p>{artistsToString(gig.extra.artists)}</p>
-								</Tile>
+								<GigTile gig={gig} />
 							))}
 						</FlexGridContainer>
 					</div>

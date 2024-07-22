@@ -40,6 +40,10 @@ export const tileInner = style({
 	}
 })
 
+globalStyle(`${tileInner} > a:hover`, {
+	color: theme.color.lightText
+})
+
 globalStyle(`${tileInner} > a`, {
 	color: theme.color.text
 })
@@ -71,6 +75,14 @@ export const tileTextContent = style({
 	alignItems: 'center'
 })
 
+export const tilePrefix = style({
+	fontWeight: 600,
+	position: 'absolute',
+	top: 0,
+	left: 0,
+	backgroundColor: 'black'
+})
+
 globalStyle(`${tileTextContent} > div`, {
 	maxWidth: theme.dimensions.contentContainerWidth
 })
@@ -78,14 +90,14 @@ globalStyle(`${tileTextContent} > div`, {
 export const tileTitle = style({
 	marginLeft: '0',
 	textAlign: 'center',
-	marginBottom: '5px',
+	marginBottom: '2px',
+	paddingTop: '10px',
 	color: 'inherit',
 	textShadow: '1px 1px 1px black',
 	transition: 'color 100ms ease-in-out'
 })
 
 export const tileLabel = style({
-	textShadow: '1px 1px 1px black',
 	transition: 'color 100ms ease-in-out',
 	textAlign: 'center'
 })

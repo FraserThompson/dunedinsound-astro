@@ -4,7 +4,7 @@
 */
 
 import type React from "preact/compat"
-import type { ResponsiveImage } from 'src/util/image';
+import type { ResponsiveImage } from 'src/util/ResponsiveImage';
 import { ImageStyle, ImageWrapper } from './Image2.css';
 
 interface Props {

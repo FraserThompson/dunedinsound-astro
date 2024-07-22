@@ -40,8 +40,8 @@ globalStyle('p, span', {
 	fontSize: theme.font.baseSize
 })
 
-globalStyle('h1, h2, h3, h5', {
-	textShadow: '-1px -1px 0 rgba(0, 0, 0, 1)'
+globalStyle('h1, h2, h3, h4, h5', {
+	textShadow: '-2px -2px 6px rgba(0, 0, 0, 1)'
 })
 
 globalStyle('h1', {
@@ -60,14 +60,15 @@ globalStyle('h3', {
 })
 
 globalStyle('h4', {
-	fontSize: `calc(${theme.font.baseSize} * 0.8)`,
-	fontWeight: '200',
+	fontSize: `calc(${theme.font.baseSize} * 1)`,
+	fontWeight: '400',
+	color: theme.color.dullText,
 	lineHeight: '1.1'
 })
 
 globalStyle('h5', {
 	fontSize: `calc(${theme.font.baseSize} * 1)`,
-	fontWeight: '400',
+	fontWeight: '200',
 	lineHeight: '1.1'
 })
 

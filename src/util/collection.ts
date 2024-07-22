@@ -4,7 +4,8 @@ import { toMachineName } from 'src/util/names'
 import { fdir } from 'fdir'
 import { getEntry } from 'astro:content'
 import * as path from 'node:path'
-import { getResponsiveImages, getResponsiveImagesByDir, ResponsiveImage } from './image'
+import { getResponsiveImages, getResponsiveImagesByDir } from './image'
+import type { ResponsiveImage } from './ResponsiveImage'
 import { monthMap } from './helpers'
 
 type EntryExtraCommon = {

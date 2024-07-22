@@ -4,7 +4,7 @@ import "yet-another-react-lightbox/styles.css";
 import { Download, Zoom } from "yet-another-react-lightbox/plugins";
 import FlexGridContainer from '../components/FlexGridContainer'
 import MasonryContainer from '../components/MasonryContainer'
-import type { ResponsiveImage } from 'src/util/image'
+import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import Image2 from './Image2'
 import browserHistory from 'src/util/history';
 

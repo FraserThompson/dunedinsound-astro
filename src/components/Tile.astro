@@ -1,6 +1,6 @@
 ---
 import BackgroundImage from './BackgroundImage.astro'
-import type { ResponsiveImage } from 'src/util/image'
+import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import {
 	tileWrapper,
 	tileInner,
@@ -11,7 +11,8 @@ import {
 	background,
 	height,
 	width,
-	fontSize
+	fontSize,
+	tilePrefix
 } from './Tile.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 
@@ -59,6 +60,7 @@ const {
 			{responsiveImage && <BackgroundImage responsiveImage={responsiveImage} />}
 			<div class={titleWrapper}>
 				<div class={tileContent}>
+					{prefix && <span class={tilePrefix}>{prefix}</span>}
 					{
 						title && (
 							<h3
@@ -67,12 +69,11 @@ const {
 									[fontSize]: feature ? '2em' : undefined
 								})}
 							>
-								{prefix && <span style={{ fontWeight: 200 }}>{prefix}</span>}
 								{title}
 							</h3>
 						)
 					}
-					{label && <h4 class={tileLabel}>{label}</h4>}
+					{label && <h5 class={tileLabel}>{label}</h5>}
 					<div style={{ marginTop: 'auto', textAlign: 'center' }}>
 						<slot />
 					</div>
