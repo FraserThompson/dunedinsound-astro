@@ -1,30 +1,81 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
-import { loadAndFormatCollection } from 'src/util/collection'
+import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
 import Tile from 'src/components/Tile.astro'
 import { theme } from 'src/Theme.css'
 import GigTile from 'src/components/gig/GigTile.astro'
 import FlexGridContainer from 'src/components/FlexGridContainer'
+import GridContainer from 'src/components/GridContainer'
+import { gridChild } from 'src/components/GridContainer.css'
 
 const gigs = await loadAndFormatCollection('gig')
 const blogs = await loadAndFormatCollection('blog')
+
+// Combine gigs and blogs and sorts them by date
+const posts = [...gigs, ...blogs]
+const combinedPosts = posts.sort((a, b) => {
+	return new Date(a.entry.data.date) > new Date(b.entry.data.date) ? -1 : 1
+})
+
+// So we can display the latest gig seperately
+const latestGigIndex = combinedPosts.findIndex((post) => post.entry.collection === 'gig')
+const latestGig = combinedPosts[latestGigIndex] as ProcessedEntry<'gig'>
+combinedPosts.splice(latestGigIndex, 1)
 ---
 
 <BaseLayout>
-	<FlexGridContainer xs={12} sm={6} md={6} lg={6}>
-		<FlexGridContainer xs={6} sm={4} md={4} lg={4}>
-			{gigs.slice(0, 8).map((gig) => <GigTile gig={gig} />)}
-		</FlexGridContainer>
-		<FlexGridContainer xs={6} sm={4} md={4} lg={4}>
-			{blogs.slice(0, 8).map((blog) => <Tile title={blog.entry.data.title} href={blog.extra.absolutePath} />)}
-		</FlexGridContainer>
-	</FlexGridContainer>
+	<GridContainer>
+		<div class="featured-gig">
+			<GigTile containerHeight="100%" gig={latestGig} />
+		</div>
+		<div class="two-side-gigs">
+			{
+				combinedPosts
+					.slice(0, 2)
+					.map((post) =>
+						post.entry.collection === 'gig' ? (
+							<GigTile gig={post as ProcessedEntry<'gig'>} />
+						) : (
+							<Tile title={post.entry.data.title} href={post.extra.absolutePath} responsiveImage={post.extra.cover} />
+						)
+					)
+			}
+		</div>
+		<div class="everything-else">
+			<GridContainer xs={12} sm={6} md={4} lg={4}>
+				{
+					combinedPosts
+						.slice(2, 8)
+						.map((post) =>
+							post.entry.collection === 'gig' ? (
+								<GigTile className={gridChild} gig={post as ProcessedEntry<'gig'>} />
+							) : (
+								<Tile
+									className={gridChild}
+									title={post.entry.data.title}
+									href={post.extra.absolutePath}
+									responsiveImage={post.extra.cover}
+								/>
+							)
+						)
+				}
+			</GridContainer>
+		</div>
+	</GridContainer>
 	<FlexGridContainer xs={6} sm={6} md={6} lg={6}>
-		<Tile containerHeight={theme.dimensions.headerHeightWithSubheader} href="/gigs" backgroundColor={theme.color.foreground}>
-			More Gigs
+		<Tile
+			containerHeight={theme.dimensions.headerHeightWithSubheader}
+			href="/gigs"
+			backgroundColor={theme.color.foreground}
+		>
+			<h3 class="center">More Gigs</h3>
 		</Tile>
-		<Tile containerHeight={theme.dimensions.headerHeightWithSubheader} href="/blog" backgroundColor={theme.color.secondary}>
-			More Articles
+		<Tile
+			containerHeight={theme.dimensions.headerHeightWithSubheader}
+			href="/blog"
+			backgroundColor={theme.color.secondary}
+		>
+			<h3 class="center">More Articles</h3>
 		</Tile>
 	</FlexGridContainer>
 </BaseLayout>

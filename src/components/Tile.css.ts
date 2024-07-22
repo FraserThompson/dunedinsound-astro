@@ -10,6 +10,7 @@ const tileWrapperBase = style({
 	color: theme.color.text,
 	position: 'relative',
 	overflow: 'clip',
+	height: fallbackVar(height, '40vh'),
 	scrollMarginTop: theme.dimensions.headerHeightWithSubheader
 })
 
@@ -75,11 +76,13 @@ export const tileTextContent = style({
 	alignItems: 'center'
 })
 
-export const tilePrefix = style({
+export const tileLabel = style({
 	fontWeight: 600,
 	position: 'absolute',
 	top: 0,
 	left: 0,
+	paddingLeft: theme.dimensions.basePadding,
+	paddingRight: theme.dimensions.basePadding,
 	backgroundColor: 'black'
 })
 
@@ -89,7 +92,6 @@ globalStyle(`${tileTextContent} > div`, {
 
 export const tileTitle = style({
 	marginLeft: '0',
-	textAlign: 'center',
 	marginBottom: '2px',
 	paddingTop: '10px',
 	color: 'inherit',
@@ -97,9 +99,8 @@ export const tileTitle = style({
 	transition: 'color 100ms ease-in-out'
 })
 
-export const tileLabel = style({
+export const tileSubtitle = style({
 	transition: 'color 100ms ease-in-out',
-	textAlign: 'center'
 })
 
 globalStyle(`${tileInner}:hover .backgroundImage`, {

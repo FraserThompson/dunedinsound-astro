@@ -12,7 +12,7 @@ import {
 	height,
 	width,
 	fontSize,
-	tilePrefix
+	tileSubtitle
 } from './Tile.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 
@@ -22,8 +22,8 @@ interface Props {
 	id?: string
 	responsiveImage?: ResponsiveImage
 	title?: string
-	prefix?: string
 	label?: string
+	subtitle?: string
 	feature?: boolean
 	backgroundColor?: string
 	containerHeight?: string
@@ -37,7 +37,7 @@ const {
 	id,
 	responsiveImage,
 	title,
-	prefix,
+	subtitle,
 	label,
 	feature,
 	backgroundColor,
@@ -47,7 +47,14 @@ const {
 } = Astro.props
 ---
 
-<div {...dataAttributes} class={`${tileWrapper[containerWidth ? 'fixedWidth' : 'noWidth']} ${className} tile`} id={id}>
+<div
+	{...dataAttributes}
+	class={`${tileWrapper[containerWidth ? 'fixedWidth' : 'noWidth']} ${className || ''} tile`}
+	style={assignInlineVars({
+		[height]: containerHeight
+	})}
+	id={id}
+>
 	<div
 		class={tileInner}
 		style={assignInlineVars({
@@ -60,7 +67,7 @@ const {
 			{responsiveImage && <BackgroundImage responsiveImage={responsiveImage} />}
 			<div class={titleWrapper}>
 				<div class={tileContent}>
-					{prefix && <span class={tilePrefix}>{prefix}</span>}
+					{label && <span class={tileLabel}>{label}</span>}
 					{
 						title && (
 							<h3
@@ -73,8 +80,8 @@ const {
 							</h3>
 						)
 					}
-					{label && <h5 class={tileLabel}>{label}</h5>}
-					<div style={{ marginTop: 'auto', textAlign: 'center' }}>
+					{subtitle && <h5 class={tileSubtitle}>{subtitle}</h5>}
+					<div style={{ marginTop: 'auto' }}>
 						<slot />
 					</div>
 				</div>

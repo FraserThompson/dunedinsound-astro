@@ -3,7 +3,7 @@ import GridContainer from 'src/components/GridContainer'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
 import Tile from 'src/components/Tile.astro'
-import { GridChild } from 'src/components/GridContainer.css'
+import { gridChild } from 'src/components/GridContainer.css'
 
 const vaultsessions = await loadAndFormatCollection('vaultsession')
 ---
@@ -12,7 +12,7 @@ const vaultsessions = await loadAndFormatCollection('vaultsession')
 	<GridContainer>
 		{
 			vaultsessions.map((vaultsession) => (
-				<a class={GridChild} href={vaultsession.extra.absolutePath}>
+				<a class={gridChild} href={vaultsession.extra.absolutePath}>
 					<h3>{vaultsession.entry.id}</h3>
 				</a>
 			))

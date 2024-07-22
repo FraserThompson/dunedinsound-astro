@@ -5,24 +5,27 @@ import { artistsToString, makeHash } from 'src/util/helpers'
 
 interface Props {
 	gig: ProcessedEntry<'gig'>
+	containerHeight?: string
+	className?: string
 }
 
-const { gig } = Astro.props
+const { gig, containerHeight, className } = Astro.props
 ---
 
 <Tile
+	className={className}
 	href={gig.extra.absolutePath}
 	responsiveImage={gig.extra.cover}
 	id={makeHash(gig.entry.id)}
-	label={gig.extra.venue.data.title}
-	prefix={gig.entry.data.date.toLocaleDateString()}
+	subtitle={gig.extra.venue.data.title}
+	label={gig.entry.data.date.toLocaleDateString()}
 	title={gig.entry.data.title}
-	containerHeight="30vh"
+	containerHeight={containerHeight || '30vh'}
 	dataAttributes={{
 		'data-title': `${gig.entry.data.title} ${gig.extra.venue.data.title} ${artistsToString(gig.extra.artists)}`
 	}}
 >
-	<h5 style={{marginBottom: "0px"}}>
+	<h5 style={{ marginBottom: '0px' }}>
 		{artistsToString(gig.extra.artists)}
 	</h5>
 </Tile>

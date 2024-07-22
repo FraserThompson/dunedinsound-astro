@@ -9,22 +9,31 @@ const outputDir = './public/media'
 
 const media = globSync(`${inputDir}/**/**/**/*`)
 
-const widths = [
-	400,
-	800,
-	1600,
-	3200
-]
+const widths = [400, 800, 1600, 3200]
 
 const quality = 70
 
 /**
+ * Checks if a file exists.
+ * @param {*} path 
+ * @returns true/false
+ */
+async function fileExists(path) {
+	try {
+		await fs.promises.access(path)
+		return true
+	} catch (error) {
+		return false
+	}
+}
+
+/**
  * Gets the mtime from one of our generated image files.
- * @param {*} filename 
+ * @param {*} filename
  * @returns the mtime
  */
 function getMtimeFromFilename(filename) {
-	const existingFileName =  path.parse(filename)
+	const existingFileName = path.parse(filename)
 	return existingFileName.name.split('.')[1]
 }
 
@@ -53,23 +62,22 @@ function hasChanged(path, mTime) {
 }
 
 /**
- * Image processing tasks.
+ * Media processing tasks.
  */
-const tasks = media.map((filePath) => {
+const tasks = media.map((inputPath) => {
 	async function thing() {
-		const parsedPath = path.parse(filePath)
+		const parsedPath = path.parse(inputPath)
+		const splitPath = parsedPath.dir.split('\\')
+		const relativePath = splitPath.slice(1).join('/')
 
+		// Create proxies from input images
 		if (parsedPath.ext === '.jpg') {
-
-			const inputStats = await fs.stat(filePath)
+			const inputStats = await fs.stat(inputPath)
 
 			// We use this for cache busting and determining when the file has changed
 			const mtime = Math.round(inputStats.mtimeMs)
 			const contentDigest = `${inputStats.ino}.${mtime}`
 
-			const splitPath = parsedPath.dir.split('\\')
-			const relativePath = splitPath.slice(1).join('/')
-			
 			const outputPath = `${outputDir}/${relativePath}/${parsedPath.name}`
 
 			// Find existing full size image if it exists
@@ -79,13 +87,13 @@ const tasks = media.map((filePath) => {
 			const fullImagePath = `${outputPath}/${parsedPath.name}.${mtime}.jpg`
 			if (existingPath && changed) {
 				await fs.unlink(existingPath)
-				await fs.copyFile(filePath, fullImagePath)
+				await fs.copyFile(inputPath, fullImagePath)
 				console.log(fullImagePath)
 			} else if (!existingPath) {
-				await fs.copyFile(filePath, fullImagePath)
+				await fs.copyFile(inputPath, fullImagePath)
 				console.log(fullImagePath)
 			}
-			
+
 			for (const width of widths) {
 				const outputFile = `${contentDigest}.${width}.webp`
 
@@ -100,9 +108,9 @@ const tasks = media.map((filePath) => {
 				}
 
 				// Resize the image
-				const inputBuffer = await fs.readFile(filePath)
+				const inputBuffer = await fs.readFile(inputPath)
 				const pipeline = sharp(inputBuffer)
-		
+
 				pipeline.resize(width)
 				pipeline.webp({ quality })
 
@@ -111,11 +119,28 @@ const tasks = media.map((filePath) => {
 				const outputBuffer = await pipeline.toBuffer()
 
 				await fs.outputFile(`${outputPath}/${outputFile}`, outputBuffer)
-
 			}
+		} else if (parsedPath.ext) {
+			// For all other files just copy them as is if they've changed
+			const outputPath = `${outputDir}/${relativePath}/${parsedPath.base}`
+
+			if (await fileExists(outputPath)) {
+				const inputStats = await fs.stat(inputPath)
+				const outputStats = await fs.stat(outputPath)
+
+				if (outputStats.mtimeMs >= inputStats.mtimeMs) {
+					// Skip because it hasn't changed
+					return
+				}
+			}
+			
+			await fs.copyFile(inputPath, outputPath)
+			console.log(outputPath)
+
 		}
 	}
-	return thing;
+
+	return thing
 })
 
-parallelLimit(tasks, 16);
+parallelLimit(tasks, 16)

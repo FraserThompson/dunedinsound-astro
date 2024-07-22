@@ -41,7 +41,7 @@ globalStyle('p, span', {
 })
 
 globalStyle('h1, h2, h3, h4, h5', {
-	textShadow: '-2px -2px 6px rgba(0, 0, 0, 1)'
+	textShadow: '0px 0px 3px rgba(0, 0, 0, 1)'
 })
 
 globalStyle('h1', {

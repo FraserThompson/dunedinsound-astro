@@ -5,16 +5,13 @@ export const colSm = createVar()
 export const colMd = createVar()
 export const colLg = createVar()
 
-export const centered = createVar()
-
 export const gridWrapper = style({
 	display: 'grid',
 	gridTemplateColumns: 'repeat(12, [col-start] 1fr)',
-	justifyItems: centered && 'center',
 	gridAutoFlow: 'dense'
 })
 
-export const GridChild = style({
+export const gridChild = style({
 	gridColumn: `span ${colXs}`,
 	'@media': {
 		'screen and (--xs)': {
