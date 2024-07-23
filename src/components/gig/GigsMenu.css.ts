@@ -41,7 +41,9 @@ export const monthHeader = style([
 
 export const gigLi = style([MenuLi['vertical']])
 
-export const gigLink = style([MenuLink['vertical']])
+export const gigLink = style([MenuLink['vertical'], {
+	textOverflow: 'ellipsis'
+}])
 
 export const artistLink = style([
 	MenuLink['vertical'],

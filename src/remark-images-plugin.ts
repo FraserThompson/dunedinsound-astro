@@ -12,7 +12,7 @@ export function remarkImagesPlugin() {
 	return async function (tree: any, file: any) {
 
 		// This feels hacky but its the only place i could find the filename
-		const filename = path.basename(file.history[0])
+		const filename = path.basename(file.history[0], '.mdx')
 
 		// Media path
 		const dir = `public/media/blog/${filename}`

@@ -23,7 +23,8 @@ export class ResponsiveImage {
 			(acc: any, src: string) => {
 				src = src.replace('public/', '/')
 				const pathComponents = src.split('.')
-				if (pathComponents.length > 2) {
+				const ext = pathComponents[pathComponents.length - 1]
+				if (pathComponents.length > 2 && ext === 'webp') {
 					const w = pathComponents[pathComponents.length - 2]
 					acc[0] += `${src} ${w}w,`
 					acc[1][w.toString()] = src

@@ -102,7 +102,7 @@ export async function getCommonExtra<C extends CollectionKey>(entry: CollectionE
 	// To preserve URLs from old site
 	const postSlug = getEntrySlug(title, entry.collection)
 
-	const images = await getResponsiveImagesByDir(`public/media/${entry.collection}/${entry.id}`)
+	const images = await getResponsiveImagesByDir(`public/media/${entry.collection}/${getEntryId(entry)}`)
 
 	return {
 		slug: postSlug,
@@ -190,7 +190,7 @@ export async function getGigExtra(
  */
 export async function getCover(entry: CollectionEntry<CollectionKey>): Promise<ResponsiveImage | undefined> {
 	const type = entry.collection
-	const dir = `public/media/${type}/${entry.id}/cover`
+	const dir = `public/media/${type}/${getEntryId(entry)}/cover`
 	const images = await getResponsiveImages(dir)
 	return images
 }
@@ -255,3 +255,13 @@ export const sortGigs = (gigs: ProcessedEntry<'gig'>[]) =>
 
 		return acc
 	}, {} as SortedGigs)
+
+/**
+ * By default content collection IDs have the file extension. 
+ * This sucks so we'll strip it.
+ * @param entry 
+ * @returns the ID for the entry
+ */
+export function getEntryId<C extends CollectionKey>(entry: CollectionEntry<C>) {
+	return entry.id.replace('.mdx', '')
+}

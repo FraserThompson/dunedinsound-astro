@@ -14,7 +14,7 @@
     "@iconify-json/bx": "^1.1.10",
     "@svgr/core": "^8.1.0",
     "@svgr/plugin-jsx": "^8.1.0",
-    "@vanilla-extract/vite-plugin": "^4.0.13",
+    "@vanilla-extract/vite-plugin": "^3.9.5",
     "async": "^3.2.5",
     "fs-extra": "^11.2.0",
     "glob": "^11.0.0",
@@ -33,7 +33,7 @@
     "astro": "^4.12.2",
     "autoprefixer": "^10.4.19",
     "cssnano": "^7.0.4",
-    "fdir": "^6.1.1",
+    "fdir": "^6.2.0",
     "history": "^5.3.0",
     "mapbox-gl": "^3.5.2",
     "picomatch": "^4.0.2",
@@ -45,7 +45,7 @@
     "react-youtube": "^10.1.0",
     "shufflejs": "^6.1.1",
     "throttle-debounce": "^5.0.2",
-    "typescript": "^5.5.3",
+    "typescript": "^5.5.4",
     "unplugin-icons": "^0.19.0",
     "wavesurfer.js": "^7.8.2",
     "yet-another-react-lightbox": "^3.21.1"
@@ -53,10 +53,5 @@
   "overrides": {
     "react": "npm:@preact/compat@latest",
     "react-dom": "npm:@preact/compat@latest"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "cssesc@3.0.0": "patches/cssesc@3.0.0.patch"
-    }
   }
 }
