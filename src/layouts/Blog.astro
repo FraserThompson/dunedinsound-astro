@@ -10,13 +10,7 @@ const { entry } = Astro.props
 const { Content, headings, remarkPluginFrontmatter } = await entry.entry.render()
 ---
 
-{
-	entry.extra.cover && (
-		<Banner backgroundImage={entry.extra.cover}>
-			<h1>{entry.entry.data.title}</h1>
-		</Banner>
-	)
-}
+{entry.extra.cover && <Banner backgroundImage={entry.extra.cover} title={entry.entry.data.title} />}
 <TextContainer>
 	<Content />
 </TextContainer>

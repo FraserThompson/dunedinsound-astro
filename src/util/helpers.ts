@@ -8,6 +8,8 @@ import type { webLinks } from 'src/content/config'
 import type { MenuLink } from 'src/components/Menu'
 import type { CollectionEntry } from 'astro:content'
 import { toMachineName } from './names'
+import MarkdownIt from 'markdown-it'
+import { convert } from 'html-to-text'
 
 /**
  * Turns a 00:00 timestring into total seconds.
@@ -152,3 +154,29 @@ export const artistsToString = (artistList: CollectionEntry<'artist'>[]) => {
  * @returns
  */
 export const makeHash = (string: string) => 'h' + encodeURIComponent(toMachineName(string))
+
+/**
+ * Generate a short excerpt from markdown.
+ * @param body 
+ * @returns excerpt
+ */
+export const generateExcerpt = (body: string) => {
+	const parser = new MarkdownIt()
+	const html = parser.render(body.replace(/^(import ).*'/gm, ''))
+	const options = {
+		wordwrap: null,
+		typographer:  true,
+		selectors: [
+			{ selector: 'a', options: { ignoreHref: true } },
+			{ selector: 'img', format: 'skip' },
+			{ selector: 'figure', format: 'skip' }
+		]
+	}
+
+	const text = convert(html, options)
+	const distilled = convert(text, options)
+
+	const excerpt = distilled.split(' ').slice(0, 68).join(' ')
+
+	return excerpt + '...';
+}

@@ -30,9 +30,7 @@ const { title, id, height, backgroundImage, backgroundImageVertical } = Astro.pr
 				</div>
 			)
 		}
-		<div style={{ border: '2px inset', backgroundColor: 'black' }}>
-			<slot />
-		</div>
+		<div class="titleContent"><slot /></div>
 	</div>
 	<div class={BackgroundContent}>
 		<slot name="background">
@@ -41,3 +39,10 @@ const { title, id, height, backgroundImage, backgroundImageVertical } = Astro.pr
 	</div>
 	<slot name="customContent" />
 </div>
+
+<style>
+	.titleContent:not(:empty) {
+		border: 2px inset;
+		background-color: black;
+	}
+</style>
