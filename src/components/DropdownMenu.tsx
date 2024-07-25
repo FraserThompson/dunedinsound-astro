@@ -1,7 +1,7 @@
 import type React from "preact/compat"
 import { useRef, useState, useEffect, useCallback } from "preact/compat"
 import MenuIcon from '~icons/bx/menu'
-import { dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownWrapper } from './DropdownMenu.css'
+import { background, dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownWrapper, menuWidth, color } from './DropdownMenu.css'
 import { scrollTo } from 'src/util/helpers'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import type { MenuLink } from './Menu'
@@ -22,6 +22,9 @@ interface Props {
 	menuTitle?: string
 	direction: "up" | "down"
 	top?: string
+	width?: string
+	backgroundColor?: string
+	textColor?: string
 }
 
 /**
@@ -32,7 +35,7 @@ interface Props {
  * @param param0 
  * @returns 
  */
-const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top }) => {
+const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top, width, backgroundColor, textColor }) => {
 	const [open, setOpen] = useState(false)
 	const [selectedItem, setSelectedItem] = useState(null as string | null)
 
@@ -66,7 +69,9 @@ const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top }) => {
 
 	return (
 		<div className={`${dropdownWrapper}`} style={assignInlineVars({
-			[dropdownTop]: top
+			[dropdownTop]: top,
+			[menuWidth]: width,
+			[background]: backgroundColor
 		})}>
 			<a className={dropdownButtonWrapper} aria-haspopup="true" onClick={toggleMenu}>
 				<div className={dropdownButtonIcon}>
@@ -77,10 +82,13 @@ const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top }) => {
 			<ul className={`${dropdownMenu} ${open ? 'open' : ''} ${direction}`}>
 				{list.map((item) =>
 					<li className={`${dropdownLi} ${(item.hash && selectedItem === item.hash) ? 'active' : ''}`}>
-						<a 
+						<a
 							className={`${dropdownLink} menu-title`}
 							onClick={(e: any) => item.hash && select(e, item.hash)}
 							href={`${item.href ? item.href : item.hash ? ('#' + item.hash) : ''}`}
+							style={assignInlineVars({
+								[color]: textColor
+							})}
 						>
 							{item.title}
 						</a>
@@ -95,7 +103,7 @@ const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top }) => {
 					</li>
 				)}
 			</ul>
-		</div>
+		</div >
 	)
 }
 

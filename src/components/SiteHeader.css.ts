@@ -6,7 +6,7 @@ export const headerWrapper = style({
 	top: '0px',
 	width: '100%',
 	zIndex: '12',
-	boxShadow: '0 6px 12px rgba(0, 0, 0, 0.4)',
+	boxShadow: theme.borders.shadowLight,
 	borderBottom: theme.borders.primary,
 	height: theme.dimensions.headerHeight
 })
@@ -20,7 +20,7 @@ export const header = style({
 	top: '0px',
 	zIndex: '10',
 	color: theme.color.text,
-	boxShadow: '0 6px 12px rgba(0, 0, 0, 0.4)',
+	boxShadow: theme.borders.shadowLight,
 	borderBottom: theme.borders.primary,
 	display: 'none',
 	'@media': {
@@ -39,7 +39,7 @@ export const headerMobile = style({
 	justifyContent: 'center',
 	zIndex: '12',
 	width: '100%',
-	boxShadow: '0 -3px 8px rgba(0, 0, 0, 0.25)',
+	boxShadow: theme.borders.shadowTop,
 	borderTop: theme.borders.primary,
 	'@media': {
 		'screen and (--md)': {

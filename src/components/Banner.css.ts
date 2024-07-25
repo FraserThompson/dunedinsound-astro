@@ -26,7 +26,7 @@ export const BannerContent = style({
 	zIndex: '8',
 	flexGrow: '1',
 	padding: theme.dimensions.basePadding,
-	paddingTop: '1em',
+	paddingTop: '1.5em',
 	display: 'flex',
 	flexDirection: 'column',
 	margin: '0 auto',
@@ -36,7 +36,7 @@ export const BannerContent = style({
 	'@media': {
 		'screen and (--md)': {
 			padding: theme.dimensions.basePadding,
-			paddingTop: '4.5em',
+			paddingTop: '1.5em',
 			width: theme.dimensions.contentContainerWidth,
 			height: 'auto'
 		}

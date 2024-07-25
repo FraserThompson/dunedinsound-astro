@@ -16,7 +16,7 @@ export const sidebarWrapper = style({
 	overflowX: 'hidden',
 	overflowY: 'auto',
 	zIndex: '10',
-	boxShadow: '0 6px 12px rgba(0, 0, 0, 0.4)',
+	boxShadow: theme.borders.shadow,
 	borderRight: theme.borders.primary,
 	visibility: 'hidden',
 	opacity: 0,

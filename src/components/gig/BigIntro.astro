@@ -1,0 +1,33 @@
+---
+interface Props {
+	text: string
+}
+
+const { text } = Astro.props
+---
+
+<div class="wrapper">
+	<div class="inner">
+		<h2>
+			<Fragment set:html={text} />
+		</h2>
+	</div>
+</div>
+
+<style>
+	.wrapper {
+		background-color: black;
+	}
+
+	h2 {
+		margin: 0;
+		font-family: monospace;
+	}
+
+	.inner {
+		max-width: 500px;
+		padding: 60px;
+		margin: 0 auto;
+		text-align: center;
+	}
+</style>

@@ -1,7 +1,7 @@
 ---
 import Banner from 'src/components/Banner.astro'
 import type { ProcessedEntry } from 'src/util/collection.ts'
-import ImageGallery from 'src/components/ImageGallery'
+import ImageGallery from 'src/components/ImageGallery.astro'
 import Player from 'src/components/gig/Player'
 import PlayerContainer from 'src/components/gig/PlayerContainer.astro'
 import MapIcon from '~icons/bx/map'
@@ -11,6 +11,9 @@ import FlexGridContainer from 'src/components/FlexGridContainer'
 import DropdownMenu from 'src/components/DropdownMenu'
 import { socialLinksToMenuItems } from 'src/util/helpers.ts'
 import ShareButton from 'src/components/ShareButton.astro'
+import CornerLabel from 'src/components/gig/CornerLabel.astro'
+import BigIntro from 'src/components/gig/BigIntro.astro'
+import ArtistMedia from 'src/components/gig/ArtistMedia.astro'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -20,67 +23,72 @@ const { entry } = Astro.props
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
+
+const uncategorizedImages = entryExtra.artistImages?._uncategorized
 ---
 
 <Banner id="top" title={entryData.title} backgroundImage={entryExtra.cover}>
-	<h3>
-		{entryData.date.toLocaleDateString()}
-	</h3>
-	{
-		entryExtra.venue && (
-			<p>
-				<a href={`/venues/${entryExtra.venue.id}`} class="highlighted">
-					<MapIcon />
-					{entryExtra.venue.data.title}
-				</a>
-			</p>
-		)
-	}
-	{
-		entryExtra.audio && (
-			<PlayerContainer>
-				<Player artistAudio={Object.values(entryExtra.audio)} client:load />
-			</PlayerContainer>
-		)
-	}
-	<div style={{ position: 'absolute', bottom: 0 }} slot="customContent">
+	<div>
+		{
+			entryExtra.venue && (
+				<h3 style={{ marginBottom: '2px' }}>
+					<a href={`/venues/${entryExtra.venue.id}`} class="highlighted">
+						<MapIcon style={{ marginBottom: '-2px' }} />
+						{entryExtra.venue.data.title}
+					</a>
+				</h3>
+			)
+		}
+		<h4 style={{ marginBottom: '2px' }}>
+			{entryData.date.toLocaleDateString()}
+		</h4>
+		{
+			entryData.description && (
+				<p>
+					<Fragment set:html={entryData.description} />
+				</p>
+			)
+		}
+		{entryData.feature_vid && <YoutubeResponsive videoId={entryData.feature_vid} />}
 		<ShareButton
+			style={{ position: 'absolute', left: '50%', transform: 'translate(-50%)' }}
 			shareData={{
 				title: 'GIG MEDIA: ' + entryData.title,
 				url: 'https://dunedinsound.com' + entryExtra.slug,
-				description: `Photos, audio and video from ${entryData.title}.`
+				text: `Photos, audio and video from ${entryData.title}.`
 			}}
 		/>
 	</div>
+	<div slot="customContent">
+		<div style={{ width: '100%', margin: '0 auto' }}></div>
+		{!entry.next && <CornerLabel>LATEST GIG</CornerLabel>}
+		{
+			entryExtra.audio && (
+				<PlayerContainer>
+					<Player artistAudio={Object.values(entryExtra.audio)} client:load />
+				</PlayerContainer>
+			)
+		}
+	</div>
 </Banner>
-<div>
-	<DropdownMenu
-		list={entryExtra.artists.map((artist) => ({
-			hash: `${artist.id}`,
-			title: artist.data.title,
-			additionalLinks: [...socialLinksToMenuItems(artist.data.links), { href: `/artists/${artist.id}`, title: '>' }]
-		}))}
-		direction="down"
-		client:load
-	/>
-	{
-		entryExtra.artists.map((artist, i) => (
-			<div class="artist" id={artist.id}>
-				<Divider href={`#${artist.id}`} color="black" backgroundColor="white" sticky={true}>
-					{artist.data.title}
-				</Divider>
-				<FlexGridContainer xs={12} sm={6} md={6} lg={6} maxWidth="1080px">
-					{entryData.artists[i].vid?.map((vid, i) => (
-						<YoutubeResponsive videoId={vid.link} client:load />
-					))}
-				</FlexGridContainer>
-				{entryExtra.artistImages[artist.id] && (
-					<ImageGallery title={entryData.title} images={entryExtra.artistImages[artist.id]} client:load />
-				)}
-			</div>
-		))
-	}
-</div>
+{entryData.intro && <BigIntro text={entryData.intro} />}
+{!!uncategorizedImages?.length && <ImageGallery images={uncategorizedImages} masonry={true} />}
+{
+	!entryData.audioOnly && (
+		<div>
+			<DropdownMenu
+				list={entryExtra.artists.map((artist) => ({
+					hash: `${artist.id}`,
+					title: artist.data.title,
+					additionalLinks: [...socialLinksToMenuItems(artist.data.links), { href: `/artists/${artist.id}`, title: '>' }]
+				}))}
+				direction="down"
+				client:load
+			/>
+			<ArtistMedia entry={entry} />
+		</div>
+	)
+}
 
 <script>
 	import browserHistory from 'src/util/history.ts'

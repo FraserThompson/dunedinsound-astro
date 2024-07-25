@@ -1,0 +1,78 @@
+---
+/**
+ * A gallery of ResponsiveImage's with an optional lightbox.
+ * 
+ * If you are using multiple gallerys in one page you shuld pass noLightbox=true
+ * and set a galleryOffset to the length of the previous gallery.
+ * 
+ */
+import type { ResponsiveImage } from 'src/util/ResponsiveImage'
+import FlexGridContainer from './FlexGridContainer'
+import Image2 from './Image2'
+import ImageGalleryLightbox from './ImageGalleryLightbox'
+
+interface Props {
+	images: ResponsiveImage[]
+	galleryOffset?: number
+	noLightbox?: boolean
+	imageCaptions?: string[]
+	gridSize?: { [key: string]: string }
+	masonry?: boolean
+}
+
+const { images, galleryOffset, noLightbox, imageCaptions, gridSize, masonry } = Astro.props
+---
+
+<FlexGridContainer {...gridSize} maxWidth="600px">
+	{
+		images.map((responsiveImage, imageIndex) => (
+			<gallery-image
+				data-imageindex={imageIndex}
+				data-galleryoffset={galleryOffset}
+				style={{ cursor: 'pointer', display: 'block', height: '100%', width: !masonry ? '400px' : 'auto' }}
+			>
+				<Image2 responsiveImage={responsiveImage} />
+			</gallery-image>
+		))
+	}
+</FlexGridContainer>
+
+{!noLightbox && <ImageGalleryLightbox images={images} imageCaptions={imageCaptions} client:load/>}
+
+<script>
+	import browserHistory from 'src/util/history'
+
+	class GalleryImage extends HTMLElement {
+		imageIndex = 0
+		galleryOffset = 0
+
+		constructor() {
+			super()
+			if (!this.dataset.imageindex) return
+			this.imageIndex = parseInt(this.dataset.imageindex)
+			if (this.dataset.galleryoffset) {
+				this.galleryOffset = parseInt(this.dataset.galleryoffset)
+			}
+		}
+
+		openLightbox = (event: MouseEvent) => {
+			if (!(event.target instanceof HTMLElement)) return
+
+			event.preventDefault()
+
+			browserHistory?.push(
+				{
+					pathname: browserHistory?.location.pathname,
+					search: `?image=${this.imageIndex + this.galleryOffset}`
+				},
+				{ lightboxOpen: true }
+			)
+		}
+
+		connectedCallback() {
+			this.addEventListener('mousedown', (e: MouseEvent) => this.openLightbox(e))
+		}
+	}
+
+	customElements.define('gallery-image', GalleryImage)
+</script>

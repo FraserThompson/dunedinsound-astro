@@ -35,6 +35,8 @@ export const monthHeader = style([
 	MenuLi['vertical'],
 	{
 		backgroundColor: theme.color.contrast,
+		boxShadow: theme.borders.shadowLight,
+		position: 'relative',
 		height: theme.dimensions.subheaderHeight
 	}
 ])

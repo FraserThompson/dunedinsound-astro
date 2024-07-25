@@ -61,7 +61,7 @@ globalStyle('h3', {
 
 globalStyle('h4', {
 	fontSize: `calc(${theme.font.baseSize} * 1)`,
-	fontWeight: '400',
+	fontWeight: '600',
 	color: theme.color.dullText,
 	lineHeight: '1.1'
 })

@@ -3,6 +3,9 @@ import { theme } from 'src/Theme.css'
 import { MenuLi, MenuLink, MenuWrapper } from './Menu.css'
 
 export const dropdownTop = createVar()
+export const menuWidth = createVar()
+export const background = createVar()
+export const color = createVar()
 
 export const dropdownWrapper = style({
 	position: 'sticky',
@@ -28,13 +31,15 @@ export const dropdownButtonIcon = style({
 	height: theme.dimensions.subheaderHeight,
 	alignItems: 'center',
 	float: 'right',
-	color: "black"
+	color: 'black'
 })
 
 export const dropdownMenu = style([
 	MenuWrapper,
 	{
 		position: 'absolute',
+		width: fallbackVar(menuWidth, 'auto'),
+		backgroundColor: fallbackVar(background, theme.color.primary),
 		bottom: '1',
 		top: '1',
 		right: '0 !important',
@@ -48,7 +53,7 @@ export const dropdownMenu = style([
 		transitionProperty: 'visibility, opacity, transform',
 		transitionDuration: '0.3s',
 		transitionTimingFunction: 'cubic-bezier(0, 0, 0, 1.2)',
-		boxShadow: '0 6px 12px rgba(0, 0, 0, 0.4)',
+		boxShadow: theme.borders.shadow,
 		selectors: {
 			'&.open': {
 				visibility: 'visible',
@@ -66,8 +71,19 @@ export const dropdownMenu = style([
 export const dropdownLi = style([
 	MenuLi['vertical'],
 	{
-		width: "initial"
+		width: 'initial'
 	}
 ])
 
-export const dropdownLink = style([MenuLink['vertical']])
+export const dropdownLink = style([
+	MenuLink['vertical'],
+	{
+		color: fallbackVar(color, theme.color.text),
+		selectors: {
+			'&:hover': {
+				backgroundColor: theme.color.lightSecondary,
+				color: "black"
+			}
+		}
+	}
+])

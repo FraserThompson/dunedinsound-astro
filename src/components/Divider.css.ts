@@ -19,7 +19,7 @@ const dividerBase = style({
 	borderBottom: '1px solid black',
 	top: '10px',
 	zIndex: '6',
-	boxShadow: '0 6px 12px rgba(0,0,0,0.4)'
+	boxShadow: theme.borders.shadow,
 })
 
 globalStyle(`${dividerBase} a`, {
@@ -32,7 +32,7 @@ export const dividerWrapper = styleVariants({
 		{
 			position: 'sticky',
 			zIndex: '6',
-			boxShadow: '0 6px 12px rgba(0,0,0,0.4)',
+			boxShadow: theme.borders.shadow,
 			top: fallbackVar(stickyTop, '0px'),
 			'@media': {
 				'screen and (--md)': {

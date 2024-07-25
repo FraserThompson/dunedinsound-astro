@@ -1,0 +1,27 @@
+---
+
+---
+
+<div class="labelWrapper">
+	<slot />
+</div>
+
+<style>
+	.labelWrapper {
+		position: absolute;
+		font-weight: bold;
+		left: -60px;
+		background-color: white;
+		color: black;
+		top: 20px;
+		width: 200px;
+		text-align: center;
+		transform: rotateZ(-40deg);
+		font-size: 60%;
+		@media screen and (--xs) {
+			left: -50px;
+			top: 25px;
+			font-size: 100%;
+		}
+	}
+</style>

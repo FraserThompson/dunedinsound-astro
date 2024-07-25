@@ -4,7 +4,7 @@ import { theme } from 'src/Theme.css'
 const siteContainerBase = style({
 	minHeight: theme.dimensions.viewportHeight,
 	backgroundColor: theme.color.background,
-	boxShadow: '0 6px 12px rgba(0, 0, 0, 0.8)',
+	boxShadow: theme.borders.shadow,
 	height: '100%',
 	width: '100%',
 	zIndex: '2',

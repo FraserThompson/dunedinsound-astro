@@ -1,11 +1,11 @@
 import { style, globalStyle, styleVariants } from '@vanilla-extract/css'
-import { MenuWrapper } from '../Menu.css'
 import { theme } from 'src/Theme.css'
 
 const PlayerWrapperBase = style({
 	transition: 'all 150ms ease-in-out',
 	background: 'linear-gradient(to left, #1a1927 0%, #353551 53%, #21212d 100%)',
 	border: '3px groove #585662',
+	boxShadow: theme.borders.shadowTop,
 	selectors: {
 		'&.barebones': {
 			border: 'none'
@@ -19,7 +19,6 @@ export const PlayerWrapper = styleVariants({
 })
 
 const AudioWrapperBase = style({
-	boxShadow: '0 -3px 8px rgba(0, 0, 0, 0.25)',
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'center',
@@ -37,6 +36,10 @@ export const AudioWrapper = styleVariants({
 
 export const WaveWrapper = style({
 	flexGrow: 1,
+	border: '3px groove #585662',
+	backgroundColor: 'black',
+	marginLeft: '5px',
+	marginRight: '5px',
 	position: 'relative',
 	selectors: {
 		'&::part(marker)': {

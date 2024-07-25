@@ -13,6 +13,7 @@ import {
 } from './GigsMenu.css'
 import { makeHash } from 'src/util/helpers'
 import DropdownMenu from '../DropdownMenu'
+import { theme } from 'src/Theme.css'
 
 interface Props {
 	selected?: string
@@ -34,6 +35,8 @@ const { selected } = Astro.props
 			title: year
 		}))}
 	direction="down"
+	backgroundColor={theme.color.foreground}
+	textColor="black"
 	top={'0px'}
 	client:load
 />

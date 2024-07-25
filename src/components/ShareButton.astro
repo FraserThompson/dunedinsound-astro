@@ -3,12 +3,15 @@ import RedoIcon from '~icons/bx/share'
 import { shareButton } from './ShareButton.css'
 interface Props {
 	shareData: any
+	style: any
 }
 
-const { shareData } = Astro.props
+const { shareData, style } = Astro.props
 ---
 
-<share-button class={shareButton} data-shareData={JSON.stringify(shareData)}><RedoIcon /> SHARE </share-button>
+<share-button style={style} class={shareButton} data-sharedata={JSON.stringify(shareData)}>
+	<small><RedoIcon /> SHARE</small>
+</share-button>
 
 <script>
 	class ShareButton extends HTMLElement {
@@ -16,8 +19,8 @@ const { shareData } = Astro.props
 
 		constructor() {
 			super()
-			if (!this.dataset.shareData) return
-			this.shareData = JSON.parse(this.dataset.shareData)
+			if (!this.dataset.sharedata) return
+			this.shareData = JSON.parse(this.dataset.sharedata)
 		}
 
 		connectedCallback() {

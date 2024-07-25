@@ -1,0 +1,56 @@
+---
+import type { ProcessedEntry } from 'src/util/collection'
+import Divider from '../Divider'
+import ImageGallery from '../ImageGallery.astro'
+import ImageGalleryLightbox from '../ImageGalleryLightbox'
+import FlexGridContainer from '../FlexGridContainer'
+import YoutubeResponsive from '../YoutubeResponsive'
+
+interface Props {
+	entry: ProcessedEntry<'gig'>
+}
+
+const { entry } = Astro.props
+const entryExtra = entry.extra
+const entryData = entry.entry.data
+
+// For the lightbox
+const allImages = Object.values(entryExtra.artistImages).reduce((acc, images) => {
+	return [...acc, ...images]
+}, [])
+
+/**
+ * We have multiple galleries, and one lightbox.
+ * So we need a way for the galleries to know the index of their images
+ * in relation to the totality of images which the lightbox has.
+ */
+const getGalleryOffset = (entryExtra: any, i: any) => {
+	if (i === 0) return 0
+	const prevArtistId = entryExtra.artists[i - 1].id
+	return entryExtra.artistImages[prevArtistId].length
+}
+---
+
+{
+	entryExtra.artists.map((artist, i) => (
+		<div class="artist" id={artist.id}>
+			<Divider href={`#${artist.id}`} color="black" backgroundColor="white" sticky={true}>
+				{artist.data.title}
+			</Divider>
+			<FlexGridContainer xs={12} sm={6} md={6} lg={6} maxWidth="1080px">
+				{entryData.artists[i].vid?.map((vid, i) => (
+					<YoutubeResponsive videoId={vid.link} client:load />
+				))}
+			</FlexGridContainer>
+			{entryExtra.artistImages[artist.id] && (
+				<ImageGallery
+					noLightbox={true}
+					images={entryExtra.artistImages[artist.id]}
+					galleryOffset={getGalleryOffset(entryExtra, i)}
+				/>
+			)}
+		</div>
+	))
+}
+
+<ImageGalleryLightbox images={allImages} client:load />
