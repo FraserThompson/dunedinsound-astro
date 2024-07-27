@@ -1,21 +1,19 @@
 ---
-import GridContainer from 'src/components/GridContainer'
+import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
-import Tile from 'src/components/Tile.astro'
-import { gridChild } from 'src/components/GridContainer.css'
 
 const vaultsessions = await loadAndFormatCollection('vaultsession')
 ---
 
 <BaseLayout>
-	<GridContainer>
+	<FlexGridContainer>
 		{
 			vaultsessions.map((vaultsession) => (
-				<a class={gridChild} href={vaultsession.extra.absolutePath}>
+				<a href={vaultsession.extra.absolutePath}>
 					<h3>{vaultsession.entry.id}</h3>
 				</a>
 			))
 		}
-	</GridContainer>
+	</FlexGridContainer>
 </BaseLayout>

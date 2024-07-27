@@ -5,9 +5,7 @@ import ImageGallery from 'src/components/ImageGallery.astro'
 import Player from 'src/components/gig/Player'
 import PlayerContainer from 'src/components/gig/PlayerContainer.astro'
 import MapIcon from '~icons/bx/map'
-import Divider from 'src/components/Divider'
 import YoutubeResponsive from 'src/components/YoutubeResponsive'
-import FlexGridContainer from 'src/components/FlexGridContainer'
 import DropdownMenu from 'src/components/DropdownMenu'
 import { socialLinksToMenuItems } from 'src/util/helpers.ts'
 import ShareButton from 'src/components/ShareButton.astro'
@@ -72,7 +70,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	</div>
 </Banner>
 {entryData.intro && <BigIntro text={entryData.intro} />}
-{!!uncategorizedImages?.length && <ImageGallery images={uncategorizedImages} masonry={true} />}
+{!!uncategorizedImages?.length && <ImageGallery images={uncategorizedImages} />}
 {
 	!entryData.audioOnly && (
 		<div>

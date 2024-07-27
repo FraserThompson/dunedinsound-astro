@@ -1,0 +1,20 @@
+---
+/**
+ * A responsive grid container.
+ * Default: Requires no media queries, will automatically collapse.
+ * Fixed: 12 column grid, wrap children in GridChild and pass grid.
+ */
+
+import { gridWrapper } from './GridContainer.css'
+
+interface Props {
+	fixed?: boolean
+	id?: string
+}
+
+const { fixed, id } = Astro.props
+---
+
+<div class={gridWrapper[fixed ? 'fixed' : 'autoflow']} id={id}>
+	<slot />
+</div>

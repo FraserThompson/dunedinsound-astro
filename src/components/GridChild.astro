@@ -1,0 +1,40 @@
+---
+/**
+ * Children of fixed GridContainers should be wrapped in this.
+ */
+
+import { gridChild, colXs, colSm, colMd, colLg } from './GridChild.css'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
+
+export interface Grid {
+	xs: number
+	sm?: number
+	md?: number
+	lg?: number
+}
+
+interface Props {
+	grid?: Grid
+}
+
+const { grid } = Astro.props
+
+const processedGrid = {
+	xs: grid?.xs,
+	sm: grid?.sm || grid?.xs,
+	md: grid?.md || grid?.sm || grid?.xs,
+	lg: grid?.lg || grid?.md || grid?.sm || grid?.xs
+}
+---
+
+<div
+	class={gridChild}
+	style={assignInlineVars({
+		[colXs]: `span ${processedGrid.xs}`,
+		[colSm]: `span ${processedGrid.sm}`,
+		[colMd]: `span ${processedGrid.md}`,
+		[colLg]: `span ${processedGrid.lg}`
+	})}
+>
+	<slot />
+</div>

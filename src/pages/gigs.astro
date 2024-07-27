@@ -2,10 +2,8 @@
 import SidebarNav from 'src/components/SidebarNav.astro'
 import GigsMenu from 'src/components/gig/GigsMenu.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
-import Tile from 'src/components/Tile.astro'
-import { artistsToString, makeHash } from 'src/util/helpers'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
-import FlexGridContainer from 'src/components/FlexGridContainer'
+import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
 import { theme } from 'src/Theme.css'
 import GigTile from 'src/components/gig/GigTile.astro'
@@ -22,7 +20,7 @@ const gigs = await loadAndFormatCollection('gig')
 	</ShuffleFilters>
 	<SidebarNav top={theme.dimensions.headerHeightWithSubheader}>
 		<GigsMenu slot="sidebar" />
-		<FlexGridContainer xs={12} sm={12} md={12} lg={12} id="gigs" slot="content" fixedWidth={true}>
+		<FlexGridContainer grid={{ xs: 12 }} id="gigs" slot="content" fixedWidth={true}>
 			{gigs.map((gig) => <GigTile gig={gig} />)}
 		</FlexGridContainer>
 	</SidebarNav>

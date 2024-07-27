@@ -1,43 +1,41 @@
 ---
 /**
  * A gallery of ResponsiveImage's with an optional lightbox.
- * 
+ *
  * If you are using multiple gallerys in one page you shuld pass noLightbox=true
  * and set a galleryOffset to the length of the previous gallery.
- * 
+ *
  */
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
-import FlexGridContainer from './FlexGridContainer'
 import Image2 from './Image2'
 import ImageGalleryLightbox from './ImageGalleryLightbox'
+import GridContainer from './GridContainer.astro'
 
 interface Props {
 	images: ResponsiveImage[]
 	galleryOffset?: number
 	noLightbox?: boolean
 	imageCaptions?: string[]
-	gridSize?: { [key: string]: string }
-	masonry?: boolean
 }
 
-const { images, galleryOffset, noLightbox, imageCaptions, gridSize, masonry } = Astro.props
+const { images, galleryOffset, noLightbox, imageCaptions } = Astro.props
 ---
 
-<FlexGridContainer {...gridSize} maxWidth="600px">
+<GridContainer>
 	{
 		images.map((responsiveImage, imageIndex) => (
 			<gallery-image
 				data-imageindex={imageIndex}
 				data-galleryoffset={galleryOffset}
-				style={{ cursor: 'pointer', display: 'block', height: '100%', width: !masonry ? '400px' : 'auto' }}
+				style={{ cursor: 'pointer', display: 'block', height: '100%', width: '100%' }}
 			>
 				<Image2 responsiveImage={responsiveImage} />
 			</gallery-image>
 		))
 	}
-</FlexGridContainer>
+</GridContainer>
 
-{!noLightbox && <ImageGalleryLightbox images={images} imageCaptions={imageCaptions} client:load/>}
+{!noLightbox && <ImageGalleryLightbox images={images} imageCaptions={imageCaptions} client:load />}
 
 <script>
 	import browserHistory from 'src/util/history'

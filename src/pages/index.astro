@@ -4,9 +4,10 @@ import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collectio
 import Tile from 'src/components/Tile.astro'
 import { theme } from 'src/Theme.css'
 import GigTile from 'src/components/gig/GigTile.astro'
-import FlexGridContainer from 'src/components/FlexGridContainer'
-import GridContainer from 'src/components/GridContainer'
-import { gridChild } from 'src/components/GridContainer.css'
+import FlexGridContainer from 'src/components/FlexGridContainer.astro'
+import GridContainer from 'src/components/GridContainer.astro'
+import { gridChild } from 'src/components/GridChild.css'
+import GridChild from 'src/components/GridChild.astro'
 
 const gigs = await loadAndFormatCollection('gig')
 const blogs = await loadAndFormatCollection('blog')
@@ -24,11 +25,11 @@ combinedPosts.splice(latestGigIndex, 1)
 ---
 
 <BaseLayout>
-	<GridContainer>
-		<div class="featured-gig">
+	<GridContainer fixed={true}>
+		<GridChild grid={{ xs: 12, sm: 12, md: 8 }}>
 			<GigTile containerHeight="100%" gig={latestGig} />
-		</div>
-		<div class="two-side-gigs">
+		</GridChild>
+		<GridChild grid={{ xs: 12, sm: 4 }}>
 			{
 				combinedPosts
 					.slice(0, 2)
@@ -40,29 +41,31 @@ combinedPosts.splice(latestGigIndex, 1)
 						)
 					)
 			}
-		</div>
-		<div class="everything-else">
-			<GridContainer xs={12} sm={6} md={4} lg={4}>
+		</GridChild>
+		<GridChild grid={{ xs: 12 }}>
+			<GridContainer fixed={true}>
 				{
 					combinedPosts
 						.slice(2, 8)
-						.map((post) =>
-							post.entry.collection === 'gig' ? (
-								<GigTile className={gridChild} gig={post as ProcessedEntry<'gig'>} />
-							) : (
-								<Tile
-									className={gridChild}
-									title={post.entry.data.title}
-									href={post.extra.absolutePath}
-									responsiveImage={post.extra.cover}
-								/>
-							)
-						)
+						.map((post) => (
+							<GridChild grid={{ xs: 12, sm: 6, md: 4, lg: 4 }}>
+								{post.entry.collection === 'gig' ? (
+									<GigTile className={gridChild} gig={post as ProcessedEntry<'gig'>} />
+								) : (
+									<Tile
+										className={gridChild}
+										title={post.entry.data.title}
+										href={post.extra.absolutePath}
+										responsiveImage={post.extra.cover}
+									/>
+								)}
+							</GridChild>
+						))
 				}
 			</GridContainer>
-		</div>
+		</GridChild>
 	</GridContainer>
-	<FlexGridContainer xs={6} sm={6} md={6} lg={6}>
+	<FlexGridContainer grid={{ xs: 6 }}>
 		<Tile
 			containerHeight={theme.dimensions.headerHeightWithSubheader}
 			href="/gigs"
@@ -79,26 +82,3 @@ combinedPosts.splice(latestGigIndex, 1)
 		</Tile>
 	</FlexGridContainer>
 </BaseLayout>
-
-<style>
-	.featured-gig {
-		grid-column: span 12;
-	}
-	.two-side-gigs {
-		grid-column: span 12;
-	}
-	.everything-else {
-		grid-column: span 12;
-	}
-	@media (--md) {
-		.featured-gig {
-			grid-column: span 8;
-		}
-		.two-side-gigs {
-			grid-column: span 4;
-		}
-		.everything-else {
-			grid-column: span 12;
-		}
-	}
-</style>

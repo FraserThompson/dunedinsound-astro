@@ -1,5 +1,5 @@
 ---
-import FlexGridContainer from 'src/components/FlexGridContainer'
+import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import type { ProcessedEntry } from 'src/util/collection.ts'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { loadAndFormatCollection, processEntry } from 'src/util/collection'
@@ -74,7 +74,7 @@ for (const artist of artists) {
 			</select>
 		</div>
 	</ShuffleFilters>
-	<FlexGridContainer xs={6} sm={4} md={3} lg={2} id="artist-grid" fixedWidth={true}>
+	<FlexGridContainer grid={{ xs: 6, sm: 4, md: 3, lg: 2 }} id="artist-grid" fixedWidth={true}>
 		{
 			artists.map((artist) => (
 				<Tile

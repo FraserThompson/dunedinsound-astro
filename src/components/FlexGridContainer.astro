@@ -1,0 +1,55 @@
+---
+/**
+ * A responsive grid container using flexbox.
+ */
+import {
+	FlexGridWrapper,
+	flexDefault,
+	flexXs,
+	widthDefault,
+	widthXs,
+	flexMd,
+	widthMd,
+	flexLg,
+	widthLg,
+	maxWidth2
+} from './FlexGridContainer.css'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
+import type { Grid } from './GridChild.astro'
+
+interface Props {
+	grid?: Grid
+	maxWidth?: string
+	fixedWidth?: boolean
+	id?: string
+}
+
+const cols = 12
+
+const { grid, maxWidth, fixedWidth, id } = Astro.props
+
+const processedGrid = {
+	xs: grid?.xs || 6,
+	sm: grid?.sm || grid?.xs || 4,
+	md: grid?.md || grid?.sm || grid?.xs || 3,
+	lg: grid?.lg || grid?.md || grid?.sm || grid?.xs || 3
+}
+---
+
+<div
+	class={FlexGridWrapper}
+	id={id}
+	style={assignInlineVars({
+		[flexDefault]: `1 1 ${100 * (processedGrid.xs / cols)}%`,
+		[widthDefault]: fixedWidth ? `${100 * (processedGrid.xs / cols)}%` : undefined,
+		[flexXs]: `1 1 ${100 * (processedGrid.sm / cols)}%`,
+		[widthXs]: fixedWidth ? `${100 * (processedGrid.sm / cols)}%` : undefined,
+		[flexMd]: `1 1 ${100 * (processedGrid.md / cols)}%`,
+		[widthMd]: fixedWidth ? `$100 * (md / cols)}%` : undefined,
+		[flexLg]: `1 1 ${100 * (processedGrid.lg / cols)}%`,
+		[widthLg]: fixedWidth ? `${100 * (processedGrid.lg / cols)}%` : undefined,
+		[maxWidth2]: maxWidth
+	})}
+>
+	<slot />
+</div>
