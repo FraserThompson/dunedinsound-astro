@@ -30,8 +30,9 @@ const years = Object.keys(gigsByYear).reverse()
 
 // Find related blogs
 const blogs = await loadAndFormatCollection('blog', ({ data }) => {
-	const matchByTag = data.tags?.find((tag: any) => tag === entry.entry.id)
-	return matchByTag
+	const matchByArtist = data.relatedArtists?.find((artist: any) => artist.id === entry.entry.id)
+	const matchByVenue = data.relatedVenues?.find((venue: any) => venue.id === entry.entry.id)
+	return matchByArtist || matchByVenue
 })
 
 // Find related vaultsessions

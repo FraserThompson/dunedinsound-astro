@@ -1,7 +1,13 @@
 ---
 import { textContainer } from './TextContainer.css'
+
+interface Props {
+	featureMode?: boolean
+}
+
+const { featureMode } = Astro.props
 ---
 
-<div class={textContainer}>
+<div class={textContainer[featureMode ? 'feature' : 'normal']}>
 	<slot />
 </div>

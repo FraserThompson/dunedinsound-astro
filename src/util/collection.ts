@@ -1,5 +1,5 @@
 import { getCollection } from 'astro:content'
-import type { CollectionEntry, CollectionKey } from 'astro:content'
+import type { CollectionEntry, CollectionKey, DataEntryMap } from 'astro:content'
 import { toMachineName } from 'src/util/names'
 import { fdir } from 'fdir'
 import { getEntry } from 'astro:content'
@@ -62,6 +62,27 @@ export async function loadAndFormatCollection<C extends CollectionKey>(name: C, 
 	return await Promise.all(sortedEntries.map(async (entry, i) => await processEntry(entry, entries, i)))
 }
 
+/**
+ * Loads and formats a single data entry.
+ * @param entry
+ * @returns
+ */
+export async function loadAndFormatEntry<C extends keyof DataEntryMap>(collection: C, id: string) {
+	const fullEntry = await getEntry(collection, id)
+	if (fullEntry) {
+		// @ts-ignore
+		const processedEntry: ProcessedEntry<C> = await processEntry(fullEntry)
+		return processedEntry
+	}
+}
+
+/**
+ * Processes an entry and adds extra fields.
+ * @param entry
+ * @param entries
+ * @param i
+ * @returns
+ */
 export async function processEntry<C extends CollectionKey>(
 	entry: CollectionEntry<C>,
 	entries?: any,
@@ -257,9 +278,9 @@ export const sortGigs = (gigs: ProcessedEntry<'gig'>[]) =>
 	}, {} as SortedGigs)
 
 /**
- * By default content collection IDs have the file extension. 
+ * By default content collection IDs have the file extension.
  * This sucks so we'll strip it.
- * @param entry 
+ * @param entry
  * @returns the ID for the entry
  */
 export function getEntryId<C extends CollectionKey>(entry: CollectionEntry<C>) {

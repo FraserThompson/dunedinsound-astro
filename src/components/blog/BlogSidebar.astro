@@ -1,0 +1,83 @@
+---
+import { getEntry } from 'astro:content'
+import { type ProcessedEntry } from 'src/util/collection'
+import { blogSidebarWrapper, featuredLinks } from './BlogSidebar.css'
+import { theme } from 'src/Theme.css'
+import { socialLinksToMenuItems } from 'src/util/helpers'
+
+interface Props {
+	entry: ProcessedEntry<'blog'>
+}
+
+const { entry } = Astro.props
+
+const entryData = entry.entry.data
+
+// Get full venues
+const venues = entryData.relatedVenues
+	? await Promise.all(entryData.relatedVenues.map(async (venue) => await getEntry(venue.collection, venue.id)))
+	: []
+
+// Get full artists
+const artists = entryData.relatedArtists
+	? await Promise.all(entryData.relatedArtists.map(async (artist) => await getEntry(artist.collection, artist.id)))
+	: []
+---
+
+<div class={blogSidebarWrapper}>
+	<div>
+		<small style={{ color: theme.color.dullText }}>{entryData.date.toLocaleDateString()}</small>
+	</div>
+	{
+		!!artists.length && (
+			<div class={featuredLinks}>
+				<h3>Artists featured in this article</h3>
+				{artists.map((artist) => (
+					<div>
+						<h4>
+							<a href={artist.id}>{artist.data.title}</a>
+						</h4>
+						<ul>
+							{socialLinksToMenuItems(artist.data.links).map((item) => (
+								<li>
+									<a href={item.href} style={{ marginRight: theme.dimensions.basePadding }}>
+										{item.title}
+									</a>
+								</li>
+							))}
+							<li>
+								<a href={artist.id}>GIGS</a>
+							</li>
+						</ul>
+					</div>
+				))}
+			</div>
+		)
+	}
+	{
+		!!venues.length && (
+			<div class={featuredLinks}>
+				<h3>Venues featured in this article</h3>
+				{venues.map((venue) => (
+					<div>
+						<h4>
+							<a href={venue.id}>{venue.data.title}</a>
+						</h4>
+						<ul>
+							{socialLinksToMenuItems(venue.data.links).map((item) => (
+								<li>
+									<a href={item.href} style={{ marginRight: theme.dimensions.basePadding }}>
+										{item.title}
+									</a>
+								</li>
+							))}
+							<li>
+								<a href={venue.id}>GIGS</a>
+							</li>
+						</ul>
+					</div>
+				))}
+			</div>
+		)
+	}
+</div>

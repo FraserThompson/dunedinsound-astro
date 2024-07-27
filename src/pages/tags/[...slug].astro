@@ -1,0 +1,29 @@
+---
+import Blog from '../blog.astro'
+import { toMachineName } from 'src/util/names'
+import { loadAndFormatCollection } from 'src/util/collection'
+
+export async function getStaticPaths() {
+	const allPosts = await loadAndFormatCollection('blog')
+	const allTags = new Set()
+	allPosts.map((post) => {
+		post.entry.data.tags && post.entry.data.tags.map((tag) => allTags.add(tag))
+	})
+
+	return Array.from(allTags).map((tag: any) => {
+		const filteredPosts = allPosts.filter((post) => post.entry.data.tags.includes(tag))
+
+		return {
+			params: { slug: toMachineName(tag) },
+			props: {
+				entries: filteredPosts,
+				tag
+			}
+		}
+	})
+}
+
+const { entries, tag } = Astro.props
+---
+
+<Blog entries={entries} selectedTag={tag}/>

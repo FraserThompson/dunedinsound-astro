@@ -12,5 +12,5 @@ insert_final_newline = true
 trim_trailing_whitespace = false
 rulers = 120
 
-[{.*,*.md,*.json,*.toml,*.yml,*.json5}]
+[{.*,*.md,*.mdx,*.json,*.toml,*.yml,*.json5}]
 indent_style = space

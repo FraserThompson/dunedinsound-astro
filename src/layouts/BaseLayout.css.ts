@@ -77,6 +77,19 @@ globalStyle('h6', {
 	lineHeight: '1.1'
 })
 
+globalStyle('blockquote', {
+	fontSize: `calc(${theme.font.baseSize} * 1.6)`,
+	backgroundColor: "black",
+	fontStyle: "italic",
+	lineHeight: '1.1'
+})
+
+globalStyle('blockquote > p', {
+	fontSize: `inherit`,
+	fontStyle: "italic",
+	lineHeight: '1.1'
+})
+
 globalStyle('button', {
 	display: 'inline-block',
 	marginBottom: '0',

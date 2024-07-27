@@ -1,16 +1,78 @@
 ---
 import TextContainer from 'src/components/TextContainer.astro'
-import type { ProcessedEntry } from 'src/util/collection.ts'
+import { loadAndFormatCollection, loadAndFormatEntry, type ProcessedEntry } from 'src/util/collection.ts'
 import Banner from 'src/components/Banner.astro'
+import ImageGallery from 'src/components/ImageGallery.astro'
+import BlogSidebar from 'src/components/blog/BlogSidebar.astro'
+import FlexGridContainer from 'src/components/FlexGridContainer.astro'
+import GigTile from 'src/components/gig/GigTile.astro'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>
 }
 const { entry } = Astro.props
+
 const { Content, headings, remarkPluginFrontmatter } = await entry.entry.render()
+
+const entryData = entry.entry.data
+const entryExtra = entry.extra
+
+// Find gigs which mention related artists
+const relatedGigsByArtist = await loadAndFormatCollection('gig', ({ data }) =>
+	data.artists?.find((artist: any) =>
+		entryData.relatedArtists?.find((relatedArtist) => relatedArtist.id === artist.id.id)
+	)
+)
+
+// Filter out duplicates
+const relatedSpecifiedGigs =
+	entryData.relatedGigs?.filter((entry) => !relatedGigsByArtist.find((entry2) => entry.id === entry2.entry.id)) || []
+
+// Get full gigs
+const processedRelatedSpecifiedGigs = await Promise.all(
+	relatedSpecifiedGigs.map(async (gig) => await loadAndFormatEntry(gig.collection, gig.id))
+)
+
+// Total related gigs
+const relatedGigs = [...relatedGigsByArtist, ...processedRelatedSpecifiedGigs.filter((gig) => gig !== undefined)]
 ---
 
-{entry.extra.cover && <Banner backgroundImage={entry.extra.cover} title={entry.entry.data.title} />}
-<TextContainer>
-	<Content />
-</TextContainer>
+{entryExtra.cover && <Banner backgroundImage={entryExtra.cover} title={entryData.title} />}
+<div style={{ display: 'flex', maxWidth: '1600px', margin: '0 auto' }}>
+	<BlogSidebar entry={entry} />
+	<TextContainer featureMode={entryData.featureMode}>
+		<Content />
+	</TextContainer>
+</div>
+{entryData.gallery && entryExtra.images && <ImageGallery images={Object.values(entryExtra.images)} />}
+{!!relatedGigs.length && <h2>Related Gigs</h2>}
+{
+	!!relatedGigs.length && (
+		<FlexGridContainer>
+			{relatedGigs.map((entry) => (
+				<GigTile gig={entry} />
+			))}
+		</FlexGridContainer>
+	)
+}
+<hr />
+<ul>
+	<li>
+		{
+			entry.prev && (
+				<a href={entry.prev.slug} rel="prev">
+					← {entry.prev.data.title}
+				</a>
+			)
+		}
+	</li>
+	<li>
+		{
+			entry.next && (
+				<a href={entry.next.slug} rel="next">
+					{entry.next.data.title} →
+				</a>
+			)
+		}
+	</li>
+</ul>

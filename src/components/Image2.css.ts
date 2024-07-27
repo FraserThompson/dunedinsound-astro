@@ -3,8 +3,11 @@ import { style } from '@vanilla-extract/css'
 export const ImageWrapper = style({
 	position: 'relative',
 	overflow: 'hidden',
-	display: 'inline-block',
-	verticalAlign: 'top'
+	verticalAlign: 'top',
+	bottom: '0px',
+	left: '0px',
+	backgroundSize: 'cover',
+	display: 'block'
 })
 
 export const ImageStyle = style({
@@ -17,7 +20,6 @@ export const ImageStyle = style({
 	margin: 0,
 	maxWidth: 'none',
 	padding: 0,
-	position: 'absolute',
-	transform: "translateZ(0)",
-	objectFit: "cover"
+	transform: 'translateZ(0)',
+	objectFit: 'cover'
 })

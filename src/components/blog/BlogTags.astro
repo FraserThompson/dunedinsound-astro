@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content'
+import { toMachineName } from 'src/util/names'
+import { tagsWrapper, tagLink } from './BlogTags.css'
+
+interface Props {
+	selected?: string
+}
+
+const { selected } = Astro.props
+
+const allBlogs = await getCollection('blog')
+const blogsCount = allBlogs.length
+const allTags = allBlogs.map((blog) => blog.data.tags).flat()
+const processedTags = allTags.reduce((acc, tag) => {
+	const value = acc[tag] || 0
+	const pTags = {
+		...acc,
+		[tag]: value + 1
+	}
+
+	const sortedTags = Object.fromEntries(Object.entries(pTags).sort((a: any, b: any) => b[1] - a[1]))
+
+	return sortedTags
+}, {} as any)
+---
+
+<span class={tagsWrapper}>
+	<a class={`${tagLink} ${!selected ? 'active' : ''}`} title="Reset filter" href="/blog">All ({blogsCount})</a>
+	{
+		Object.entries(processedTags).map(([tag, count]) => (
+			<a class={`${tagLink} ${tag === selected ? 'active' : ''}`} title={tag} href={`/tags/${toMachineName(tag)}/`}>
+				{tag} {`(${count})`}
+			</a>
+		))
+	}
+</span>
