@@ -37,7 +37,11 @@ export type EntryExtraMap = {
 	venue: EntryExtraCommon
 	manifest: EntryExtraCommon
 	vaultsession: EntryExtraCommon
-	blog: EntryExtraCommon
+	blog: EntryExtraCommon & {
+		relatedGigs: ProcessedEntry<'gig'>[]
+		relatedArtists: CollectionEntry<'artist'>[]
+		relatedVenues: CollectionEntry<'venue'>[]
+	}
 	page: EntryExtraCommon
 }
 
@@ -99,7 +103,14 @@ export async function processEntry<C extends CollectionKey>(
 				entry,
 				prev,
 				next,
-				extra: await getGigExtra(entry, extraCommon)
+				extra: (await getGigExtra(entry, extraCommon)) as EntryExtraMap[C]
+			}
+		case 'blog':
+			return {
+				entry,
+				prev,
+				next,
+				extra: (await getBlogExtra(entry, extraCommon)) as EntryExtraMap[C]
 			}
 		default:
 			return {
@@ -117,7 +128,7 @@ export async function processEntry<C extends CollectionKey>(
  * @param entry
  * @returns
  */
-export async function getCommonExtra<C extends CollectionKey>(entry: CollectionEntry<C>): Promise<EntryExtraCommon> {
+async function getCommonExtra<C extends CollectionKey>(entry: CollectionEntry<C>): Promise<EntryExtraCommon> {
 	const title = entry.data.title
 
 	// To preserve URLs from old site
@@ -201,6 +212,53 @@ export async function getGigExtra(
 		audio,
 		artists,
 		venue
+	}
+}
+
+/**
+ * Extends extra fields for blogs:
+ * - relatedGigs: array of related gigs
+ * - relatedArtists: array of artists
+ * - relatedVenues: array of venues
+ * @param entry: The gig entry.
+ * @returns extras with gig fields.
+ */
+export async function getBlogExtra(
+	entry: CollectionEntry<'blog'>,
+	extra: EntryExtraCommon
+): Promise<EntryExtraMap['blog']> {
+	const relatedArtists = entry.data.relatedArtists
+		? await Promise.all(entry.data.relatedArtists.map(async (artist: any) => await getEntry('artist', artist.id)))
+		: []
+
+	const relatedVenues = entry.data.relatedVenues
+		? await Promise.all(entry.data.relatedVenues.map(async (venue: any) => await getEntry('venue', venue.id)))
+		: []
+
+	// Find gigs which mention related artists
+	const relatedGigsByArtist = await loadAndFormatCollection('gig', ({ data }) =>
+		data.artists?.find((artist: any) =>
+			entry.data.relatedArtists?.find((relatedArtist) => relatedArtist.id === artist.id.id)
+		)
+	)
+
+	// Filter out duplicates
+	const relatedSpecifiedGigs =
+		entry.data.relatedGigs?.filter((entry) => !relatedGigsByArtist.find((entry2) => entry.id === entry2.entry.id)) || []
+
+	// Get processed gig entries from relatedGigs
+	const processedRelatedSpecifiedGigs = await Promise.all(
+		relatedSpecifiedGigs.map(async (gig) => await loadAndFormatEntry(gig.collection, gig.id))
+	)
+
+	// Total related gigs
+	const relatedGigs = [...relatedGigsByArtist, ...processedRelatedSpecifiedGigs.filter((gig) => gig !== undefined)]
+
+	return {
+		...extra,
+		relatedGigs,
+		relatedArtists,
+		relatedVenues
 	}
 }
 

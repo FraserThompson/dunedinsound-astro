@@ -1,6 +1,6 @@
 ---
 import TextContainer from 'src/components/TextContainer.astro'
-import { loadAndFormatCollection, loadAndFormatEntry, type ProcessedEntry } from 'src/util/collection.ts'
+import { type ProcessedEntry } from 'src/util/collection.ts'
 import Banner from 'src/components/Banner.astro'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import BlogSidebar from 'src/components/blog/BlogSidebar.astro'
@@ -16,25 +16,6 @@ const { Content, headings, remarkPluginFrontmatter } = await entry.entry.render(
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
-
-// Find gigs which mention related artists
-const relatedGigsByArtist = await loadAndFormatCollection('gig', ({ data }) =>
-	data.artists?.find((artist: any) =>
-		entryData.relatedArtists?.find((relatedArtist) => relatedArtist.id === artist.id.id)
-	)
-)
-
-// Filter out duplicates
-const relatedSpecifiedGigs =
-	entryData.relatedGigs?.filter((entry) => !relatedGigsByArtist.find((entry2) => entry.id === entry2.entry.id)) || []
-
-// Get full gigs
-const processedRelatedSpecifiedGigs = await Promise.all(
-	relatedSpecifiedGigs.map(async (gig) => await loadAndFormatEntry(gig.collection, gig.id))
-)
-
-// Total related gigs
-const relatedGigs = [...relatedGigsByArtist, ...processedRelatedSpecifiedGigs.filter((gig) => gig !== undefined)]
 ---
 
 {entryExtra.cover && <Banner backgroundImage={entryExtra.cover} title={entryData.title} />}
@@ -45,11 +26,11 @@ const relatedGigs = [...relatedGigsByArtist, ...processedRelatedSpecifiedGigs.fi
 	</TextContainer>
 </div>
 {entryData.gallery && entryExtra.images && <ImageGallery images={Object.values(entryExtra.images)} />}
-{!!relatedGigs.length && <h2>Related Gigs</h2>}
+{!!entryExtra.relatedGigs.length && <h2>Related Gigs</h2>}
 {
-	!!relatedGigs.length && (
+	!!entryExtra.relatedGigs.length && (
 		<FlexGridContainer>
-			{relatedGigs.map((entry) => (
+			{entryExtra.relatedGigs.map((entry) => (
 				<GigTile gig={entry} />
 			))}
 		</FlexGridContainer>

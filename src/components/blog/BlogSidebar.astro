@@ -1,5 +1,4 @@
 ---
-import { getEntry } from 'astro:content'
 import { type ProcessedEntry } from 'src/util/collection'
 import { blogSidebarWrapper, featuredLinks } from './BlogSidebar.css'
 import { theme } from 'src/Theme.css'
@@ -12,16 +11,7 @@ interface Props {
 const { entry } = Astro.props
 
 const entryData = entry.entry.data
-
-// Get full venues
-const venues = entryData.relatedVenues
-	? await Promise.all(entryData.relatedVenues.map(async (venue) => await getEntry(venue.collection, venue.id)))
-	: []
-
-// Get full artists
-const artists = entryData.relatedArtists
-	? await Promise.all(entryData.relatedArtists.map(async (artist) => await getEntry(artist.collection, artist.id)))
-	: []
+const entryExtra = entry.extra
 ---
 
 <div class={blogSidebarWrapper}>
@@ -29,13 +19,13 @@ const artists = entryData.relatedArtists
 		<small style={{ color: theme.color.dullText }}>{entryData.date.toLocaleDateString()}</small>
 	</div>
 	{
-		!!artists.length && (
+		!!entryExtra.relatedArtists.length && (
 			<div class={featuredLinks}>
 				<h3>Artists featured in this article</h3>
-				{artists.map((artist) => (
+				{entryExtra.relatedArtists.map((artist) => (
 					<div>
 						<h4>
-							<a href={artist.id}>{artist.data.title}</a>
+							<a href={`/artists/${artist.id}`}>{artist.data.title}</a>
 						</h4>
 						<ul>
 							{socialLinksToMenuItems(artist.data.links).map((item) => (
@@ -55,13 +45,13 @@ const artists = entryData.relatedArtists
 		)
 	}
 	{
-		!!venues.length && (
+		!!entryExtra.relatedVenues.length && (
 			<div class={featuredLinks}>
 				<h3>Venues featured in this article</h3>
-				{venues.map((venue) => (
+				{entryExtra.relatedVenues.map((venue) => (
 					<div>
 						<h4>
-							<a href={venue.id}>{venue.data.title}</a>
+							<a href={`/venues/${venue.id}`}>{venue.data.title}</a>
 						</h4>
 						<ul>
 							{socialLinksToMenuItems(venue.data.links).map((item) => (
