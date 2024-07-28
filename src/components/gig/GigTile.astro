@@ -2,20 +2,23 @@
 import type { ProcessedEntry } from 'src/util/collection'
 import Tile from '../Tile.astro'
 import { artistsToString, makeHash } from 'src/util/helpers'
+import type { ResponsiveImageSizes } from '../Image2.astro'
 
 interface Props {
 	gig: ProcessedEntry<'gig'>
 	containerHeight?: string
 	className?: string
+	responsiveImageSizes?: keyof ResponsiveImageSizes
 }
 
-const { gig, containerHeight, className } = Astro.props
+const { gig, containerHeight, className, responsiveImageSizes } = Astro.props
 ---
 
 <Tile
 	className={className}
 	href={gig.extra.absolutePath}
 	responsiveImage={gig.extra.cover}
+	responsiveImageSizes={responsiveImageSizes}
 	id={makeHash(gig.entry.id)}
 	subtitle={gig.extra.venue.data.title}
 	label={gig.entry.data.date.toLocaleDateString()}

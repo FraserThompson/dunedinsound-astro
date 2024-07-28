@@ -80,6 +80,7 @@ for (const artist of artists) {
 				<Tile
 					href={artist.extra.absolutePath}
 					responsiveImage={artistMetadata[artist.entry.id]?.cover}
+					responsiveImageSizes={'smallGrid'}
 					title={artist.entry.data.title + (artist.entry.data.origin ? ` (${artist.entry.data.origin})` : '')}
 					label={`${artistMetadata[artist.entry.id]?.totalCount} gigs`}
 					containerHeight={'15vh'}

@@ -4,7 +4,6 @@ import { theme } from 'src/Theme.css'
 export const background = createVar()
 export const height = createVar()
 export const width = createVar()
-export const fontSize = createVar()
 
 const tileWrapperBase = style({
 	color: theme.color.text,
@@ -100,9 +99,9 @@ export const tileTitle = style({
 })
 
 export const tileSubtitle = style({
-	transition: 'color 100ms ease-in-out',
+	transition: 'color 100ms ease-in-out'
 })
 
-globalStyle(`${tileInner}:hover .backgroundImage`, {
+globalStyle(`${tileInner}:hover img`, {
 	transform: 'scale(1.02, 1.02) !important'
 })

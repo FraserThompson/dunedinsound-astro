@@ -21,7 +21,7 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 <BaseLayout>
 	<SidebarNav>
 		<div slot="sidebar">
-			<h2 style={{ padding: theme.dimensions.basePadding }}>Filter by tag</h2>
+			<h2 class="padding">Filter by tag</h2>
 			<BlogTags selected={selectedTag} />
 		</div>
 		<TextContainer slot="content">

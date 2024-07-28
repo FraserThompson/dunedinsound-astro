@@ -21,6 +21,10 @@ globalStyle('body', {
 	width: '100%'
 })
 
+globalStyle('.padding', {
+	padding: theme.dimensions.basePadding
+})
+
 globalStyle('h1, h2, h3, h4, h5, h6', {
 	marginLeft: '0',
 	marginRight: '0',

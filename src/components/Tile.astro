@@ -1,6 +1,7 @@
 ---
 import BackgroundImage from './BackgroundImage.astro'
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
+import type { ResponsiveImageSizes } from 'src/components/Image2.astro'
 import {
 	tileWrapper,
 	tileInner,
@@ -11,7 +12,6 @@ import {
 	background,
 	height,
 	width,
-	fontSize,
 	tileSubtitle
 } from './Tile.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
@@ -24,11 +24,11 @@ interface Props {
 	title?: string
 	label?: string
 	subtitle?: string
-	feature?: boolean
 	backgroundColor?: string
 	containerHeight?: string
 	containerWidth?: string
 	dataAttributes?: any
+	responsiveImageSizes?: keyof ResponsiveImageSizes
 }
 
 const {
@@ -39,11 +39,11 @@ const {
 	title,
 	subtitle,
 	label,
-	feature,
 	backgroundColor,
 	containerHeight,
 	containerWidth,
-	dataAttributes
+	dataAttributes,
+	responsiveImageSizes
 } = Astro.props
 ---
 
@@ -64,22 +64,15 @@ const {
 		})}
 	>
 		<a href={href} title={title} style={{ height: '100%', display: 'block' }}>
-			{responsiveImage && <BackgroundImage responsiveImage={responsiveImage} />}
+			{
+				responsiveImage && (
+					<BackgroundImage responsiveImageSizes={responsiveImageSizes} responsiveImage={responsiveImage} />
+				)
+			}
 			<div class={titleWrapper}>
 				<div class={tileContent}>
 					{label && <span class={tileLabel}>{label}</span>}
-					{
-						title && (
-							<h3
-								class={tileTitle}
-								style={assignInlineVars({
-									[fontSize]: feature ? '2em' : undefined
-								})}
-							>
-								{title}
-							</h3>
-						)
-					}
+					{title && <h3 class={tileTitle}>{title}</h3>}
 					{subtitle && <h5 class={tileSubtitle}>{subtitle}</h5>}
 					<div style={{ marginTop: 'auto' }}>
 						<slot />

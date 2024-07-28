@@ -106,7 +106,7 @@ vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessio
 						</Divider>
 						<FlexGridContainer>
 							{gigs?.map((gig) => (
-								<GigTile gig={gig} />
+								<GigTile gig={gig} responsiveImageSizes={'grid'} />
 							))}
 						</FlexGridContainer>
 					</div>
@@ -122,6 +122,7 @@ vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessio
 						title={blog.entry.data.title}
 						label={blog.entry.data.date.toLocaleDateString()}
 						responsiveImage={blog.extra.cover}
+						responsiveImageSizes={'grid'}
 					/>
 				))
 			}
@@ -143,6 +144,7 @@ vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessio
 						title={vaultsession.entry.data.title}
 						label={vaultsession.entry.data.date.toLocaleDateString()}
 						responsiveImage={vaultsession.extra.cover}
+						responsiveImageSizes={'grid'}
 					/>
 				))
 			}

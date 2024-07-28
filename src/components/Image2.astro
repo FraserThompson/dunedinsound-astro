@@ -1,0 +1,61 @@
+---
+/*
+	Image2: Image component for displaying responsive images via a srcset.\
+
+	Props:
+	 - responsiveImage: the ResponsiveImage to display
+	  - image (optional): a regular image src
+		- alt (optional) : alt text
+		- size (optional): specifies how it will be displayed, so the browser
+		  can select the optional image. Defaults to a grid.
+*/
+
+import type { ResponsiveImage } from 'src/util/ResponsiveImage'
+import { ImageStyle, ImageWrapper } from './Image2.css'
+
+export type ResponsiveImageSizes = {
+	full: string
+	grid: string
+	smallGrid: string
+}
+
+interface Props {
+	responsiveImage?: ResponsiveImage
+	image?: string
+	alt?: string
+	size?: keyof ResponsiveImageSizes
+}
+
+const { responsiveImage, image, alt, size = 'grid' } = Astro.props
+
+const sizes: ResponsiveImageSizes = {
+	full: '100vw',
+	grid: `
+					(min-width: 1600px) 33vw,
+					(min-width: 992px) 33vw,
+					(min-width: 768px) 50vw, 
+					100vw
+					`,
+	smallGrid: `
+					(min-width: 1600px) 25vw,
+					(min-width: 992px) 25vw,
+					(min-width: 768px) 33vw, 
+					100vw
+					`
+}
+---
+
+<div class={ImageWrapper}>
+	<picture>
+		<source type="image/webp" srcset={responsiveImage && responsiveImage.srcset} sizes={sizes[size]} />
+		<img
+			class={ImageStyle}
+			src={responsiveImage ? responsiveImage.images[0] : image}
+			srcset={responsiveImage && responsiveImage.srcset}
+			sizes={sizes[size]}
+			alt={alt}
+			loading="lazy"
+			decoding="async"
+		/>
+	</picture>
+</div>

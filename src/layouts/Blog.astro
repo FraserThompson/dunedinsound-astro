@@ -26,7 +26,30 @@ const entryExtra = entry.extra
 	</TextContainer>
 </div>
 {entryData.gallery && entryExtra.images && <ImageGallery images={Object.values(entryExtra.images)} />}
-{!!entryExtra.relatedGigs.length && <h2>Related Gigs</h2>}
+<div class="padding">
+	<hr />
+	<ul>
+		{
+			entry.prev && (
+				<li>
+					<a href={entry.prev.slug} rel="prev">
+						← {entry.prev.data.title}
+					</a>
+				</li>
+			)
+		}
+		{
+			entry.next && (
+				<li>
+					<a href={entry.next.slug} rel="next">
+						{entry.next.data.title} →
+					</a>
+				</li>
+			)
+		}
+	</ul>
+	{!!entryExtra.relatedGigs.length && <h2>Related Gigs</h2>}
+</div>
 {
 	!!entryExtra.relatedGigs.length && (
 		<FlexGridContainer>
@@ -36,24 +59,3 @@ const entryExtra = entry.extra
 		</FlexGridContainer>
 	)
 }
-<hr />
-<ul>
-	<li>
-		{
-			entry.prev && (
-				<a href={entry.prev.slug} rel="prev">
-					← {entry.prev.data.title}
-				</a>
-			)
-		}
-	</li>
-	<li>
-		{
-			entry.next && (
-				<a href={entry.next.slug} rel="next">
-					{entry.next.data.title} →
-				</a>
-			)
-		}
-	</li>
-</ul>

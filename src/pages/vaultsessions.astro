@@ -1,19 +1,40 @@
 ---
-import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
+import vslogo from 'src/assets/vslogo.gif'
+import vslogo_mono from 'src/assets/vslogo_mono.gif'
+import World from 'src/components/World.astro'
 
 const vaultsessions = await loadAndFormatCollection('vaultsession')
+
+const lights = 'off'
 ---
 
 <BaseLayout>
-	<FlexGridContainer>
-		{
-			vaultsessions.map((vaultsession) => (
-				<a href={vaultsession.extra.absolutePath}>
-					<h3>{vaultsession.entry.id}</h3>
-				</a>
-			))
-		}
-	</FlexGridContainer>
+	<World>
+		<div slot="back">
+			<div class="background"></div>
+			{
+				vaultsessions.map((vaultsession) => (
+					<a href={vaultsession.extra.absolutePath}>
+						<article>
+							<h2>{vaultsession.entry.data.title}</h2>
+						</article>
+					</a>
+				))
+			}
+			<a href={'https://www.youtube.com/@syrupbois'} style={{ paddingTop: '1.5em' }}>
+				<article>
+					<h3>friends of the vault</h3>
+				</article>
+			</a>
+		</div>
+		<div slot="top">
+			<img style={{ filter: 'invert(80%)' }} src={lights == 'off' ? vslogo_mono.src : vslogo.src} />
+		</div>
+		<div slot="bottom">
+			<img style={{ filter: 'invert(80%)' }} src={lights == 'off' ? vslogo_mono.src : vslogo.src} />
+		</div>
+		<div slot="left"></div>
+	</World>
 </BaseLayout>

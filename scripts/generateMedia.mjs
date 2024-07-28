@@ -11,11 +11,11 @@ const media = globSync(`${inputDir}/**/**/**/*`)
 
 const widths = [400, 800, 1600, 3200]
 
-const quality = 70
+const quality = 80
 
 /**
  * Checks if a file exists.
- * @param {*} path 
+ * @param {*} path
  * @returns true/false
  */
 async function fileExists(path) {
@@ -38,12 +38,13 @@ function getMtimeFromFilename(filename) {
 }
 
 /**
- * Determins if a generated image has changed compared to another one.
+ * Determines if a generated image proxy has changed compared to another one.
+ * 
  * @param {*} path path to glob
  * @param {*} mTime mtime of comparison file
  * @returns tuple of found file path and whether it's changed.
  */
-function hasChanged(path, mTime) {
+function hasImageProxyChanged(path, mTime) {
 	const globResult = globSync(path)
 	if (globResult.length) {
 		// Extract the mtime string from the filename
@@ -63,6 +64,12 @@ function hasChanged(path, mTime) {
 
 /**
  * Media processing tasks.
+ * 
+ * Converts each input image into:
+ *  - proxies for each filesize
+ *  - a full image converted to mozjpeg
+ * 
+ * Copies over all other files as is.
  */
 const tasks = media.map((inputPath) => {
 	async function thing() {
@@ -80,39 +87,49 @@ const tasks = media.map((inputPath) => {
 
 			const outputPath = `${outputDir}/${relativePath}/${parsedPath.name}`
 
-			// Find existing full size image if it exists
-			const [existingPath, changed] = hasChanged(`${outputPath}/${parsedPath.name}.*.jpg`, mtime)
+			// Ensure output directory exists
+			await fs.mkdir(outputPath, { recursive: true })
 
-			// Delete and copy if changed or not already there
-			const fullImagePath = `${outputPath}/${parsedPath.name}.${mtime}.jpg`
-			if (existingPath && changed) {
+			// Find existing full size image if it exists
+			const [existingPath, changed] = hasImageProxyChanged(`${outputPath}/${parsedPath.name}.*.jpg`, mtime)
+
+			// If it hasn't changed we don't need to do anything
+			if (existingPath && !changed) return
+
+			// Delete full image if there already
+			if (existingPath) {
 				await fs.unlink(existingPath)
-				await fs.copyFile(inputPath, fullImagePath)
-				console.log(fullImagePath)
-			} else if (!existingPath) {
-				await fs.copyFile(inputPath, fullImagePath)
-				console.log(fullImagePath)
 			}
 
+			const inputBuffer = await fs.readFile(inputPath)
+
+			// Path to the full image
+			const fullImagePath = `${outputPath}/${parsedPath.name}.${mtime}.jpg`
+
+			// Copy and compress the full image using mozjpeg to save a few bucks
+			const pipeline = sharp(inputBuffer)
+			pipeline.jpeg({ mozjpeg: true, quality: 90 })
+			const outputBuffer = await pipeline.toBuffer()
+			await fs.outputFile(fullImagePath, outputBuffer)
+
+			console.log(fullImagePath)
+
+			// Process into width proxies
 			for (const width of widths) {
 				const outputFile = `${contentDigest}.${width}.webp`
 
-				// Find existing proxy if it exists
-				const [existingPath, changed] = hasChanged(`${outputPath}/${inputStats.ino}.*.${width}.webp`, mtime)
+				// Find existing proxy if it exists (we already know the input changed so we don't need to check that)
+				const [existingPath] = hasImageProxyChanged(`${outputPath}/${inputStats.ino}.*.${width}.webp`, mtime)
 
-				// Delete and re-copy if changed, else skip if it's there
-				if (existingPath && changed) {
+				// Delete if already there
+				if (existingPath) {
 					await fs.unlink(existingFilePath)
-				} else if (existingPath) {
-					return
 				}
 
-				// Resize the image
-				const inputBuffer = await fs.readFile(inputPath)
+				// Resize and compress the image
 				const pipeline = sharp(inputBuffer)
-
 				pipeline.resize(width)
-				pipeline.webp({ quality })
+				pipeline.webp({ quality, smartSubsample: true, preset: 'photo' })
 
 				console.log(`${outputPath}/${outputFile}`)
 
@@ -133,10 +150,9 @@ const tasks = media.map((inputPath) => {
 					return
 				}
 			}
-			
+
 			await fs.copyFile(inputPath, outputPath)
 			console.log(outputPath)
-
 		}
 	}
 
