@@ -36,7 +36,7 @@ export const dividerWrapper = styleVariants({
 			top: fallbackVar(stickyTop, '0px'),
 			'@media': {
 				'screen and (--md)': {
-					top: fallbackVar(stickyTop, theme.dimensions.headerHeight)
+					top: fallbackVar(stickyTop, '0px')
 				}
 			}
 		},

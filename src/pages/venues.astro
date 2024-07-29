@@ -35,7 +35,7 @@ const markers = venues.map((venue) => ({
 			</label>
 		</div>
 	</ShuffleFilters>
-	<SidebarNav top={theme.dimensions.headerHeightWithSubheader}>
+	<SidebarNav top={theme.dimensions.headerHeight}>
 		<EntryMenu collection="venue" slot="sidebar" />
 		<div slot="content">
 			<Map markers={markers}>

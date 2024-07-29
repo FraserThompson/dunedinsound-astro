@@ -1,10 +1,59 @@
 ---
-import type { ProcessedEntry } from 'src/util/collection.ts'
+import type { ProcessedEntry } from 'src/util/collection'
+import Room from 'src/components/Room.astro'
+import { socialLinksToMenuItems } from 'src/util/helpers'
 
 interface Props {
 	entry: ProcessedEntry<'vaultsession'>
 }
 const { entry } = Astro.props
+
+const entryData = entry.entry.data
+const entryExtra = entry.extra
 ---
 
-<h3>{entry.entry.id}</h3>
+<Room>
+	<div slot="back"></div>
+	<div slot="top">
+		<div class="title">
+			<h2>{entryData.title}</h2>
+			<h4>Recorded on {entryData.date}</h4>
+		</div>
+	</div>
+	<div slot="bottom"></div>
+	<div slot="left"></div>
+	<div slot="right">
+		<div>
+			<h3>More from this artist</h3>
+			{
+				socialLinksToMenuItems(entryExtra.artist.data.links).map((item) => (
+					<li>
+						<a href={item.href}>{item.title}</a>
+					</li>
+				))
+			}
+		</div>
+	</div>
+</Room>
+
+<style>
+	.title {
+		position: absolute;
+		top: 0px;
+		z-index: 2;
+		width: 100%;
+		text-align: center;
+		h2 {
+			margin: 0;
+			font-size: 12vh;
+			color: cyan;
+			letter-spacing: -5px;
+			height: auto;
+			text-align: center;
+			font-family: monospace;
+		}
+		h4 {
+			font-family: monospace;
+		}
+	}
+</style>

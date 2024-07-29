@@ -180,3 +180,23 @@ export const generateExcerpt = (body: string) => {
 
 	return excerpt + '...';
 }
+
+/**
+ * Utter a phrase.
+ * @param text 
+ */
+export const speak = (text: string) => {
+	const msg = new SpeechSynthesisUtterance()
+
+	const synth = window.speechSynthesis;
+	const voices = synth.getVoices()
+
+	msg.voice = voices[0]
+	msg.volume = 1
+	msg.rate = 0.1
+	msg.pitch = Math.floor(Math.random() * (2 - 0 + 1))
+	msg.text = text
+	msg.lang = 'en-US'
+
+	synth.speak(msg)
+}

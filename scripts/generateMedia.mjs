@@ -39,7 +39,7 @@ function getMtimeFromFilename(filename) {
 
 /**
  * Determines if a generated image proxy has changed compared to another one.
- * 
+ *
  * @param {*} path path to glob
  * @param {*} mTime mtime of comparison file
  * @returns tuple of found file path and whether it's changed.
@@ -64,11 +64,11 @@ function hasImageProxyChanged(path, mTime) {
 
 /**
  * Media processing tasks.
- * 
+ *
  * Converts each input image into:
  *  - proxies for each filesize
  *  - a full image converted to mozjpeg
- * 
+ *
  * Copies over all other files as is.
  */
 const tasks = media.map((inputPath) => {
@@ -76,6 +76,11 @@ const tasks = media.map((inputPath) => {
 		const parsedPath = path.parse(inputPath)
 		const splitPath = parsedPath.dir.split('\\')
 		const relativePath = splitPath.slice(1).join('/')
+
+		const basePath = `${outputDir}/${relativePath}`
+
+		// Ensure output directory exists
+		await fs.mkdir(basePath, { recursive: true })
 
 		// Create proxies from input images
 		if (parsedPath.ext === '.jpg') {
@@ -85,7 +90,7 @@ const tasks = media.map((inputPath) => {
 			const mtime = Math.round(inputStats.mtimeMs)
 			const contentDigest = `${inputStats.ino}.${mtime}`
 
-			const outputPath = `${outputDir}/${relativePath}/${parsedPath.name}`
+			const outputPath = `${basePath}/${parsedPath.name}`
 
 			// Ensure output directory exists
 			await fs.mkdir(outputPath, { recursive: true })
@@ -139,7 +144,7 @@ const tasks = media.map((inputPath) => {
 			}
 		} else if (parsedPath.ext) {
 			// For all other files just copy them as is if they've changed
-			const outputPath = `${outputDir}/${relativePath}/${parsedPath.base}`
+			const outputPath = `${basePath}/${parsedPath.base}`
 
 			if (await fileExists(outputPath)) {
 				const inputStats = await fs.stat(inputPath)

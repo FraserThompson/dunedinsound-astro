@@ -18,7 +18,7 @@ const gigs = await loadAndFormatCollection('gig')
 			<input type="text" data-filter="title=value" placeholder="Search by gig, artist, venue..." />
 		</div>
 	</ShuffleFilters>
-	<SidebarNav top={theme.dimensions.headerHeightWithSubheader}>
+	<SidebarNav top={theme.dimensions.headerHeight}>
 		<GigsMenu slot="sidebar" />
 		<FlexGridContainer grid={{ xs: 12 }} id="gigs" slot="content" fixedWidth={true}>
 			{gigs.map((gig) => <GigTile gig={gig} />)}

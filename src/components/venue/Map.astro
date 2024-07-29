@@ -42,7 +42,7 @@ const { markers, zoom, center, nointeract } = Astro.props
 	data-zoom={zoom}
 	style={{ position: 'relative', overflow: 'hidden' }}
 >
-	<div id="map" style={{ height: `calc(100vh - ${theme.dimensions.headerHeightMobileTwice})` }}></div>
+	<div id="map" style={{ height: `calc(100vh - ${theme.dimensions.headerHeight} - 2px)` }}></div>
 	<div style={{ display: 'none' }}>
 		<slot name="popups" />
 	</div>

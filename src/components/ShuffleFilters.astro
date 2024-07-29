@@ -21,7 +21,8 @@
  */
 
 import { assignInlineVars } from '@vanilla-extract/dynamic'
-import { filtersWrapper, shuffleFilter, top } from './ShuffleFilters.css'
+import { shuffleFilter, top } from './ShuffleFilters.css'
+import { TopSubheader } from './UtilClasses.css'
 
 interface Props {
 	itemselector?: string
@@ -33,7 +34,7 @@ const { itemselector, boardselector, offsetTop } = Astro.props
 ---
 
 <div
-	class={filtersWrapper}
+	class={TopSubheader}
 	id="filters-wrapper"
 	style={assignInlineVars({
 		[top]: offsetTop

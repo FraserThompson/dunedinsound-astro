@@ -16,6 +16,6 @@ export async function getStaticPaths() {
 const { entry } = Astro.props
 ---
 
-<BaseLayout>
+<BaseLayout hideFooter={true}>
 	<VaultSession entry={entry} />
 </BaseLayout>

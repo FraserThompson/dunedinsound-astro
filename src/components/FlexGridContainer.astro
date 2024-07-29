@@ -22,11 +22,12 @@ interface Props {
 	maxWidth?: string
 	fixedWidth?: boolean
 	id?: string
+	className?: string
 }
 
 const cols = 12
 
-const { grid, maxWidth, fixedWidth, id } = Astro.props
+const { grid, maxWidth, fixedWidth, id, className } = Astro.props
 
 const processedGrid = {
 	xs: grid?.xs || 6,
@@ -37,7 +38,7 @@ const processedGrid = {
 ---
 
 <div
-	class={FlexGridWrapper}
+	class={`${FlexGridWrapper} ${className}`}
 	id={id}
 	style={assignInlineVars({
 		[flexDefault]: `1 1 ${100 * (processedGrid.xs / cols)}%`,

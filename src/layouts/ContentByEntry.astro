@@ -86,7 +86,7 @@ vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessio
 	<div data-tabid="gigs">
 		<DropdownMenu
 			direction="down"
-			top={theme.dimensions.headerHeightWithSubheader}
+			top={theme.dimensions.headerHeight}
 			list={years.map((year) => ({ title: year, hash: `y${year}` }))}
 			client:load
 		/>
@@ -98,7 +98,7 @@ vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessio
 						<Divider
 							backgroundColor={theme.color.foreground}
 							href={`#y${year}`}
-							sticky={theme.dimensions.headerHeightWithSubheader}
+							sticky={theme.dimensions.headerHeight}
 							smoothScroll={true}
 							client:load
 						>

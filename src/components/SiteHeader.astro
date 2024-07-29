@@ -20,10 +20,9 @@ const currentPath = new URL(Astro.request.url).pathname
 
 <div class={headerWrapper}>
 	<div class={headerMobile}>
-		<Menu currentPath={currentPath} links={links} horizontal={true} />
+		<Menu currentPath={currentPath} links={links} menuType={'horizontal'} />
 	</div>
 	<div class={header}>
-		<a href="/" class={brand}>Ōtepoti Gig Archives</a>
-		<Menu currentPath={currentPath} links={links} horizontal={true} />
+		<Menu currentPath={currentPath} links={links} menuType={'sideways'}/>
 	</div>
 </div>

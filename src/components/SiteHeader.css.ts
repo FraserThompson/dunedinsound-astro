@@ -2,19 +2,19 @@ import { style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 export const headerWrapper = style({
-	position: 'sticky',
+	position: 'fixed',
 	top: '0px',
-	width: '100%',
+	left: '0px',
+	width: theme.dimensions.headerHeight,
 	zIndex: '12',
 	boxShadow: theme.borders.shadowLight,
 	borderBottom: theme.borders.primary,
-	height: theme.dimensions.headerHeight
+	height: '100vh',
 })
 
 export const header = style({
 	backgroundColor: theme.color.primary,
-	position: 'fixed',
-	width: '100%',
+	height: '100%',
 	flexDirection: 'row',
 	justifyItems: 'center',
 	top: '0px',

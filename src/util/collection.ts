@@ -36,7 +36,9 @@ export type EntryExtraMap = {
 	artist: EntryExtraCommon
 	venue: EntryExtraCommon
 	manifest: EntryExtraCommon
-	vaultsession: EntryExtraCommon
+	vaultsession: EntryExtraCommon & {
+		artist: CollectionEntry<'artist'>
+	}
 	blog: EntryExtraCommon & {
 		relatedGigs: ProcessedEntry<'gig'>[]
 		relatedArtists: CollectionEntry<'artist'>[]
@@ -111,6 +113,13 @@ export async function processEntry<C extends CollectionKey>(
 				prev,
 				next,
 				extra: (await getBlogExtra(entry, extraCommon)) as EntryExtraMap[C]
+			}
+		case 'vaultsession':
+			return {
+				entry,
+				prev,
+				next,
+				extra: (await getVaultSessionExtra(entry, extraCommon)) as EntryExtraMap[C]
 			}
 		default:
 			return {
@@ -220,8 +229,8 @@ export async function getGigExtra(
  * - relatedGigs: array of related gigs
  * - relatedArtists: array of artists
  * - relatedVenues: array of venues
- * @param entry: The gig entry.
- * @returns extras with gig fields.
+ * @param entry: The blog entry.
+ * @returns extras with blog fields.
  */
 export async function getBlogExtra(
 	entry: CollectionEntry<'blog'>,
@@ -259,6 +268,23 @@ export async function getBlogExtra(
 		relatedGigs,
 		relatedArtists,
 		relatedVenues
+	}
+}
+
+/**
+ * Extends extra fields for vault sessions:
+ * - artist: the full artist
+ * @param entry: The vault session entry.
+ * @returns extras with vault session fields.
+ */
+export async function getVaultSessionExtra(
+	entry: CollectionEntry<'vaultsession'>,
+	extra: EntryExtraCommon
+): Promise<EntryExtraMap['vaultsession']> {
+	const artist = await getEntry('artist', entry.data.artist.id)
+	return {
+		...extra,
+		artist
 	}
 }
 

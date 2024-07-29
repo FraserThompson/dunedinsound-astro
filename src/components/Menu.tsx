@@ -11,10 +11,7 @@ export interface MenuLink {
 interface Props {
 	links: MenuLink[]
 	currentPath?: string
-	backgroundColor?: string
-	height?: string
-	width?: string
-	horizontal?: boolean
+	menuType?: 'horizontal' | 'vertical' | 'sideways'
 }
 
 /**
@@ -25,16 +22,15 @@ interface Props {
  * @param props 
  * @returns 
  */
-const Menu: React.FC<Props> = (props) => {
+const Menu: React.FC<Props> = ({ currentPath, links, menuType = 'horizontal' }) => {
 	const isActive = (href: string) => {
-		if (!props.currentPath) {
+		if (!currentPath) {
 			return false;
 		}
-		return href == '/' ? props.currentPath == href : props.currentPath.includes(href)
+		return href == '/' ? currentPath == href : currentPath.includes(href)
 	}
-	const menuType = props.horizontal ? 'horizontal' : 'vertical'
 	return <ul className={MenuWrapper}>
-		{props.links.map((link) => (
+		{links.map((link) => (
 			<li className={MenuLi[menuType]}>
 				<a
 					className={`${MenuLink[menuType]} ${isActive(link.href) ? 'active' : ''}`}

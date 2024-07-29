@@ -8,8 +8,7 @@
  *  - top: Offset from the top.
  */
 import MenuIcon from '~icons/bx/menu'
-import { sidebarWrapper, menuButtonWrapper, offsetTop } from './SidebarNav.css'
-import { theme } from 'src/Theme.css'
+import { sidebarWrapper, contentWrapper, menuButtonWrapper, offsetTop } from './SidebarNav.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
@@ -29,7 +28,7 @@ const { top } = Astro.props
 >
 	<slot name="sidebar" />
 </div>
-<div style={{ paddingLeft: theme.dimensions.sidebarWidth }}>
+<div class={contentWrapper}>
 	<slot name="content" />
 </div>
 

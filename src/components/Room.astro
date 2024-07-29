@@ -1,0 +1,177 @@
+---
+/**
+ * A cool 3D room for putting stuff in.
+ *
+ * Slots for what to put on each wall:
+ *  - back
+ *  - top
+ *  - left
+ *  - right
+ *  - bottom
+ *  - unnamed slot for misc content
+ *
+ * Hover actions:
+ *  If you include anchor tags with class room-hover,
+ *  they will switch on the lights when hovered.
+ *
+ *  You can replace surface content on hover by giving
+ *  these anchor tags data-hover[surface] attributes
+ *  containing HTML.
+ *
+ *  Elements can be hidden and shown with .lightson-hidden
+ *  and .lightsoff-hidden
+ */
+import { RoomWrapper, Surface } from './Room.css'
+---
+
+<the-room class={RoomWrapper}>
+	<div class={`back ${Surface['back']}`}>
+		<slot name="back" />
+	</div>
+	<div class={`top ${Surface['top']}`}>
+		<slot name="top" />
+	</div>
+	<div class={`left ${Surface['left']}`}>
+		<slot name="left" />
+	</div>
+	<div class={`right ${Surface['right']}`}>
+		<slot name="right" />
+	</div>
+	<div class={`bottom ${Surface['bottom']}`}>
+		<slot name="bottom" />
+	</div>
+	<div>
+		<slot />
+	</div>
+</the-room>
+
+<script>
+	import { speak } from 'src/util/helpers'
+	class Room extends HTMLElement {
+		_internals
+
+		surfaces: { [key: string]: HTMLElement } | undefined
+
+		hoverElements: NodeListOf<HTMLElement>
+
+		initialBeta = 0
+		initialGamma = 0
+
+		tiltX = 0
+		tiltY = 0
+
+		constructor() {
+			super()
+			this._internals = this.attachInternals()
+
+			const surfaces: { [key: string]: HTMLElement } = {}
+
+			const back = this.querySelector('.back') as HTMLElement
+			const top = this.querySelector('.top') as HTMLElement
+			const left = this.querySelector('.left') as HTMLElement
+			const right = this.querySelector('.right') as HTMLElement
+			const bottom = this.querySelector('.bottom') as HTMLElement
+
+			if (back) surfaces['back'] = back
+			if (top) surfaces['top'] = top
+			if (left) surfaces['left'] = left
+			if (right) surfaces['right'] = right
+			if (bottom) surfaces['bottom'] = bottom
+
+			if (Object.keys(surfaces).length === 5) {
+				this.surfaces = surfaces
+			}
+
+			// Elements which will trigger lights on when hovered
+			this.hoverElements = this.querySelectorAll('a.room-hover')
+		}
+
+		lerp = (start: number, end: number, amt: number) => (1 - amt) * start + amt * end
+
+		updatePosition = ({ gamma, beta }: any) => {
+			if (!this.surfaces) return
+
+			if (!this.initialBeta) this.initialBeta = beta
+			if (!this.initialGamma) this.initialGamma = gamma
+
+			const portrait = window.innerHeight > window.innerWidth
+
+			this.tiltX = this.lerp(this.tiltX, portrait ? gamma * 4 : beta * 4, 0.1)
+			this.tiltY = this.lerp(
+				this.tiltY,
+				portrait ? (beta - this.initialBeta) * 4 : (gamma - this.initialGamma) * 4,
+				0.1
+			)
+
+			const tiltXDeg = this.tiltX / 10.5
+			const tiltYDeg = this.tiltY / 10.5
+
+			this.surfaces.back.style.transform = `translate3d(${this.tiltX}px, ${this.tiltY}px, -600px)`
+			this.surfaces.top.style.transform = `translateZ(0) rotate3d(1, 0, 0, ${-90 + tiltYDeg}deg) skew(${tiltXDeg}deg)`
+			this.surfaces.bottom.style.transform = `translateZ(0) rotate3d(1, 0, 0, ${90 + tiltYDeg}deg) skew(${-tiltXDeg}deg)`
+			this.surfaces.left.style.transform = `translateZ(0) rotate3d(0, 1, 0, ${90 - tiltXDeg}deg) skew(0, ${tiltYDeg}deg)`
+			this.surfaces.right.style.transform = `translateZ(0) rotate3d(0, 1, 0, ${-90 - tiltXDeg}deg) skew(0, ${-tiltYDeg}deg)`
+
+			if (this.tiltX < 0) {
+				this.surfaces.left.style.boxShadow = `inset 10px 10px 120px 35px rgba(${-this.tiltX},0,${-this.tiltX},0.75)`
+			} else {
+				this.surfaces.right.style.boxShadow = `inset 10px 10px 120px 35px rgba(${this.tiltX},0,${this.tiltX},0.75)`
+			}
+		}
+
+		hoverElement = (e: MouseEvent) => {
+			if (!(e.currentTarget instanceof HTMLElement) || !this.surfaces) return
+			e.stopPropagation()
+
+			const target = e.currentTarget
+			const hoverLeftContent = target.getAttribute('data-hoverleft')
+			const hoverRightContent = target.getAttribute('data-hoverright')
+			const hoverSpeak = target.getAttribute('data-hoverspeak')
+
+			if (hoverLeftContent) {
+				this.surfaces.left.innerHTML = hoverLeftContent
+			}
+
+			if (hoverRightContent) {
+				this.surfaces.right.innerHTML = hoverRightContent
+			}
+
+			if (hoverSpeak) {
+				speak(hoverSpeak)
+			}
+
+			this.lightson = true
+		}
+
+		unhoverElement = (e: MouseEvent) => {
+			if (!this.surfaces) return
+			this.lightson = false
+			this.surfaces.left.innerHTML = ''
+			this.surfaces.right.innerHTML = ''
+		}
+
+		get lightson() {
+			return this._internals.states.has('lightson')
+		}
+
+		set lightson(flag) {
+			if (flag) {
+				this._internals.states.add('lightson')
+			} else {
+				this._internals.states.delete('lightson')
+			}
+		}
+
+		connectedCallback() {
+			if (window.DeviceMotionEvent) window.addEventListener('deviceorientation', this.updatePosition, false)
+			this.hoverElements.forEach((el) => el.addEventListener('mouseover', this.hoverElement, false))
+			this.hoverElements.forEach((el) => el.addEventListener('mouseout', this.unhoverElement, false))
+		}
+
+		disconnectedCallback() {
+			window.removeEventListener('deviceorientation', this.updatePosition)
+		}
+	}
+
+	customElements.define('the-room', Room)
+</script>

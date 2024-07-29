@@ -38,6 +38,14 @@ export const MenuLi = styleVariants({
 			alignItems: 'center',
 			width: '100%'
 		}
+	],
+	sideways: [
+		MenuLiBase,
+		{
+			display: 'flex',
+			alignItems: 'center',
+			width: '100%'
+		}
 	]
 })
 
@@ -65,7 +73,6 @@ const MenuLinkBase = style({
 	}
 })
 
-
 globalStyle(`${MenuLiBase}.active > ${MenuLinkBase}`, {
 	color: 'white'
 })
@@ -83,6 +90,17 @@ export const MenuLink = styleVariants({
 		MenuLinkBase,
 		{
 			display: 'block'
+		}
+	],
+	sideways: [
+		MenuLinkBase,
+		{
+			writingMode: 'vertical-rl',
+			textOrientation: 'mixed',
+			paddingLeft: 0,
+			paddingRight: 0,
+			paddingTop: theme.dimensions.basePadding,
+			paddingBottom: theme.dimensions.basePadding
 		}
 	]
 })
