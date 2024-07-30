@@ -5,13 +5,13 @@ import ImageGallery from 'src/components/ImageGallery.astro'
 import Player from 'src/components/gig/Player'
 import PlayerContainer from 'src/components/gig/PlayerContainer.astro'
 import MapIcon from '~icons/bx/map'
-import YoutubeResponsive from 'src/components/YoutubeResponsive'
 import DropdownMenu from 'src/components/DropdownMenu'
 import { socialLinksToMenuItems } from 'src/util/helpers.ts'
 import ShareButton from 'src/components/ShareButton.astro'
 import CornerLabel from 'src/components/gig/CornerLabel.astro'
 import BigIntro from 'src/components/gig/BigIntro.astro'
 import ArtistMedia from 'src/components/gig/ArtistMedia.astro'
+import LiteYoutube from 'src/components/LiteYoutube.astro'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -47,7 +47,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 				</p>
 			)
 		}
-		{entryData.feature_vid && <YoutubeResponsive videoId={entryData.feature_vid} />}
+		{entryData.feature_vid && <LiteYoutube videoid={entryData.feature_vid} />}
 		<ShareButton
 			style={{ position: 'absolute', left: '50%', transform: 'translate(-50%)' }}
 			shareData={{
@@ -91,7 +91,8 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 <script>
 	import browserHistory from 'src/util/history.ts'
 
-	// Add the intersectionObserver which highlights the artist they're on in the menu
+	// Add the intersectionObserver which updates the browser hash.
+	// GigsMenu listens for this and highlights the artist.
 	const artistElements = document.querySelectorAll('.artist')
 
 	const options = {
@@ -109,7 +110,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 				})
 			} else {
 				const bannerHeight = document.querySelector('.banner')?.clientHeight || 0
-				if (window.pageYOffset < bannerHeight) {
+				if (window.scrollY < bannerHeight + 150) {
 					browserHistory?.replace({
 						hash: ''
 					})

@@ -38,6 +38,7 @@ export type EntryExtraMap = {
 	manifest: EntryExtraCommon
 	vaultsession: EntryExtraCommon & {
 		artist: CollectionEntry<'artist'>
+		audio: ArtistAudio
 	}
 	blog: EntryExtraCommon & {
 		relatedGigs: ProcessedEntry<'gig'>[]
@@ -282,8 +283,30 @@ export async function getVaultSessionExtra(
 	extra: EntryExtraCommon
 ): Promise<EntryExtraMap['vaultsession']> {
 	const artist = await getEntry('artist', entry.data.artist.id)
+
+	const type = entry.collection
+	const dir = `public/media/${type}/${getEntryId(entry)}`
+
+	// Get the audio
+	const audioFiles = (
+		await new fdir({
+			pathSeparator: '/',
+			includeBasePath: true
+		})
+			.glob(`**@(mp3|json)`)
+			.crawl(dir)
+			.withPromise()
+	).map((file) => file.replace('public/', '/'))
+
+	const audio = {
+		title: entry.data.title,
+		files: audioFiles,
+		tracklist: entry.data.tracklist
+	}
+
 	return {
 		...extra,
+		audio,
 		artist
 	}
 }

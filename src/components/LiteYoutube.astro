@@ -1,0 +1,23 @@
+---
+interface Props {
+	videoid: string
+}
+
+const { videoid } = Astro.props
+---
+
+<lite-youtube videoid={videoid} nocookie={"true"} posterquality="maxresdefault" params="enablejsapi=1&rel=0"></lite-youtube>
+
+<script>
+	var tag = document.createElement('script')
+	tag.type = 'module'
+	tag.src = 'https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1.5.0/lite-youtube.js'
+	var firstScriptTag = document.getElementsByTagName('script')[0]
+	firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
+</script>
+
+<style>
+	lite-youtube {
+		padding-bottom: calc(100vh / (16 / 9));
+	}
+</style>

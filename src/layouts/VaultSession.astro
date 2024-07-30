@@ -2,6 +2,7 @@
 import type { ProcessedEntry } from 'src/util/collection'
 import Room from 'src/components/Room.astro'
 import { socialLinksToMenuItems } from 'src/util/helpers'
+import LiteYoutube from 'src/components/LiteYoutube.astro'
 
 interface Props {
 	entry: ProcessedEntry<'vaultsession'>
@@ -13,7 +14,9 @@ const entryExtra = entry.extra
 ---
 
 <Room>
-	<div slot="back"></div>
+	<div slot="back">
+		<LiteYoutube videoid={entryData.full_video} />
+	</div>
 	<div slot="top">
 		<div class="title">
 			<h2>{entryData.title}</h2>
@@ -21,7 +24,32 @@ const entryExtra = entry.extra
 		</div>
 	</div>
 	<div slot="bottom"></div>
-	<div slot="left"></div>
+	<div slot="left">
+		<video-controls>
+			<h3>Tracklist (click to seek)</h3>
+			{
+				entryData.tracklist?.map((video) => (
+					<div class="track">
+						<a class="trackLink" data-time={video.time}>
+							{video.title}
+						</a>{' '}
+						{video.link && (
+							<a target="_blank" href={`https://youtube.com/watch?v=${video.link}`}>
+								<small>(Video)</small>
+							</a>
+						)}
+					</div>
+				))
+			}
+			{
+				entryExtra.audio && (
+					<a title="FULL MP3 DOWNLOAD" target="_blank" href={entryExtra.audio.files[0]}>
+						<h3 class="coolText">⭐DOWNLOAD MP3⭐</h3>
+					</a>
+				)
+			}
+		</video-controls>
+	</div>
 	<div slot="right">
 		<div>
 			<h3>More from this artist</h3>
@@ -34,7 +62,77 @@ const entryExtra = entry.extra
 			}
 		</div>
 	</div>
+	<div></div>
 </Room>
+
+<script>
+	import { timeToSeconds } from 'src/util/helpers'
+
+	class VideoControls extends HTMLElement {
+		_internals: any
+
+		tracks: NodeListOf<HTMLElement>
+		trackLinks: NodeListOf<HTMLElement>
+		trackTimes: number[]
+
+		playerTime = 0
+		activeTrack = 0
+
+		playerTarget: any
+
+		interval: any
+
+		constructor() {
+			super()
+			this.tracks = this.querySelectorAll('.track')
+			this.trackLinks = this.querySelectorAll('.trackLink')
+			this.trackTimes = [...this.trackLinks].map((track) => timeToSeconds(track.getAttribute('data-time') || '00:00'))
+		}
+
+		tick() {
+			this.playerTime = this.playerTarget.getCurrentTime()
+
+			let activeTrack = 0
+
+			this.trackTimes.forEach((trackTime, i) => {
+				const nextTrackTime = i + 1 < this.trackTimes.length && this.trackTimes[i + 1]
+				if (this.playerTime >= trackTime && (nextTrackTime ? this.playerTime < nextTrackTime : true)) {
+					activeTrack = i
+				}
+			})
+
+			// If we're on a differnt track...
+			if (this.activeTrack !== activeTrack) {
+				this.tracks[this.activeTrack].classList.remove('active')
+				this.activeTrack = activeTrack
+				this.tracks[activeTrack].classList.add('active')
+			}
+		}
+
+		seekVideoTo(time: number) {
+			this.playerTarget.seekTo(time, true)
+			this.playerTime = time
+		}
+
+		trackClickHandler(e: MouseEvent) {
+			if (!(e.currentTarget instanceof HTMLElement)) return
+
+			const time = e.currentTarget.getAttribute('data-time') || '0'
+			this.seekVideoTo(parseInt(time))
+		}
+
+		connectedCallback() {
+			//this.interval = setInterval(this.tick, 1000)
+			this.trackLinks.forEach((link) => link.addEventListener('click', this.trackClickHandler))
+		}
+
+		disconnectedCallback() {
+			clearInterval(this.interval)
+		}
+	}
+
+	customElements.define('video-controls', VideoControls)
+</script>
 
 <style>
 	.title {

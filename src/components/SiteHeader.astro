@@ -8,11 +8,7 @@ const links = [
 	{ title: 'Artists', href: '/artists' },
 	{ title: 'Venues', href: '/venues' },
 	{ title: 'Articles', href: '/blog' },
-	{
-		title: 'VAULT SESSIONS',
-		href: '/vaultsessions',
-		id: 'vaultSessionsHeaderLink'
-	}
+	{ title: 'VAULT', href: '/vaultsessions' }
 ]
 
 const currentPath = new URL(Astro.request.url).pathname
@@ -23,6 +19,6 @@ const currentPath = new URL(Astro.request.url).pathname
 		<Menu currentPath={currentPath} links={links} menuType={'horizontal'} />
 	</div>
 	<div class={header}>
-		<Menu currentPath={currentPath} links={links} menuType={'sideways'}/>
+		<Menu currentPath={currentPath} links={links} menuType={'sideways'} />
 	</div>
 </div>

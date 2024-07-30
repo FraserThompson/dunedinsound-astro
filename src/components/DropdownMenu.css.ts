@@ -9,13 +9,13 @@ export const color = createVar()
 
 export const dropdownWrapper = style({
 	position: 'sticky',
-	top: fallbackVar(dropdownTop, theme.dimensions.headerHeightMobile),
+	top: fallbackVar(dropdownTop, '0px'),
 	zIndex: '7',
 	right: '0',
 	height: '0',
 	'@media': {
 		'screen and (--md)': {
-			top: fallbackVar(dropdownTop, theme.dimensions.headerHeight)
+			top: fallbackVar(dropdownTop, '0px')
 		}
 	}
 })
@@ -62,7 +62,7 @@ export const dropdownMenu = style([
 				transform: 'translateY(0)'
 			},
 			'&.up': {
-				transform: `translateY(${theme.dimensions.headerHeight})`
+				transform: `translateY(${theme.dimensions.subheaderHeight})`
 			}
 		}
 	}

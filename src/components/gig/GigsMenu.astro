@@ -113,6 +113,9 @@ const { selected } = Astro.props
 				this.selectedArtist && this.selectedArtist.classList.remove('active')
 				this.selectedArtist = selectedItem
 				this.selectedArtist && this.selectedArtist.classList.add('active')
+			} else {
+				this.selectedArtist && this.selectedArtist.classList.remove('active')
+				this.selectedArtist = undefined
 			}
 		}
 

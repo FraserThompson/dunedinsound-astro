@@ -10,7 +10,7 @@ export const MenuWrapper = style({
 	border: 'none',
 	borderRadius: '0',
 	margin: '0',
-	overflowY: 'hidden',
+	overflow: 'hidden',
 	scrollBehavior: 'smooth'
 })
 
@@ -42,6 +42,12 @@ export const MenuLi = styleVariants({
 	sideways: [
 		MenuLiBase,
 		{
+			borderRadius: '0 4px 4px 0',
+			borderTop: theme.borders.primary,
+			borderRight: theme.borders.primary,
+			borderBottom: theme.borders.primary,
+			textOverflow: 'clip',
+			overflow: 'hidden',
 			display: 'flex',
 			alignItems: 'center',
 			width: '100%'
@@ -97,6 +103,8 @@ export const MenuLink = styleVariants({
 		{
 			writingMode: 'vertical-rl',
 			textOrientation: 'mixed',
+			textAlign: 'center',
+			minHeight: '50px',
 			paddingLeft: 0,
 			paddingRight: 0,
 			paddingTop: theme.dimensions.basePadding,
