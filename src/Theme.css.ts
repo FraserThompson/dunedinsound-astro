@@ -28,6 +28,7 @@ export const theme = createThemeContract({
 	borders: {
 		primary: '',
 		secondary: '',
+		background: '',
 		contrast: '',
 		shadow: '',
 		shadowLight: '',
@@ -98,7 +99,8 @@ createGlobalTheme(':root', theme, {
 		primary: `1px solid ${darken(0.025, primaryColor)}`,
 		secondary: `1px solid ${secondaryColor}`,
 		contrast: `1px solid ${contrastColor}`,
-		shadow: '0 6px 12px rgba(0,0,0,0.8)',
+		background: `1px solid ${backgroundColor}`,
+		shadow: '0 0px 10px black',
 		shadowLight: '0 2px 12px rgba(0,0,0,0.4)',
 		shadowTop: '0 -3px 8px rgba(0, 0, 0, 0.25)'
 	},

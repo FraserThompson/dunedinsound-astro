@@ -5,7 +5,7 @@ export const MenuWrapper = style({
 	paddingLeft: 0,
 	paddingRight: 0,
 	textAlign: 'left',
-	backgroundColor: theme.color.primary,
+	backgroundColor: theme.color.background,
 	backgroundClip: 'padding-box',
 	border: 'none',
 	borderRadius: '0',
@@ -15,6 +15,7 @@ export const MenuWrapper = style({
 })
 
 const MenuLiBase = style({
+	backgroundColor: theme.color.primary,
 	selectors: {
 		'&.active, &:active': {
 			backgroundColor: theme.color.secondary,
@@ -42,10 +43,10 @@ export const MenuLi = styleVariants({
 	sideways: [
 		MenuLiBase,
 		{
-			borderRadius: '0 4px 4px 0',
-			borderTop: theme.borders.primary,
-			borderRight: theme.borders.primary,
-			borderBottom: theme.borders.primary,
+			borderRadius: '0 6px 6px 0',
+			borderTop: theme.borders.background,
+			borderRight: theme.borders.background,
+			borderBottom: theme.borders.background,
 			textOverflow: 'clip',
 			overflow: 'hidden',
 			display: 'flex',

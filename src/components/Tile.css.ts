@@ -82,6 +82,7 @@ export const tileLabel = style({
 	left: 0,
 	paddingLeft: theme.dimensions.basePadding,
 	paddingRight: theme.dimensions.basePadding,
+	borderBottomRightRadius: "6px",
 	backgroundColor: 'black'
 })
 

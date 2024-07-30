@@ -6,8 +6,6 @@ export const headerWrapper = style({
 	top: '0px',
 	left: '0px',
 	width: theme.dimensions.headerHeight,
-	zIndex: '12',
-	boxShadow: theme.borders.shadowLight,
 	borderBottom: theme.borders.primary,
 	height: '100vh',
 })
@@ -20,7 +18,6 @@ export const header = style({
 	top: '0px',
 	zIndex: '10',
 	color: theme.color.text,
-	boxShadow: theme.borders.shadowLight,
 	borderBottom: theme.borders.primary,
 	display: 'none',
 	'@media': {

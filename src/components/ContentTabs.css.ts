@@ -11,7 +11,7 @@ export const tabsWrapper = style([
 ])
 
 export const tabButton = style({
-	borderRadius: '4px 4px 0 0',
+	borderRadius: '6px 6px 0 0',
 	color: theme.color.darkText,
 	borderLeft: theme.borders.contrast,
 	borderRight: theme.borders.contrast,

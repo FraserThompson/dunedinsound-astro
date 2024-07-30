@@ -6,9 +6,12 @@ export const TopSubheader = style({
 	position: 'sticky',
 	top: '0px',
 	borderBottom: '1px solid black',
-	boxShadow: theme.borders.shadow
+	boxShadow: theme.borders.shadowLight,
+	backgroundColor: theme.color.primary
 })
 
 export const Content = style({
-	marginLeft: theme.dimensions.headerHeight
+	marginLeft: theme.dimensions.headerHeight,
+  position: "relative",
+  boxShadow: theme.borders.shadow
 })

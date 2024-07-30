@@ -10,7 +10,6 @@ export const shuffleFilter = style({
 	alignItems: 'center',
 	color: theme.color.text,
 	minHeight: theme.dimensions.subheaderHeight,
-	backgroundColor: theme.color.background
 })
 
 globalStyle(`${shuffleFilter} > div`, {
