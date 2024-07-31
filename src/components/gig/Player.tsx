@@ -3,18 +3,8 @@
 * An audio player for playing media from one or more artists.
 * Parameters:
 *  - artistAudio: Media to be displayed. An array of artistMedia objects.
-				title: name of artist (required)
-				audio: array of audio (required)
-					.mp3:
-						publicURL: path to mp3 file
-					.json:
-						publicURL: path to mp3 file
-						data: JSON data (optional, but required if no publicURL)
-				tracklist: timestamped tracklist (optional)
 	 - barebones: If true it will just render the waveform without tracklist/transport.
 	 - playOnLoad: If true it will play the track once it loads.
-	 - setWaveSurferCallback: Pass a function and this will return the wavesurfer obj
-		 when it sets it, so the parent component can use it.
 */
 
 import type React from "preact/compat"
@@ -36,10 +26,9 @@ interface Props {
 	artistAudio: ArtistAudio[]
 	barebones?: boolean
 	playOnLoad?: boolean
-	setWaveSurferCallback?: (wavesurfer: WaveSurfer | undefined) => any
 }
 
-const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = false, setWaveSurferCallback = null }) => {
+const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = false }) => {
 	const waveformRef = useRef(null)
 
 	const [playing, setPlaying] = useState(false)
@@ -137,10 +126,6 @@ const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = 
 	useEffect(() => {
 		wavesurfer && load(artistAudio[selectedArtist].files[0], artistAudio[selectedArtist].files[1])
 	}, [artistAudio, selectedArtist, wavesurfer])
-
-	useEffect(() => {
-		setWaveSurferCallback && setWaveSurferCallback(wavesurfer)
-	}, [wavesurfer])
 
 	// Fetches the file and loads it into wavesurfer
 	const load = useCallback(

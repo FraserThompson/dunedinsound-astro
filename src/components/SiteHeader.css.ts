@@ -15,8 +15,6 @@ export const header = style({
 	height: '100%',
 	flexDirection: 'row',
 	justifyItems: 'center',
-	top: '0px',
-	zIndex: '10',
 	color: theme.color.text,
 	borderBottom: theme.borders.primary,
 	display: 'none',

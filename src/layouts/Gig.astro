@@ -63,7 +63,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 		{
 			entryExtra.audio && (
 				<PlayerContainer>
-					<Player artistAudio={Object.values(entryExtra.audio)} client:load />
+					<Player artistAudio={entryExtra.audio} client:load />
 				</PlayerContainer>
 			)
 		}
@@ -71,22 +71,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 </Banner>
 {entryData.intro && <BigIntro text={entryData.intro} />}
 {!!uncategorizedImages?.length && <ImageGallery images={uncategorizedImages} />}
-{
-	!entryData.audioOnly && (
-		<div>
-			<DropdownMenu
-				list={entryExtra.artists.map((artist) => ({
-					hash: `${artist.id}`,
-					title: artist.data.title,
-					additionalLinks: [...socialLinksToMenuItems(artist.data.links), { href: `/artists/${artist.id}`, title: '>' }]
-				}))}
-				direction="down"
-				client:load
-			/>
-			<ArtistMedia entry={entry} />
-		</div>
-	)
-}
+{!entryData.audioOnly && <ArtistMedia entry={entry} />}
 
 <script>
 	import browserHistory from 'src/util/history.ts'
@@ -122,3 +107,9 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	const observer = new IntersectionObserver(callback, options)
 	artistElements.forEach((el) => observer.observe(el))
 </script>
+
+<style>
+	lite-youtube {
+		padding-bottom: calc(100vh / (16 / 9));
+	}
+</style>

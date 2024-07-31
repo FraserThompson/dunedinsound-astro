@@ -7,7 +7,6 @@ import browserHistory from 'src/util/history';
 
 interface Props {
 	images: ResponsiveImage[]
-	imageCaptions?: string[]
 	title?: string
 	imageCaption?: string
 }
@@ -15,7 +14,7 @@ interface Props {
 /**
  * An image gallery lightbox intended for use with ImageGallery.
  */
-const ImageGalleryLightbox: React.FC<Props> = ({ images, imageCaptions, title, imageCaption }: Props) => {
+const ImageGalleryLightbox: React.FC<Props> = ({ images, title, imageCaption }: Props) => {
 	const [lightboxOpen, setLightboxOpen] = useState(false)
 	const [selectedImage, setSelectedImage] = useState(undefined as number | undefined)
 	const [directLinked, setDirectLinked] = useState(false)
@@ -67,7 +66,7 @@ const ImageGalleryLightbox: React.FC<Props> = ({ images, imageCaptions, title, i
 		[history]
 	)
 
-	const getImageCaption = useCallback((imageIndex: number) => imageCaptions && imageCaptions[imageIndex], [imageCaptions])
+	const getImageCaption = useCallback((imageIndex: number) => images[imageIndex].alt, [images])
 
 	const imageSlides = useMemo(() => images.map((image) => (
 		{
@@ -91,8 +90,8 @@ const ImageGalleryLightbox: React.FC<Props> = ({ images, imageCaptions, title, i
 				scrollToZoom: true
 			}}
 			render={{
-				slideHeader: () => <div style={{ position: "absolute", padding: "8px", top: "0px" }}><h2>{title}</h2></div>,
-				slideFooter: () => <div style={{ position: "absolute", padding: "8px", bottom: "0px" }}><h4>{imageCaptions && selectedImage ? getImageCaption(selectedImage) : imageCaption}</h4></div>,
+				slideHeader: () => <div style={{ position: "absolute", padding: "8px", top: "0px", zIndex: "5" }}><h2>{title}</h2></div>,
+				slideFooter: () => <div style={{ position: "absolute", padding: "8px", bottom: "0px" }}><h4>{selectedImage ? getImageCaption(selectedImage) : imageCaption}</h4></div>,
 			}}
 		/>
 	)

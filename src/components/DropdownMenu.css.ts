@@ -71,7 +71,8 @@ export const dropdownMenu = style([
 export const dropdownLi = style([
 	MenuLi['vertical'],
 	{
-		width: 'initial'
+		width: 'initial',
+		flexWrap: 'wrap'
 	}
 ])
 
@@ -82,7 +83,20 @@ export const dropdownLink = style([
 		selectors: {
 			'&:hover': {
 				backgroundColor: theme.color.lightSecondary,
-				color: "black"
+				color: 'black'
+			}
+		}
+	}
+])
+
+export const additionalLink = style([
+	MenuLink['vertical'],
+	{
+		color: theme.color.contrast2,
+		selectors: {
+			'&:hover': {
+				color: theme.color.lightContrast2,
+				backgroundColor: theme.color.darkText
 			}
 		}
 	}

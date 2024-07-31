@@ -1,7 +1,7 @@
 import type React from "preact/compat"
 import { useRef, useState, useEffect, useCallback } from "preact/compat"
 import MenuIcon from '~icons/bx/menu'
-import { background, dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownWrapper, menuWidth, color } from './DropdownMenu.css'
+import { background, dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownWrapper, menuWidth, color, additionalLink } from './DropdownMenu.css'
 import { scrollTo } from 'src/util/helpers'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import type { MenuLink } from './Menu'
@@ -92,14 +92,16 @@ const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top, width,
 						>
 							{item.title}
 						</a>
-						<span style={{ marginLeft: "auto", display: "flex" }}>
+						{item.additionalLinks && <div style={{ display: "flex" }}>
 							{item.additionalLinks?.map((link) =>
-								<a style={{ paddingRight: "8px" }} href={link.href}>
-									{!link.image && link.title}
-									{link.image && <img style={{ height: "25px" }} src={link.image} />}
+								<a class={additionalLink} href={link.href}>
+									<small>
+										{!link.image && link.title}
+										{link.image && <img style={{ height: "25px" }} src={link.image} />}
+									</small>
 								</a>
 							)}
-						</span>
+						</div>}
 					</li>
 				)}
 			</ul>

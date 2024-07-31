@@ -16,8 +16,11 @@ export class ResponsiveImage {
 	// Link to full image
 	public src: string
 
-	constructor(images: string[]) {
+	public alt?: string
+
+	constructor(images: string[], alt?: string) {
 		this.src = ''
+		this.alt = alt
 
 		const parsedImages = images.reduce(
 			(acc: any, src: string) => {

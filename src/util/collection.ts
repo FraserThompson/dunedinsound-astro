@@ -144,7 +144,7 @@ async function getCommonExtra<C extends CollectionKey>(entry: CollectionEntry<C>
 	// To preserve URLs from old site
 	const postSlug = getEntrySlug(title, entry.collection)
 
-	const images = await getResponsiveImagesByDir(`public/media/${entry.collection}/${getEntryId(entry)}`)
+	const images = await getResponsiveImagesByDir(`public/media/${entry.collection}/${getEntryId(entry)}`, title)
 
 	return {
 		slug: postSlug,
@@ -188,13 +188,13 @@ export async function getGigExtra(
 
 	// Get all media from each subdirectory
 	for (const artistDir of artistDirs) {
-		const artistName = path.basename(artistDir)
+		const artistId = path.basename(artistDir)
 
-		if (artistName === 'cover' || artistName === entry.id) continue
+		if (artistId === 'cover' || artistId === entry.id) continue
 
 		// Get all image paths in each responsive image dir
-		const responsiveImages = await getResponsiveImagesByDir(artistDir)
-		artistImages[artistName] = responsiveImages ? Object.values(responsiveImages) : []
+		const responsiveImages = await getResponsiveImagesByDir(artistDir, artistId)
+		artistImages[artistId] = responsiveImages ? Object.values(responsiveImages) : []
 
 		// Get the audio
 		const audioFiles = (
@@ -209,7 +209,7 @@ export async function getGigExtra(
 
 		if (audioFiles.length) {
 			audio.push({
-				title: artistName,
+				title: artistId,
 				files: audioFiles,
 				tracklist: entry.data.artists.find((artist: any) => artist.id.id === artistDir)?.tracklist
 			})

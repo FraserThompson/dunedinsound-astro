@@ -1,10 +1,15 @@
 ---
+/**
+ * Displays all the images and videos for each artist in a gig.
+ */
 import type { ProcessedEntry } from 'src/util/collection'
 import Divider from '../Divider'
 import ImageGallery from '../ImageGallery.astro'
 import ImageGalleryLightbox from '../ImageGalleryLightbox'
 import FlexGridContainer from '../FlexGridContainer.astro'
 import LiteYoutube from '../LiteYoutube.astro'
+import DropdownMenu from '../DropdownMenu'
+import { socialLinksToMenuItems } from 'src/util/helpers'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -37,6 +42,15 @@ const getGalleryOffset = (entryExtra: any, i: any) => {
 			<Divider href={`#${artist.id}`} color="black" backgroundColor="white" sticky={true}>
 				{artist.data.title}
 			</Divider>
+			
+			<DropdownMenu
+					list={[
+						...socialLinksToMenuItems(artist.data.links),
+						{ href: `/artists/${artist.id}`, title: 'MORE GIGS FROM THIS ARTIST' }
+					]}
+					direction="down"
+					client:load
+				/>
 			<FlexGridContainer grid={{ xs: 12, sm: 6 }} maxWidth="1080px">
 				{entryData.artists[i].vid?.map((vid, i) => (
 					<LiteYoutube videoid={vid.link} />
@@ -53,4 +67,4 @@ const getGalleryOffset = (entryExtra: any, i: any) => {
 	))
 }
 
-<ImageGalleryLightbox images={allImages} client:load />
+<ImageGalleryLightbox title={entryData.title} images={allImages} client:load />

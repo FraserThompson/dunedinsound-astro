@@ -3,6 +3,9 @@ import type { ProcessedEntry } from 'src/util/collection'
 import Room from 'src/components/Room.astro'
 import { socialLinksToMenuItems } from 'src/util/helpers'
 import LiteYoutube from 'src/components/LiteYoutube.astro'
+import { ArtistMetadata, VaultTracklist, VaultTrackLink } from './VaultSession.css'
+import PlayerContainer from 'src/components/gig/PlayerContainer.astro'
+import Player from 'src/components/gig/Player'
 
 interface Props {
 	entry: ProcessedEntry<'vaultsession'>
@@ -14,55 +17,55 @@ const entryExtra = entry.extra
 ---
 
 <Room>
-	<div slot="back">
-		<LiteYoutube videoid={entryData.full_video} />
-	</div>
-	<div slot="top">
-		<div class="title">
-			<h2>{entryData.title}</h2>
-			<h4>Recorded on {entryData.date}</h4>
-		</div>
+	<LiteYoutube videoid={entryData.full_video} autoload={true} loadAPI={true} slot="back" />
+	<div class="title" slot="top">
+		<h2 class="monospace">{entryData.title}</h2>
+		<h4 class="monospace">Recorded on {entryData.date}</h4>
 	</div>
 	<div slot="bottom"></div>
-	<div slot="left">
-		<video-controls>
-			<h3>Tracklist (click to seek)</h3>
-			{
-				entryData.tracklist?.map((video) => (
-					<div class="track">
-						<a class="trackLink" data-time={video.time}>
-							{video.title}
-						</a>{' '}
-						{video.link && (
-							<a target="_blank" href={`https://youtube.com/watch?v=${video.link}`}>
-								<small>(Video)</small>
-							</a>
-						)}
-					</div>
-				))
-			}
-			{
-				entryExtra.audio && (
-					<a title="FULL MP3 DOWNLOAD" target="_blank" href={entryExtra.audio.files[0]}>
-						<h3 class="coolText">⭐DOWNLOAD MP3⭐</h3>
-					</a>
-				)
-			}
-		</video-controls>
+	<video-controls class={VaultTracklist} slot="left">
+		<h3 class="monospace">Tracklist (click to seek)</h3>
+		{
+			entryData.tracklist?.map((video) => (
+				<div>
+					<a class={`${VaultTrackLink} trackLink`} data-time={video.time}>
+						{video.title}
+					</a>{' '}
+					{video.link && (
+						<a target="_blank" href={`https://youtube.com/watch?v=${video.link}`}>
+							<small>(Video)</small>
+						</a>
+					)}
+				</div>
+			))
+		}
+		{
+			entryExtra.audio && (
+				<a title="FULL MP3 DOWNLOAD" target="_blank" href={entryExtra.audio.files[0]}>
+					<h3 class="coolText">⭐DOWNLOAD MP3⭐</h3>
+				</a>
+			)
+		}
+	</video-controls>
+	<div class={ArtistMetadata} slot="right">
+		<h3 class="monospace">More from this artist</h3>
+		{
+			socialLinksToMenuItems(entryExtra.artist.data.links).map((item) => (
+				<li>
+					<a href={item.href}>{item.title}</a>
+				</li>
+			))
+		}
 	</div>
-	<div slot="right">
-		<div>
-			<h3>More from this artist</h3>
-			{
-				socialLinksToMenuItems(entryExtra.artist.data.links).map((item) => (
-					<li>
-						<a href={item.href}>{item.title}</a>
-					</li>
-				))
-			}
-		</div>
+	<div>
+		{
+			entryExtra.audio && (
+				<PlayerContainer minimizedAlways={true}>
+					<Player artistAudio={[entryExtra.audio]} client:load />
+				</PlayerContainer>
+			)
+		}
 	</div>
-	<div></div>
 </Room>
 
 <script>
@@ -71,26 +74,29 @@ const entryExtra = entry.extra
 	class VideoControls extends HTMLElement {
 		_internals: any
 
-		tracks: NodeListOf<HTMLElement>
 		trackLinks: NodeListOf<HTMLElement>
 		trackTimes: number[]
 
 		playerTime = 0
 		activeTrack = 0
 
-		playerTarget: any
+		player: any
 
 		interval: any
 
 		constructor() {
 			super()
-			this.tracks = this.querySelectorAll('.track')
 			this.trackLinks = this.querySelectorAll('.trackLink')
 			this.trackTimes = [...this.trackLinks].map((track) => timeToSeconds(track.getAttribute('data-time') || '00:00'))
 		}
 
+		/**
+		 * Runs every second and updates the class on the active track.
+		 */
 		tick() {
-			this.playerTime = this.playerTarget.getCurrentTime()
+			if (!this.player) return
+
+			this.playerTime = this.player.getCurrentTime()
 
 			let activeTrack = 0
 
@@ -103,27 +109,54 @@ const entryExtra = entry.extra
 
 			// If we're on a differnt track...
 			if (this.activeTrack !== activeTrack) {
-				this.tracks[this.activeTrack].classList.remove('active')
+				this.trackLinks[this.activeTrack].classList.remove('active')
 				this.activeTrack = activeTrack
-				this.tracks[activeTrack].classList.add('active')
+				this.trackLinks[activeTrack].classList.add('active')
 			}
 		}
 
+		/**
+		 * Seeks the video to a time in seconds.
+		 * @param time
+		 */
 		seekVideoTo(time: number) {
-			this.playerTarget.seekTo(time, true)
+			this.player && this.player.seekTo(time, true)
 			this.playerTime = time
 		}
 
+		/**
+		 * Handler for clicking a track on the sidebar.
+		 * @param e
+		 */
 		trackClickHandler(e: MouseEvent) {
 			if (!(e.currentTarget instanceof HTMLElement)) return
 
 			const time = e.currentTarget.getAttribute('data-time') || '0'
-			this.seekVideoTo(parseInt(time))
+			this.seekVideoTo(timeToSeconds(time))
+		}
+
+		/**
+		 * When the player is ready play the video.
+		 */
+		onPlayerReady(e: any) {
+			e.target.setPlaybackQuality('hd720')
+			e.target.playVideo()
+			this.player = e.target
+		}
+
+		setIframe(e: any) {
+			// @ts-ignore
+			new YT.Player(e.target.shadowRoot.querySelector('iframe'), {
+				events: {
+					onReady: (e: any) => this.onPlayerReady(e)
+				}
+			})
 		}
 
 		connectedCallback() {
-			//this.interval = setInterval(this.tick, 1000)
-			this.trackLinks.forEach((link) => link.addEventListener('click', this.trackClickHandler))
+			this.interval = setInterval(() => this.tick(), 1000)
+			this.trackLinks.forEach((link) => link.addEventListener('click', (e) => this.trackClickHandler(e)))
+			document.addEventListener('liteYoutubeIframeLoaded', (e) => this.setIframe(e))
 		}
 
 		disconnectedCallback() {

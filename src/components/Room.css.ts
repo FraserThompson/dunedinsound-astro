@@ -74,6 +74,7 @@ export const Surface = styleVariants({
 		{
 			backgroundColor: 'black',
 			left: '0',
+			zIndex: 3,
 			width: '600px',
 			transformOrigin: 'left center',
 			transform: 'translateZ(0) rotate3d(0, 1, 0, 90deg) skew(0, 0deg)'
@@ -85,6 +86,7 @@ export const Surface = styleVariants({
 			backgroundColor: 'black',
 			right: '0',
 			width: '600px',
+			zIndex: 3,
 			transformOrigin: 'right center',
 			transform: 'translateZ(0) rotate3d(0, 1, 0, -90deg) skew(0, 0deg)'
 		}
