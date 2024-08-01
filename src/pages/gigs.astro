@@ -1,29 +1,41 @@
 ---
-import SidebarNav from 'src/components/SidebarNav.astro'
-import GigsMenu from 'src/components/gig/GigsMenu.astro'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
-import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
-import { theme } from 'src/Theme.css'
-import GigTile from 'src/components/gig/GigTile.astro'
+import GigsTimeline from 'src/components/gig/GigsTimeline.astro'
+import GigsShuffle from 'src/components/gig/GigsShuffle.tsx'
+
+interface Props {
+	mode: 'timeline' | 'shuffle'
+}
 
 const gigs = await loadAndFormatCollection('gig')
+
+const { mode = 'timeline' } = Astro.props
 ---
 
-<BaseLayout>
+<BaseLayout hideFooter={true}>
 	<ShuffleFilters itemselector=".tile" boardselector="#gigs">
+		{
+			mode === 'timeline' && (
+				<div>
+					<span>Search: </span>
+					<input type="text" data-filter="title=value" placeholder="Search by gig, artist, venue..." />
+				</div>
+			)
+		}
 		<div>
-			<span>Search: </span>
-			<input type="text" data-filter="title=value" placeholder="Search by gig, artist, venue..." />
+			<span>Mode: </span>
+			<a href="/gigs">
+				<button class={mode === 'timeline' ? 'active' : ''}>Timeline</button>
+			</a>
+			<a href="/gigs/shuffle">
+				<button class={mode === 'shuffle' ? 'active' : ''}>Shuffle</button>
+			</a>
 		</div>
 	</ShuffleFilters>
-	<SidebarNav top={theme.dimensions.headerHeight}>
-		<GigsMenu slot="sidebar" />
-		<FlexGridContainer grid={{ xs: 12 }} id="gigs" slot="content" fixedWidth={true}>
-			{gigs.map((gig) => <GigTile gig={gig} />)}
-		</FlexGridContainer>
-	</SidebarNav>
+	{mode === 'timeline' && <GigsTimeline gigs={gigs} />}
+	{mode === 'shuffle' && <GigsShuffle gigs={gigs} client:load />}
 </BaseLayout>
 
 <script>

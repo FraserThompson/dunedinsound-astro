@@ -190,13 +190,28 @@ export const speak = (text: string) => {
 
 	const synth = window.speechSynthesis;
 	const voices = synth.getVoices()
+	const numberOfVoices = voices.length
+	
+	const voiceIndex = getRandom(0, numberOfVoices, true)
 
-	msg.voice = voices[0]
+	msg.voice = voices[voiceIndex]
 	msg.volume = 1
-	msg.rate = 0.1
-	msg.pitch = Math.floor(Math.random() * (2 - 0 + 1))
+	msg.rate = getRandom(0.1, 2)
+	msg.pitch = getRandom(0, 2)
 	msg.text = text
 	msg.lang = 'en-US'
 
 	synth.speak(msg)
+}
+
+/**
+ * Gets a random float between min and max. Floor will make it an integer.
+ * @param min 
+ * @param max 
+ * @param floor 
+ * @returns 
+ */
+export function getRandom(min: number, max: number, floor?: boolean)  {
+	const randomFloat = Math.random() * (max - min + 1) + min;
+	return floor ? Math.floor(randomFloat) : randomFloat
 }

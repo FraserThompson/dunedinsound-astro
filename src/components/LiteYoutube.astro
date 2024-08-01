@@ -1,4 +1,8 @@
 ---
+/**
+ * Astro wrapper for lite YouTube Component which doesnt immediately load 
+ * tonnes of Google rubbish. Also uses the YouTube API to grab the video title.
+ */
 interface Props {
 	videoid: string
 	loadAPI?: boolean
@@ -16,15 +20,13 @@ const { videoid, loadAPI, autoload } = Astro.props
 		posterquality="maxresdefault"
 		params="enablejsapi=1&rel=0"></lite-youtube>
 </lite-youtube-toucher>
+
 {loadAPI && <script src="https://www.youtube.com/iframe_api" />}
 
 <script>
-	// Asynchronously load the lite-youtube script (we do this for a reason)
-	var tag = document.createElement('script')
-	tag.type = 'module'
-	tag.src = 'https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1.5.0/lite-youtube.js'
-	var firstScriptTag = document.getElementsByTagName('script')[0]
-	firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
+	
+	// Clientside import because of SSR issues with web components
+	import('@justinribeiro/lite-youtube')
 
 	// Wraps the element and just calls the youtube API to get the video title
 	class LiteYoutubeToucher extends HTMLElement {

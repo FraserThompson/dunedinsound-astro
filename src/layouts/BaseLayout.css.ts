@@ -106,18 +106,20 @@ globalStyle('button', {
 	paddingBottom: '0px',
 	paddingRight: theme.dimensions.basePadding,
 	paddingLeft: theme.dimensions.basePadding,
-	color: theme.color.text,
-	backgroundColor: theme.color.secondary
+	color: theme.color.lightText,
+	backgroundColor: theme.color.primary
 })
 
 globalStyle('button:hover', {
-	color: 'black',
+	color: "black",
 	backgroundColor: theme.color.lightSecondary
 })
 
 globalStyle('button.active,button:active', {
-	color: 'black',
-	backgroundColor: theme.color.lightSecondary
+	color: theme.color.lightText,
+	cursor: 'default',
+	borderStyle: 'inset',
+	backgroundColor: theme.color.secondary
 })
 
 globalStyle('a', {

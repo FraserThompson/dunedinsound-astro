@@ -55,8 +55,11 @@ combinedPosts.splice(latestGigIndex, 1)
 									<Tile
 										className={gridChild}
 										title={post.entry.data.title}
+										subtitle={post.entry.data.date.toLocaleDateString()}
+										label="ARTICLE"
 										href={post.extra.absolutePath}
 										responsiveImage={post.extra.cover}
+										containerHeight={'30vh'}
 									/>
 								)}
 							</GridChild>

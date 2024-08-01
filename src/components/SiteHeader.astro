@@ -1,5 +1,6 @@
 ---
 import Menu from './Menu.tsx'
+import HomeIcon from '~icons/bx/home'
 import { headerWrapper, headerMobile, header, brand } from './SiteHeader.css'
 
 const links = [
@@ -19,6 +20,8 @@ const currentPath = new URL(Astro.request.url).pathname
 		<Menu currentPath={currentPath} links={links} menuType={'horizontal'} />
 	</div>
 	<div class={header}>
+		
+		
 		<Menu currentPath={currentPath} links={links} menuType={'sideways'} />
 	</div>
 </div>

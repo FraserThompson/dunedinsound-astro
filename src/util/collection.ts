@@ -20,7 +20,7 @@ interface Track {
 	time: string
 }
 
-export interface ArtistAudio {
+export type ArtistAudio = {
 	title: string
 	files: string[]
 	tracklist?: Track[]

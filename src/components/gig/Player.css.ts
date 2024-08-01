@@ -1,45 +1,26 @@
-import { style, globalStyle, styleVariants } from '@vanilla-extract/css'
+import { style, globalStyle } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
-const PlayerWrapperBase = style({
+export const PlayerWrapper = style({
 	transition: 'all 150ms ease-in-out',
 	background: 'linear-gradient(to left, #1a1927 0%, #353551 53%, #21212d 100%)',
-	border: '3px groove #585662',
-	boxShadow: theme.borders.shadowTop,
-	selectors: {
-		'&.barebones': {
-			border: 'none'
-		}
-	}
+	border: theme.borders.groove,
+	boxShadow: theme.borders.shadowTop
 })
 
-export const PlayerWrapper = styleVariants({
-	normal: [PlayerWrapperBase],
-	barebones: [PlayerWrapperBase, { border: 'none' }]
-})
-
-const AudioWrapperBase = style({
+export const AudioWrapper = style({
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'center',
-	selectors: {
-		'&.barebones': {
-			border: 'none'
-		}
-	}
-})
-
-export const AudioWrapper = styleVariants({
-	normal: [AudioWrapperBase],
-	barebones: [AudioWrapperBase, { border: 'none' }]
+	marginLeft: '5px',
+	marginRight: '5px'
 })
 
 export const WaveWrapper = style({
 	flexGrow: 1,
-	border: '3px groove #585662',
+	border: theme.borders.groove,
 	backgroundColor: 'black',
 	marginLeft: '5px',
-	marginRight: '5px',
 	position: 'relative',
 	selectors: {
 		'&::part(marker)': {
@@ -126,14 +107,12 @@ export const TransportButton = style({
 	color: '#bfced9',
 	backgroundColor: 'transparent',
 	fontSize: '1.5em',
+	backgroundSize: 'cover',
+	backgroundRepeat: 'no-repeat',
+	width: '23px',
+	height: '18px',
+	marginTop: '3px',
 	selectors: {
-		'&.buttonStyle': {
-			backgroundSize: 'cover',
-			backgroundRepeat: 'no-repeat',
-			width: '23px',
-			height: '18px',
-			marginTop: '3px'
-		},
 		'&:hover:enabled': {
 			filter: 'brightness(0.8)'
 		},
@@ -204,7 +183,7 @@ export const TracklistWrapper = style({
 	maxHeight: '90vh',
 	backgroundColor: 'black',
 	margin: '5px',
-	border: '3px groove #585662',
+	border: theme.borders.groove,
 	paddingLeft: '0px',
 	paddingRight: '0px'
 })
@@ -215,14 +194,15 @@ export const TracklistTrack = style({
 	paddingRight: '3px',
 	listStyle: 'none',
 	textAlign: 'left',
+	fontFamily: 'monospace',
+	color: '#28da1d',
+	display: 'flex',
 	selectors: {
 		'&.active': {
 			backgroundColor: '#0818c4'
+		},
+		'&:hover:not(.noHover)': {
+			color: theme.color.lightContrast2
 		}
 	}
-})
-
-globalStyle(`${TracklistTrack} .title`, {
-	fontFamily: 'monospace',
-	color: '#28da1d'
 })

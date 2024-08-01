@@ -12,7 +12,6 @@ export const tabsWrapper = style([
 
 export const tabButton = style({
 	borderRadius: '6px 6px 0 0',
-	color: theme.color.darkText,
 	borderLeft: theme.borders.contrast,
 	borderRight: theme.borders.contrast,
 	borderBottom: theme.borders.contrast,
@@ -21,16 +20,6 @@ export const tabButton = style({
 	height: '100%',
 	textOverflow: 'clip',
 	overflow: 'hidden',
-	selectors: {
-		'&:active,&:focus,&.active': {
-			color: 'white',
-			backgroundColor: 'black',
-			outline: 0
-		},
-		'&:hover:not(.active)': {
-			color: 'black'
-		}
-	}
 })
 
 export const tabContent = style({})

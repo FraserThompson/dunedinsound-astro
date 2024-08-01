@@ -9,12 +9,7 @@
 
 import type React from "preact/compat"
 import { useRef, useState, useEffect, useCallback } from "preact/compat"
-import PlayIcon from '~icons/bx/play-circle'
-import PauseIcon from '~icons/bx/pause-circle'
-import ArrowRightIcon from '~icons/bx/skip-next'
-import ArrowLeftIcon from '~icons/bx/skip-previous'
 import DownloadIcon from '~icons/bx/download'
-import { RoundButton } from '../RoundButton.css.ts'
 import LoadingSpinner from '../LoadingSpinner.tsx'
 import { timeToSeconds } from '../../util/helpers.ts'
 import { AudioWrapper, LengthWrapper, PlayerWrapper, Titlebar, TracklistTrack, TracklistWrapper, TransportButton, WaveWrapper } from './Player.css.ts'
@@ -26,9 +21,10 @@ interface Props {
 	artistAudio: ArtistAudio[]
 	barebones?: boolean
 	playOnLoad?: boolean
+	setWaveSurferCallback?: (wavesurfer: WaveSurfer | undefined) => any
 }
 
-const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = false }) => {
+const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = false, setWaveSurferCallback = null }) => {
 	const waveformRef = useRef(null)
 
 	const [playing, setPlaying] = useState(false)
@@ -127,6 +123,10 @@ const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = 
 		wavesurfer && load(artistAudio[selectedArtist].files[0], artistAudio[selectedArtist].files[1])
 	}, [artistAudio, selectedArtist, wavesurfer])
 
+	useEffect(() => {
+		setWaveSurferCallback && setWaveSurferCallback(wavesurfer)
+	}, [wavesurfer])
+
 	// Fetches the file and loads it into wavesurfer
 	const load = useCallback(
 		(mp3: string, json: string) => {
@@ -211,20 +211,14 @@ const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = 
 	)
 
 	return (
-		<div className={PlayerWrapper[barebones ? 'barebones' : 'normal']}>
+		<div className={PlayerWrapper}>
 			{!barebones && <div className={Titlebar} />}
-			<div className={AudioWrapper[barebones ? 'barebones' : 'normal']}>
+			<div className={AudioWrapper}>
 				{!barebones && (
 					<div>
-						<button className={TransportButton} disabled={!ready} id="prev" onClick={() => previous()}>
-							<ArrowLeftIcon />
-						</button>
-						<button disabled={!ready} className={playing ? `${RoundButton} active` : RoundButton} onClick={() => wavesurfer && wavesurfer.playPause()}>
-							{!playing ? <PlayIcon /> : <PauseIcon />}
-						</button>
-						<button className={TransportButton} disabled={!ready} id="next" onClick={() => next()}>
-							<ArrowRightIcon />
-						</button>
+						<button className={`${TransportButton} left`} disabled={!ready} id="prev" onClick={() => previous()}></button>
+						<button disabled={!ready} className={playing ? `${TransportButton} play` : `${TransportButton} pause`} onClick={() => wavesurfer && wavesurfer.playPause()}></button>
+						<button className={`${TransportButton} right`} disabled={!ready} id="next" onClick={() => next()}></button>
 					</div>
 				)}
 				<div className={WaveWrapper} id="waveform" ref={waveformRef}>
@@ -243,10 +237,10 @@ const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = 
 					{artistAudio.map((item, index) => (
 						<div key={item.title}>
 							<li className={selectedArtist == index ? TracklistTrack + ' active' : TracklistTrack} onClick={() => selectArtist(index)} style={{ cursor: "pointer" }}>
-								<span className="title">
+								<span>
 									{index + 1}. {item.title}
 								</span>
-								<span className="listButton" style={{ float: "right" }}>
+								<span style={{ marginLeft: "auto" }}>
 									<a title={'Download MP3: ' + item.title} href={item.files[0]} target="_blank">
 										<DownloadIcon />
 									</a>

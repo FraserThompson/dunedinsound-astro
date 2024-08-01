@@ -15,23 +15,26 @@ interface Props {
 }
 
 const { gig, containerHeight, className, responsiveImageSizes } = Astro.props
+
+const gigData = gig.entry.data
+const gigExtra = gig.extra
 ---
 
 <Tile
 	className={className}
-	href={gig.extra.absolutePath}
-	responsiveImage={gig.extra.cover}
+	href={gigExtra.absolutePath}
+	responsiveImage={gigExtra.cover}
 	responsiveImageSizes={responsiveImageSizes}
 	id={makeHash(gig.entry.id)}
-	subtitle={gig.extra.venue.data.title}
-	label={gig.entry.data.date.toLocaleDateString()}
-	title={gig.entry.data.title}
+	subtitle={gigExtra.venue.data.title}
+	label={gigData.date.toLocaleDateString()}
+	title={gigData.title}
 	containerHeight={containerHeight || '30vh'}
 	dataAttributes={{
-		'data-title': `${gig.entry.data.title} ${gig.extra.venue.data.title} ${artistsToString(gig.extra.artists)}`
+		'data-title': `${gigData.title} ${gigExtra.venue.data.title} ${artistsToString(gigExtra.artists)}`
 	}}
 >
 	<h5 style={{ marginBottom: '0px' }}>
-		{artistsToString(gig.extra.artists)}
+		{artistsToString(gigExtra.artists)}
 	</h5>
 </Tile>

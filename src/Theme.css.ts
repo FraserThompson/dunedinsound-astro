@@ -14,6 +14,7 @@ export const theme = createThemeContract({
 		dullText: '',
 		darkText: '',
 		lightSecondary: '',
+		darkSecondary: '',
 		lightContrast2: '',
 		lightForeground: ''
 	},
@@ -30,6 +31,7 @@ export const theme = createThemeContract({
 		secondary: '',
 		background: '',
 		contrast: '',
+		groove: '',
 		shadow: '',
 		shadowLight: '',
 		shadowTop: ''
@@ -79,6 +81,7 @@ createGlobalTheme(':root', theme, {
 		dullText: darken(0.2, textColor),
 		darkText: invert(textColor),
 		lightSecondary: lighten(0.5, secondaryColor),
+		darkSecondary: darken(0.2, secondaryColor),
 		lightContrast2: lighten(0.2, contrastColor2),
 		lightForeground: lighten(0.2, foregroundColor)
 	},
@@ -100,6 +103,7 @@ createGlobalTheme(':root', theme, {
 		secondary: `1px solid ${secondaryColor}`,
 		contrast: `1px solid ${contrastColor}`,
 		background: `1px solid ${backgroundColor}`,
+		groove: '3px groove #585662',
 		shadow: '0 0px 10px black',
 		shadowLight: '0 2px 12px rgba(0,0,0,0.4)',
 		shadowTop: '0 -3px 8px rgba(0, 0, 0, 0.25)'
