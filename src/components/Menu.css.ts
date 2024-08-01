@@ -10,8 +10,7 @@ export const MenuWrapper = style({
 	border: 'none',
 	borderRadius: '0',
 	margin: '0',
-	overflow: 'hidden',
-	scrollBehavior: 'smooth'
+	overflow: 'hidden'
 })
 
 const MenuLiBase = style({

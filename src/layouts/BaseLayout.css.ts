@@ -111,8 +111,7 @@ globalStyle('button', {
 })
 
 globalStyle('button:hover', {
-	color: "black",
-	backgroundColor: theme.color.lightSecondary
+	backgroundColor: theme.color.lightPrimary
 })
 
 globalStyle('button.active,button:active', {

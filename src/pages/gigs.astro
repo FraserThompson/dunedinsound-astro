@@ -37,35 +37,3 @@ const { mode = 'timeline' } = Astro.props
 	{mode === 'timeline' && <GigsTimeline gigs={gigs} />}
 	{mode === 'shuffle' && <GigsShuffle gigs={gigs} client:load />}
 </BaseLayout>
-
-<script>
-	import { elementIsVisibleInViewport } from 'src/util/helpers.ts'
-
-	const gigs = document.querySelectorAll('.tile')
-
-	const sidebar = document.querySelector('#sidebar')
-
-	const options = {
-		rootMargin: '-80px 0px -99%'
-	}
-
-	const callback = (entries: IntersectionObserverEntry[]) => {
-		entries.forEach((entry) => {
-			const sidebarItem = sidebar?.querySelector(`[href="#${entry.target.id}"]`)
-			const monthGroup = sidebarItem?.parentElement?.parentElement
-
-			if (entry.isIntersecting) {
-				sidebarItem?.classList.add('active')
-				if (sidebar && sidebarItem && !elementIsVisibleInViewport(sidebarItem)) {
-					// @ts-ignore
-					//sidebar.scrollTop = monthGroup?.offsetTop
-				}
-			} else {
-				sidebarItem?.classList.remove('active')
-			}
-		})
-	}
-
-	const observer = new IntersectionObserver(callback, options)
-	gigs.forEach((el) => observer.observe(el))
-</script>

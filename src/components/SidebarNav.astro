@@ -13,27 +13,77 @@ import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
 	top?: string
+	maintainScrollPosition?: boolean
 }
 
-const { top } = Astro.props
+const { top, maintainScrollPosition} = Astro.props
 ---
 
-<button id="sidebar-button" class={menuButtonWrapper}><MenuIcon /></button>
-<div
-	id="sidebar"
-	class={sidebarWrapper}
-	style={assignInlineVars({
-		[offsetTop]: top
-	})}
->
-	<slot name="sidebar" />
-</div>
+<sidebar-wrapper data-maintainscroll={maintainScrollPosition ? "true" : undefined}>
+	<button id="sidebar-button" class={menuButtonWrapper}><MenuIcon /></button>
+	<div
+		id="sidebar"
+		class={sidebarWrapper}
+		style={assignInlineVars({
+			[offsetTop]: top
+		})}
+	>
+		<slot name="sidebar" />
+	</div>
+</sidebar-wrapper>
 <div class={contentWrapper}>
 	<slot name="content" />
 </div>
 
-<script>
-	document.getElementById('sidebar-button')?.addEventListener('mousedown', (e) => {
-		document.getElementById('sidebar')?.classList.toggle('open')
-	})
+<script defer>
+
+	class SidebarWrapper extends HTMLElement {
+		_internals
+		sidebar
+		button
+		maintainScrollPosition
+		storageKey = "sidebarScroll"
+
+		constructor() {
+			super()
+			this.sidebar = this.querySelector('#sidebar')
+			this.button = this.querySelector('#sidebar-button')
+			this.maintainScrollPosition = this.getAttribute('data-maintainscroll')
+		}
+
+		toggleSidebar() {
+			this.sidebar?.classList.toggle('open')
+		}
+
+		storeScrollPosition() {
+			if (this.sidebar) {
+				sessionStorage.setItem(this.storageKey, this.sidebar.scrollTop.toString())
+			}
+		}
+
+		onPageLoad() {
+			// Retrieve the stored scroll position from sessionStorage
+			const storedScrollPosition = sessionStorage.getItem(this.storageKey)
+
+			// If a stored scroll position exists, scroll the sidebar to that position
+			if (storedScrollPosition !== null && this.sidebar) {
+				this.sidebar.scrollTop = Number(storedScrollPosition)
+			}
+		}
+
+		connectedCallback() {
+			if (this.maintainScrollPosition) {
+				this.onPageLoad()
+				document.addEventListener('DOMContentLoaded', () => this.onPageLoad())
+				window.addEventListener('beforeunload', () => this.storeScrollPosition())
+			} else {
+				sessionStorage.removeItem(this.storageKey)
+			}
+			this.button?.addEventListener('mousedown', () => this.toggleSidebar())
+		}
+
+		disconnectedCallback() {}
+	}
+
+	customElements.define('sidebar-wrapper', SidebarWrapper)
 </script>

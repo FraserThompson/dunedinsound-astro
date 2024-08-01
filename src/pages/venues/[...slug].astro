@@ -21,7 +21,7 @@ const { entry } = Astro.props
 ---
 
 <BaseLayout>
-	<SidebarNav>
+	<SidebarNav maintainScrollPosition={true}>
 		<EntryMenu collection="venue" slot="sidebar" selected={entry.entry.id}>
 			<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu" offsetTop="0px">
 				<div>

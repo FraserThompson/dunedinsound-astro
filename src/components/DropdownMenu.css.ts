@@ -82,8 +82,7 @@ export const dropdownLink = style([
 		color: fallbackVar(color, theme.color.text),
 		selectors: {
 			'&:hover': {
-				backgroundColor: theme.color.lightSecondary,
-				color: 'black'
+				backgroundColor: theme.color.lightPrimary
 			}
 		}
 	}

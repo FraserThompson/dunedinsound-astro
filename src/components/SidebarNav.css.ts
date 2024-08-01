@@ -28,7 +28,6 @@ export const sidebarWrapper = style({
 	willChange: 'transform',
 	scrollbarWidth: 'thin',
 	scrollbarColor: 'gray black',
-	scrollBehavior: 'smooth',
 	selectors: {
 		'&.open': {
 			visibility: 'visible',

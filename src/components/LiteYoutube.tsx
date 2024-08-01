@@ -1,8 +1,11 @@
+//@ts-nocheck
 /**
  * React wrapper for lite YouTube Component which doesnt immediately load 
  * tonnes of Google rubbish.
  * 
  * There are two wrappers so we can use it in React components too.
+ * 
+ * ts-nocheck is because lite-youtube throws an error.
  */
 
 import type React from "preact/compat"
@@ -42,7 +45,7 @@ const LiteYoutube: React.FC<Props> = ({ videoid, loadAPI, autoload }) => {
 		document.addEventListener('liteYoutubeIframeLoaded', (e: any) => tryAutoplay(e))
 	}
 		, [])
-
+	
 	return (
 		<>
 			{loadAPI && <script src="https://www.youtube.com/iframe_api" />}

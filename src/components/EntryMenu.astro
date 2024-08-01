@@ -34,9 +34,3 @@ const entries = await loadAndFormatCollection(collection)
 		))
 	}
 </ul>
-
-<script define:vars={{ selected }}>
-	if (selected) {
-		document.querySelector('#sidebar-menu .active')?.scrollIntoView()
-	}
-</script>
