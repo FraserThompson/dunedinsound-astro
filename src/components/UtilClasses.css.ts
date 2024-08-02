@@ -11,7 +11,12 @@ export const TopSubheader = style({
 })
 
 export const Content = style({
-	marginLeft: theme.dimensions.headerHeight,
-  position: "relative",
-  boxShadow: theme.borders.shadow
+	marginLeft: 0,
+	position: 'relative',
+	boxShadow: theme.borders.shadow,
+	'@media': {
+		'screen and (--md)': {
+			marginLeft: theme.dimensions.headerHeight
+		}
+	}
 })

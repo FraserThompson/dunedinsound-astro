@@ -26,10 +26,10 @@ combinedPosts.splice(latestGigIndex, 1)
 
 <BaseLayout>
 	<GridContainer fixed={true}>
-		<GridChild grid={{ xs: 12, sm: 12, md: 8 }}>
-			<GigTile containerHeight="100%" gig={latestGig} />
+		<GridChild grid={{ xs: 12, md: 8 }}>
+			<GigTile containerHeight="60vh" gig={latestGig} />
 		</GridChild>
-		<GridChild grid={{ xs: 12, sm: 4 }}>
+		<GridChild grid={{ xs: 12, md: 4 }}>
 			{
 				combinedPosts
 					.slice(0, 2)
@@ -48,7 +48,7 @@ combinedPosts.splice(latestGigIndex, 1)
 					combinedPosts
 						.slice(2, 14)
 						.map((post) => (
-							<GridChild grid={{ xs: 12, sm: 6, md: 4, lg: 4 }}>
+							<GridChild grid={{ xs: 12, md: 4, lg: 4 }}>
 								{post.entry.collection === 'gig' ? (
 									<GigTile className={gridChild} gig={post as ProcessedEntry<'gig'>} />
 								) : (

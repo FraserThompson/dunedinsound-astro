@@ -1,10 +1,11 @@
 ---
+import type { MenuLink } from './Menu.tsx'
 import Menu from './Menu.tsx'
-import HomeIcon from '~icons/bx/home'
-import { headerWrapper, headerMobile, header, brand } from './SiteHeader.css'
+import InfoCircle from '~icons/bx/info-circle'
+import { headerWrapper, headerMobile, header, infoLink, brand } from './SiteHeader.css'
 
-const links = [
-	{ title: 'Home', href: '/' },
+const links: MenuLink[] = [
+	{ icon: 'home', href: '/', class: "noPadding hideMobile" },
 	{ title: 'Gigs', href: '/gigs' },
 	{ title: 'Artists', href: '/artists' },
 	{ title: 'Venues', href: '/venues' },
@@ -15,13 +16,14 @@ const links = [
 const currentPath = new URL(Astro.request.url).pathname
 ---
 
+<div class={headerMobile}>
+	<Menu currentPath={currentPath} links={links} menuType={'horizontal'} />
+</div>
 <div class={headerWrapper}>
-	<div class={headerMobile}>
-		<Menu currentPath={currentPath} links={links} menuType={'horizontal'} />
-	</div>
 	<div class={header}>
-		
-		
 		<Menu currentPath={currentPath} links={links} menuType={'sideways'} />
+		<a class={infoLink} href="/page/info">
+			<InfoCircle />
+		</a>
 	</div>
 </div>

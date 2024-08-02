@@ -60,3 +60,12 @@ export const brand = style({
 		}
 	}
 })
+
+export const infoLink = style({
+	position: 'absolute',
+	color: 'white',
+	bottom: '5px',
+	display: 'flex',
+	justifyContent: 'center',
+	width: theme.dimensions.headerHeight
+})

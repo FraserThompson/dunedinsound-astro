@@ -61,7 +61,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 		<div style={{ width: '100%', margin: '0 auto' }}></div>
 		{!entry.next && <CornerLabel>LATEST GIG</CornerLabel>}
 		{
-			entryExtra.audio && (
+			entryExtra.audio?.length && (
 				<PlayerContainer>
 					<Player artistAudio={entryExtra.audio} client:load />
 				</PlayerContainer>

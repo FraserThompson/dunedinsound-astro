@@ -2,11 +2,11 @@ import { style } from "@vanilla-extract/css";
 import { theme } from "src/Theme.css";
 
 export const activeIcon = style({
-	color: "#31a24c",
+	color: "#54a868",
 	fontSize: theme.font.baseSize
 })
 
 export const defunctIcon = style({
-	color: "#ab0000",
+	color: "#a63d3d",
 	fontSize: theme.font.baseSize
 })

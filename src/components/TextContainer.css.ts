@@ -31,5 +31,5 @@ globalStyle(`${textContainer['feature']} ${ImageWrapper}`, {
 })
 
 globalStyle(`${textContainer['normal']} ul, ${textContainer['feature']} ul`, {
-	paddingLeft: '100px !important'
+	paddingLeft: '50px !important'
 })

@@ -55,7 +55,7 @@ export const MenuLi = styleVariants({
 	]
 })
 
-const MenuLinkBase = style({
+const MenuLinkWrapperBase = style({
 	color: theme.color.text,
 	width: '100%',
 	cursor: 'pointer',
@@ -79,13 +79,13 @@ const MenuLinkBase = style({
 	}
 })
 
-globalStyle(`${MenuLiBase}.active > ${MenuLinkBase}`, {
+globalStyle(`${MenuLiBase}.active > ${MenuLinkWrapperBase}`, {
 	color: 'white'
 })
 
-export const MenuLink = styleVariants({
+export const MenuLinkWrapper = styleVariants({
 	horizontal: [
-		MenuLinkBase,
+		MenuLinkWrapperBase,
 		{
 			display: 'inline-block',
 			borderBottom: 'none',
@@ -93,13 +93,13 @@ export const MenuLink = styleVariants({
 		}
 	],
 	vertical: [
-		MenuLinkBase,
+		MenuLinkWrapperBase,
 		{
 			display: 'block'
 		}
 	],
 	sideways: [
-		MenuLinkBase,
+		MenuLinkWrapperBase,
 		{
 			writingMode: 'vertical-rl',
 			textOrientation: 'mixed',

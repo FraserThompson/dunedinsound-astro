@@ -1,4 +1,7 @@
 ---
+/**
+ * Displays gigs in chronological order with a sidebar for navigation.
+ */
 import SidebarNav from 'src/components/SidebarNav.astro'
 import GigsMenu from 'src/components/gig/GigsMenu.astro'
 import FlexGridContainer from 'src/components/FlexGridContainer.astro'
@@ -15,7 +18,7 @@ const { gigs } = Astro.props
 
 <SidebarNav top={theme.dimensions.headerHeight}>
 	<GigsMenu slot="sidebar" />
-	<FlexGridContainer grid={{ xs: 12 }} id="gigs" slot="content" fixedWidth={true}>
+	<FlexGridContainer grid={{ xs: 12,  }} id="gigs" slot="content" fixedWidth={true}>
 		{gigs.map((gig) => <GigTile gig={gig} />)}
 	</FlexGridContainer>
 </SidebarNav>
@@ -31,6 +34,9 @@ const { gigs } = Astro.props
 		rootMargin: '-80px 0px -99%'
 	}
 
+	/**
+	 * Highlights gig in the sidebar when its scrolled over on the main page.
+	 */
 	const callback = (entries: IntersectionObserverEntry[]) => {
 		entries.forEach((entry) => {
 			const sidebarItem = sidebar?.querySelector(`[href="#${entry.target.id}"]`)

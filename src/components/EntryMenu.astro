@@ -1,6 +1,14 @@
 ---
+/**
+ * A menu displaying all entries of a certain type.
+ * Used on content by entry pages to aid navigation.
+ * 
+ * Props:
+ *  - collection: the collection to display entries from.
+ *  - selected: the current entry. Will highlight it if supplied.
+ */
 import { loadAndFormatCollection } from 'src/util/collection'
-import { MenuLi, MenuLink, MenuWrapper } from 'src/components/Menu.css'
+import { MenuLi, MenuLinkWrapper, MenuWrapper } from 'src/components/Menu.css'
 import ActiveIndicator from 'src/components/ActiveIndicator.astro'
 import type { CollectionKey } from 'astro:content'
 
@@ -24,7 +32,7 @@ const entries = await loadAndFormatCollection(collection)
 				data-active={entry.entry.data.died === undefined ? 'true' : 'false'}
 				class={`sidebar-item ${MenuLi['vertical']} ${entry.entry.id === selected ? 'active' : ''}`}
 			>
-				<a class={MenuLink['vertical']} data-markerindex={i} href={selected ? entry.extra.absolutePath : undefined}>
+				<a class={MenuLinkWrapper['vertical']} data-markerindex={i} href={selected ? entry.extra.absolutePath : undefined}>
 					{entry.entry.data.title}
 					<div style={{ position: 'absolute', right: '5px', top: '0px' }}>
 						<ActiveIndicator died={entry.entry.data.died} hideText={true} />

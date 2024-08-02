@@ -45,37 +45,39 @@ for (const artist of artists) {
 
 <BaseLayout>
 	<ShuffleFilters itemselector=".tile" boardselector="#artist-grid">
-		<div>
+		<div style={{width: "100%"}}>
 			<span>Search: </span>
 			<input type="text" data-filter="title=value" placeholder="Search artists" />
 		</div>
-		<div>
-			<span>Sort by: </span>
-			<button data-sortby="title"> Title </button>
-			<button data-sortby="lastgig" data-reversesort="true"> Last Played </button>
-			<button data-sortby="numbergigs" data-reversesort="true"> Most Gigs </button>
-		</div>
-		<div>
-			<label>
-				<input name="hideInactive" type="checkbox" data-filter="active=true" />
-				Hide inactive
-			</label>
-		</div>
-		<div>
-			<select name="countries" data-filter="origin=value">
-				<option value={'all'}>All origins ({artists.length})</option>
-				{
-					origins &&
-						Object.keys(origins).map((country) => (
-							<option value={country}>
-								{country} ({origins[country]})
-							</option>
-						))
-				}
-			</select>
+		<div style={{ marginLeft: 'auto' }}>
+			<div>
+				<span>Sort by: </span>
+				<button data-sortby="title"> Title </button>
+				<button data-sortby="lastgig" data-reversesort="true"> Last Played </button>
+				<button data-sortby="numbergigs" data-reversesort="true"> Most Gigs </button>
+			</div>
+			<div>
+				<label>
+					<input name="hideInactive" type="checkbox" data-filter="active=true" />
+					Hide inactive
+				</label>
+			</div>
+			<div>
+				<select name="countries" data-filter="origin=value">
+					<option value={'all'}>All origins ({artists.length})</option>
+					{
+						origins &&
+							Object.keys(origins).map((country) => (
+								<option value={country}>
+									{country} ({origins[country]})
+								</option>
+							))
+					}
+				</select>
+			</div>
 		</div>
 	</ShuffleFilters>
-	<FlexGridContainer grid={{ xs: 6, sm: 4, md: 3, lg: 2 }} id="artist-grid" fixedWidth={true}>
+	<FlexGridContainer grid={{ xs: 6, md: 3, lg: 2 }} id="artist-grid" fixedWidth={true}>
 		{
 			artists.map((artist) => (
 				<Tile

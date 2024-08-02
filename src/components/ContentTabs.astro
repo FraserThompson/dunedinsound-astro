@@ -3,8 +3,11 @@ import { tabsWrapper, tabButton, tabContent } from './ContentTabs.css'
 /**
  * Tabs which switch between content.
  *
+ * props:
  * - Array of tab titles and ids
  * - Child elements for the tab content with data-tabid corresponding to the tab ID
+ * slots:
+ *  - default: content displayed when the tab is selected
  */
 
 interface TabDefinition {

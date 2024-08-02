@@ -9,10 +9,7 @@ export const gridChild = style({
 	gridColumn: colXs,
 	'@media': {
 		'screen and (--xs)': {
-			gridColumn: colSm
-		},
-		'screen and (--sm)': {
-			gridColumn: colSm
+			gridColumn: colXs
 		},
 		'screen and (--md)': {
 			gridColumn: colMd

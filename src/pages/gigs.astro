@@ -18,13 +18,13 @@ const { mode = 'timeline' } = Astro.props
 	<ShuffleFilters itemselector=".tile" boardselector="#gigs">
 		{
 			mode === 'timeline' && (
-				<div>
+				<div style={{width: "100%"}}>
 					<span>Search: </span>
-					<input type="text" data-filter="title=value" placeholder="Search by gig, artist, venue..." />
+					<input type="text" data-filter="title=value" placeholder="Search gigs by title, artist, venue..." />
 				</div>
 			)
 		}
-		<div>
+		<div style={{ marginLeft: 'auto' }}>
 			<span>Mode: </span>
 			<a href="/gigs">
 				<button class={mode === 'timeline' ? 'active' : ''}>Timeline</button>

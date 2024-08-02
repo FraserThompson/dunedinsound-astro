@@ -9,9 +9,15 @@ export const shuffleFilter = style({
 	display: 'flex',
 	alignItems: 'center',
 	color: theme.color.text,
-	minHeight: theme.dimensions.subheaderHeight,
+	minHeight: theme.dimensions.subheaderHeight
 })
 
 globalStyle(`${shuffleFilter} > div`, {
-	paddingRight: theme.dimensions.basePadding
+	paddingRight: theme.dimensions.basePadding,
+	display: 'flex',
+	textWrap: 'nowrap'
+})
+
+globalStyle(`${shuffleFilter} input, ${shuffleFilter} select`, {
+	marginLeft: theme.dimensions.basePadding
 })

@@ -2,37 +2,37 @@
 
 ---
 
+<!-- Utility classes -->
 <style is:global>
-
-  progress {
-    -webkit-appearance: none;
-    appearance: none;
-  }
+	progress {
+		-webkit-appearance: none;
+		appearance: none;
+	}
 
 	.hidden {
 		display: none !important;
 	}
 
-  .showMobile {
-    display: inline-block !important;
-  }
+	.showMobile {
+		display: inline-block !important;
+	}
 
-  .hideMobile {
-    display: none !important;
-  }
+	.hideMobile {
+		display: none !important;
+	}
 
-  @media (--md) {
-    .showMobile {
-      display: none !important;
-    }
-    .hideMobile {
-      display: flex !important;
-    }
-  }
+	@media (--md) {
+		.showMobile {
+			display: none !important;
+		}
+		.hideMobile {
+			display: inline-block !important;
+		}
+	}
 
-  figcaption {
-    font-style: italic;
-  }
+	figcaption {
+		font-style: italic;
+	}
 
 	.visible {
 		display: inline-block;
@@ -48,5 +48,98 @@
 	.monospace {
 		font-family: monospace;
 	}
-	
+
+	.noPadding {
+		padding: 0 !important;
+		min-width: 0 !important;
+		min-height: 0 !important;
+	}
+
+	table {
+		margin-left: 0;
+		margin-right: 0;
+		margin-top: 0;
+		padding-bottom: 0;
+		padding-left: 0;
+		padding-right: 0;
+		padding-top: 0;
+		margin-bottom: 1.61rem;
+		font-size: 1rem;
+		line-height: 1.61rem;
+		border-collapse: collapse;
+		width: 100%;
+
+		td,
+		th {
+			text-align: left;
+			border-bottom: 1px solid hsla(0, 0%, 0%, 0.12);
+			font-feature-settings: 'tnum';
+			padding-top: 1rem;
+			padding-bottom: calc(1rem - 1px);
+		}
+	}
+</style>
+
+<!-- styling the top of the info page because Astro won't let us use styles in components in MDX-->
+<style is:global>
+	.website-info-header {
+		background-color: black;
+		background-image: radial-gradient(white, rgba(255, 255, 255, 0.2) 2px, transparent 40px),
+			radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 30px),
+			radial-gradient(white, rgba(255, 255, 255, 0.1) 2px, transparent 40px),
+			radial-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1) 2px, transparent 30px);
+		background-size:
+			550px 550px,
+			350px 350px,
+			250px 250px,
+			150px 150px;
+		background-position:
+			0 0,
+			40px 60px,
+			130px 270px,
+			70px 100px;
+
+		.content {
+			max-width: 740px;
+			padding: 10px;
+			margin: 0 auto;
+		}
+
+		.title {
+			margin: 0 auto;
+			border-bottom: 5px solid;
+			border-image-slice: 1;
+			border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+			position: relative;
+			&:after {
+				position: absolute;
+				bottom: -5px;
+				left: 0;
+				content: '';
+				width: 100%;
+				opacity: 0;
+				border-bottom: 5px solid;
+				border-image-slice: 1;
+				border-image-source: linear-gradient(to right, #00ccd5, #d53a9d);
+				animation: 2s fade infinite;
+				animation-direction: alternate;
+			}
+			h1 {
+				text-align-last: justify;
+				margin: 0;
+			}
+		}
+
+		table {
+			td:nth-of-type(2n) {
+				text-align: right;
+			}
+		}
+	}
+
+	@keyframes fade {
+		to {
+			opacity: 1;
+		}
+	}
 </style>

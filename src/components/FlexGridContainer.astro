@@ -1,12 +1,17 @@
 ---
 /**
  * A responsive grid container using flexbox.
+ *
+ * Props:
+ *  - grid (optional): an object containing the sizes used for each screen size. Defaults if not provided.
+ *  - maxWidth (optional): the maximum width for the container.
+ *  - fixedWidth (optional): if provided grid children will have a fixed width rather than auto.
+ *  - id (optional)
+ *  - classname (optional)
  */
 import {
 	FlexGridWrapper,
-	flexDefault,
 	flexXs,
-	widthDefault,
 	widthXs,
 	flexMd,
 	widthMd,
@@ -31,9 +36,8 @@ const { grid, maxWidth, fixedWidth, id, className } = Astro.props
 
 const processedGrid = {
 	xs: grid?.xs || 6,
-	sm: grid?.sm || grid?.xs || 4,
-	md: grid?.md || grid?.sm || grid?.xs || 3,
-	lg: grid?.lg || grid?.md || grid?.sm || grid?.xs || 3
+	md: grid?.md || grid?.xs || 3,
+	lg: grid?.lg || grid?.md || grid?.xs || 3
 }
 ---
 
@@ -41,12 +45,10 @@ const processedGrid = {
 	class={`${FlexGridWrapper} ${className}`}
 	id={id}
 	style={assignInlineVars({
-		[flexDefault]: `1 1 ${100 * (processedGrid.xs / cols)}%`,
-		[widthDefault]: fixedWidth ? `${100 * (processedGrid.xs / cols)}%` : undefined,
-		[flexXs]: `1 1 ${100 * (processedGrid.sm / cols)}%`,
-		[widthXs]: fixedWidth ? `${100 * (processedGrid.sm / cols)}%` : undefined,
+		[flexXs]: `1 1 ${100 * (processedGrid.xs / cols)}%`,
+		[widthXs]: fixedWidth ? `${100 * (processedGrid.xs / cols)}%` : undefined,
 		[flexMd]: `1 1 ${100 * (processedGrid.md / cols)}%`,
-		[widthMd]: fixedWidth ? `$100 * (md / cols)}%` : undefined,
+		[widthMd]: fixedWidth ? `${100 * (processedGrid.md / cols)}%` : undefined,
 		[flexLg]: `1 1 ${100 * (processedGrid.lg / cols)}%`,
 		[widthLg]: fixedWidth ? `${100 * (processedGrid.lg / cols)}%` : undefined,
 		[maxWidth2]: maxWidth

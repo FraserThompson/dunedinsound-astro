@@ -1,4 +1,22 @@
 ---
+/**
+ * A clickable tile used for displaying a link to content in a cool way.
+ * 
+ * Props:
+ *  - href: the link
+ *  - responsiveImage (optional): the background image
+ *  - title (optional): displayed at the top
+ *  - label (optional): displayed at the bottom
+ *  - subtitle (optional): displayed under the title
+ *  - dataAttributes (optional): data-whatever attributes to add
+ *  - responsiveImageSizes (optional): indicates how the srcSet should be displayed.
+ *  - backgroundColor (optional)
+ *  - containerHeight (optional)
+ *  - containerWidth (optional)
+ *  - className (optional)
+ *  - id (optional)
+ * 
+ */
 import BackgroundImage from './BackgroundImage.astro'
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import type { ResponsiveImageSizes } from 'src/components/Image2.astro'
@@ -18,17 +36,17 @@ import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
 	href: string
-	className?: string
-	id?: string
 	responsiveImage?: ResponsiveImage
 	title?: string
 	label?: string
 	subtitle?: string
+	dataAttributes?: any
+	responsiveImageSizes?: keyof ResponsiveImageSizes,
 	backgroundColor?: string
 	containerHeight?: string
 	containerWidth?: string
-	dataAttributes?: any
-	responsiveImageSizes?: keyof ResponsiveImageSizes
+	className?: string
+	id?: string
 }
 
 const {

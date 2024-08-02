@@ -1,3 +1,7 @@
+/**
+ * An image gallery lightbox intended for use with ImageGallery.
+ */
+
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'preact/compat'
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -11,9 +15,6 @@ interface Props {
 	imageCaption?: string
 }
 
-/**
- * An image gallery lightbox intended for use with ImageGallery.
- */
 const ImageGalleryLightbox: React.FC<Props> = ({ images, title, imageCaption }: Props) => {
 	const [lightboxOpen, setLightboxOpen] = useState(false)
 	const [selectedImage, setSelectedImage] = useState(undefined as number | undefined)

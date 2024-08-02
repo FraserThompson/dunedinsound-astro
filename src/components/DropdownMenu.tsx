@@ -1,3 +1,12 @@
+/**
+ * A dropdown (or up) menu which can either hrefs, or hashes on the current page.
+ * If hashes are present it will scroll to them smoothly, but won't update the URL.
+ * It also highlights menu items based on the URL hash.
+ * 
+ * @param param0 
+ * @returns 
+ */
+
 import type React from "preact/compat"
 import { useRef, useState, useEffect, useCallback } from "preact/compat"
 import MenuIcon from '~icons/bx/menu'
@@ -27,14 +36,6 @@ interface Props {
 	textColor?: string
 }
 
-/**
- * A dropdown (or up) menu which can either hrefs, or hashes on the current page.
- * If hashes are present it will scroll to them smoothly, but won't update the URL.
- * It also highlights menu items based on the URL hash.
- * 
- * @param param0 
- * @returns 
- */
 const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top, width, backgroundColor, textColor }) => {
 	const [open, setOpen] = useState(false)
 	const [selectedItem, setSelectedItem] = useState(null as string | null)

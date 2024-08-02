@@ -49,12 +49,17 @@ export const sidebarWrapper = style({
 })
 
 export const contentWrapper = style({
-	paddingLeft: theme.dimensions.sidebarWidth
+	marginLeft: 0,
+	'@media': {
+		'screen and (--md)': {
+			marginLeft: theme.dimensions.sidebarWidth
+		}
+	}
 })
 
 export const menuButtonWrapper = style({
 	position: 'fixed',
-	top: '0',
+	bottom: '0',
 	left: '0',
 	zIndex: '12',
 	height: theme.dimensions.headerHeight,

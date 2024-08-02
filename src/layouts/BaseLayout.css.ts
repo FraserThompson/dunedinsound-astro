@@ -137,7 +137,9 @@ globalStyle('input[type="text"]', {
 	backgroundImage: 'none',
 	padding: '4px 6px',
 	border: '1px solid #000',
-	minWidth: "190px",
+	minWidth: "0px",
+	maxWidth: "220px",
+	width: "100%",
 	boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
 	transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s'
 })

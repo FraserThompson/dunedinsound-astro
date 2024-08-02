@@ -1,4 +1,7 @@
 ---
+/**
+ * Displays metadata about all content on the website by counting content.
+ */
 import { getCollection } from 'astro:content'
 import { infoHeader } from './WebsiteInfo.css'
 import { fdir } from 'fdir'
@@ -13,7 +16,7 @@ const imagesCount = await new fdir().onlyCounts().onlyDirs().glob('**/**/*').cra
 const audioCount = await new fdir().onlyCounts().glob('*.mp3').crawl('public/media/gig').withPromise()
 ---
 
-<div class={infoHeader}>
+<div class="website-info-header">
 	<div class="content">
 		<div class="title">
 			<h1>THE DUNEDINSOUND.COM UNIVERSE</h1>

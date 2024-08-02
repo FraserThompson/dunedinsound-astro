@@ -1,6 +1,6 @@
 import { createVar, fallbackVar, style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
-import { MenuLi, MenuLink, MenuWrapper } from './Menu.css'
+import { MenuLi, MenuLinkWrapper, MenuWrapper } from './Menu.css'
 
 export const dropdownTop = createVar()
 export const menuWidth = createVar()
@@ -77,7 +77,7 @@ export const dropdownLi = style([
 ])
 
 export const dropdownLink = style([
-	MenuLink['vertical'],
+	MenuLinkWrapper['vertical'],
 	{
 		color: fallbackVar(color, theme.color.text),
 		selectors: {
@@ -89,7 +89,7 @@ export const dropdownLink = style([
 ])
 
 export const additionalLink = style([
-	MenuLink['vertical'],
+	MenuLinkWrapper['vertical'],
 	{
 		color: theme.color.contrast2,
 		selectors: {

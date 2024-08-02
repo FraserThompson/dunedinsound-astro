@@ -8,7 +8,6 @@ import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 export interface Grid {
 	xs: number
-	sm?: number
 	md?: number
 	lg?: number
 }
@@ -21,9 +20,8 @@ const { grid } = Astro.props
 
 const processedGrid = {
 	xs: grid?.xs,
-	sm: grid?.sm || grid?.xs,
-	md: grid?.md || grid?.sm || grid?.xs,
-	lg: grid?.lg || grid?.md || grid?.sm || grid?.xs
+	md: grid?.md || grid?.xs,
+	lg: grid?.lg || grid?.md || grid?.xs
 }
 ---
 
@@ -31,7 +29,6 @@ const processedGrid = {
 	class={gridChild}
 	style={assignInlineVars({
 		[colXs]: `span ${processedGrid.xs}`,
-		[colSm]: `span ${processedGrid.sm}`,
 		[colMd]: `span ${processedGrid.md}`,
 		[colLg]: `span ${processedGrid.lg}`
 	})}

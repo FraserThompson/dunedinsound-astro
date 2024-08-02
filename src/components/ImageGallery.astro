@@ -15,10 +15,9 @@ interface Props {
 	images: ResponsiveImage[]
 	galleryOffset?: number
 	noLightbox?: boolean
-	imageCaptions?: string[]
 }
 
-const { images, galleryOffset, noLightbox, imageCaptions } = Astro.props
+const { images, galleryOffset, noLightbox } = Astro.props
 ---
 
 <GridContainer>
@@ -35,7 +34,7 @@ const { images, galleryOffset, noLightbox, imageCaptions } = Astro.props
 	}
 </GridContainer>
 
-{!noLightbox && <ImageGalleryLightbox images={images} imageCaptions={imageCaptions} client:load />}
+{!noLightbox && <ImageGalleryLightbox images={images}  client:load />}
 
 <script>
 	import browserHistory from 'src/util/history'

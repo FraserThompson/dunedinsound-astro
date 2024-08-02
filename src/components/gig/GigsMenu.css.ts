@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
-import { MenuLi, MenuLink, MenuWrapper } from '../Menu.css'
+import { MenuLi, MenuLinkWrapper, MenuWrapper } from '../Menu.css'
 
 export const gigsMenuWrapper = style([
 	MenuWrapper,
@@ -43,12 +43,12 @@ export const monthHeader = style([
 
 export const gigLi = style([MenuLi['vertical']])
 
-export const gigLink = style([MenuLink['vertical'], {
+export const gigLink = style([MenuLinkWrapper['vertical'], {
 	textOverflow: 'ellipsis'
 }])
 
 export const artistLink = style([
-	MenuLink['vertical'],
+	MenuLinkWrapper['vertical'],
 	{
 		paddingLeft: `calc(${theme.dimensions.basePadding} * 2)`,
 		selectors: {
@@ -61,7 +61,7 @@ export const artistLink = style([
 ])
 
 export const monthLink = style([
-	MenuLink['vertical'],
+	MenuLinkWrapper['vertical'],
 	{
 		color: 'black',
 		cursor: 'default',
@@ -74,7 +74,7 @@ export const monthLink = style([
 ])
 
 export const yearLink = style([
-	MenuLink['vertical'],
+	MenuLinkWrapper['vertical'],
 	{
 		color: 'black'
 	}

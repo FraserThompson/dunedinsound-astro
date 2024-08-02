@@ -3,7 +3,13 @@ import { theme } from 'src/Theme.css'
 
 export const blogSidebarWrapper = style({
 	padding: theme.dimensions.basePadding,
-	minWidth: '320px'
+	display: 'none',
+	minWidth: '320px',
+	'@media': {
+		'screen and (--md)': {
+			display: 'block'
+		}
+	}
 })
 
 export const featuredLinks = style({
