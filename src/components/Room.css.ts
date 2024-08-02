@@ -17,7 +17,7 @@ export const RoomWrapper = style({
 	perspective: '300px',
 	transition: 'perspective 0.3s ease-in-out',
 	width: '100%',
-	height: `100vh`,
+	height: `calc(100vh - ${theme.dimensions.headerHeight})`,
 	position: 'relative',
 	backfaceVisibility: 'hidden',
 	transformStyle: 'preserve-3d',

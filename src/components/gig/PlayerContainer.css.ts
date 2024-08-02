@@ -13,15 +13,14 @@ export const playerWrapper = style({
 	transition: 'transform 150ms ease-in-out',
 	selectors: {
 		'&:state(minimized)': {
-			transform: 'translateY(-100px)',
+			transform: 'translateY(110px)',
 			position: 'fixed',
-			paddingLeft: theme.dimensions.sidebarWidth,
-			width: `calc(100% - ${theme.dimensions.sidebarWidth})`,
+			paddingLeft: 0,
+			width: `100%`,
 			pointerEvents: 'none',
-			marginTop: theme.dimensions.headerHeightNeg
 		},
 		'&:state(minimized):state(open)': {
-			transform: `translateY(${theme.dimensions.headerHeightMobile})`
+			transform: `translateY(${theme.dimensions.headerHeightNeg})`
 		},
 		'&:state(open)': {
 			pointerEvents: 'auto'
@@ -31,7 +30,9 @@ export const playerWrapper = style({
 		'screen and (--xs)': {
 			selectors: {
 				'&:state(minimized)': {
-					transform: 'translateY(100px)'
+					transform: 'translateY(100px)',
+					paddingLeft: `calc(${theme.dimensions.sidebarWidth} + ${theme.dimensions.headerHeight})`,
+					width: `calc(100% - ${theme.dimensions.sidebarWidth} - ${theme.dimensions.headerHeight})`
 				},
 				'&:state(minimized):state(open)': {
 					transform: 'translateY(0)'
@@ -51,18 +52,30 @@ export const openButtonWrapper = style({
 	selectors: {
 		'&.minimized': {
 			display: 'inline-block',
-			paddingLeft: theme.dimensions.sidebarWidth,
-			width: `calc(100% - ${theme.dimensions.sidebarWidth})`,
+			paddingLeft: 0,
+			width: `100%`
 		},
 		'&.open': {
 			position: 'static',
 			paddingLeft: 0,
-			width: '100%',
+			width: '100%'
 		}
 	},
 	'@media': {
 		'screen and (--xs)': {
-			bottom: '100px'
+			bottom: '100px',
+			selectors: {
+				'&.minimized': {
+					display: 'inline-block',
+					paddingLeft: `calc(${theme.dimensions.sidebarWidth} + ${theme.dimensions.headerHeight})`,
+					width: `calc(100% - ${theme.dimensions.sidebarWidth} - ${theme.dimensions.headerHeight})`
+				},
+				'&.open': {
+					position: 'static',
+					paddingLeft: 0,
+					width: '100%'
+				}
+			}
 		}
 	}
 })

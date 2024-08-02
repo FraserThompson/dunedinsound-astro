@@ -14,8 +14,10 @@ export const Content = style({
 	marginLeft: 0,
 	position: 'relative',
 	boxShadow: theme.borders.shadow,
+	marginBottom: theme.dimensions.headerHeight,
 	'@media': {
 		'screen and (--md)': {
+			marginBottom: '0px',
 			marginLeft: theme.dimensions.headerHeight
 		}
 	}

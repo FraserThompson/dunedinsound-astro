@@ -13,9 +13,16 @@ import MenuIcon from '~icons/bx/menu'
 import { background, dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownWrapper, menuWidth, color, additionalLink } from './DropdownMenu.css'
 import { scrollTo } from 'src/util/helpers'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
-import type { MenuLink } from './Menu'
 import browserHistory from 'src/util/history';
 import type { Location } from 'history'
+
+export interface MenuLink {
+	title?: string
+	href: string
+	image?: string
+	id?: string
+	class?: string
+}
 
 interface DropdownItem {
 	title?: string
@@ -93,7 +100,7 @@ const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top, width,
 						>
 							{item.title}
 						</a>
-						{item.additionalLinks && <div style={{ display: "flex" }}>
+						{item.additionalLinks && <div class="flex">
 							{item.additionalLinks?.map((link) =>
 								<a class={additionalLink} href={link.href}>
 									<small>

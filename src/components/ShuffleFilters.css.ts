@@ -8,16 +8,45 @@ export const shuffleFilter = style({
 	paddingRight: theme.dimensions.basePadding,
 	display: 'flex',
 	alignItems: 'center',
+	flexWrap: 'wrap',
 	color: theme.color.text,
-	minHeight: theme.dimensions.subheaderHeight
+	minHeight: theme.dimensions.subheaderHeight,
+	'@media': {
+		'screen and (--xs)': {
+			flexWrap: 'nowrap'
+		}
+	}
 })
 
 globalStyle(`${shuffleFilter} > div`, {
-	paddingRight: theme.dimensions.basePadding,
+	paddingRight: '0px',
 	display: 'flex',
-	textWrap: 'nowrap'
+	textWrap: 'nowrap',
+	'@media': {
+		'screen and (--xs)': {
+			paddingRight: theme.dimensions.basePadding
+		}
+	}
 })
 
-globalStyle(`${shuffleFilter} input, ${shuffleFilter} select`, {
-	marginLeft: theme.dimensions.basePadding
+globalStyle(`${shuffleFilter} label, ${shuffleFilter} span`, {
+	display: 'none',
+	'@media': {
+		'screen and (--xs)': {
+			display: 'inline-block'
+		}
+	}
+})
+
+globalStyle(`${shuffleFilter} input, ${shuffleFilter} select, ${shuffleFilter} .buttonGroup`, {
+	marginLeft: '0px',
+	'@media': {
+		'screen and (--xs)': {
+			marginLeft: theme.dimensions.basePadding
+		}
+	}
+})
+
+globalStyle(`${shuffleFilter} .buttonGroup`, {
+	display: 'flex'
 })

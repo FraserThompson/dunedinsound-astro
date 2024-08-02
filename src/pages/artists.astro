@@ -45,16 +45,18 @@ for (const artist of artists) {
 
 <BaseLayout>
 	<ShuffleFilters itemselector=".tile" boardselector="#artist-grid">
-		<div style={{width: "100%"}}>
+		<div style={{ width: '100%' }}>
 			<span>Search: </span>
 			<input type="text" data-filter="title=value" placeholder="Search artists" />
 		</div>
 		<div style={{ marginLeft: 'auto' }}>
-			<div>
+			<div class="flex">
 				<span>Sort by: </span>
-				<button data-sortby="title"> Title </button>
-				<button data-sortby="lastgig" data-reversesort="true"> Last Played </button>
-				<button data-sortby="numbergigs" data-reversesort="true"> Most Gigs </button>
+				<div class="buttonGroup">
+					<button data-sortby="title"> Title </button>
+					<button data-sortby="lastgig" data-reversesort="true"> Last Played </button>
+					<button data-sortby="numbergigs" data-reversesort="true"> Most Gigs </button>
+				</div>
 			</div>
 			<div>
 				<label>

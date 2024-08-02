@@ -71,7 +71,25 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 </Banner>
 {entryData.intro && <BigIntro text={entryData.intro} />}
 {!!uncategorizedImages?.length && <ImageGallery images={uncategorizedImages} />}
-{!entryData.audioOnly && <ArtistMedia entry={entry} />}
+{
+	!entryData.audioOnly && (
+		<div>
+			<DropdownMenu
+				list={entryExtra.artists.map((artist) => ({
+					hash: `${artist.id}`,
+					title: artist.data.title,
+					additionalLinks: [
+						...socialLinksToMenuItems(artist.data.links),
+						{ href: `/artists/${artist.id}`, title: 'MORE GIGS FROM THIS ARTIST' }
+					]
+				}))}
+				direction="down"
+				client:load
+			/>
+			<ArtistMedia entry={entry} />
+		</div>
+	)
+}
 
 <script>
 	import browserHistory from 'src/util/history.ts'

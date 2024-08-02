@@ -83,14 +83,14 @@ globalStyle('h6', {
 
 globalStyle('blockquote', {
 	fontSize: `calc(${theme.font.baseSize} * 1.6)`,
-	backgroundColor: "black",
-	fontStyle: "italic",
+	backgroundColor: 'black',
+	fontStyle: 'italic',
 	lineHeight: '1.1'
 })
 
 globalStyle('blockquote > p', {
 	fontSize: `inherit`,
-	fontStyle: "italic",
+	fontStyle: 'italic',
 	lineHeight: '1.1'
 })
 
@@ -129,6 +129,10 @@ globalStyle('a', {
 	backgroundColor: 'transparent'
 })
 
+globalStyle('a button', {
+	height: '100%'
+})
+
 globalStyle('a:hover', {
 	color: theme.color.lightSecondary
 })
@@ -137,16 +141,56 @@ globalStyle('input[type="text"]', {
 	backgroundImage: 'none',
 	padding: '4px 6px',
 	border: '1px solid #000',
-	minWidth: "0px",
-	maxWidth: "220px",
-	width: "100%",
+	minWidth: '0px',
+	maxWidth: '100%',
+	width: '100%',
 	boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
-	transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s'
+	transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s',
+	'@media': {
+		'screen and (--md)': {
+			maxWidth: '220px'
+		}
+	}
+})
+
+globalStyle('select', {
+	backgroundImage: 'none',
+	padding: '4px 6px',
+	border: '1px solid #000',
+	minWidth: '0px',
+	maxWidth: '100%',
+	width: '100%',
+	boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
+	transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s',
+	'@media': {
+		'screen and (--md)': {
+			width: 'auto'
+		}
+	}
 })
 
 globalStyle('input[type="text"]:focus', {
 	border: theme.borders.secondary,
-	boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6)",
+	boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6)',
 	outline: 0
 })
 
+globalStyle('table', {
+	marginLeft: '0',
+	marginRight: '0',
+	marginTop: '0',
+	padding: '0',
+	marginBottom: '1.61rem',
+	fontSize: '1rem',
+	lineHeight: '1.61rem',
+	borderCollapse: 'collapse',
+	width: '100%'
+})
+
+globalStyle('table td, table th', {
+	textAlign: 'left',
+	borderBottom: '1px solid hsla(0, 0%, 0%, 0.12)',
+	fontFeatureSettings: "'tnum'",
+	paddingTop: '1rem',
+	paddingBottom: 'calc(1rem - 1px)'
+})

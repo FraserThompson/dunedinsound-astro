@@ -7,7 +7,7 @@ export const headerWrapper = style({
 	left: '0px',
 	width: theme.dimensions.headerHeight,
 	borderBottom: theme.borders.primary,
-	height: '100vh',
+	height: '100vh'
 })
 
 export const header = style({
@@ -21,7 +21,7 @@ export const header = style({
 	'@media': {
 		'screen and (--md)': {
 			display: 'flex',
-			paddingLeft: '0',
+			paddingLeft: '0'
 		}
 	}
 })
@@ -43,29 +43,18 @@ export const headerMobile = style({
 	}
 })
 
-export const brand = style({
-	marginRight: 'auto',
-	color: theme.color.text,
-	paddingLeft: theme.dimensions.basePadding,
-	lineHeight: theme.dimensions.headerHeight,
-	selectors: {
-		'&:hover': {
-			textDecoration: 'none',
-			color: theme.color.secondary
-		}
-	},
-	'@media': {
-		'screen and (--md)': {
-			display: 'block'
-		}
-	}
-})
-
 export const infoLink = style({
 	position: 'absolute',
 	color: 'white',
-	bottom: '5px',
+	bottom: '0px',
+	paddingBottom: '4px',
+	paddingTop: '4px',
 	display: 'flex',
 	justifyContent: 'center',
-	width: theme.dimensions.headerHeight
+	width: theme.dimensions.headerHeight,
+	selectors: {
+		'&.active': {
+			backgroundColor: theme.color.secondary
+		}
+	}
 })

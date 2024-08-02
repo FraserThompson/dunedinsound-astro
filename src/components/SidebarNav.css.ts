@@ -1,7 +1,7 @@
 import { createVar, style, fallbackVar } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
-const defaultWidth = '80vh'
+const defaultWidth = '80vw'
 
 export const offsetTop = createVar()
 

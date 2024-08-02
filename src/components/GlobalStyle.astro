@@ -4,11 +4,6 @@
 
 <!-- Utility classes -->
 <style is:global>
-	progress {
-		-webkit-appearance: none;
-		appearance: none;
-	}
-
 	.hidden {
 		display: none !important;
 	}
@@ -30,8 +25,8 @@
 		}
 	}
 
-	figcaption {
-		font-style: italic;
+	.flex {
+		display: flex;
 	}
 
 	.visible {
@@ -53,30 +48,6 @@
 		padding: 0 !important;
 		min-width: 0 !important;
 		min-height: 0 !important;
-	}
-
-	table {
-		margin-left: 0;
-		margin-right: 0;
-		margin-top: 0;
-		padding-bottom: 0;
-		padding-left: 0;
-		padding-right: 0;
-		padding-top: 0;
-		margin-bottom: 1.61rem;
-		font-size: 1rem;
-		line-height: 1.61rem;
-		border-collapse: collapse;
-		width: 100%;
-
-		td,
-		th {
-			text-align: left;
-			border-bottom: 1px solid hsla(0, 0%, 0%, 0.12);
-			font-feature-settings: 'tnum';
-			padding-top: 1rem;
-			padding-bottom: calc(1rem - 1px);
-		}
 	}
 </style>
 

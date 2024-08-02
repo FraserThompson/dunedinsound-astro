@@ -1,0 +1,68 @@
+---
+/**
+ * A simple menu with links to hrefs.
+ *
+ * Props:
+ *  - links: an array of MenuLink objects.
+ *  - currentPath: the current path, will highlight menu items based on this.
+ *  - menuType: how to display the menu.
+ *
+ * Menu links:
+ *  - can specify a title or an image. if both are present it will prefer the image.
+ *  - also can use a number of preset icons.
+ *
+ * @param props
+ * @returns
+ */
+
+import HomeIcon from '~icons/bx/home'
+import { MenuLinkWrapper, MenuLi, MenuWrapper } from './Menu.css'
+
+type PresetIcons = 'home'
+
+export interface MenuLink {
+	title?: string
+	href: string
+	image?: string
+	id?: string
+	class?: string
+	icon?: PresetIcons
+}
+
+interface Props {
+	links: MenuLink[]
+	menuType?: 'horizontal' | 'vertical' | 'sideways'
+}
+
+const currentPath = new URL(Astro.request.url).pathname
+
+export const isActive = (href: string, currentPath: string) => {
+	if (!currentPath) {
+		return ''
+	}
+
+	const isItActive = href == '/' ? currentPath == href : currentPath.includes(href)
+	return isItActive ? 'active' : ''
+}
+
+const { links, menuType = 'horizontal' } = Astro.props
+---
+
+<ul class={MenuWrapper}>
+	{
+		links.map((link) => (
+			<li class={MenuLi[menuType]}>
+				<a
+					class={`${MenuLinkWrapper[menuType]} ${isActive(link.href, currentPath)} ${link.class || ''}`}
+					href={link.href}
+					title={link.title}
+					id={link.id}
+				>
+					{!link.image && link.title}
+					{link.image && <img src={link.image} />}
+					{link.icon && link.icon === 'home' ? <HomeIcon /> : ''}
+				</a>
+			</li>
+		))
+	}
+</ul>

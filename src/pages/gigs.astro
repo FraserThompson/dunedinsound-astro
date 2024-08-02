@@ -18,7 +18,7 @@ const { mode = 'timeline' } = Astro.props
 	<ShuffleFilters itemselector=".tile" boardselector="#gigs">
 		{
 			mode === 'timeline' && (
-				<div style={{width: "100%"}}>
+				<div style={{ width: '100%' }}>
 					<span>Search: </span>
 					<input type="text" data-filter="title=value" placeholder="Search gigs by title, artist, venue..." />
 				</div>
@@ -26,12 +26,14 @@ const { mode = 'timeline' } = Astro.props
 		}
 		<div style={{ marginLeft: 'auto' }}>
 			<span>Mode: </span>
-			<a href="/gigs">
-				<button class={mode === 'timeline' ? 'active' : ''}>Timeline</button>
-			</a>
-			<a href="/gigs/shuffle">
-				<button class={mode === 'shuffle' ? 'active' : ''}>Shuffle</button>
-			</a>
+			<div class="buttonGroup">
+				<a href="/gigs">
+					<button class={mode === 'timeline' ? 'active' : ''}>Timeline</button>
+				</a>
+				<a href="/gigs/shuffle">
+					<button class={mode === 'shuffle' ? 'active' : ''}>Shuffle</button>
+				</a>
+			</div>
 		</div>
 	</ShuffleFilters>
 	{mode === 'timeline' && <GigsTimeline gigs={gigs} />}

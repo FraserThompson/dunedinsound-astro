@@ -5,11 +5,11 @@ import bcIcon from 'src/assets/bc-icon.png'
 import instaIcon from 'src/assets/instagram-icon.png'
 import type { z } from 'astro/zod'
 import type { webLinks } from 'src/content/config'
-import type { MenuLink } from 'src/components/Menu'
 import type { CollectionEntry } from 'astro:content'
 import { toMachineName } from './names'
 import MarkdownIt from 'markdown-it'
 import { convert } from 'html-to-text'
+import type { MenuLink } from 'src/components/DropdownMenu'
 
 /**
  * Turns a 00:00 timestring into total seconds.
@@ -157,7 +157,7 @@ export const makeHash = (string: string) => 'h' + encodeURIComponent(toMachineNa
 
 /**
  * Generate a short excerpt from markdown.
- * @param body 
+ * @param body
  * @returns excerpt
  */
 export const generateExcerpt = (body: string) => {
@@ -165,7 +165,7 @@ export const generateExcerpt = (body: string) => {
 	const html = parser.render(body.replace(/^(import ).*'/gm, ''))
 	const options = {
 		wordwrap: null,
-		typographer:  true,
+		typographer: true,
 		selectors: [
 			{ selector: 'a', options: { ignoreHref: true } },
 			{ selector: 'img', format: 'skip' },
@@ -178,20 +178,20 @@ export const generateExcerpt = (body: string) => {
 
 	const excerpt = distilled.split(' ').slice(0, 68).join(' ')
 
-	return excerpt + '...';
+	return excerpt + '...'
 }
 
 /**
  * Utter a phrase.
- * @param text 
+ * @param text
  */
 export const speak = (text: string) => {
 	const msg = new SpeechSynthesisUtterance()
 
-	const synth = window.speechSynthesis;
+	const synth = window.speechSynthesis
 	const voices = synth.getVoices()
 	const numberOfVoices = voices.length
-	
+
 	const voiceIndex = getRandom(0, numberOfVoices, true)
 
 	msg.voice = voices[voiceIndex]
@@ -206,12 +206,12 @@ export const speak = (text: string) => {
 
 /**
  * Gets a random float between min and max. Floor will make it an integer.
- * @param min 
- * @param max 
- * @param floor 
- * @returns 
+ * @param min
+ * @param max
+ * @param floor
+ * @returns
  */
-export function getRandom(min: number, max: number, floor?: boolean)  {
-	const randomFloat = Math.random() * (max - min + 1) + min;
+export function getRandom(min: number, max: number, floor?: boolean) {
+	const randomFloat = Math.random() * (max - min + 1) + min
 	return floor ? Math.floor(randomFloat) : randomFloat
 }
