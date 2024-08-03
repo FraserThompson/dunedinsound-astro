@@ -75,11 +75,24 @@ export const scrollTo = (
 
 	if (!element) return
 
+	scrollToElement(element, headerOffset, behavior)
+}
+
+/**
+ * Scroll to any element.
+ *
+ * @param element
+ * @param headerOffset
+ * @param parent
+ * @param behavior
+ * @returns
+ */
+export const scrollToElement = (element: Element, headerOffset?: number, parent: any = window, behavior: ScrollBehavior = 'smooth') => {
 	if (!headerOffset) {
-		element && element.scrollIntoView({ behavior: behavior })
+		element.scrollIntoView({ behavior: behavior })
 	} else {
-		const y = element.getBoundingClientRect().top + window.scrollY
-		window.scrollTo(0, y - headerOffset)
+		const y = element.getBoundingClientRect().top + parent.scrollTop
+		parent.scrollTo(0, y - headerOffset)
 	}
 }
 

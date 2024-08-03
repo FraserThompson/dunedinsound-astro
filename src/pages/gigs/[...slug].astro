@@ -17,10 +17,11 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props
+const collection = entry.entry.collection
 ---
 
 <BaseLayout>
-	<SidebarNav maintainScrollPosition={true}>
+	<SidebarNav scrollContext={collection}>
 		<GigsMenu slot="sidebar" selected={entry.entry.id}>
 			<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu" offsetTop="0px">
 				<div>
