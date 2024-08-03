@@ -63,8 +63,15 @@ const { top, scrollContext } = Astro.props
 			this.sidebar = this.querySelector('#sidebar')
 			this.button = this.querySelector('#sidebar-button')
 			this.scrollContext = this.getAttribute('data-scrollcontext')
+
+			// Recalled items
 			this.prevScrollContext = sessionStorage.getItem(this.contextStorageKey)
 			this.storedScrollPosition = sessionStorage.getItem(this.scrollStorageKey)
+
+			// If we've moved context, delete scroll position
+			if (this.scrollContext === this.prevScrollContext) {
+				sessionStorage.removeItem(this.scrollStorageKey)
+			}
 		}
 
 		toggleSidebar() {
@@ -103,16 +110,15 @@ const { top, scrollContext } = Astro.props
 			this.button?.addEventListener('mousedown', () => this.toggleSidebar())
 
 			// Handles scroll recall behavour
-			if (this.storedScrollPosition && this.scrollContext && this.scrollContext === this.prevScrollContext) {
+			if (this.storedScrollPosition && this.scrollContext) {
 				// We're in the same page context: Scroll to the previous scroll position
 				this.scrollToPosition()
 				document.addEventListener('DOMContentLoaded', () => this.scrollToPosition())
 			} else {
-				// We've moved scroll contexts: Forget about the last one, store the current one
-				sessionStorage.removeItem(this.scrollStorageKey)
+				// We've moved scroll contexts
 				const activeItem = this.sidebar?.querySelector('.active')
 				if (activeItem) {
-					scrollToElement(activeItem, 60, this.sidebar, 'instant')
+					scrollToElement(activeItem, -30, this.sidebar, 'instant')
 				}
 			}
 
