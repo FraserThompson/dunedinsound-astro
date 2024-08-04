@@ -32,7 +32,7 @@ export const calculateScrollHeaderOffset = (window: any, modifierDesktop = 0, mo
 	const bannerEl = document.querySelector<HTMLElement>('#top')
 	const bannerHeight = (stripUnit(theme.dimensions.defaultBannerHeight) as number) / 100 // assumes it's a vh unit
 	const mobileHeaderHeight =
-		(stripUnit(theme.dimensions.headerHeightMobile) as number) + (stripUnit(theme.dimensions.subheaderHeight) as number) // assumes they're px units
+		(stripUnit(theme.dimensions.headerHeight) as number) + (stripUnit(theme.dimensions.subheaderHeight) as number) // assumes they're px units
 	if (window.innerWidth < stripUnit(theme.breakpoints.xs)) {
 		if (bannerEl) {
 			return bannerEl.offsetHeight - mobileHeaderHeight + modifierMobile

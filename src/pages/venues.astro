@@ -20,7 +20,7 @@ const markers = venues.map((venue) => ({
 
 <BaseLayout hideFooter={true}>
 	<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu">
-		<div style={{width: "100%"}}>
+		<div style={{ width: '100%' }}>
 			<span>Search: </span>
 			<input type="text" data-filter="title=value" placeholder="Search venues" />
 		</div>
@@ -37,35 +37,33 @@ const markers = venues.map((venue) => ({
 	</ShuffleFilters>
 	<SidebarNav top={theme.dimensions.headerHeight} scrollContext="venues">
 		<EntryMenu collection="venue" slot="sidebar" />
-		<div slot="content">
-			<Map markers={markers}>
-				<div slot="popups">
-					{
-						venues.map((venue) => (
-							<div class="popup">
-								<h3 class="center" style={{ marginBottom: '0' }}>
-									{venue.entry.data.title}
-								</h3>
-								<p class="center" style={{ marginTop: '0', marginBottom: '10px' }}>
-									<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} inactiveText={'Defunct'} />
-								</p>
-								<SocialLinks links={venue.entry.data.links} />
-								{venue.extra.cover && (
-									<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
-										<Image2 responsiveImage={venue.extra.cover} />
-									</a>
-								)}
-								<p class="center">
-									<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
-										See gigs at this venue
-									</a>
-								</p>
-							</div>
-						))
-					}
-				</div>
-			</Map>
-		</div>
+		<Map markers={markers} slot="content">
+			<div slot="popups">
+				{
+					venues.map((venue) => (
+						<div class="popup">
+							<h3 class="center" style={{ marginBottom: '0' }}>
+								{venue.entry.data.title}
+							</h3>
+							<p class="center" style={{ marginTop: '0', marginBottom: '10px' }}>
+								<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} inactiveText={'Defunct'} />
+							</p>
+							<SocialLinks links={venue.entry.data.links} />
+							{venue.extra.cover && (
+								<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
+									<Image2 responsiveImage={venue.extra.cover} />
+								</a>
+							)}
+							<p class="center">
+								<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
+									See gigs at this venue
+								</a>
+							</p>
+						</div>
+					))
+				}
+			</div>
+		</Map>
 	</SidebarNav>
 </BaseLayout>
 

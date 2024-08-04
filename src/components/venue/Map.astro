@@ -19,6 +19,7 @@
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { theme } from 'src/Theme.css'
+import { MapWrapperStyle } from './Map.css'
 
 interface Marker {
 	coords: number[]
@@ -42,7 +43,7 @@ const { markers, zoom, center, nointeract } = Astro.props
 	data-zoom={zoom}
 	style={{ position: 'relative', overflow: 'hidden' }}
 >
-	<div id="map" style={{ height: `calc(100vh - ${theme.dimensions.headerHeight} - 2px)` }}></div>
+	<div id="map" class={MapWrapperStyle}></div>
 	<div style={{ display: 'none' }}>
 		<slot name="popups" />
 	</div>
@@ -143,24 +144,24 @@ const { markers, zoom, center, nointeract } = Astro.props
 			this.sidebarLinks.forEach((link) => link.addEventListener('mousedown', (e) => this.sidebarClick(e)))
 
 			// Support for hiding markers on shuffle filter
-				document.addEventListener(
-					'shuffle-filter',
-					(e: any) => {
-						const shuffle = e.detail as Shuffle
+			document.addEventListener(
+				'shuffle-filter',
+				(e: any) => {
+					const shuffle = e.detail as Shuffle
 
-						// Only hide markers if we have identical number of shuffle items
-						if (shuffle.items.length !== this.markers.length) return
+					// Only hide markers if we have identical number of shuffle items
+					if (shuffle.items.length !== this.markers.length) return
 
-						shuffle.items.forEach((item, i) => {
-							if (!item.isVisible) {
-								this.markers[i].remove()
-							} else {
-								this.markers[i].addTo(this.map)
-							}
-						})
-					},
-					false
-				)
+					shuffle.items.forEach((item, i) => {
+						if (!item.isVisible) {
+							this.markers[i].remove()
+						} else {
+							this.markers[i].addTo(this.map)
+						}
+					})
+				},
+				false
+			)
 		}
 
 		disconnectedCallback() {}

@@ -65,8 +65,8 @@ const MenuLinkWrapperBase = style({
 	lineHeight: theme.dimensions.headerHeight,
 	height: theme.dimensions.headerHeight,
 	margin: '0px',
-	paddingLeft: theme.dimensions.basePadding,
-	paddingRight: theme.dimensions.basePadding,
+	paddingLeft: theme.dimensions.basePaddingMobile,
+	paddingRight: theme.dimensions.basePaddingMobile,
 	selectors: {
 		'&:hover': {
 			color: 'white',
@@ -75,6 +75,12 @@ const MenuLinkWrapperBase = style({
 		'&.active, &:active': {
 			backgroundColor: theme.color.secondary,
 			color: theme.color.lightText
+		}
+	},
+	'@media': {
+		'screen and (--xs)': {
+			paddingLeft: theme.dimensions.basePadding,
+			paddingRight: theme.dimensions.basePadding
 		}
 	}
 })
@@ -107,8 +113,16 @@ export const MenuLinkWrapper = styleVariants({
 			minHeight: '50px',
 			paddingLeft: 0,
 			paddingRight: 0,
-			paddingTop: theme.dimensions.basePadding,
-			paddingBottom: theme.dimensions.basePadding
+			paddingTop: theme.dimensions.basePaddingMobile,
+			paddingBottom: theme.dimensions.basePaddingMobile,
+			'@media': {
+				'screen and (--xs)': {
+					paddingLeft: 0,
+					paddingRight: 0,
+					paddingTop: theme.dimensions.basePadding,
+					paddingBottom: theme.dimensions.basePadding,
+				}
+			}
 		}
 	]
 })

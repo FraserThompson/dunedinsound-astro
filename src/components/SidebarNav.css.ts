@@ -8,9 +8,11 @@ export const offsetTop = createVar()
 export const sidebarWrapper = style({
 	position: 'fixed',
 	backgroundColor: theme.color.primary,
-	height: `calc(100vh - ${fallbackVar(offsetTop, '0px')})`,
+	height: `calc(100vh - ${fallbackVar(offsetTop, '0px')} - ${theme.dimensions.headerHeight})`,
+	boxSizing: 'border-box',
 	top: fallbackVar(offsetTop, '0px'),
 	left: 0,
+	bottom: theme.dimensions.headerHeight,
 	width: defaultWidth,
 	maxWidth: defaultWidth,
 	overflowX: 'hidden',
@@ -39,6 +41,8 @@ export const sidebarWrapper = style({
 	'@media': {
 		'screen and (--md)': {
 			width: theme.dimensions.sidebarWidth,
+			height: `calc(100vh - ${fallbackVar(offsetTop, '0px')})`,
+			bottom: 0,
 			visibility: 'visible',
 			left: theme.dimensions.headerHeight,
 			opacity: 1,
@@ -50,8 +54,12 @@ export const sidebarWrapper = style({
 
 export const contentWrapper = style({
 	marginLeft: 0,
+	paddingTop: `${fallbackVar(offsetTop, '0px')}`,
+	boxSizing: 'border-box',
 	'@media': {
 		'screen and (--md)': {
+			paddingTop: '0px',
+			paddingBottom: '0px',
 			marginLeft: theme.dimensions.sidebarWidth
 		}
 	}
@@ -63,9 +71,16 @@ export const menuButtonWrapper = style({
 	left: '0',
 	zIndex: '12',
 	height: theme.dimensions.headerHeight,
+	backgroundColor: theme.color.contrast2,
+	color: 'black',
 	'@media': {
 		'screen and (--md)': {
 			display: 'none'
+		}
+	},
+	selectors: {
+		'&:active, &:focus, &:visited': {
+			backgroundColor: theme.color.contrast2,
 		}
 	}
 })

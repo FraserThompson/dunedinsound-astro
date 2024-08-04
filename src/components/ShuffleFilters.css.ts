@@ -4,8 +4,8 @@ import { theme } from 'src/Theme.css'
 export const top = createVar()
 
 export const shuffleFilter = style({
-	paddingLeft: theme.dimensions.basePadding,
-	paddingRight: theme.dimensions.basePadding,
+	paddingLeft: theme.dimensions.basePaddingMobile,
+	paddingRight: theme.dimensions.basePaddingMobile,
 	display: 'flex',
 	alignItems: 'center',
 	flexWrap: 'wrap',
@@ -13,6 +13,8 @@ export const shuffleFilter = style({
 	minHeight: theme.dimensions.subheaderHeight,
 	'@media': {
 		'screen and (--xs)': {
+			paddingLeft: theme.dimensions.basePadding,
+			paddingRight: theme.dimensions.basePadding,
 			flexWrap: 'nowrap'
 		}
 	}

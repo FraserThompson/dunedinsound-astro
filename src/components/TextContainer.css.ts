@@ -29,7 +29,3 @@ globalStyle(`${textContainer['feature']} > *:not(${ImageWrapper})`, {
 globalStyle(`${textContainer['feature']} ${ImageWrapper}`, {
 	margin: '0 auto',
 })
-
-globalStyle(`${textContainer['normal']} ul, ${textContainer['feature']} ul`, {
-	paddingLeft: '50px !important'
-})

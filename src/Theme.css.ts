@@ -44,8 +44,8 @@ export const theme = createThemeContract({
 	},
 	dimensions: {
 		basePadding: '',
+		basePaddingMobile: '',
 		headerHeight: '',
-		headerHeightMobile: '',
 		headerHeightWithSubheader: '',
 		headerHeightNeg: '',
 		subheaderHeight: '',
@@ -58,15 +58,15 @@ export const theme = createThemeContract({
 })
 
 const headerHeight = '30px'
-const headerHeightMobile = '40px'
 const subheaderHeight = '30px'
+const basePadding = '0.86558rem'
 
 const backgroundColor = '#08090C' // dark navy
 const primaryColor = '#0F0E0E' // smoky black
 const foregroundColor = '#3f92f7' // lightblue
 const secondaryColor = '#00807F' // teal
 const contrastColor = '#FAF9F9' // ice white
-const contrastColor2 = '#96ff7d' // purple
+const contrastColor2 = '#96ff7d' // lime green
 const textColor = '#ccc'
 
 createGlobalTheme(':root', theme, {
@@ -111,9 +111,9 @@ createGlobalTheme(':root', theme, {
 		shadowTop: '0 -3px 8px rgba(0, 0, 0, 0.25)'
 	},
 	dimensions: {
-		basePadding: '0.86558rem',
+		basePadding: basePadding,
+		basePaddingMobile: `calc(${basePadding} / 2)`,
 		headerHeight: headerHeight,
-		headerHeightMobile: headerHeightMobile,
 		headerHeightWithSubheader: `calc(${headerHeight} + ${subheaderHeight} + 1px)`,
 		headerHeightNeg: `-${headerHeight}`,
 		subheaderHeight,

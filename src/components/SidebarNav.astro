@@ -33,7 +33,12 @@ const { top, scrollContext } = Astro.props
 		<slot name="sidebar" />
 	</div>
 </sidebar-wrapper>
-<div class={contentWrapper}>
+<div
+	class={contentWrapper}
+	style={assignInlineVars({
+		[offsetTop]: top
+	})}
+>
 	<slot name="content" />
 </div>
 

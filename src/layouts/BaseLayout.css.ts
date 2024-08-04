@@ -1,5 +1,4 @@
 import { globalStyle } from '@vanilla-extract/css'
-import { math, cssVar } from 'polished'
 import { theme } from 'src/Theme.css'
 
 globalStyle('html', {
@@ -122,7 +121,7 @@ globalStyle('button.active,button:active', {
 })
 
 globalStyle('a', {
-	color: theme.color.secondary,
+	color: theme.color.contrast2,
 	transition: 'color 0.1s ease-in-out',
 	textDecoration: 'none',
 	overflow: 'hidden',
