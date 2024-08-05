@@ -1,0 +1,15 @@
+---
+import { searchboxWrapper } from './SearchBox.css'
+
+interface Props {
+	placeholder?: string
+	className?: string
+}
+
+const { placeholder, className } = Astro.props
+---
+
+<div class={`${searchboxWrapper} ${className}`}>
+	<span class="hideMobile">Search: </span>
+	<input type="text" data-filter="title=value" placeholder={placeholder} />
+</div>

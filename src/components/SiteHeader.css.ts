@@ -30,8 +30,6 @@ export const headerMobile = style({
 	position: 'fixed',
 	bottom: '0',
 	backgroundColor: theme.color.primary,
-	display: 'flex',
-	justifyContent: 'center',
 	zIndex: '12',
 	width: '100%',
 	boxShadow: theme.borders.shadowTop,

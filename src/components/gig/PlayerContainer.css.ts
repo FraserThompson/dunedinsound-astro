@@ -21,7 +21,7 @@ export const playerWrapper = style({
 			pointerEvents: 'none',
 		},
 		'&:state(minimized):state(open)': {
-			transform: `translateY(${theme.dimensions.headerHeightNeg})`
+			transform: `translateY(${theme.dimensions.headerHeightNegative})`
 		},
 		'&:state(open)': {
 			pointerEvents: 'auto'
@@ -87,12 +87,12 @@ export const openButton = style({
 	boxShadow: '-2px -1px 3px rgb(0 0 0 / 32%), 3px 1px 3px rgb(0 0 0 / 42%)',
 	transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
 	border: 'none',
-	paddingRight: '13px',
-	height: '30px',
+	paddingRight: '6px',
+	height: theme.dimensions.headerHeight,
 	color: 'black',
 	backgroundColor: '#bfced9',
-	borderTopLeftRadius: '60px',
-	borderTopRightRadius: '60px',
+	borderTopLeftRadius: '20px',
+	borderTopRightRadius: '20px',
 	selectors: {
 		'&:hover': {
 			color: 'black',

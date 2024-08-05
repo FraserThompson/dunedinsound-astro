@@ -3,14 +3,14 @@ import { theme } from 'src/Theme.css'
 import { MenuLi, MenuLinkWrapper, MenuWrapper } from '../Menu.css'
 
 export const gigsMenuWrapper = style([
-	MenuWrapper,
+	MenuWrapper['vertical'],
 	{
 		borderLeft: `4px solid ${theme.color.foreground}`
 	}
 ])
 
 export const artistsMenuWrapper = style([
-	MenuWrapper,
+	MenuWrapper['vertical'],
 	{
 		backgroundColor: 'black',
 		borderLeft: `6px solid ${theme.color.secondary}`,
@@ -26,7 +26,7 @@ export const yearHeader = style([
 		backgroundColor: theme.color.foreground,
 		padding: 0,
 		margin: 0,
-		zIndex: 6,
+		zIndex: 7,
 		fontWeight: 'bold'
 	}
 ])

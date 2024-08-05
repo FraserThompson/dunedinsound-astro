@@ -63,7 +63,13 @@ export const tileContent = style({
 	marginLeft: '0',
 	display: 'flex',
 	flexDirection: 'column',
-	padding: theme.dimensions.basePadding
+	padding: theme.dimensions.basePaddingMobile,
+	paddingTop: theme.dimensions.basePadding,
+	'@media': {
+		'screen and (--xs)': {
+			padding: theme.dimensions.basePadding
+		}
+	}
 })
 
 export const tileTextContent = style({
@@ -80,10 +86,16 @@ export const tileLabel = style({
 	position: 'absolute',
 	top: 0,
 	left: 0,
-	paddingLeft: theme.dimensions.basePadding,
-	paddingRight: theme.dimensions.basePadding,
-	borderBottomRightRadius: "6px",
-	backgroundColor: 'black'
+	paddingLeft: theme.dimensions.basePaddingMobile,
+	paddingRight: theme.dimensions.basePaddingMobile,
+	borderBottomRightRadius: '6px',
+	backgroundColor: 'black',
+	'@media': {
+		'screen and (--xs)': {
+			paddingLeft: theme.dimensions.basePadding,
+			paddingRight: theme.dimensions.basePadding
+		}
+	}
 })
 
 globalStyle(`${tileTextContent} > div`, {

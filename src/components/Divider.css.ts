@@ -13,18 +13,24 @@ const dividerBase = style({
 	verticalAlign: 'middle',
 	display: 'flex',
 	alignItems: 'center',
-	paddingLeft: theme.dimensions.basePadding,
-	paddingRight: theme.dimensions.basePadding,
+	paddingLeft: theme.dimensions.basePaddingMobile,
+	paddingRight: theme.dimensions.basePaddingMobile,
 	backgroundColor: fallbackVar(dividerBackgroundColor, theme.color.contrast),
 	borderBottom: '1px solid black',
 	top: '10px',
 	zIndex: '6',
 	boxShadow: theme.borders.shadow,
+	'@media': {
+		'screen and (--xs)': {
+			paddingLeft: theme.dimensions.basePadding,
+			paddingRight: theme.dimensions.basePadding
+		}
+	}
 })
 
 globalStyle(`${dividerBase} a`, {
 	color: fallbackVar(dividerColor, 'black'),
-	width: "100%"
+	width: '100%'
 })
 
 export const dividerWrapper = styleVariants({

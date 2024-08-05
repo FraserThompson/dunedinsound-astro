@@ -20,7 +20,7 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 
 <BaseLayout>
 	<SidebarNav>
-		<div slot="sidebar">
+		<div slot="sidebarMenu">
 			<h2 class="padding">Filter by tag</h2>
 			<BlogTags selected={selectedTag} />
 		</div>

@@ -17,7 +17,7 @@ const { gigs } = Astro.props
 ---
 
 <SidebarNav top={theme.dimensions.headerHeight}>
-	<GigsMenu slot="sidebar" />
+	<GigsMenu slot="sidebarMenu" />
 	<FlexGridContainer grid={{ xs: 12,  }} id="gigs" slot="content" fixedWidth={true}>
 		{gigs.map((gig) => <GigTile gig={gig} />)}
 	</FlexGridContainer>

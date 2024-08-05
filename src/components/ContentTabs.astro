@@ -95,7 +95,7 @@ const { tabs } = Astro.props
 			const firstTab = this.tabs?.querySelector('button')?.dataset.tabid
 			firstTab && this.selectTab(firstTab)
 			this.tabs?.querySelectorAll('button').forEach((tab) => {
-				tab.addEventListener('click', this.tabClick)
+				tab.addEventListener('mousedown', this.tabClick)
 			})
 		}
 	}

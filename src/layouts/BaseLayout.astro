@@ -9,9 +9,12 @@ import { Content } from 'src/components/UtilClasses.css'
 
 interface Props {
 	hideFooter?: boolean
+	topSubheaderMobile?: boolean
 }
 
-const { hideFooter } = Astro.props
+const { hideFooter, topSubheaderMobile } = Astro.props
+
+const contentVariant = topSubheaderMobile ? 'topSubheaderMobile' : 'default'
 ---
 
 <GlobalStyle />
@@ -29,7 +32,7 @@ const { hideFooter } = Astro.props
 	<body>
 		<SiteContainer hideFooter={hideFooter}>
 			<SiteHeader />
-			<div class={Content}>
+			<div class={Content[contentVariant]}>
 				<slot />
 			</div>
 		</SiteContainer>

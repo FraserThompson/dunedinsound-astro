@@ -24,7 +24,7 @@ const entries = await loadAndFormatCollection(collection)
 
 <slot />
 
-<ul id="sidebar-menu" class={MenuWrapper}>
+<ul id="sidebar-menu" class={MenuWrapper['vertical']}>
 	{
 		entries.map((entry, i) => (
 			<li

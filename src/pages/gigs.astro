@@ -4,6 +4,8 @@ import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
 import GigsTimeline from 'src/components/gig/GigsTimeline.astro'
 import GigsShuffle from 'src/components/gig/GigsShuffle.tsx'
+import SearchBox from 'src/components/SearchBox.astro'
+import { Subheader } from 'src/components/UtilClasses.css'
 
 interface Props {
 	mode: 'timeline' | 'shuffle'
@@ -14,28 +16,32 @@ const gigs = await loadAndFormatCollection('gig')
 const { mode = 'timeline' } = Astro.props
 ---
 
-<BaseLayout hideFooter={true}>
-	<ShuffleFilters itemselector=".tile" boardselector="#gigs">
-		{
-			mode === 'timeline' && (
-				<div style={{ width: '100%' }}>
-					<span>Search: </span>
-					<input type="text" data-filter="title=value" placeholder="Search gigs by title, artist, venue..." />
+<BaseLayout hideFooter={true} topSubheaderMobile={true}>
+	<div class={`${Subheader['top']}`}>
+		<ShuffleFilters itemselector=".tile" boardselector="#gigs">
+			{mode === 'timeline' && <SearchBox className="hideMobile" placeholder="Search gigs by title, artist, venue" />}
+			<div style={{ marginLeft: 'auto' }}>
+				<span>Mode: </span>
+				<div class="buttonGroup">
+					<a href="/gigs">
+						<button class={mode === 'timeline' ? 'active' : ''}>Timeline</button>
+					</a>
+					<a href="/gigs/shuffle">
+						<button class={mode === 'shuffle' ? 'active' : ''}>Shuffle</button>
+					</a>
 				</div>
-			)
-		}
-		<div style={{ marginLeft: 'auto' }}>
-			<span>Mode: </span>
-			<div class="buttonGroup">
-				<a href="/gigs">
-					<button class={mode === 'timeline' ? 'active' : ''}>Timeline</button>
-				</a>
-				<a href="/gigs/shuffle">
-					<button class={mode === 'shuffle' ? 'active' : ''}>Shuffle</button>
-				</a>
 			</div>
-		</div>
-	</ShuffleFilters>
+		</ShuffleFilters>
+	</div>
 	{mode === 'timeline' && <GigsTimeline gigs={gigs} />}
 	{mode === 'shuffle' && <GigsShuffle gigs={gigs} client:load />}
+	{
+		mode === 'timeline' && (
+			<div class={`${Subheader['bottom']} showMobile`}>
+				<ShuffleFilters itemselector=".tile" boardselector="#gigs">
+					<SearchBox placeholder="Search gigs by title, artist, venue" />
+				</ShuffleFilters>
+			</div>
+		)
+	}
 </BaseLayout>

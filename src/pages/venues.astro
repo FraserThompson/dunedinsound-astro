@@ -9,6 +9,8 @@ import SidebarNav from 'src/components/SidebarNav.astro'
 import EntryMenu from 'src/components/EntryMenu.astro'
 import { theme } from 'src/Theme.css'
 import Image2 from 'src/components/Image2.astro'
+import SearchBox from 'src/components/SearchBox.astro'
+import { Subheader } from 'src/components/UtilClasses.css'
 
 const venues = await loadAndFormatCollection('venue')
 
@@ -18,25 +20,32 @@ const markers = venues.map((venue) => ({
 }))
 ---
 
-<BaseLayout hideFooter={true}>
-	<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu">
-		<div style={{ width: '100%' }}>
-			<span>Search: </span>
-			<input type="text" data-filter="title=value" placeholder="Search venues" />
-		</div>
-		<div style={{ marginLeft: 'auto' }}>
-			<label>
-				<input name="hideInactive" type="checkbox" data-filter="active=true" />
-				Hide dead
-			</label>
-			<label>
-				<input name="hideActive" type="checkbox" data-filter="active=false" />
-				Hide alive
-			</label>
-		</div>
-	</ShuffleFilters>
+<BaseLayout hideFooter={true} topSubheaderMobile={true}>
+	<div class={`${Subheader['top']}`}>
+		<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu">
+			<SearchBox className="hideMobile" placeholder="Search venues" />
+			<div style={{ marginLeft: 'auto' }}>
+				<label>
+					<input name="hideInactive" type="checkbox" data-filter="active=true" />
+					Hide dead
+				</label>
+				<label>
+					<input name="hideActive" type="checkbox" data-filter="active=false" />
+					Hide alive
+				</label>
+			</div>
+		</ShuffleFilters>
+	</div>
 	<SidebarNav top={theme.dimensions.headerHeight} scrollContext="venues">
-		<EntryMenu collection="venue" slot="sidebar" />
+		<EntryMenu collection="venue" slot="sidebarMenu" />
+		<ShuffleFilters
+			className="showMobile"
+			slot="sidebarFixed"
+			itemselector=".sidebar-item"
+			boardselector="#sidebar-menu"
+		>
+			<SearchBox placeholder="Search venues" />
+		</ShuffleFilters>
 		<Map markers={markers} slot="content">
 			<div slot="popups">
 				{

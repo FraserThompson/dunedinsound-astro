@@ -24,7 +24,7 @@ const { shareData, style } = Astro.props
 		}
 
 		connectedCallback() {
-			this.addEventListener('click', () => {
+			this.addEventListener('mousedown', () => {
 				try {
 					navigator.share(this.shareData)
 				} catch {

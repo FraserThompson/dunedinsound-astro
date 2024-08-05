@@ -20,30 +20,24 @@
  * An event is emitted to document on filter. Listen for shuffle-filter.
  */
 
-import { assignInlineVars } from '@vanilla-extract/dynamic'
-import { shuffleFilter, top } from './ShuffleFilters.css'
-import { TopSubheader } from './UtilClasses.css'
+import { shuffleFilter } from './ShuffleFilters.css'
 
 interface Props {
 	itemselector?: string
 	boardselector?: string
-	offsetTop?: string
+	className?: string
 }
 
-const { itemselector, boardselector, offsetTop } = Astro.props
+const { itemselector, boardselector, className } = Astro.props
 ---
 
-<div
-	class={TopSubheader}
-	id="filters-wrapper"
-	style={assignInlineVars({
-		[top]: offsetTop
-	})}
+<shuffle-filters
+	data-itemselector={itemselector}
+	data-boardselector={boardselector}
+	class={`${shuffleFilter} ${className}`}
 >
-	<shuffle-filters data-itemselector={itemselector} data-boardselector={boardselector} class={shuffleFilter}>
-		<slot />
-	</shuffle-filters>
-</div>
+	<slot />
+</shuffle-filters>
 
 <script>
 	import Shuffle from 'shufflejs'

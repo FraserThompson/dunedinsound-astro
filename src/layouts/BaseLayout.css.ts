@@ -94,6 +94,7 @@ globalStyle('blockquote > p', {
 })
 
 globalStyle('button', {
+	boxSizing: 'border-box',
 	display: 'inline-block',
 	marginBottom: '0',
 	textAlign: 'center',
@@ -101,6 +102,7 @@ globalStyle('button', {
 	touchAction: 'manipulation',
 	cursor: 'pointer',
 	whiteSpace: 'nowrap',
+	height: theme.dimensions.subheaderHeight,
 	paddingTop: '0px',
 	paddingBottom: '0px',
 	paddingRight: theme.dimensions.basePadding,
@@ -128,21 +130,18 @@ globalStyle('a', {
 	backgroundColor: 'transparent'
 })
 
-globalStyle('a button', {
-	height: '100%'
-})
-
 globalStyle('a:hover', {
 	color: theme.color.lightSecondary
 })
 
 globalStyle('input[type="text"]', {
 	backgroundImage: 'none',
-	padding: '4px 6px',
 	border: '1px solid #000',
 	minWidth: '0px',
 	maxWidth: '100%',
 	width: '100%',
+	boxSizing: 'border-box',
+	height: theme.dimensions.subheaderHeight,
 	boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
 	transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s',
 	'@media': {

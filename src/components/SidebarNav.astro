@@ -5,20 +5,33 @@
  *  - sidebar: Put your sidebar menu in this.
  *  - content: Put the rest of the page in this.
  * Props:
- *  - top: Offset from the top.
+ *  - top: Offset from the top on desktop.
+ *  - top: Offset from top on mobile (xs).
  *  - scrollContext: If a context is supplied it will remember the scroll
  *    position within that context.
  */
 import MenuIcon from '~icons/bx/menu'
-import { sidebarWrapper, contentWrapper, menuButtonWrapper, offsetTop } from './SidebarNav.css'
+import {
+	sidebarWrapper,
+	sidebarMenuWrapper,
+	contentWrapper,
+	menuButtonWrapper,
+	offsetTop,
+	offsetTopMobile,
+	offsetBottom,
+	offsetBottomMobile
+} from './SidebarNav.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
 	top?: string
+	topMobile?: string
+	bottom?: string
+	bottomMobile?: string
 	scrollContext?: string
 }
 
-const { top, scrollContext } = Astro.props
+const { top, topMobile, bottom, bottomMobile, scrollContext } = Astro.props
 ---
 
 <sidebar-wrapper data-scrollcontext={scrollContext}>
@@ -27,16 +40,25 @@ const { top, scrollContext } = Astro.props
 		id="sidebar"
 		class={sidebarWrapper}
 		style={assignInlineVars({
-			[offsetTop]: top
+			[offsetTop]: top,
+			[offsetTopMobile]: topMobile,
+			[offsetBottom]: bottom,
+			[offsetBottomMobile]: bottomMobile
 		})}
 	>
-		<slot name="sidebar" />
+		<div class={sidebarMenuWrapper}>
+			<slot name="sidebarMenu" />
+		</div>
+		<slot name="sidebarFixed" />
 	</div>
 </sidebar-wrapper>
 <div
 	class={contentWrapper}
 	style={assignInlineVars({
-		[offsetTop]: top
+		[offsetTop]: top,
+		[offsetTopMobile]: topMobile,
+		[offsetBottom]: bottom,
+		[offsetBottomMobile]: bottomMobile
 	})}
 >
 	<slot name="content" />

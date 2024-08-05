@@ -6,6 +6,9 @@ import SidebarNav from 'src/components/SidebarNav.astro'
 import BaseLayout from 'src/layouts/BaseLayout.astro'
 import EntryMenu from 'src/components/EntryMenu.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
+import SearchBox from 'src/components/SearchBox.astro'
+import { Subheader } from 'src/components/UtilClasses.css'
+import { theme } from 'src/Theme.css'
 
 export async function getStaticPaths() {
 	const artistEntries = await loadAndFormatCollection('venue')
@@ -23,14 +26,12 @@ const collection = entry.entry.collection
 
 <BaseLayout>
 	<SidebarNav scrollContext={collection}>
-		<EntryMenu collection={collection} slot="sidebar" selected={entry.entry.id}>
-			<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu" offsetTop="0px">
-				<div>
-					<span>Search: </span>
-					<input type="text" data-filter="title=value" placeholder="Search venues" />
-				</div>
+		<div slot="sidebarFixed" class={`${Subheader['sidebarTopAndBottom']}`}>
+			<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu">
+				<SearchBox placeholder="Search venues" />
 			</ShuffleFilters>
-		</EntryMenu>
+		</div>
+		<EntryMenu collection={collection} slot="sidebarMenu" selected={entry.entry.id} />
 		<ContentByEntry entry={entry} slot="content">
 			<Map
 				markers={[{ coords: [entry.entry.data.lng, entry.entry.data.lat] }]}

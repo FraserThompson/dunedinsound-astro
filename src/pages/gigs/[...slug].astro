@@ -1,9 +1,12 @@
 ---
 import GigsMenu from 'src/components/gig/GigsMenu.astro'
+import SearchBox from 'src/components/SearchBox.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import SidebarNav from 'src/components/SidebarNav.astro'
+import { Subheader } from 'src/components/UtilClasses.css'
 import BaseLayout from 'src/layouts/BaseLayout.astro'
 import Gig from 'src/layouts/Gig.astro'
+import { theme } from 'src/Theme.css'
 import { loadAndFormatCollection } from 'src/util/collection.ts'
 
 export async function getStaticPaths() {
@@ -22,14 +25,12 @@ const collection = entry.entry.collection
 
 <BaseLayout>
 	<SidebarNav scrollContext={collection}>
-		<GigsMenu slot="sidebar" selected={entry.entry.id}>
-			<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu" offsetTop="0px">
-				<div>
-					<span>Search: </span>
-					<input type="text" data-filter="title=value" placeholder="Search by gig, artist, venue..." />
-				</div>
+		<div slot="sidebarFixed" class={`${Subheader['sidebarTopAndBottom']}`}>
+			<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu">
+				<SearchBox placeholder="Search by gig, artist, venue" />
 			</ShuffleFilters>
-		</GigsMenu>
+		</div>
+		<GigsMenu slot="sidebarMenu" selected={entry.entry.id} />
 		<Gig entry={entry} slot="content" />
 	</SidebarNav>
 </BaseLayout>

@@ -1,35 +1,34 @@
 import { createVar, style, fallbackVar } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
-const defaultWidth = '80vw'
+const defaultWidth = '100vw'
 
 export const offsetTop = createVar()
+export const offsetTopMobile = createVar()
+
+export const offsetBottom = createVar()
+export const offsetBottomMobile = createVar()
 
 export const sidebarWrapper = style({
 	position: 'fixed',
 	backgroundColor: theme.color.primary,
-	height: `calc(100vh - ${fallbackVar(offsetTop, '0px')} - ${theme.dimensions.headerHeight})`,
 	boxSizing: 'border-box',
-	top: fallbackVar(offsetTop, '0px'),
+	top: fallbackVar(offsetTopMobile, '0px'),
+	bottom: fallbackVar(offsetBottomMobile, theme.dimensions.headerHeightWithSubheader),
 	left: 0,
-	bottom: theme.dimensions.headerHeight,
 	width: defaultWidth,
 	maxWidth: defaultWidth,
-	overflowX: 'hidden',
-	overflowY: 'auto',
 	zIndex: '10',
 	boxShadow: theme.borders.shadow,
 	borderRight: theme.borders.primary,
 	visibility: 'hidden',
 	opacity: 0,
-	transform: 'translateX(-80vh)',
+	transform: 'translateX(-50vw)',
 	pointerEvents: 'none',
 	transitionProperty: 'opacity, transform',
 	transitionDuration: '0.3s',
 	transitionTimingFunction: 'cubic-bezier(0, 0, 0, 1.2)',
 	willChange: 'transform',
-	scrollbarWidth: 'thin',
-	scrollbarColor: 'gray black',
 	selectors: {
 		'&.open': {
 			visibility: 'visible',
@@ -41,9 +40,13 @@ export const sidebarWrapper = style({
 	'@media': {
 		'screen and (--md)': {
 			width: theme.dimensions.sidebarWidth,
-			height: `calc(100vh - ${fallbackVar(offsetTop, '0px')})`,
-			bottom: 0,
+			height: `calc(100vh - ${fallbackVar(offsetTop, theme.dimensions.headerHeight)} - ${fallbackVar(
+				offsetBottom,
+				'0px'
+			)})`,
 			visibility: 'visible',
+			top: fallbackVar(offsetTop, theme.dimensions.headerHeight),
+			bottom: fallbackVar(offsetBottom, '0px'),
 			left: theme.dimensions.headerHeight,
 			opacity: 1,
 			transform: `translateX(0)`,
@@ -52,14 +55,23 @@ export const sidebarWrapper = style({
 	}
 })
 
+export const sidebarMenuWrapper = style({
+	overflowX: 'hidden',
+	overflowY: 'auto',
+	scrollbarWidth: 'thin',
+	scrollbarColor: 'gray black',
+	height: `100%`
+})
+
 export const contentWrapper = style({
 	marginLeft: 0,
-	paddingTop: `${fallbackVar(offsetTop, '0px')}`,
+	paddingTop: `${fallbackVar(offsetTopMobile, '0px')}`,
+	paddingBottom: `${fallbackVar(offsetBottomMobile, '0px')}`,
 	boxSizing: 'border-box',
 	'@media': {
 		'screen and (--md)': {
-			paddingTop: '0px',
-			paddingBottom: '0px',
+			paddingTop: `${fallbackVar(offsetTop, '0px')}`,
+			paddingBottom: `${fallbackVar(offsetBottom, '0px')}`,
 			marginLeft: theme.dimensions.sidebarWidth
 		}
 	}
@@ -67,12 +79,15 @@ export const contentWrapper = style({
 
 export const menuButtonWrapper = style({
 	position: 'fixed',
-	bottom: '0',
+	padding: 0,
+	bottom: theme.dimensions.headerHeight,
 	left: '0',
 	zIndex: '12',
-	height: theme.dimensions.headerHeight,
-	backgroundColor: theme.color.contrast2,
-	color: 'black',
+	height: theme.dimensions.subheaderHeight,
+	width: theme.dimensions.subheaderHeight,
+	backgroundColor: theme.color.primary,
+	border: 'none',
+	color: 'white',
 	'@media': {
 		'screen and (--md)': {
 			display: 'none'
@@ -80,7 +95,7 @@ export const menuButtonWrapper = style({
 	},
 	selectors: {
 		'&:active, &:focus, &:visited': {
-			backgroundColor: theme.color.contrast2,
+			backgroundColor: theme.color.primary
 		}
 	}
 })

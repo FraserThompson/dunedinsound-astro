@@ -1,7 +1,9 @@
 ---
 import EntryMenu from 'src/components/EntryMenu.astro'
+import SearchBox from 'src/components/SearchBox.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import SidebarNav from 'src/components/SidebarNav.astro'
+import { Subheader } from 'src/components/UtilClasses.css'
 import BaseLayout from 'src/layouts/BaseLayout.astro'
 import ContentByEntry from 'src/layouts/ContentByEntry.astro'
 import { loadAndFormatCollection } from 'src/util/collection.ts'
@@ -22,14 +24,12 @@ const collection = entry.entry.collection
 
 <BaseLayout>
 	<SidebarNav scrollContext={collection}>
-		<EntryMenu slot="sidebar" collection={collection} selected={entry.entry.id}>
-			<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu" offsetTop="0px">
-				<div>
-					<span>Search: </span>
-					<input type="text" data-filter="title=value" placeholder="Search artists" />
-				</div>
+		<div slot="sidebarFixed" class={`${Subheader['sidebarTopAndBottom']}`}>
+			<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu">
+				<SearchBox placeholder="Search artists" />
 			</ShuffleFilters>
-		</EntryMenu>
+		</div>
+		<EntryMenu slot="sidebarMenu" collection={collection} selected={entry.entry.id} />
 		<ContentByEntry entry={entry} slot="content" />
 	</SidebarNav>
 </BaseLayout>

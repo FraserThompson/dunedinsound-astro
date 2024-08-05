@@ -35,10 +35,10 @@ export const dropdownButtonIcon = style({
 })
 
 export const dropdownMenu = style([
-	MenuWrapper,
+	MenuWrapper['vertical'],
 	{
 		position: 'absolute',
-		width: fallbackVar(menuWidth, 'auto'),
+		width: fallbackVar(menuWidth, '100vw'),
 		backgroundColor: fallbackVar(background, theme.color.primary),
 		bottom: '1',
 		top: '1',
@@ -63,6 +63,11 @@ export const dropdownMenu = style([
 			},
 			'&.up': {
 				transform: `translateY(${theme.dimensions.subheaderHeight})`
+			}
+		},
+		'@media': {
+			'screen and (--xs)': {
+				width: fallbackVar(menuWidth, 'auto')
 			}
 		}
 	}

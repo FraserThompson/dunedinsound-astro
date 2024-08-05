@@ -1,7 +1,7 @@
 import { globalStyle, style, styleVariants } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
-export const MenuWrapper = style({
+const MenuWrapperBase = style({
 	paddingLeft: 0,
 	paddingRight: 0,
 	textAlign: 'left',
@@ -11,6 +11,18 @@ export const MenuWrapper = style({
 	borderRadius: '0',
 	margin: '0',
 	overflow: 'hidden'
+})
+
+export const MenuWrapper = styleVariants({
+	vertical: [MenuWrapperBase],
+	sideways: [MenuWrapperBase],
+	horizontal: [
+		MenuWrapperBase,
+		{
+			justifyContent: 'space-evenly',
+			display: 'flex'
+		}
+	]
 })
 
 const MenuLiBase = style({
@@ -28,7 +40,9 @@ export const MenuLi = styleVariants({
 		MenuLiBase,
 		{
 			display: 'inline-flex',
-			alignItems: 'center'
+			alignItems: 'center',
+			textAlign: 'center',
+			width: '100%'
 		}
 	],
 	vertical: [
@@ -43,9 +57,6 @@ export const MenuLi = styleVariants({
 		MenuLiBase,
 		{
 			borderRadius: '0 6px 6px 0',
-			borderTop: theme.borders.background,
-			borderRight: theme.borders.background,
-			borderBottom: theme.borders.background,
 			textOverflow: 'clip',
 			overflow: 'hidden',
 			display: 'flex',
@@ -120,7 +131,7 @@ export const MenuLinkWrapper = styleVariants({
 					paddingLeft: 0,
 					paddingRight: 0,
 					paddingTop: theme.dimensions.basePadding,
-					paddingBottom: theme.dimensions.basePadding,
+					paddingBottom: theme.dimensions.basePadding
 				}
 			}
 		}

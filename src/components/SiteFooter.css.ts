@@ -6,13 +6,11 @@ export const footerWrapper = style({
 	minHeight: theme.dimensions.footerHeight,
 	position: 'fixed',
 	bottom: theme.dimensions.headerHeight,
-	paddingLeft: '0',
 	boxSizing: "border-box",
 	width: '100%',
 	'@media': {
 		'screen and (--xs)': {
 			bottom: '0',
-			paddingLeft: theme.dimensions.sidebarWidth
 		}
 	}
 })

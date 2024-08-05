@@ -94,7 +94,7 @@ const { selected } = Astro.props
 
 <script>
 	import type Shuffle from 'shufflejs'
-	import { scrollTo, makeHash } from 'src/util/helpers'
+	import { scrollTo } from 'src/util/helpers'
 	import browserHistory from 'src/util/history'
 	import type { Location } from 'history'
 
@@ -127,7 +127,7 @@ const { selected } = Astro.props
 		connectedCallback() {
 			this.unlisten = browserHistory?.listen((location) => this.handleURLChange(location.location))
 			this.links?.forEach((link) => {
-				link.addEventListener('click', (e) => scrollTo(e))
+				link.addEventListener('mousedown', (e) => scrollTo(e))
 			})
 		}
 
@@ -199,7 +199,7 @@ const { selected } = Astro.props
 
 		connectedCallback() {
 			document.addEventListener('shuffle-filter', (e: any) => this.onShuffle(e), false)
-			!this.selected && this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e) => scrollTo(e)))
+			!this.selected && this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('mousedown', (e) => scrollTo(e)))
 		}
 
 		disconnectedCallback() {}

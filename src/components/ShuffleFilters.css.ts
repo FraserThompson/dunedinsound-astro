@@ -1,11 +1,9 @@
-import { createVar, globalStyle, style } from '@vanilla-extract/css'
+import { globalStyle, style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
-export const top = createVar()
-
 export const shuffleFilter = style({
-	paddingLeft: theme.dimensions.basePaddingMobile,
-	paddingRight: theme.dimensions.basePaddingMobile,
+	paddingLeft: 0,
+	paddingRight: 0,
 	display: 'flex',
 	alignItems: 'center',
 	flexWrap: 'wrap',
@@ -32,21 +30,13 @@ globalStyle(`${shuffleFilter} > div`, {
 })
 
 globalStyle(`${shuffleFilter} label, ${shuffleFilter} span`, {
-	display: 'none',
-	'@media': {
-		'screen and (--xs)': {
-			display: 'inline-block'
-		}
-	}
+	display: 'inline-block',
+	lineHeight: theme.dimensions.subheaderHeight,
+	paddingRight: theme.dimensions.basePadding
 })
 
 globalStyle(`${shuffleFilter} input, ${shuffleFilter} select, ${shuffleFilter} .buttonGroup`, {
-	marginLeft: '0px',
-	'@media': {
-		'screen and (--xs)': {
-			marginLeft: theme.dimensions.basePadding
-		}
-	}
+	marginLeft: '0px'
 })
 
 globalStyle(`${shuffleFilter} .buttonGroup`, {

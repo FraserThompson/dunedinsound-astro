@@ -155,7 +155,7 @@ const entryExtra = entry.extra
 
 		connectedCallback() {
 			this.interval = setInterval(() => this.tick(), 1000)
-			this.trackLinks.forEach((link) => link.addEventListener('click', (e) => this.trackClickHandler(e)))
+			this.trackLinks.forEach((link) => link.addEventListener('mousedown', (e) => this.trackClickHandler(e)))
 			document.addEventListener('liteYoutubeIframeLoaded', (e) => this.setIframe(e))
 		}
 

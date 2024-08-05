@@ -48,12 +48,12 @@ export const isActive = (href: string, currentPath: string) => {
 const { links, menuType = 'horizontal' } = Astro.props
 ---
 
-<ul class={MenuWrapper}>
+<ul class={MenuWrapper[menuType]}>
 	{
 		links.map((link) => (
-			<li class={MenuLi[menuType]}>
+			<li class={`${MenuLi[menuType]} ${link.class || ''}`}>
 				<a
-					class={`${MenuLinkWrapper[menuType]} ${isActive(link.href, currentPath)} ${link.class || ''}`}
+					class={`${MenuLinkWrapper[menuType]} ${isActive(link.href, currentPath)}`}
 					href={link.href}
 					title={link.title}
 					id={link.id}
