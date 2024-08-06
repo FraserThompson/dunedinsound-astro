@@ -1,47 +1,70 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
-import GigsTimeline from 'src/components/gig/GigsTimeline.astro'
-import GigsShuffle from 'src/components/gig/GigsShuffle.tsx'
 import SearchBox from 'src/components/SearchBox.astro'
-import { Subheader } from 'src/components/UtilClasses.css'
-
-interface Props {
-	mode: 'timeline' | 'shuffle'
-}
+import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
+import GigsMenu from 'src/components/gig/GigsMenu.astro'
+import FlexGridContainer from 'src/components/FlexGridContainer.astro'
+import GigTile from 'src/components/gig/GigTile.astro'
 
 const gigs = await loadAndFormatCollection('gig')
-
-const { mode = 'timeline' } = Astro.props
 ---
 
-<BaseLayout hideFooter={true} topSubheaderMobile={true}>
-	<div class={`${Subheader['top']}`}>
-		<ShuffleFilters itemselector=".tile" boardselector="#gigs">
-			{mode === 'timeline' && <SearchBox className="hideMobile" placeholder="Search gigs by title, artist, venue" />}
-			<div style={{ marginLeft: 'auto' }}>
-				<span>Mode: </span>
-				<div class="buttonGroup">
-					<a href="/gigs">
-						<button class={mode === 'timeline' ? 'active' : ''}>Timeline</button>
-					</a>
-					<a href="/gigs/shuffle">
-						<button class={mode === 'shuffle' ? 'active' : ''}>Shuffle</button>
-					</a>
-				</div>
+<SidebarLayout>
+	<ShuffleFilters slot="subheaderTop" itemselector=".tile" boardselector="#gigs">
+		<SearchBox className="hideMobile" placeholder="Search gigs by title, artist, venue" />
+		<div style={{ marginLeft: 'auto' }}>
+			<span>Mode: </span>
+			<div class="buttonGroup">
+				<a href="/gigs">
+					<button class={'active'}>Timeline</button>
+				</a>
+				<a href="/gigs/shuffle">
+					<button>Shuffle</button>
+				</a>
 			</div>
-		</ShuffleFilters>
-	</div>
-	{mode === 'timeline' && <GigsTimeline gigs={gigs} />}
-	{mode === 'shuffle' && <GigsShuffle gigs={gigs} client:load />}
-	{
-		mode === 'timeline' && (
-			<div class={`${Subheader['bottom']} showMobile`}>
-				<ShuffleFilters itemselector=".tile" boardselector="#gigs">
-					<SearchBox placeholder="Search gigs by title, artist, venue" />
-				</ShuffleFilters>
-			</div>
-		)
+		</div>
+	</ShuffleFilters>
+	<GigsMenu slot="sidebarMenu" />
+	<FlexGridContainer grid={{ xs: 12 }} id="gigs" slot="content" fixedWidth={true}>
+		{gigs.map((gig) => <GigTile gig={gig} />)}
+	</FlexGridContainer>
+	<ShuffleFilters slot="subheaderBottomMobile" itemselector=".tile" boardselector="#gigs">
+		<SearchBox placeholder="Search gigs by title, artist, venue" />
+	</ShuffleFilters>
+</SidebarLayout>
+
+<script>
+	import { elementIsVisibleInViewport } from 'src/util/helpers.ts'
+
+	const gigs = document.querySelectorAll('.tile')
+
+	const sidebar = document.querySelector('#sidebar')
+
+	const options = {
+		rootMargin: '-80px 0px -99%'
 	}
-</BaseLayout>
+
+	/**
+	 * Highlights gig in the sidebar when its scrolled over on the main page.
+	 */
+	const callback = (entries: IntersectionObserverEntry[]) => {
+		entries.forEach((entry) => {
+			const sidebarItem = sidebar?.querySelector(`[href="#${entry.target.id}"]`)
+			const monthGroup = sidebarItem?.parentElement?.parentElement
+
+			if (entry.isIntersecting) {
+				sidebarItem?.classList.add('active')
+				if (sidebar && sidebarItem && !elementIsVisibleInViewport(sidebarItem)) {
+					// @ts-ignore
+					//sidebar.scrollTop = monthGroup?.offsetTop
+				}
+			} else {
+				sidebarItem?.classList.remove('active')
+			}
+		})
+	}
+
+	const observer = new IntersectionObserver(callback, options)
+	gigs.forEach((el) => observer.observe(el))
+</script>

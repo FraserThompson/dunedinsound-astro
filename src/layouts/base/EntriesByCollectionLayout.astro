@@ -1,0 +1,42 @@
+---
+/**
+ * A layout for collection entries eg. Venues, Artists.
+ *
+ * Has a searchable sidebar for entry navigation in that collection, and
+ * the page content is the content associated with that entry eg. gigs, articles.
+ *
+ * Props:
+ *  - entry: The entry.
+ */
+import EntryMenu from 'src/components/EntryMenu.astro'
+import SearchBox from 'src/components/SearchBox.astro'
+import ShuffleFilters from 'src/components/ShuffleFilters.astro'
+import ContentByEntry from '../../components/ContentByEntry.astro'
+import type { ProcessedEntry } from 'src/util/collection'
+import type { DataEntryMap } from 'astro:content'
+import SidebarLayout from './SidebarLayout.astro'
+import { theme } from 'src/Theme.css'
+
+interface Props<C extends keyof DataEntryMap> {
+	entry: ProcessedEntry<C>
+}
+
+const { entry } = Astro.props
+const collection = entry.entry.collection
+---
+
+<SidebarLayout scrollContext={collection}>
+	<ShuffleFilters slot="subheaderTop" itemselector=".sidebar-item" boardselector="#sidebar-menu">
+		<SearchBox placeholder=`Search ${collection}` />
+	</ShuffleFilters>
+	<EntryMenu slot="sidebarMenu" collection={collection} selected={entry.entry.id} />
+	<ContentByEntry entry={entry} slot="content">
+		<slot name="banner" />
+	</ContentByEntry>
+	<div slot="sidebarFixed" class="showMobile fullWidth" style={{ marginLeft: theme.dimensions.subheaderHeight }}>
+		<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu">
+			<SearchBox placeholder=`Search ${collection}` />
+		</ShuffleFilters>
+	</div>
+	<div slot="subheaderBottomMobile"></div>
+</SidebarLayout>

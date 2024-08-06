@@ -2,11 +2,9 @@
 import GigsMenu from 'src/components/gig/GigsMenu.astro'
 import SearchBox from 'src/components/SearchBox.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
-import SidebarNav from 'src/components/SidebarNav.astro'
 import { Subheader } from 'src/components/UtilClasses.css'
-import BaseLayout from 'src/layouts/BaseLayout.astro'
-import Gig from 'src/layouts/Gig.astro'
-import { theme } from 'src/Theme.css'
+import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
+import Gig from 'src/layouts/collection/Gig.astro'
 import { loadAndFormatCollection } from 'src/util/collection.ts'
 
 export async function getStaticPaths() {
@@ -20,17 +18,21 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props
-const collection = entry.entry.collection
 ---
 
-<BaseLayout>
-	<SidebarNav scrollContext={collection}>
-		<div slot="sidebarFixed" class={`${Subheader['sidebarTopAndBottom']}`}>
-			<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu">
-				<SearchBox placeholder="Search by gig, artist, venue" />
-			</ShuffleFilters>
-		</div>
-		<GigsMenu slot="sidebarMenu" selected={entry.entry.id} />
-		<Gig entry={entry} slot="content" />
-	</SidebarNav>
-</BaseLayout>
+<SidebarLayout scrollContext="gigs">
+	<ShuffleFilters className="hideMobile" slot="subheaderTop" itemselector=".tile" boardselector="#artist-grid">
+		<SearchBox placeholder=`Search gigs by title, artist, venue` />
+	</ShuffleFilters>
+	<ShuffleFilters
+		slot="sidebarFixed"
+		className="showMobile fullWidth"
+		itemselector=".sidebar-item"
+		boardselector="#sidebar-menu"
+	>
+		<SearchBox placeholder=`Search gigs by title, artist, venue` />
+	</ShuffleFilters>
+	<GigsMenu slot="sidebarMenu" selected={entry.entry.id} />
+	<Gig entry={entry} slot="content" />
+	<div slot="subheaderBottomMobile"></div>
+</SidebarLayout>

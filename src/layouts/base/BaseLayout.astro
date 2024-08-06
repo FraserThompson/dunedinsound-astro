@@ -1,20 +1,24 @@
 ---
+/**
+ * This is the base layout which all layouts should inherit from.
+ *
+ * Props:
+ *  - hideFooter (optional): The footer will be hidden if true.
+ *  - className (optional): Classes added to the content wrapper.
+ */
 import GlobalStyle from 'src/components/GlobalStyle.astro'
-import SiteContainer from 'src/components/SiteContainer.astro'
 import SiteFooter from 'src/components/SiteFooter.astro'
 import SiteHeader from 'src/components/SiteHeader.astro'
-import '../Theme.css.ts'
-import './BaseLayout.css'
-import { Content } from 'src/components/UtilClasses.css'
+import '../../Theme.css.ts'
+import './BaseLayout.css.ts'
+import { Content, SiteContainer } from 'src/components/UtilClasses.css'
 
 interface Props {
 	hideFooter?: boolean
-	topSubheaderMobile?: boolean
+	className?: string
 }
 
-const { hideFooter, topSubheaderMobile } = Astro.props
-
-const contentVariant = topSubheaderMobile ? 'topSubheaderMobile' : 'default'
+const { hideFooter, className } = Astro.props
 ---
 
 <GlobalStyle />
@@ -30,12 +34,12 @@ const contentVariant = topSubheaderMobile ? 'topSubheaderMobile' : 'default'
 		</script>
 	</head>
 	<body>
-		<SiteContainer hideFooter={hideFooter}>
+		<div class={SiteContainer[hideFooter ? 'hideFooter' : 'default']}>
 			<SiteHeader />
-			<div class={Content[contentVariant]}>
+			<div class={`${Content} ${className}`}>
 				<slot />
 			</div>
-		</SiteContainer>
+		</div>
 		{!hideFooter && <SiteFooter />}
 	</body>
 </html>

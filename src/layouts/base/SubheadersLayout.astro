@@ -1,0 +1,45 @@
+---
+/**
+ * A layout with a top/bottom subheader
+ *
+ * Props:
+ *  - hideFooter (optional): See BaseLayout
+ * 
+ * Slots:
+ *  - subheaderTop: A subheader displayed at the top of the page.
+ *  - subheaderBottomMobile: A subheader displayed at the bottom on mobile.
+ */
+import '../../Theme.css.ts'
+import BaseLayout from './BaseLayout.astro'
+import { WithTopSubheader, WithBottomSubheaderMobile, Subheader } from 'src/components/UtilClasses.css'
+
+interface Props {
+	hideFooter?: boolean
+}
+
+const { hideFooter } = Astro.props
+
+const hasSubheaderTop = Astro.slots.has('subheaderTop')
+const hasSubheaderBottomMobile = Astro.slots.has('subheaderBottomMobile')
+---
+
+<BaseLayout
+	className=`${hasSubheaderTop && WithTopSubheader} ${hasSubheaderBottomMobile && WithBottomSubheaderMobile}`
+	hideFooter={hideFooter}
+>
+	{
+		hasSubheaderTop && (
+			<div class={`${Subheader['top']}`}>
+				<slot name="subheaderTop" />
+			</div>
+		)
+	}
+	<slot />
+	{
+		hasSubheaderBottomMobile && (
+			<div class={`${Subheader['bottom']} showMobile`}>
+				<slot name="subheaderBottomMobile" />
+			</div>
+		)
+	}
+</BaseLayout>

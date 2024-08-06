@@ -1,12 +1,10 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro'
 import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
 import Banner from 'src/components/Banner.astro'
 import TextContainer from 'src/components/TextContainer.astro'
 import { generateExcerpt } from 'src/util/helpers'
-import SidebarNav from 'src/components/SidebarNav.astro'
 import BlogTags from 'src/components/blog/BlogTags.astro'
-import { theme } from 'src/Theme.css'
+import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 
 interface Props {
 	entries?: ProcessedEntry<'blog'>[]
@@ -18,39 +16,37 @@ const { entries, selectedTag } = Astro.props
 const blogs = entries || (await loadAndFormatCollection('blog'))
 ---
 
-<BaseLayout>
-	<SidebarNav>
-		<div slot="sidebarMenu">
-			<h2 class="padding">Filter by tag</h2>
-			<BlogTags selected={selectedTag} />
-		</div>
-		<TextContainer slot="content">
-			{selectedTag && <h2>Articles tagged with "{selectedTag}"</h2>}
-			{
-				blogs.map((blog) => (
-					<div>
-						<h2>
-							<a href={blog.extra.absolutePath}>
-								{blog.entry.data.tags.includes('interview') && 'INTERVIEW: '}
-								{blog.entry.data.title}
-							</a>
-						</h2>
-						<h4>{blog.entry.data.date.toLocaleDateString()}</h4>
-						{blog.extra.cover && (
-							<a href={blog.extra.absolutePath}>
-								<Banner height="20vh" backgroundImage={blog.extra.cover} />
-							</a>
-						)}
-						<p>
-							{generateExcerpt(blog.entry.body)}
-							<small>
-								<a href={blog.extra.absolutePath}>More</a>
-							</small>
-						</p>
-						<hr />
-					</div>
-				))
-			}
-		</TextContainer>
-	</SidebarNav>
-</BaseLayout>
+<SidebarLayout>
+	<div slot="sidebarMenu">
+		<h2 class="padding">Filter by tag</h2>
+		<BlogTags selected={selectedTag} />
+	</div>
+	<TextContainer slot="content">
+		{selectedTag && <h2>Articles tagged with "{selectedTag}"</h2>}
+		{
+			blogs.map((blog) => (
+				<div>
+					<h2>
+						<a href={blog.extra.absolutePath}>
+							{blog.entry.data.tags.includes('interview') && 'INTERVIEW: '}
+							{blog.entry.data.title}
+						</a>
+					</h2>
+					<h4>{blog.entry.data.date.toLocaleDateString()}</h4>
+					{blog.extra.cover && (
+						<a href={blog.extra.absolutePath}>
+							<Banner height="20vh" backgroundImage={blog.extra.cover} />
+						</a>
+					)}
+					<p>
+						{generateExcerpt(blog.entry.body)}
+						<small>
+							<a href={blog.extra.absolutePath}>More</a>
+						</small>
+					</p>
+					<hr />
+				</div>
+			))
+		}
+	</TextContainer>
+</SidebarLayout>

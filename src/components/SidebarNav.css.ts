@@ -14,7 +14,7 @@ export const sidebarWrapper = style({
 	backgroundColor: theme.color.primary,
 	boxSizing: 'border-box',
 	top: fallbackVar(offsetTopMobile, '0px'),
-	bottom: fallbackVar(offsetBottomMobile, theme.dimensions.headerHeightWithSubheader),
+	bottom: fallbackVar(offsetBottomMobile, '0px'),
 	left: 0,
 	width: defaultWidth,
 	maxWidth: defaultWidth,
@@ -40,12 +40,9 @@ export const sidebarWrapper = style({
 	'@media': {
 		'screen and (--md)': {
 			width: theme.dimensions.sidebarWidth,
-			height: `calc(100vh - ${fallbackVar(offsetTop, theme.dimensions.headerHeight)} - ${fallbackVar(
-				offsetBottom,
-				'0px'
-			)})`,
+			height: `calc(100vh - ${fallbackVar(offsetTop, '0px')} - ${fallbackVar(offsetBottom, '0px')})`,
 			visibility: 'visible',
-			top: fallbackVar(offsetTop, theme.dimensions.headerHeight),
+			top: fallbackVar(offsetTop, '0px'),
 			bottom: fallbackVar(offsetBottom, '0px'),
 			left: theme.dimensions.headerHeight,
 			opacity: 1,
@@ -65,13 +62,9 @@ export const sidebarMenuWrapper = style({
 
 export const contentWrapper = style({
 	marginLeft: 0,
-	paddingTop: `${fallbackVar(offsetTopMobile, '0px')}`,
-	paddingBottom: `${fallbackVar(offsetBottomMobile, '0px')}`,
 	boxSizing: 'border-box',
 	'@media': {
 		'screen and (--md)': {
-			paddingTop: `${fallbackVar(offsetTop, '0px')}`,
-			paddingBottom: `${fallbackVar(offsetBottom, '0px')}`,
 			marginLeft: theme.dimensions.sidebarWidth
 		}
 	}

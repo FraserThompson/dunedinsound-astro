@@ -1,11 +1,5 @@
 ---
-import EntryMenu from 'src/components/EntryMenu.astro'
-import SearchBox from 'src/components/SearchBox.astro'
-import ShuffleFilters from 'src/components/ShuffleFilters.astro'
-import SidebarNav from 'src/components/SidebarNav.astro'
-import { Subheader } from 'src/components/UtilClasses.css'
-import BaseLayout from 'src/layouts/BaseLayout.astro'
-import ContentByEntry from 'src/layouts/ContentByEntry.astro'
+import CollectionEntryLayout from 'src/layouts/base/EntriesByCollectionLayout.astro'
 import { loadAndFormatCollection } from 'src/util/collection.ts'
 
 export async function getStaticPaths() {
@@ -19,17 +13,6 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props
-const collection = entry.entry.collection
 ---
 
-<BaseLayout>
-	<SidebarNav scrollContext={collection}>
-		<div slot="sidebarFixed" class={`${Subheader['sidebarTopAndBottom']}`}>
-			<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu">
-				<SearchBox placeholder="Search artists" />
-			</ShuffleFilters>
-		</div>
-		<EntryMenu slot="sidebarMenu" collection={collection} selected={entry.entry.id} />
-		<ContentByEntry entry={entry} slot="content" />
-	</SidebarNav>
-</BaseLayout>
+<CollectionEntryLayout entry={entry} />

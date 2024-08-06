@@ -1,0 +1,58 @@
+---
+/**
+ * A layout with a sidebar. Mostly a wrapper for SidebarNav.
+ * Makes things easier by automatically doing top and bottom margins.
+ *
+ * Props:
+ *  - scrollContext: See SidebarNav
+ *  - hideFooter: See BaseLayout
+ *
+ * Slots:
+ *  - sidebarMenu: See SidebarNav
+ *  - sidebarFixed: See SidebarNav
+ *  - content: See SidebarNav
+ *  - subheaderTop: See SubheadersLayout
+ *  - subheaderBottomMobile: See SubheadersLayout
+ */
+import { theme } from 'src/Theme.css'
+import BaseLayout from '../base/BaseLayout.astro'
+import SidebarNav from 'src/components/SidebarNav.astro'
+import { Subheader } from 'src/components/UtilClasses.css'
+
+interface Props {
+	scrollContext?: string
+	hideFooter?: boolean
+}
+
+const { scrollContext, hideFooter } = Astro.props
+
+const hasSubheaderTop = Astro.slots.has('subheaderTop')
+const hasSubheaderBottomMobile = Astro.slots.has('subheaderBottomMobile')
+---
+
+<BaseLayout hideFooter={hideFooter}>
+	{
+		hasSubheaderTop && (
+			<div class={`${Subheader['top']}`}>
+				<slot name="subheaderTop" />
+			</div>
+		)
+	}
+	<SidebarNav
+		top={hasSubheaderTop ? theme.dimensions.subheaderHeight : undefined}
+		bottomMobile={hasSubheaderBottomMobile ? theme.dimensions.headerHeightWithSubheader : undefined}
+		scrollContext={scrollContext}
+	>
+		<slot name="sidebarMenu" slot="sidebarMenu" />
+		<slot name="sidebarFixed" slot="sidebarFixed" />
+		<slot name="content" slot="content" />
+	</SidebarNav>
+
+	{
+		hasSubheaderBottomMobile && (
+			<div class={`${Subheader['bottom']} showMobile`}>
+				<slot name="subheaderBottomMobile" />
+			</div>
+		)
+	}
+</BaseLayout>

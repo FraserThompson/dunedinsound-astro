@@ -8,6 +8,7 @@ const SubheaderBase = style({
 	borderBottom: '1px solid black',
 	boxShadow: theme.borders.shadowLight,
 	backgroundColor: theme.color.primary,
+	height: theme.dimensions.subheaderHeight,
 	'@media': {
 		'screen and (--md)': {
 			width: `calc(100% - ${theme.dimensions.headerHeight})`
@@ -43,7 +44,7 @@ export const Subheader = styleVariants({
 	]
 })
 
-const ContentBase = style({
+export const Content = style({
 	boxSizing: 'border-box',
 	position: 'relative',
 	height: '100%',
@@ -56,17 +57,50 @@ const ContentBase = style({
 	}
 })
 
-export const Content = styleVariants({
-	default: [ContentBase],
-	topSubheaderMobile: [
-		ContentBase,
+export const WithTopSubheader = style({
+	marginTop: theme.dimensions.subheaderHeight
+})
+
+export const WithTopSubheaderMobile = style({
+	marginTop: theme.dimensions.subheaderHeight,
+	'@media': {
+		'screen and (--md)': {
+			marginTop: '0px'
+		}
+	}
+})
+
+export const WithBottomSubheaderMobile = style({
+	marginBottom: theme.dimensions.subheaderHeight,
+	'@media': {
+		'screen and (--md)': {
+			marginBottom: '0px'
+		}
+	}
+})
+
+const SiteContainerBase = style({
+	minHeight: theme.dimensions.viewportHeight,
+	backgroundColor: theme.color.background,
+	boxShadow: theme.borders.shadow,
+	height: '100%',
+	width: '100%',
+	zIndex: '2',
+	position: 'relative',
+	bottom: '0'
+})
+
+export const SiteContainer = styleVariants({
+	default: [
+		SiteContainerBase,
 		{
-			marginTop: theme.dimensions.subheaderHeight,
+			marginBottom: theme.dimensions.footerHeight,
 			'@media': {
 				'screen and (--md)': {
-					marginTop: '0px'
+					marginBottom: theme.dimensions.footerHeight
 				}
 			}
 		}
-	]
+	],
+	hideFooter: [SiteContainerBase]
 })

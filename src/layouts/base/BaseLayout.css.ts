@@ -102,7 +102,7 @@ globalStyle('button', {
 	touchAction: 'manipulation',
 	cursor: 'pointer',
 	whiteSpace: 'nowrap',
-	height: theme.dimensions.subheaderHeight,
+	height: `calc(${theme.dimensions.subheaderHeight} - 2px)`,
 	paddingTop: '0px',
 	paddingBottom: '0px',
 	paddingRight: theme.dimensions.basePadding,
@@ -141,7 +141,7 @@ globalStyle('input[type="text"]', {
 	maxWidth: '100%',
 	width: '100%',
 	boxSizing: 'border-box',
-	height: theme.dimensions.subheaderHeight,
+	height: `calc(${theme.dimensions.subheaderHeight} - 2px)`,
 	boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
 	transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s',
 	'@media': {

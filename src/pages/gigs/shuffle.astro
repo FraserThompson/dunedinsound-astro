@@ -1,6 +1,25 @@
 ---
-import Gigs from '../gigs.astro'
+import ShuffleFilters from 'src/components/ShuffleFilters.astro'
+import { loadAndFormatCollection } from 'src/util/collection'
+import GigsShuffle from 'src/components/gig/GigsShuffle.tsx'
+import SubheadersLayout from 'src/layouts/base/SubheadersLayout.astro'
+
+const gigs = await loadAndFormatCollection('gig')
 ---
 
-<Gigs mode="shuffle" />
-
+<SubheadersLayout hideFooter={true}>
+	<ShuffleFilters slot="subheaderTop" itemselector=".tile" boardselector="#gigs">
+		<div style={{ marginLeft: 'auto' }}>
+			<span>Mode: </span>
+			<div class="buttonGroup">
+				<a href="/gigs">
+					<button>Timeline</button>
+				</a>
+				<a href="/gigs/shuffle">
+					<button class={'active'}>Shuffle</button>
+				</a>
+			</div>
+		</div>
+	</ShuffleFilters>
+	<GigsShuffle gigs={gigs} client:load />
+</SubheadersLayout>
