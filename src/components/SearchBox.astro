@@ -9,7 +9,7 @@ interface Props {
 const { placeholder, className } = Astro.props
 ---
 
-<div class={`${searchboxWrapper} ${className}`}>
+<div class={`${searchboxWrapper} ${className} flex`}>
 	<span class="hideMobile">Search: </span>
 	<input type="text" data-filter="title=value" placeholder={placeholder} />
 </div>

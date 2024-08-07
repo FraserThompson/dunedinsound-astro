@@ -24,7 +24,7 @@ const latestGig = combinedPosts[latestGigIndex] as ProcessedEntry<'gig'>
 combinedPosts.splice(latestGigIndex, 1)
 ---
 
-<BaseLayout>
+<BaseLayout poo={{ title: 'Home' }}>
 	<GridContainer fixed={true}>
 		<GridChild grid={{ xs: 12, md: 8 }}>
 			<GigTile containerHeight="60vh" gig={latestGig} />

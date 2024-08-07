@@ -7,7 +7,7 @@ import SubheadersLayout from 'src/layouts/base/SubheadersLayout.astro'
 const gigs = await loadAndFormatCollection('gig')
 ---
 
-<SubheadersLayout hideFooter={true}>
+<SubheadersLayout hideFooter={true} poo={{ title: 'Gig Jukebox' }}>
 	<ShuffleFilters slot="subheaderTop" itemselector=".tile" boardselector="#gigs">
 		<div style={{ marginLeft: 'auto' }}>
 			<span>Mode: </span>

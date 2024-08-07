@@ -2,7 +2,6 @@
 import GigsMenu from 'src/components/gig/GigsMenu.astro'
 import SearchBox from 'src/components/SearchBox.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
-import { Subheader } from 'src/components/UtilClasses.css'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 import Gig from 'src/layouts/collection/Gig.astro'
 import { loadAndFormatCollection } from 'src/util/collection.ts'
@@ -18,9 +17,19 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props
+const entryData = entry.entry.data
+const entryExtra = entry.extra
 ---
 
-<SidebarLayout scrollContext="gigs">
+<SidebarLayout
+	scrollContext="gigs"
+	poo={{
+		title: entryData.title,
+		description: entryExtra.metaDescription,
+		image: entryExtra.cover?.src,
+		date: entryData.date.toISOString()
+	}}
+>
 	<ShuffleFilters className="hideMobile" slot="subheaderTop" itemselector=".tile" boardselector="#artist-grid">
 		<SearchBox placeholder=`Search gigs by title, artist, venue` />
 	</ShuffleFilters>

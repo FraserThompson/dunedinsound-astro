@@ -17,20 +17,26 @@
 import { theme } from 'src/Theme.css'
 import BaseLayout from '../base/BaseLayout.astro'
 import SidebarNav from 'src/components/SidebarNav.astro'
-import { Subheader } from 'src/components/UtilClasses.css'
+import type { Poo } from 'src/components/SEO.astro'
+import { WithTopSubheader, WithBottomSubheaderMobile, Subheader } from 'src/components/UtilClasses.css'
 
 interface Props {
 	scrollContext?: string
 	hideFooter?: boolean
+	poo: Poo
 }
 
-const { scrollContext, hideFooter } = Astro.props
+const { scrollContext, hideFooter, poo } = Astro.props
 
 const hasSubheaderTop = Astro.slots.has('subheaderTop')
 const hasSubheaderBottomMobile = Astro.slots.has('subheaderBottomMobile')
 ---
 
-<BaseLayout hideFooter={hideFooter}>
+<BaseLayout
+	className=`${hasSubheaderTop && WithTopSubheader} ${hasSubheaderBottomMobile && WithBottomSubheaderMobile}`
+	hideFooter={hideFooter}
+	poo={poo}
+>
 	{
 		hasSubheaderTop && (
 			<div class={`${Subheader['top']}`}>

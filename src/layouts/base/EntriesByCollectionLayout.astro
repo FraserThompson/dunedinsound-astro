@@ -13,19 +13,29 @@ import SearchBox from 'src/components/SearchBox.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import ContentByEntry from '../../components/ContentByEntry.astro'
 import type { ProcessedEntry } from 'src/util/collection'
-import type { DataEntryMap } from 'astro:content'
 import SidebarLayout from './SidebarLayout.astro'
 import { theme } from 'src/Theme.css'
 
-interface Props<C extends keyof DataEntryMap> {
-	entry: ProcessedEntry<C>
+interface Props {
+	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
 }
 
 const { entry } = Astro.props
 const collection = entry.entry.collection
+
+const entryData = entry.entry.data
+const entryExtra = entry.extra
 ---
 
-<SidebarLayout scrollContext={collection}>
+<SidebarLayout
+	poo={{
+		title: entryData.title,
+		description: entryExtra.metaDescription,
+		image: entryExtra.cover?.src,
+		date: entryData.date?.toISOString()
+	}}
+	scrollContext={collection}
+>
 	<ShuffleFilters slot="subheaderTop" itemselector=".sidebar-item" boardselector="#sidebar-menu">
 		<SearchBox placeholder=`Search ${collection}` />
 	</ShuffleFilters>

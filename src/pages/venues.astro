@@ -1,13 +1,10 @@
 ---
-import BaseLayout from '../layouts/base/BaseLayout.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
 import Map from 'src/components/venue/Map.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import ActiveIndicator from 'src/components/ActiveIndicator.astro'
 import SocialLinks from 'src/components/SocialLinks.astro'
-import SidebarNav from 'src/components/SidebarNav.astro'
 import EntryMenu from 'src/components/EntryMenu.astro'
-import { theme } from 'src/Theme.css'
 import Image2 from 'src/components/Image2.astro'
 import SearchBox from 'src/components/SearchBox.astro'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
@@ -20,7 +17,7 @@ const markers = venues.map((venue) => ({
 }))
 ---
 
-<SidebarLayout hideFooter={true} scrollContext="venues">
+<SidebarLayout hideFooter={true} scrollContext="venues" poo={{ title: 'Venues' }}>
 	<ShuffleFilters slot="subheaderTop" itemselector=".sidebar-item" boardselector="#sidebar-menu">
 		<SearchBox className="hideMobile" placeholder="Search venues" />
 		<div style={{ marginLeft: 'auto' }}>
@@ -65,8 +62,7 @@ const markers = venues.map((venue) => ({
 			}
 		</div>
 	</Map>
-	<div slot="subheaderBottomMobile">
-	</div>
+	<div slot="subheaderBottomMobile"></div>
 </SidebarLayout>
 
 <style is:global>

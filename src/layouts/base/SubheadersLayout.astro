@@ -9,15 +9,17 @@
  *  - subheaderTop: A subheader displayed at the top of the page.
  *  - subheaderBottomMobile: A subheader displayed at the bottom on mobile.
  */
+import type { Poo } from 'src/components/SEO.astro'
 import '../../Theme.css.ts'
 import BaseLayout from './BaseLayout.astro'
 import { WithTopSubheader, WithBottomSubheaderMobile, Subheader } from 'src/components/UtilClasses.css'
 
 interface Props {
 	hideFooter?: boolean
+	poo: Poo
 }
 
-const { hideFooter } = Astro.props
+const { hideFooter, poo } = Astro.props
 
 const hasSubheaderTop = Astro.slots.has('subheaderTop')
 const hasSubheaderBottomMobile = Astro.slots.has('subheaderBottomMobile')
@@ -26,6 +28,7 @@ const hasSubheaderBottomMobile = Astro.slots.has('subheaderBottomMobile')
 <BaseLayout
 	className=`${hasSubheaderTop && WithTopSubheader} ${hasSubheaderBottomMobile && WithBottomSubheaderMobile}`
 	hideFooter={hideFooter}
+	poo={poo}
 >
 	{
 		hasSubheaderTop && (

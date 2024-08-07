@@ -8,7 +8,7 @@ import Room from 'src/components/Room.astro'
 const vaultsessions = await loadAndFormatCollection('vaultsession')
 ---
 
-<BaseLayout hideFooter={true}>
+<BaseLayout hideFooter={true} poo={{ title: 'Vault Sessions' }}>
 	<Room>
 		<div slot="back">
 			<div class="entries">

@@ -9,6 +9,7 @@
 import GlobalStyle from 'src/components/GlobalStyle.astro'
 import SiteFooter from 'src/components/SiteFooter.astro'
 import SiteHeader from 'src/components/SiteHeader.astro'
+import SEO, { type Poo } from 'src/components/SEO.astro'
 import '../../Theme.css.ts'
 import './BaseLayout.css.ts'
 import { Content, SiteContainer } from 'src/components/UtilClasses.css'
@@ -16,19 +17,20 @@ import { Content, SiteContainer } from 'src/components/UtilClasses.css'
 interface Props {
 	hideFooter?: boolean
 	className?: string
+	poo: Poo
 }
 
-const { hideFooter, className } = Astro.props
+const { hideFooter, className, poo } = Astro.props
 ---
 
 <GlobalStyle />
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/ico" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<SEO poo={poo} />
 		<script type="application/javascript">
 			var global = window
 		</script>

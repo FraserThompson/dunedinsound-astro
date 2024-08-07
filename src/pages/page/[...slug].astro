@@ -16,6 +16,6 @@ export async function getStaticPaths() {
 const { entry } = Astro.props
 ---
 
-<BaseLayout>
+<BaseLayout poo={{ title: entry.entry.data.title, description: entry.extra.metaDescription }}>
 	<Page entry={entry} />
 </BaseLayout>

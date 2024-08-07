@@ -7,10 +7,13 @@ import * as path from 'node:path'
 import { getResponsiveImages, getResponsiveImagesByDir } from './image'
 import type { ResponsiveImage } from './ResponsiveImage'
 import { monthMap } from './helpers'
+import { getCollectionMetaDescription } from './seo'
+
 
 type EntryExtraCommon = {
 	slug: string
 	absolutePath: string
+	metaDescription?: string
 	cover?: ResponsiveImage
 	images?: { [id: string]: ResponsiveImage }
 }
@@ -141,6 +144,8 @@ export async function processEntry<C extends CollectionKey>(
 async function getCommonExtra<C extends CollectionKey>(entry: CollectionEntry<C>): Promise<EntryExtraCommon> {
 	const title = entry.data.title
 
+	const metaDescription = getCollectionMetaDescription(entry)
+
 	// To preserve URLs from old site
 	const postSlug = getEntrySlug(title, entry.collection)
 
@@ -148,6 +153,7 @@ async function getCommonExtra<C extends CollectionKey>(entry: CollectionEntry<C>
 
 	return {
 		slug: postSlug,
+		metaDescription,
 		absolutePath: getEntryPath(postSlug, entry.collection),
 		cover: await getCover(entry),
 		images: images

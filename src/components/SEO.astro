@@ -1,0 +1,32 @@
+---
+import { defaultMetaDescription, siteTitle } from 'src/util/seo'
+
+export interface Poo {
+	title: string
+	description?: string
+	image?: string
+	date?: string
+}
+
+interface Props {
+	poo: Poo
+}
+
+const { poo } = Astro.props
+
+const description = poo.description || defaultMetaDescription
+const title = `${poo.title} | ${siteTitle}`
+const currentPath = Astro.url.pathname
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="description" content={description} />
+<meta name="image" content={poo.image} />
+<meta property="og:site_name" content="dunedinsound" />
+<meta property="og:url" content={`https://dunedinsound.com${currentPath}`} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content={'article'} />
+<meta itemprop="datePublished" content={poo.date} />
+<meta property="og:image" content={poo.image} />
