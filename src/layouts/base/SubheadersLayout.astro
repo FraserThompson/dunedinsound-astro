@@ -4,7 +4,7 @@
  *
  * Props:
  *  - hideFooter (optional): See BaseLayout
- * 
+ *
  * Slots:
  *  - subheaderTop: A subheader displayed at the top of the page.
  *  - subheaderBottomMobile: A subheader displayed at the bottom on mobile.
@@ -22,6 +22,8 @@ interface Props {
 const { hideFooter, poo } = Astro.props
 
 const hasSubheaderTop = Astro.slots.has('subheaderTop')
+const hasSubheaderTopMobile = Astro.slots.has('subheaderTopMobile')
+const hasSubheaderTopDesktop = Astro.slots.has('subheaderTopDesktop')
 const hasSubheaderBottomMobile = Astro.slots.has('subheaderBottomMobile')
 ---
 
@@ -34,6 +36,20 @@ const hasSubheaderBottomMobile = Astro.slots.has('subheaderBottomMobile')
 		hasSubheaderTop && (
 			<div class={`${Subheader['top']}`}>
 				<slot name="subheaderTop" />
+			</div>
+		)
+	}
+	{
+		hasSubheaderTopMobile && (
+			<div class={`${Subheader['topMobile']}`}>
+				<slot name="subheaderTopMobile" />
+			</div>
+		)
+	}
+	{
+		hasSubheaderTopDesktop && (
+			<div class={`${Subheader['topDesktop']}`}>
+				<slot name="subheaderTopDesktop" />
 			</div>
 		)
 	}

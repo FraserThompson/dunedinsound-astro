@@ -58,7 +58,8 @@ const { markers, zoom, center, nointeract } = Astro.props
 
 		map: mapboxgl.Map
 		markers: mapboxgl.Marker[]
-		sidebarLinks: NodeListOf<HTMLAnchorElement>
+		sidebar: Element | null
+		sidebarLinks: NodeListOf<HTMLAnchorElement> | undefined
 		selectedMarker: mapboxgl.Marker | undefined
 		selectedSidebar: HTMLElement | undefined
 
@@ -83,7 +84,8 @@ const { markers, zoom, center, nointeract } = Astro.props
 			})
 
 			this.markers = []
-			this.sidebarLinks = document.querySelectorAll('[data-markerindex]')
+			this.sidebar = document.querySelector('sidebar-wrapper')
+			this.sidebarLinks = this.sidebar?.querySelectorAll('[data-markerindex]')
 
 			const markers = JSON.parse(this.getAttribute('data-markers') || '') as any
 			const popups = this.querySelectorAll('.popup')
@@ -106,6 +108,7 @@ const { markers, zoom, center, nointeract } = Astro.props
 		}
 
 		markerClick(e: any, i: number) {
+			if (!this.sidebarLinks) return
 			this.selectedSidebar?.classList.remove('active')
 			this.selectedSidebar = this.sidebarLinks[i]
 			this.selectedSidebar?.classList.add('active')
@@ -138,10 +141,15 @@ const { markers, zoom, center, nointeract } = Astro.props
 			// Open new popup
 			this.selectedMarker = this.markers[indexInt]
 			this.selectedMarker.togglePopup()
+
+			// Close sidebar on mobile
+			// See: SidebarNav.astro
+			// @ts-ignore
+			this.sidebar.toggleSidebar()
 		}
 
 		connectedCallback() {
-			this.sidebarLinks.forEach((link) => link.addEventListener('mousedown', (e) => this.sidebarClick(e)))
+			this.sidebarLinks?.forEach((link) => link.addEventListener('mousedown', (e) => this.sidebarClick(e)))
 
 			// Support for hiding markers on shuffle filter
 			document.addEventListener(

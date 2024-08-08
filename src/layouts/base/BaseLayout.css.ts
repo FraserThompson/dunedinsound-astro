@@ -139,6 +139,8 @@ globalStyle('input[type="text"]', {
 	border: '1px solid #000',
 	minWidth: '0px',
 	maxWidth: '100%',
+	paddingLeft: theme.dimensions.basePaddingMobile,
+	paddingRight: theme.dimensions.basePaddingMobile,
 	width: '100%',
 	boxSizing: 'border-box',
 	height: `calc(${theme.dimensions.subheaderHeight} - 2px)`,
@@ -146,7 +148,9 @@ globalStyle('input[type="text"]', {
 	transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s',
 	'@media': {
 		'screen and (--md)': {
-			maxWidth: '220px'
+			maxWidth: '220px',
+			paddingLeft: theme.dimensions.basePadding,
+			paddingRight: theme.dimensions.basePadding,
 		}
 	}
 })

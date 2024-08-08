@@ -50,11 +50,16 @@ export const gigLink = style([MenuLinkWrapper['vertical'], {
 export const artistLink = style([
 	MenuLinkWrapper['vertical'],
 	{
-		paddingLeft: `calc(${theme.dimensions.basePadding} * 2)`,
+		paddingLeft: `calc(${theme.dimensions.basePadding})`,
 		selectors: {
 			'&.active': {
 				backgroundColor: theme.color.contrast2,
 				color: 'black'
+			}
+		},
+		'@media': {
+			'screen and (--md)': {
+				paddingLeft: `calc(${theme.dimensions.basePadding} * 2)`,
 			}
 		}
 	}

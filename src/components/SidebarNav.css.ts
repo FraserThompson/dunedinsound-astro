@@ -1,4 +1,4 @@
-import { createVar, style, fallbackVar } from '@vanilla-extract/css'
+import { createVar, style, fallbackVar, styleVariants } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 const defaultWidth = '100vw'
@@ -14,26 +14,25 @@ export const sidebarWrapper = style({
 	backgroundColor: theme.color.primary,
 	boxSizing: 'border-box',
 	top: fallbackVar(offsetTopMobile, '0px'),
-	bottom: fallbackVar(offsetBottomMobile, '0px'),
+	bottom: `calc(${fallbackVar(offsetBottomMobile, '0px')} + ${theme.dimensions.headerHeight})`,
+	height: `calc(100vh - ${fallbackVar(offsetTopMobile, '0px')} - ${fallbackVar(offsetBottomMobile, '0px')} - ${
+		theme.dimensions.headerHeight
+	})`,
 	left: 0,
 	width: defaultWidth,
-	maxWidth: defaultWidth,
 	zIndex: '10',
 	boxShadow: theme.borders.shadow,
 	borderRight: theme.borders.primary,
-	visibility: 'hidden',
-	opacity: 0,
-	transform: 'translateX(-50vw)',
-	pointerEvents: 'none',
+	transform: `translateY(calc(100vh - ${fallbackVar(offsetTopMobile, '0px')} - ${theme.dimensions.headerHeight}))`,
 	transitionProperty: 'opacity, transform',
-	transitionDuration: '0.3s',
-	transitionTimingFunction: 'cubic-bezier(0, 0, 0, 1.2)',
+	transitionDuration: '0.2s',
+	transitionTimingFunction: 'ease-in',
 	willChange: 'transform',
 	selectors: {
 		'&.open': {
 			visibility: 'visible',
 			opacity: 1,
-			transform: `translateX(0)`,
+			transform: `translateY(0)`,
 			pointerEvents: 'auto'
 		}
 	},
@@ -70,25 +69,67 @@ export const contentWrapper = style({
 	}
 })
 
-export const menuButtonWrapper = style({
-	position: 'fixed',
-	padding: 0,
-	bottom: theme.dimensions.headerHeight,
-	left: '0',
-	zIndex: '12',
-	height: theme.dimensions.subheaderHeight,
-	width: theme.dimensions.subheaderHeight,
-	backgroundColor: theme.color.primary,
-	border: 'none',
-	color: 'white',
-	'@media': {
-		'screen and (--md)': {
-			display: 'none'
+const sidebarButtonBase = style({
+	selectors: {
+		'&.open': {
+			boxShadow: `inset 0px 0px 3px 2px ${theme.color.darkSecondary}`
+		},
+		'&::after': {
+			height: '24px',
+			content:
+				"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24px' height='24px' class='up-icon'%3E%3Cpath fill='white' d='m6.293 13.293l1.414 1.414L12 10.414l4.293 4.293l1.414-1.414L12 7.586z'%3E%3C/path%3E%3C/svg%3E\")"
+		},
+		'&.open::after': {
+			height: '24px',
+			content:
+				"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24px' height='24px' class='down-icon hidden'%3E%3Cpath fill='white' d='M16.293 9.293L12 13.586L7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z'%3E%3C/path%3E%3C/svg%3E\")"
+		},
+		'&:active, &:focus': {
+			backgroundColor: theme.color.darkSecondary
 		}
 	},
-	selectors: {
-		'&:active, &:focus, &:visited': {
-			backgroundColor: theme.color.primary
+	'@media': {
+		'screen and (--md)': {
+			selectors: {
+				'&.open': {
+					boxShadow: 'none'
+				},
+				'&::after': {
+					content: ''
+				},
+				'&.open::after': {
+					content: ''
+				},
+				'&:active, &:focus': {
+					backgroundColor: theme.color.darkSecondary
+				}
+			}
 		}
 	}
+})
+
+export const sidebarButtonWrapper = styleVariants({
+	base: [sidebarButtonBase],
+	bar: [
+		sidebarButtonBase,
+		{
+			fontSize: '1.5em',
+			padding: 0,
+			zIndex: '15',
+			position: 'fixed',
+			bottom: 0,
+			height: theme.dimensions.subheaderHeight,
+			display: 'flex',
+			justifyContent: 'center',
+			width: '100vw',
+			backgroundColor: theme.color.secondary,
+			border: 'none',
+			color: 'white',
+			'@media': {
+				'screen and (--md)': {
+					display: 'none'
+				}
+			}
+		}
+	]
 })

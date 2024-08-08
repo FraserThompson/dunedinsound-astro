@@ -14,7 +14,6 @@ import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import ContentByEntry from '../../components/ContentByEntry.astro'
 import type { ProcessedEntry } from 'src/util/collection'
 import SidebarLayout from './SidebarLayout.astro'
-import { theme } from 'src/Theme.css'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
@@ -36,17 +35,19 @@ const entryExtra = entry.extra
 	}}
 	scrollContext={collection}
 >
-	<ShuffleFilters slot="subheaderTop" itemselector=".sidebar-item" boardselector="#sidebar-menu">
+	<ShuffleFilters slot="subheaderTopDesktop" itemselector=".sidebar-item" boardselector="#sidebar-menu">
 		<SearchBox placeholder=`Search ${collection}` />
 	</ShuffleFilters>
 	<EntryMenu slot="sidebarMenu" collection={collection} selected={entry.entry.id} />
 	<ContentByEntry entry={entry} slot="content">
 		<slot name="banner" />
 	</ContentByEntry>
-	<div slot="sidebarFixed" class="showMobile fullWidth" style={{ marginLeft: theme.dimensions.subheaderHeight }}>
-		<ShuffleFilters itemselector=".sidebar-item" boardselector="#sidebar-menu">
-			<SearchBox placeholder=`Search ${collection}` />
-		</ShuffleFilters>
-	</div>
-	<div slot="subheaderBottomMobile"></div>
+	<ShuffleFilters
+		slot="subheaderBottomMobile"
+		className="fullWidth"
+		itemselector=".sidebar-item"
+		boardselector="#sidebar-menu"
+	>
+		<SearchBox placeholder=`Search ${collection}s` />
+	</ShuffleFilters>
 </SidebarLayout>

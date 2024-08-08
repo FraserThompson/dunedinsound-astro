@@ -1,5 +1,6 @@
 ---
 import { searchboxWrapper } from './SearchBox.css'
+import SearchIcon from '~icons/bx/search'
 
 interface Props {
 	placeholder?: string
@@ -9,7 +10,7 @@ interface Props {
 const { placeholder, className } = Astro.props
 ---
 
-<div class={`${searchboxWrapper} ${className} flex`}>
-	<span class="hideMobile">Search: </span>
+<label class={`${searchboxWrapper} ${className} flex`}>
+	<SearchIcon class="hideMobile" />
 	<input type="text" data-filter="title=value" placeholder={placeholder} />
-</div>
+</label>

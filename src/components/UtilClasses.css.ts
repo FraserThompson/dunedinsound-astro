@@ -23,23 +23,34 @@ export const Subheader = styleVariants({
 			top: 0
 		}
 	],
+	topDesktop: [
+		SubheaderBase,
+		{
+			display: 'none',
+			'@media': {
+				'screen and (--xs)': {
+					display: 'flex',
+					top: 0
+				}
+			}
+		}
+	],
+	topMobile: [
+		SubheaderBase,
+		{
+			display: 'flex',
+			top: 0,
+			'@media': {
+				'screen and (--xs)': {
+					display: 'none'
+				}
+			}
+		}
+	],
 	bottom: [
 		SubheaderBase,
 		{
 			bottom: theme.dimensions.headerHeight
-		}
-	],
-	sidebarTopAndBottom: [
-		SubheaderBase,
-		{
-			top: 'auto',
-			bottom: theme.dimensions.headerHeightNegative,
-			'@media': {
-				'screen and (--md)': {
-					top: theme.dimensions.headerHeightNegative,
-					bottom: 'auto'
-				}
-			}
 		}
 	]
 })

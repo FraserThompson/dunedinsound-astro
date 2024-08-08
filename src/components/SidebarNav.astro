@@ -2,20 +2,26 @@
 /**
  * Wrapper for a page with a sidebar navigation.
  * Slots:
- *  - sidebar: Put your sidebar menu in this.
+ *  - sidebarMenu: Scrollable content. Put your sidebar menu in this.
+ *  - sidebarFixed: Arbitrary content to go in the sidebar.
  *  - content: Put the rest of the page in this.
- * Props:
+ *
+ * Props (all optional):
  *  - top: Offset from the top on desktop.
- *  - top: Offset from top on mobile (xs).
+ *  - topMobile: Offset from top on mobile (xs).
+ *  - bottom: Offset from the bottom on desktop.
+ *  - bottomMobile: Offset from bottom on mobile (xs).
  *  - scrollContext: If a context is supplied it will remember the scroll
  *    position within that context.
+ *  - customButton: If true, it will not render its own button.
+ *    You will need to put a button with id 'sidebar-button' somewhere on the page.
  */
-import MenuIcon from '~icons/bx/menu'
+
 import {
 	sidebarWrapper,
 	sidebarMenuWrapper,
 	contentWrapper,
-	menuButtonWrapper,
+	sidebarButtonWrapper,
 	offsetTop,
 	offsetTopMobile,
 	offsetBottom,
@@ -29,13 +35,13 @@ interface Props {
 	bottom?: string
 	bottomMobile?: string
 	scrollContext?: string
+	customButton?: boolean
 }
 
-const { top, topMobile, bottom, bottomMobile, scrollContext } = Astro.props
+const { top, topMobile, bottom, bottomMobile, scrollContext, customButton } = Astro.props
 ---
 
 <sidebar-wrapper data-scrollcontext={scrollContext}>
-	<button id="sidebar-button" class={menuButtonWrapper}><MenuIcon /></button>
 	<div
 		id="sidebar"
 		class={sidebarWrapper}
@@ -52,6 +58,7 @@ const { top, topMobile, bottom, bottomMobile, scrollContext } = Astro.props
 		<slot name="sidebarFixed" />
 	</div>
 </sidebar-wrapper>
+{!customButton && <button id="sidebar-button" class={sidebarButtonWrapper['bar']} />}
 <div
 	class={contentWrapper}
 	style={assignInlineVars({
@@ -88,7 +95,7 @@ const { top, topMobile, bottom, bottomMobile, scrollContext } = Astro.props
 		constructor() {
 			super()
 			this.sidebar = this.querySelector('#sidebar')
-			this.button = this.querySelector('#sidebar-button')
+			this.button = document.querySelector('#sidebar-button')
 			this.scrollContext = this.getAttribute('data-scrollcontext')
 
 			// Recalled items
@@ -103,6 +110,7 @@ const { top, topMobile, bottom, bottomMobile, scrollContext } = Astro.props
 
 		toggleSidebar() {
 			this.sidebar?.classList.toggle('open')
+			this.button?.classList.toggle('open')
 		}
 
 		/**

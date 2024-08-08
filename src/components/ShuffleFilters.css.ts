@@ -30,9 +30,14 @@ globalStyle(`${shuffleFilter} > div`, {
 })
 
 globalStyle(`${shuffleFilter} label, ${shuffleFilter} span`, {
-	display: 'inline-block',
+	display: 'flex',
 	lineHeight: theme.dimensions.subheaderHeight,
-	paddingRight: theme.dimensions.basePadding
+	paddingRight: 0,
+	'@media': {
+		'screen and (--xs)': {
+			paddingRight: theme.dimensions.basePadding
+		}
+	}
 })
 
 globalStyle(`${shuffleFilter} input, ${shuffleFilter} select, ${shuffleFilter} .buttonGroup`, {

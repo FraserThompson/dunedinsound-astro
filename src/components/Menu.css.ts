@@ -5,6 +5,8 @@ const MenuWrapperBase = style({
 	paddingLeft: 0,
 	paddingRight: 0,
 	textAlign: 'left',
+	position: 'relative',
+	zIndex: '6',
 	backgroundColor: theme.color.background,
 	backgroundClip: 'padding-box',
 	border: 'none',
@@ -104,7 +106,9 @@ export const MenuLinkWrapper = styleVariants({
 	horizontal: [
 		MenuLinkWrapperBase,
 		{
-			display: 'inline-block',
+			display: 'inline-flex',
+			justifyContent: 'center',
+			alignItems: 'center',
 			borderBottom: 'none',
 			borderTop: 'none'
 		}

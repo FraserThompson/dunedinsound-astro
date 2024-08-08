@@ -83,7 +83,7 @@ createGlobalTheme(':root', theme, {
 		darkText: invert(textColor),
 		lightPrimary: lighten(0.2, primaryColor),
 		lightSecondary: lighten(0.5, secondaryColor),
-		darkSecondary: darken(0.2, secondaryColor),
+		darkSecondary: darken(0.1, secondaryColor),
 		lightContrast2: lighten(0.2, contrastColor2),
 		lightForeground: lighten(0.2, foregroundColor)
 	},

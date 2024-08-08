@@ -4,18 +4,19 @@
  *
  * Props:
  *  - links: an array of MenuLink objects.
- *  - currentPath: the current path, will highlight menu items based on this.
- *  - menuType: how to display the menu.
+ *  - menuType (optional): how to display the menu, defaults to horizontal.
  *
  * Menu links:
  *  - can specify a title or an image. if both are present it will prefer the image.
  *  - also can use a number of preset icons.
+ *  - sidebarOnActive (optional): If true, thiis link will open a sidebar on mobile when active.
  *
  * @param props
  * @returns
  */
 
 import HomeIcon from '~icons/bx/home'
+import { sidebarButtonWrapper } from './SidebarNav.css'
 import { MenuLinkWrapper, MenuLi, MenuWrapper } from './Menu.css'
 
 type PresetIcons = 'home'
@@ -27,6 +28,7 @@ export interface MenuLink {
 	id?: string
 	class?: string
 	icon?: PresetIcons
+	sidebarOnActive?: boolean
 }
 
 interface Props {
@@ -50,19 +52,23 @@ const { links, menuType = 'horizontal' } = Astro.props
 
 <ul class={MenuWrapper[menuType]}>
 	{
-		links.map((link) => (
-			<li class={`${MenuLi[menuType]} ${link.class || ''}`}>
-				<a
-					class={`${MenuLinkWrapper[menuType]} ${isActive(link.href, currentPath)}`}
-					href={link.href}
-					title={link.title}
-					id={link.id}
-				>
-					{!link.image && link.title}
-					{link.image && <img src={link.image} />}
-					{link.icon && link.icon === 'home' ? <HomeIcon /> : ''}
-				</a>
-			</li>
-		))
+		links.map((link) => {
+			const activeClass = isActive(link.href, currentPath)
+			const sidebarButtonClass = link.sidebarOnActive && activeClass ? 'sidebar-button' : ''
+			return (
+				<li class={`${MenuLi[menuType]} ${link.class || ''}`}>
+					<a
+						class={`${MenuLinkWrapper[menuType]} ${activeClass} ${sidebarButtonClass ? sidebarButtonWrapper['base'] : ''}`}
+						href={sidebarButtonClass ? undefined : link.href}
+						title={link.title}
+						id={`${sidebarButtonClass || link.id}`}
+					>
+						{!link.image && link.title}
+						{link.image && <img src={link.image} />}
+						{link.icon && link.icon === 'home' ? <HomeIcon /> : ''}
+					</a>
+				</li>
+			)
+		})
 	}
 </ul>

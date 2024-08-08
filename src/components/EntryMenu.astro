@@ -2,7 +2,7 @@
 /**
  * A menu displaying all entries of a certain type.
  * Used on content by entry pages to aid navigation.
- * 
+ *
  * Props:
  *  - collection: the collection to display entries from.
  *  - selected: the current entry. Will highlight it if supplied.
@@ -22,7 +22,13 @@ const { selected, collection } = Astro.props
 const entries = await loadAndFormatCollection(collection)
 ---
 
-<slot />
+{
+	selected && (
+		<a class="hideMobile" href={`/${collection}s`}>
+			<button>Back to {collection}s home</button>
+		</a>
+	)
+}
 
 <ul id="sidebar-menu" class={MenuWrapper['vertical']}>
 	{
@@ -32,7 +38,11 @@ const entries = await loadAndFormatCollection(collection)
 				data-active={entry.entry.data.died === undefined ? 'true' : 'false'}
 				class={`sidebar-item ${MenuLi['vertical']} ${entry.entry.id === selected ? 'active' : ''}`}
 			>
-				<a class={MenuLinkWrapper['vertical']} data-markerindex={i} href={selected ? entry.extra.absolutePath : undefined}>
+				<a
+					class={MenuLinkWrapper['vertical']}
+					data-markerindex={i}
+					href={selected ? entry.extra.absolutePath : undefined}
+				>
 					{entry.entry.data.title}
 					<div style={{ position: 'absolute', right: '5px', top: '0px' }}>
 						<ActiveIndicator died={entry.entry.data.died} hideText={true} />

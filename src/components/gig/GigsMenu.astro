@@ -47,6 +47,9 @@ const { selected } = Astro.props
 />
 
 <gigs-menu data-selected={selected}>
+	<a href="/gigs">
+		<button>Back to gigs home</button>
+	</a>
 	{
 		Object.entries(sortedGigs)
 			.reverse()
@@ -139,6 +142,7 @@ const { selected } = Astro.props
 	class GigsMenu extends HTMLElement {
 		_internals: any
 
+		sidebar: HTMLElement | null
 		months: NodeListOf<HTMLElement> | null
 		years: NodeListOf<HTMLElement> | null
 		gigLinks: NodeListOf<HTMLElement> | null
@@ -147,12 +151,21 @@ const { selected } = Astro.props
 		constructor() {
 			super()
 			this._internals = this.attachInternals()
+			this.sidebar = document.querySelector('sidebar-wrapper')
 
 			this.months = this.querySelectorAll('.monthList')
 			this.years = this.querySelectorAll('.yearList')
 			this.gigLinks = this.querySelectorAll('[data-gig]')
 
 			this.selected = this.getAttribute('data-selected')
+		}
+
+		itemClick(e: MouseEvent) {
+			scrollTo(e)			
+			// Close sidebar on mobile
+			// See: SidebarNav.astro
+			// @ts-ignore
+			this.sidebar.toggleSidebar()
 		}
 
 		onShuffle(e: any) {
@@ -199,7 +212,8 @@ const { selected } = Astro.props
 
 		connectedCallback() {
 			document.addEventListener('shuffle-filter', (e: any) => this.onShuffle(e), false)
-			!this.selected && this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('mousedown', (e) => scrollTo(e)))
+			!this.selected &&
+				this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('mousedown', (e) => this.itemClick(e)))
 		}
 
 		disconnectedCallback() {}

@@ -50,6 +50,7 @@ export const infoLink = style({
 	display: 'flex',
 	justifyContent: 'center',
 	width: theme.dimensions.headerHeight,
+	zIndex: '6',
 	selectors: {
 		'&.active': {
 			backgroundColor: theme.color.secondary
