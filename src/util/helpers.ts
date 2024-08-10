@@ -179,7 +179,7 @@ export const makeHash = (string: string) => 'h' + encodeURIComponent(toMachineNa
  */
 export const generateExcerpt = (body: string) => {
 	const parser = new MarkdownIt()
-	const html = parser.render(body.replace(/^(import ).*'/gm, ''))
+	const html = parser.render(body.replace(/^(import ).*['"]/gm, ''))
 	const options = {
 		wordwrap: null,
 		typographer: true,

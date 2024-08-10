@@ -164,4 +164,4 @@ const tasks = media.map((inputPath) => {
 	return thing
 })
 
-parallelLimit(tasks, 16)
+parallelLimit(tasks, 24)
