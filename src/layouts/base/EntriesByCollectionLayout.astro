@@ -7,6 +7,9 @@
  *
  * Props:
  *  - entry: The entry.
+ *
+ * Slots:
+ *  - banner: Content to go in the banner at the top.
  */
 import EntryMenu from 'src/components/EntryMenu.astro'
 import SearchBox from 'src/components/SearchBox.astro'
@@ -43,7 +46,7 @@ const entryExtra = entry.extra
 		<slot name="banner" />
 	</ContentByEntry>
 	<ShuffleFilters
-		slot="subheaderBottomMobile"
+		slot="sidebarSubheaderMobile"
 		className="fullWidth"
 		itemselector=".sidebar-item"
 		boardselector="#sidebar-menu"

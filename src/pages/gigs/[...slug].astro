@@ -34,13 +34,8 @@ const entryExtra = entry.extra
 		<SearchBox placeholder=`Search gigs by title, artist, venue` />
 	</ShuffleFilters>
 	<GigsMenu slot="sidebarMenu" selected={entry.entry.id} />
-	<Gig entry={entry} slot="content" />
-	<ShuffleFilters
-		slot="subheaderBottomMobile"
-		className="fullWidth"
-		itemselector=".sidebar-item"
-		boardselector="#sidebar-menu"
-	>
+	<ShuffleFilters slot="sidebarSubheaderMobile" className="fullWidth" itemselector=".sidebar-item" boardselector="#sidebar-menu">
 		<SearchBox placeholder=`Search gigs by title, artist, venue` />
 	</ShuffleFilters>
+	<Gig entry={entry} slot="content" />
 </SidebarLayout>

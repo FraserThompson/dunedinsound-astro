@@ -34,7 +34,7 @@ const { minimizedAlways } = Astro.props
 	import { calculateScrollHeaderOffset } from 'src/util/helpers'
 
 	class PlayerWrapper extends HTMLElement {
-		_internals: any
+		private _internals
 		minimizedAlways: boolean
 		player: HTMLElement | null
 		openButton: HTMLElement | null
@@ -48,11 +48,11 @@ const { minimizedAlways } = Astro.props
 			this._internals = this.attachInternals()
 			this.minimizedAlways = !!this.dataset.minimizedAlways
 
-			this.openButton = this.querySelector('button#open-button')
-			this.openButtonWrapper = this.querySelector('#open-button-wrapper')
-			this.upIcon = this.querySelector('.up-icon')
-			this.downIcon = this.querySelector('.down-icon')
-			this.player = this.querySelector('#player')
+			this.openButton = this.querySelector<HTMLElement>('button#open-button')
+			this.openButtonWrapper = this.querySelector<HTMLElement>('#open-button-wrapper')
+			this.upIcon = this.querySelector<HTMLElement>('.up-icon')
+			this.downIcon = this.querySelector<HTMLElement>('.down-icon')
+			this.player = this.querySelector<HTMLElement>('#player')
 		}
 
 		get open() {

@@ -1,0 +1,75 @@
+---
+/**
+ * Provides content which will appear at the top when the page is scrolled.
+ * 
+ * Decided to do something tricky with CSS instead, but leaving this here anyway.
+ */
+import { Subheader } from './UtilClasses.css'
+---
+
+<scrolled-header class={`${Subheader['top']}`}>
+	<slot />
+</scrolled-header>
+
+<script>
+	import { calculateScrollHeaderOffset } from 'src/util/helpers'
+
+	class ScrolledHeaderContent extends HTMLElement {
+		private _internals
+		bannerHeight = 0
+
+		constructor() {
+			super()
+			const shadowRoot = this.attachShadow({ mode: 'open' })
+
+			this.bannerHeight = calculateScrollHeaderOffset(window)
+
+			shadowRoot.innerHTML = `
+				<style>
+					:host {
+						width: 100%;
+						height: 30px;
+					}
+					:host(:state(scrolled)) {
+						display: block;
+						position: fixed;
+						top: 0px;
+						z-index: 500;
+					}
+				</style>`
+
+			this._internals = this.attachInternals()
+		}
+
+		onScroll() {
+			if (window.scrollY >= this.bannerHeight && !this.scrolled) {
+				this.scrolled = true
+			} else if (window.scrollY < this.bannerHeight && this.scrolled) {
+				this.scrolled = false
+			}
+		}
+
+		set scrolled(isScrolled: boolean) {
+			if (isScrolled) {
+				this._internals.states.add('scrolled')
+				console.log('added scroll state')
+			} else {
+				this._internals.states.delete('scrolled')
+			}
+		}
+
+		get scrolled() {
+			return this._internals.states.has('scrolled')
+		}
+
+		connectedCallback() {
+			window.addEventListener('scroll', () => this.onScroll(), { passive: true })
+		}
+
+		disconnectedCallback() {
+			window.removeEventListener('scroll', () => this.onScroll())
+		}
+	}
+
+	customElements.define('scrolled-header', ScrolledHeaderContent)
+</script>

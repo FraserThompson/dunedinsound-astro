@@ -39,16 +39,14 @@ const { tabs } = Astro.props
 
 <script>
 	class ContentTabs extends HTMLElement {
-		_internals: any
 		tabs: HTMLElement | null
 		content: HTMLElement | null
 		#selectedTabId: string | undefined
 
 		constructor() {
 			super()
-			this._internals = this.attachInternals()
-			this.tabs = this.querySelector('.tabs')
-			this.content = this.querySelector('.content')
+			this.tabs = this.querySelector<HTMLElement>('.tabs')
+			this.content = this.querySelector<HTMLElement>('.content')
 		}
 
 		set selectedTabId(tab: string) {
@@ -60,11 +58,11 @@ const { tabs } = Astro.props
 		}
 
 		private getTabContent(tabid: string) {
-			return this.content?.querySelector(`[data-tabid="${tabid}"]`)
+			return this.content?.querySelector<HTMLElement>(`[data-tabid="${tabid}"]`)
 		}
 
 		private getTabButton(tabid: string) {
-			return this.tabs?.querySelector(`[data-tabid="${tabid}"]`)
+			return this.tabs?.querySelector<HTMLElement>(`[data-tabid="${tabid}"]`)
 		}
 
 		public selectTab(tabid: string) {
@@ -92,7 +90,7 @@ const { tabs } = Astro.props
 		}
 
 		connectedCallback() {
-			const firstTab = this.tabs?.querySelector('button')?.dataset.tabid
+			const firstTab = this.tabs?.querySelector<HTMLElement>('button')?.dataset.tabid
 			firstTab && this.selectTab(firstTab)
 			this.tabs?.querySelectorAll('button').forEach((tab) => {
 				tab.addEventListener('mousedown', this.tabClick)

@@ -54,7 +54,6 @@ const { markers, zoom, center, nointeract } = Astro.props
 	import type Shuffle from 'shufflejs'
 
 	class MapWrapper extends HTMLElement {
-		_internals: any
 
 		map: mapboxgl.Map
 		markers: mapboxgl.Marker[]
@@ -65,7 +64,6 @@ const { markers, zoom, center, nointeract } = Astro.props
 
 		constructor() {
 			super()
-			this._internals = this.attachInternals()
 
 			mapboxgl.accessToken =
 				'pk.eyJ1IjoiZnJhc2VydGhvbXBzb24iLCJhIjoiY2llcnF2ZXlhMDF0cncwa21yY2tyZjB5aCJ9.iVxJbdbZiWVfHItWtZfKPQ'

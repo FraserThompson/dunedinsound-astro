@@ -1,0 +1,60 @@
+---
+/**
+ * A clickable divider.
+ * 
+ * Props:
+ *  - href: the href
+ *  - color: override default text color
+ *  - backgroundColor: override default background color
+ *  - className: add a class
+ *  - sticky: if true it will be sticky
+ *  - stickyTop: 
+ *  - smoothScroll: if true it will scroll smoothly to the anchor specified in the href, and not update the URL
+ *
+ * @param param0
+ * @returns
+ */
+
+import { dividerWrapper, dividerColor, dividerBackgroundColor, stickyTop, stickyTopMobile } from './Divider.css'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
+
+interface Props {
+	href?: string
+	color?: string
+	backgroundColor?: string
+	className?: string
+	sticky?: boolean
+	top?: string
+	topMobile?: string
+	smoothScroll?: boolean
+}
+
+const { href, color, backgroundColor, className, sticky, top, topMobile, smoothScroll } = Astro.props
+---
+
+<div
+	class={`${dividerWrapper[sticky ? 'sticky' : 'normal']} ${className}`}
+	style={assignInlineVars({
+		[dividerColor]: color,
+		[dividerBackgroundColor]: backgroundColor,
+		[stickyTop]: top ? top : undefined,
+		[stickyTopMobile]: topMobile ? topMobile : undefined
+	})}
+>
+	{
+		href && (
+			<a class="dividerLink" href={href} data-smoothscroll={smoothScroll}>
+				<slot />
+			</a>
+		)
+	}
+	{!href && <slot />}
+</div>
+
+<script>
+	import { scrollTo } from 'src/util/helpers'
+	const dividers = document.querySelectorAll<HTMLElement>('.dividerLink')
+	dividers.forEach(
+		(divider) => divider.dataset.smoothscroll && divider.addEventListener('mousedown', (e: any) => scrollTo(e))
+	)
+</script>

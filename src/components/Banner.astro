@@ -14,25 +14,27 @@
  */
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import BackgroundImage from './BackgroundImage.astro'
-import { BannerWrapper, BackgroundContent, BannerTitle, BannerContent, bannerHeight } from './Banner.css'
+import { BannerWrapper, BackgroundContent, BannerTitle, BannerContent, bannerHeight, marginBottom } from './Banner.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
 	id?: string
 	title?: string
 	height?: string
+	bottomMargin?: string
 	backgroundImage?: ResponsiveImage
 	backgroundImageVertical?: ResponsiveImage
 }
 
-const { title, id, height, backgroundImage, backgroundImageVertical } = Astro.props
+const { title, id, height, bottomMargin, backgroundImage, backgroundImageVertical } = Astro.props
 ---
 
 <div
 	class={`${BannerWrapper} banner`}
 	id={id}
 	style={assignInlineVars({
-		[bannerHeight]: height
+		[bannerHeight]: height,
+		[marginBottom]: bottomMargin
 	})}
 >
 	<div class={BannerContent}>

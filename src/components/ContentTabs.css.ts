@@ -6,7 +6,13 @@ export const tabsWrapper = style([
 	dividerWrapper['sticky'],
 	{
 		padding: 0,
-		zIndex: 7
+		zIndex: 7,
+		top: theme.dimensions.headerHeight,
+		'@media': {
+			'screen and (--md)': {
+				top: '0px'
+			}
+		}
 	}
 ])
 
@@ -19,7 +25,7 @@ export const tabButton = style({
 	borderBottomColor: 'transparent',
 	height: '100%',
 	textOverflow: 'clip',
-	overflow: 'hidden',
+	overflow: 'hidden'
 })
 
 export const tabContent = style({})

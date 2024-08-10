@@ -50,7 +50,7 @@ const { videoid, loadAPI, autoload } = Astro.props
 			const data = await response.json()
 			if (data.items && data.items.length) {
 				const title = data.items[0].snippet.title
-				const el = this.querySelector('lite-youtube')
+				const el = this.querySelector<HTMLElement>('lite-youtube')
 				el?.setAttribute('videotitle', title)
 			}
 		}

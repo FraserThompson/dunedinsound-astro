@@ -43,7 +43,6 @@ const { itemselector, boardselector, className } = Astro.props
 	import Shuffle from 'shufflejs'
 
 	class ShuffleFilters extends HTMLElement {
-		_internals: any
 
 		shuffleBoard: HTMLElement | null
 		shuffleInstance: Shuffle | null
@@ -56,8 +55,6 @@ const { itemselector, boardselector, className } = Astro.props
 
 		constructor() {
 			super()
-
-			this._internals = this.attachInternals()
 
 			this.sortButtons = this.querySelectorAll('[data-sortby]')
 			this.filterElements = this.querySelectorAll('[data-filter]')

@@ -10,7 +10,7 @@
 import type React from "preact/compat"
 import { useRef, useState, useEffect, useCallback } from "preact/compat"
 import MenuIcon from '~icons/bx/menu'
-import { background, dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownWrapper, menuWidth, color, additionalLink } from './DropdownMenu.css'
+import { background, dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownTopMobile, dropdownWrapper, menuWidth, color, additionalLink } from './DropdownMenu.css'
 import { scrollTo } from 'src/util/helpers'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import browserHistory from 'src/util/history';
@@ -38,12 +38,13 @@ interface Props {
 	menuTitle?: string
 	direction: "up" | "down"
 	top?: string
+	topMobile?: string
 	width?: string
 	backgroundColor?: string
 	textColor?: string
 }
 
-const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top, width, backgroundColor, textColor }) => {
+const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top, topMobile, width, backgroundColor, textColor }) => {
 	const [open, setOpen] = useState(false)
 	const [selectedItem, setSelectedItem] = useState(null as string | null)
 
@@ -78,6 +79,7 @@ const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top, width,
 	return (
 		<div className={`${dropdownWrapper}`} style={assignInlineVars({
 			[dropdownTop]: top,
+			[dropdownTopMobile]: topMobile,
 			[menuWidth]: width,
 			[background]: backgroundColor
 		})}>

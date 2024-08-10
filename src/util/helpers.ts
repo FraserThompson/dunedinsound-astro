@@ -30,10 +30,9 @@ export const timeToSeconds = (str: string) => {
 */
 export const calculateScrollHeaderOffset = (window: any, modifierDesktop = 0, modifierMobile = 0) => {
 	const bannerEl = document.querySelector<HTMLElement>('#top')
-	const bannerHeight = (stripUnit(theme.dimensions.defaultBannerHeight) as number) / 100 // assumes it's a vh unit
-	const mobileHeaderHeight =
-		(stripUnit(theme.dimensions.headerHeight) as number) + (stripUnit(theme.dimensions.subheaderHeight) as number) // assumes they're px units
-	if (window.innerWidth < stripUnit(theme.breakpoints.xs)) {
+	const bannerHeight = 60 / 100
+	const mobileHeaderHeight = 30 + 30
+	if (window.innerWidth < 768) {
 		if (bannerEl) {
 			return bannerEl.offsetHeight - mobileHeaderHeight + modifierMobile
 		} else {
@@ -87,7 +86,12 @@ export const scrollTo = (
  * @param behavior
  * @returns
  */
-export const scrollToElement = (element: Element, headerOffset?: number, parent: any = window, behavior: ScrollBehavior = 'smooth') => {
+export const scrollToElement = (
+	element: Element,
+	headerOffset?: number,
+	parent: any = window,
+	behavior: ScrollBehavior = 'smooth'
+) => {
 	if (!headerOffset) {
 		element.scrollIntoView({ behavior: behavior })
 	} else {

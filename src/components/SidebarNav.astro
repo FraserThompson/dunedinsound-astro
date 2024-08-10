@@ -3,7 +3,7 @@
  * Wrapper for a page with a sidebar navigation.
  * Slots:
  *  - sidebarMenu: Scrollable content. Put your sidebar menu in this.
- *  - sidebarFixed: Arbitrary content to go in the sidebar.
+ *  - sidebarSubheaderMobile: A fixed subheader at the bottom of the sidebar on mobile.
  *  - content: Put the rest of the page in this.
  *
  * Props (all optional):
@@ -39,6 +39,8 @@ interface Props {
 }
 
 const { top, topMobile, bottom, bottomMobile, scrollContext, customButton } = Astro.props
+
+const hasSidebarSubheaderMobile = Astro.slots.has('sidebarSubheaderMobile')
 ---
 
 <sidebar-wrapper data-scrollcontext={scrollContext}>
@@ -52,10 +54,10 @@ const { top, topMobile, bottom, bottomMobile, scrollContext, customButton } = As
 			[offsetBottomMobile]: bottomMobile
 		})}
 	>
-		<div class={sidebarMenuWrapper}>
+		<div class={`${sidebarMenuWrapper} ${hasSidebarSubheaderMobile ? 'hasSubheaderMobile' : ''}`}>
 			<slot name="sidebarMenu" />
 		</div>
-		<slot name="sidebarFixed" />
+		<slot name="sidebarSubheaderMobile" />
 	</div>
 </sidebar-wrapper>
 {!customButton && <button id="sidebar-button" class={sidebarButtonWrapper['bar']} />}

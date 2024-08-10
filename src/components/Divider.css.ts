@@ -5,6 +5,7 @@ export const dividerColor = createVar()
 export const dividerBackgroundColor = createVar()
 
 export const stickyTop = createVar()
+export const stickyTopMobile = createVar()
 
 const dividerBase = style({
 	height: theme.dimensions.subheaderHeight,
@@ -39,7 +40,7 @@ export const dividerWrapper = styleVariants({
 			position: 'sticky',
 			zIndex: '6',
 			boxShadow: theme.borders.shadow,
-			top: fallbackVar(stickyTop, '0px'),
+			top: fallbackVar(stickyTopMobile || stickyTop, '0px'),
 			'@media': {
 				'screen and (--md)': {
 					top: fallbackVar(stickyTop, '0px')

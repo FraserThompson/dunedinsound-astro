@@ -48,7 +48,7 @@ import { RoomWrapper, Surface } from './Room.css'
 <script>
 	import { speak } from 'src/util/helpers'
 	class Room extends HTMLElement {
-		_internals
+		private _internals
 
 		surfaces: { [key: string]: HTMLElement } | undefined
 
@@ -66,11 +66,11 @@ import { RoomWrapper, Surface } from './Room.css'
 
 			const surfaces: { [key: string]: HTMLElement } = {}
 
-			const back = this.querySelector('.back') as HTMLElement
-			const top = this.querySelector('.top') as HTMLElement
-			const left = this.querySelector('.left') as HTMLElement
-			const right = this.querySelector('.right') as HTMLElement
-			const bottom = this.querySelector('.bottom') as HTMLElement
+			const back = this.querySelector<HTMLElement>('.back')
+			const top = this.querySelector<HTMLElement>('.top')
+			const left = this.querySelector<HTMLElement>('.left')
+			const right = this.querySelector<HTMLElement>('.right')
+			const bottom = this.querySelector<HTMLElement>('.bottom')
 
 			if (back) surfaces['back'] = back
 			if (top) surfaces['top'] = top

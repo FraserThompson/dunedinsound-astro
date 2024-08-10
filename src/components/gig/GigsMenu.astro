@@ -31,8 +31,6 @@ const sortedGigs = sortGigs(gigs)
 const { selected } = Astro.props
 ---
 
-<slot />
-
 <DropdownMenu
 	list={Object.keys(sortedGigs)
 		.reverse()
@@ -47,7 +45,7 @@ const { selected } = Astro.props
 />
 
 <gigs-menu data-selected={selected}>
-	<a href="/gigs">
+	<a class="showMobile" href="/gigs">
 		<button>Back to gigs home</button>
 	</a>
 	{
@@ -95,6 +93,8 @@ const { selected } = Astro.props
 	}
 </gigs-menu>
 
+<slot />
+
 <script>
 	import type Shuffle from 'shufflejs'
 	import { scrollTo } from 'src/util/helpers'
@@ -104,11 +104,14 @@ const { selected } = Astro.props
 	class ArtistsMenu extends HTMLElement {
 		unlisten: any
 
+		sidebar: HTMLElement | null
+
 		selectedArtist: Element | undefined
 		links: NodeListOf<HTMLElement> | null
 
 		constructor() {
 			super()
+			this.sidebar = document.querySelector<HTMLElement>('sidebar-wrapper')
 			this.links = this.querySelectorAll('a')
 		}
 
@@ -127,10 +130,18 @@ const { selected } = Astro.props
 			}
 		}
 
+		itemClick(e: MouseEvent) {
+			scrollTo(e)			
+			// Close sidebar on mobile
+			// See: SidebarNav.astro
+			// @ts-ignore
+			this.sidebar.toggleSidebar()
+		}
+
 		connectedCallback() {
 			this.unlisten = browserHistory?.listen((location) => this.handleURLChange(location.location))
 			this.links?.forEach((link) => {
-				link.addEventListener('mousedown', (e) => scrollTo(e))
+				link.addEventListener('mousedown', (e) => this.itemClick(e))
 			})
 		}
 
@@ -140,7 +151,6 @@ const { selected } = Astro.props
 	}
 
 	class GigsMenu extends HTMLElement {
-		_internals: any
 
 		sidebar: HTMLElement | null
 		months: NodeListOf<HTMLElement> | null
@@ -150,7 +160,6 @@ const { selected } = Astro.props
 
 		constructor() {
 			super()
-			this._internals = this.attachInternals()
 			this.sidebar = document.querySelector('sidebar-wrapper')
 
 			this.months = this.querySelectorAll('.monthList')

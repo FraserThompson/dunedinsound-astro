@@ -3,13 +3,14 @@ import { theme } from 'src/Theme.css'
 import { MenuLi, MenuLinkWrapper, MenuWrapper } from './Menu.css'
 
 export const dropdownTop = createVar()
+export const dropdownTopMobile = createVar()
 export const menuWidth = createVar()
 export const background = createVar()
 export const color = createVar()
 
 export const dropdownWrapper = style({
 	position: 'sticky',
-	top: fallbackVar(dropdownTop, '0px'),
+	top: fallbackVar(dropdownTopMobile || dropdownTop, '0px'),
 	zIndex: '7',
 	right: '0',
 	height: '0',

@@ -12,6 +12,8 @@ import CornerLabel from 'src/components/gig/CornerLabel.astro'
 import BigIntro from 'src/components/gig/BigIntro.astro'
 import ArtistMedia from 'src/components/gig/ArtistMedia.astro'
 import LiteYoutube from 'src/components/LiteYoutube.astro'
+import Divider from 'src/components/Divider.astro'
+import { theme } from 'src/Theme.css'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -25,7 +27,12 @@ const entryExtra = entry.extra
 const uncategorizedImages = entryExtra.artistImages?._uncategorized
 ---
 
-<Banner id="top" title={entryData.title} backgroundImage={entryExtra.cover}>
+<Banner
+	id="top"
+	title={entryData.title}
+	bottomMargin={theme.dimensions.headerHeightNegative}
+	backgroundImage={entryExtra.cover}
+>
 	<div>
 		{
 			entryExtra.venue && (
@@ -69,6 +76,9 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 		}
 	</div>
 </Banner>
+<Divider sticky={true} backgroundColor={theme.color.primary} color={theme.color.text}>
+	<h3 style={{ marginBottom: 0 }}>{entryData.title}</h3>
+</Divider>
 {entryData.intro && <BigIntro text={entryData.intro} />}
 {!!uncategorizedImages?.length && <ImageGallery images={uncategorizedImages} />}
 {
@@ -83,6 +93,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 						{ href: `/artists/${artist.id}`, title: 'MORE GIGS FROM THIS ARTIST' }
 					]
 				}))}
+				topMobile={theme.dimensions.headerHeight}
 				direction="down"
 				client:load
 			/>

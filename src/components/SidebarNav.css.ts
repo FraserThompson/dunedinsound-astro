@@ -56,7 +56,21 @@ export const sidebarMenuWrapper = style({
 	overflowY: 'auto',
 	scrollbarWidth: 'thin',
 	scrollbarColor: 'gray black',
-	height: `100%`
+	height: `100%`,
+	selectors: {
+		'&.hasSubheaderMobile': {
+			height: `calc(100% - ${theme.dimensions.subheaderHeight})`
+		}
+	},
+	'@media': {
+		'screen and (--md)': {
+			selectors: {
+				'&.hasSubheaderMobile': {
+					height: `100%`
+				}
+			}
+		}
+	}
 })
 
 export const contentWrapper = style({

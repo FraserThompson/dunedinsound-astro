@@ -6,6 +6,7 @@
  * Props:
  *  - scrollContext: See SidebarNav
  *  - hideFooter: See BaseLayout
+ *  - poo: SEO gubbins
  *
  * Slots:
  *  - sidebarMenu: See SidebarNav
@@ -70,7 +71,7 @@ const hasSubheaderBottomMobile = Astro.slots.has('subheaderBottomMobile')
 		customButton={true}
 	>
 		<slot name="sidebarMenu" slot="sidebarMenu" />
-		<slot name="sidebarFixed" slot="sidebarFixed" />
+		<slot name="sidebarSubheaderMobile" slot="sidebarSubheaderMobile" />
 		<slot name="content" slot="content" />
 	</SidebarNav>
 
