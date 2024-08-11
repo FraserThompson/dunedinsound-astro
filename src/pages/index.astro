@@ -35,9 +35,14 @@ combinedPosts.splice(latestGigIndex, 1)
 					.slice(0, 2)
 					.map((post) =>
 						post.entry.collection === 'gig' ? (
-							<GigTile gig={post as ProcessedEntry<'gig'>} />
+							<GigTile gig={post as ProcessedEntry<'gig'>} responsiveImageSizes={'grid'} />
 						) : (
-							<Tile title={post.entry.data.title} href={post.extra.absolutePath} responsiveImage={post.extra.cover} />
+							<Tile
+								title={post.entry.data.title}
+								href={post.extra.absolutePath}
+								responsiveImage={post.extra.cover}
+								responsiveImageSizes={'grid'}
+							/>
 						)
 					)
 			}
@@ -50,7 +55,7 @@ combinedPosts.splice(latestGigIndex, 1)
 						.map((post) => (
 							<GridChild grid={{ xs: 12, md: 4, lg: 4 }}>
 								{post.entry.collection === 'gig' ? (
-									<GigTile className={gridChild} gig={post as ProcessedEntry<'gig'>} />
+									<GigTile className={gridChild} gig={post as ProcessedEntry<'gig'>} responsiveImageSizes={'grid'} />
 								) : (
 									<Tile
 										className={gridChild}
@@ -59,6 +64,7 @@ combinedPosts.splice(latestGigIndex, 1)
 										label="ARTICLE"
 										href={post.extra.absolutePath}
 										responsiveImage={post.extra.cover}
+										responsiveImageSizes={'grid'}
 										containerHeight={'30vh'}
 									/>
 								)}

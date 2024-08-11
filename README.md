@@ -1,56 +1,47 @@
 # Dunedinsound Astro
 
-## ResponsiveImages
-
-We are rolling our own system for storing and displaying responsive images.
-
-A responsive image is:
-
-- A directory named after the [image] name without the extension containing...
-- Any number of image proxies which follow this naming convention: [image].[width].jpg/webp
-- A full size image which follows this naming convention: [image].jpg/webp
-
-We import these as `ResponsiveImage` objects and use the `Image2` component to display these.
-
 ## Project Structure
 
 Our media and content is kept seperately so we can avoid bogging down Astro with thousands of images.
 
 ### Entry media directories
 
-Media for each entry should be stored in `src/public/media/[collection_id]/[entry_id]`.
+Raw media for each entry should be stored in `media/[collection_id]/[entry_id]`.
 
 #### Images
 
-In each entry media directory there should be ResponsiveImage subdirectories.
+In each entry media directory there can be full resolution JPG images, and any other file.
 
 #### Artist media
 
-Gigs follow a slightly different convention: Media should be stored in `src/public/media/[collection]/[entry_id]/[artist_id]`.
+Gigs follow a slightly different convention: Media should be stored in `media/[collection]/[entry_id]/[artist_id]`.
 
 #### Blog media
 
 `remark-images-plugin.ts` is responsible for grabbing images associated with each blog and putting them into the frontmatter so we can use them in markdown.
 
-It grabs responsive images from responsive image directories and puts them on 'frontmatter.responsiveImages'. It also grabs raw images from the entry media directory and puts them on the 'frontmatter.images'
+It grabs responsive images from responsive image directories and puts them on `frontmatter.responsiveImages` keyed by the name of the file (minus the extension). It also grabs raw images from the entry media directory and puts them on the `frontmatter.images`.
 
 #### Audio
 
 [todo]
 
-## Media manifests
+### Generating media
 
-DEPRECATED - ended up not doing this
+To generate responsive image aggregates for all entries, run `pnpm media`.
 
-Rather than globbing the filesystem for thousands of files at build time, we have a seperate process which spits out a media manifest in JSON format which we can reference to display media.
+This will copy the directory tree to `public/media`, and process all full resolution JPGs into `ResponsiveImage` subdirectories (see ResponsiveImages section below). It will also copy any other files in that directory to `src/public/media`.
 
-These are part of the `manifest` content collection. The idea is thus:
+## ResponsiveImages
 
-* Every gig contains artists.
-* Every artist contains a number of images.
-* Each image comes with a number of variants for a number of screen sizes.
-* Also, every artist contains a number of audio files.
-* Each audio file comes with a JSON peaks file for WaveSurfer.
+We are rolling our own system for storing and displaying responsive images.
+
+A responsive image is a directory named after the [image] name (without the extension) containing:
+
+- Any number of image proxies which follow this naming convention: [image].[width].jpg/webp
+- A full size image which follows this naming convention: [image].jpg/webp
+
+We import these as `ResponsiveImage` objects and use the `Image2` component to display these.
 
 ## CSS
 

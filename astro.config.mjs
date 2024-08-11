@@ -16,5 +16,8 @@ export default defineConfig({
 				jsx: 'react'
 			})
 		]
+	},
+	experimental: {
+		contentCollectionCache: true
 	}
 })

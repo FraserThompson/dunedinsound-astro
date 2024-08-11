@@ -1,12 +1,12 @@
 ---
 import Banner from 'src/components/Banner.astro'
-import type { ProcessedEntry } from 'src/util/collection.ts'
+import type { ProcessedEntry } from 'src/util/collection'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import Player from 'src/components/gig/Player'
 import PlayerContainer from 'src/components/gig/PlayerContainer.astro'
 import MapIcon from '~icons/bx/map'
 import DropdownMenu from 'src/components/DropdownMenu'
-import { socialLinksToMenuItems } from 'src/util/helpers.ts'
+import { socialLinksToMenuItems } from 'src/util/helpers'
 import ShareButton from 'src/components/ShareButton.astro'
 import CornerLabel from 'src/components/gig/CornerLabel.astro'
 import BigIntro from 'src/components/gig/BigIntro.astro'
@@ -103,7 +103,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 }
 
 <script>
-	import browserHistory from 'src/util/history.ts'
+	import browserHistory from 'src/util/history'
 
 	// Add the intersectionObserver which updates the browser hash.
 	// GigsMenu listens for this and highlights the artist.

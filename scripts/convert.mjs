@@ -67,29 +67,29 @@ const convertArtistOrvenue = (fileContents) => {
 }
 
 function loadAndConvert() {
-	const gigs = globSync('../../dunedinsound-gatsby/src/content/gig/*.yml')
+	const gigs = globSync('../dunedinsound-gatsby/src/content/gig/*.yml')
 	for (const filePath of gigs) {
 		const data = fs.readFileSync(filePath, {encoding: 'utf-8'})
 		const newThing = convertGig(data)
 		const parsedPath = path.parse(filePath)
 		const fileName = parsedPath.base
-		fs.writeFileSync(`../src/content/gig/${fileName}`, stringify(newThing));
+		fs.writeFileSync(`./src/content/gig/${fileName}`, stringify(newThing));
 	}
-	const artists = globSync('../../dunedinsound-gatsby/src/content/artist/*.yml')
+	const artists = globSync('../dunedinsound-gatsby/src/content/artist/*.yml')
 	for (const filePath of artists) {
 		const data = fs.readFileSync(filePath, {encoding: 'utf-8'})
 		const newThing = convertArtistOrvenue(data)
 		const parsedPath = path.parse(filePath)
 		const fileName = parsedPath.base
-		fs.writeFileSync(`../src/content/artist/${fileName}`, stringify(newThing));
+		fs.writeFileSync(`./src/content/artist/${fileName}`, stringify(newThing));
 	}
-	const venues = globSync('../../dunedinsound-gatsby/src/content/venue/*.yml')
+	const venues = globSync('../dunedinsound-gatsby/src/content/venue/*.yml')
 	for (const filePath of venues) {
 		const data = fs.readFileSync(filePath, {encoding: 'utf-8'})
 		const newThing = convertArtistOrvenue(data)
 		const parsedPath = path.parse(filePath)
 		const fileName = parsedPath.base
-		fs.writeFileSync(`../src/content/venue/${fileName}`, stringify(newThing));
+		fs.writeFileSync(`./src/content/venue/${fileName}`, stringify(newThing));
 	}
 }
 

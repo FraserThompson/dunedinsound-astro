@@ -1,5 +1,5 @@
 ---
-import CollectionEntryLayout from 'src/layouts/base/EntriesByCollectionLayout.astro'
+import EntriesByCollectionLayout from 'src/layouts/base/EntriesByCollectionLayout.astro'
 import { loadAndFormatCollection } from 'src/util/collection.ts'
 
 export async function getStaticPaths() {
@@ -15,4 +15,4 @@ export async function getStaticPaths() {
 const { entry } = Astro.props
 ---
 
-<CollectionEntryLayout entry={entry} />
+<EntriesByCollectionLayout entry={entry} />

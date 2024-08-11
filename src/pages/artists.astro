@@ -14,7 +14,7 @@ const artists = await loadAndFormatCollection('artist')
 export interface ArtistMetadata {
 	totalCount: number
 	cover?: ResponsiveImage
-	lastGig?: Date
+	lastGig?: number
 }
 
 let artistMetadata: { [key: string]: ArtistMetadata } = {}
@@ -27,14 +27,9 @@ for (const artist of artists) {
 		gig.data.artists.find((gigArtist) => gigArtist.id.id === artistId)
 	)
 
-	// Process the latest gig to get its images
-	const loadedGig: ProcessedEntry<'gig'> | undefined = artistGigs.length ? await processEntry(artistGigs[0]) : undefined
-	const artistImages = loadedGig?.extra.artistImages[artistId] || undefined
-
 	artistMetadata[artistId] = {
 		totalCount: artistGigs.length || 0,
-		cover: artistImages ? artistImages[0] : undefined,
-		lastGig: artistGigs[artistGigs.length - 1]?.data.date
+		lastGig: artistGigs[artistGigs.length - 1]?.data.date.getTime()
 	}
 
 	const origin = artist.entry.data.origin || 'Dunedin'
@@ -81,7 +76,7 @@ for (const artist of artists) {
 			artists.map((artist) => (
 				<Tile
 					href={artist.extra.absolutePath}
-					responsiveImage={artistMetadata[artist.entry.id]?.cover}
+					responsiveImage={artist.extra.cover}
 					responsiveImageSizes={'smallGrid'}
 					title={artist.entry.data.title + (artist.entry.data.origin ? ` (${artist.entry.data.origin})` : '')}
 					label={`${artistMetadata[artist.entry.id]?.totalCount} gigs`}

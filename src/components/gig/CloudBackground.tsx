@@ -1,3 +1,7 @@
+/**
+ * Pleasant clouds drifting slowly by.
+ */
+
 import { cloud1, cloud2, cloud3, cloud4, cloud5, cloudBase, CloudsWrapper } from "./CloudBackground.css";
 
 export default () => (

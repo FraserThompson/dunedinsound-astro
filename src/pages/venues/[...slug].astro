@@ -1,7 +1,7 @@
 ---
 import { loadAndFormatCollection } from 'src/util/collection.ts'
 import Map from 'src/components/venue/Map.astro'
-import CollectionEntryLayout from 'src/layouts/base/EntriesByCollectionLayout.astro'
+import EntriesByCollectionLayout from 'src/layouts/base/EntriesByCollectionLayout.astro'
 
 export async function getStaticPaths() {
 	const artistEntries = await loadAndFormatCollection('venue')
@@ -16,7 +16,7 @@ export async function getStaticPaths() {
 const { entry } = Astro.props
 ---
 
-<CollectionEntryLayout entry={entry}>
+<EntriesByCollectionLayout entry={entry}>
 	<Map
 		slot="banner"
 		markers={[{ coords: [entry.entry.data.lng, entry.entry.data.lat] }]}
@@ -24,4 +24,4 @@ const { entry } = Astro.props
 		zoom="16"
 		nointeract={true}
 	/>
-</CollectionEntryLayout>
+</EntriesByCollectionLayout>

@@ -117,19 +117,6 @@ const Page = defineCollection({
 	})
 })
 
-// Manifest
-const imageVariants = z.array(z.string())
-const fileList = z.record(z.string(), imageVariants.optional())
-const media = z.object({
-	images: fileList.optional(),
-	audio: fileList.optional()
-})
-const artistDirectory = z.record(z.string(), media)
-// const Manifest = defineCollection({
-//     type: "data",
-//     schema: z.record(z.string(), artistDirectory),
-//   });
-
 export const collections = {
 	gig: Gig,
 	venue: Venue,
@@ -137,5 +124,4 @@ export const collections = {
 	blog: Blog,
 	page: Page,
 	vaultsession: VaultSession
-	//manifest: Manifest
 }

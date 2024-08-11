@@ -8,7 +8,7 @@ import { ResponsiveImage } from './ResponsiveImage'
  * @param imageDir
  * @returns ResponsiveImage object
  */
-export async function getResponsiveImages(imageDir: string): Promise<ResponsiveImage | undefined> {
+export async function getResponsiveImage(imageDir: string): Promise<ResponsiveImage | undefined> {
 	const srcs = (
 		await new fdir({
 			pathSeparator: '/',

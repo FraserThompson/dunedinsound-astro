@@ -27,6 +27,8 @@ const collection = entry.entry.collection
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
+
+const hasBanner = Astro.slots.has('banner')
 ---
 
 <SidebarLayout
@@ -43,7 +45,7 @@ const entryExtra = entry.extra
 	</ShuffleFilters>
 	<EntryMenu slot="sidebarMenu" collection={collection} selected={entry.entry.id} />
 	<ContentByEntry entry={entry} slot="content">
-		<slot name="banner" />
+		<slot name="banner" slot={hasBanner ? 'banner' : ''} />
 	</ContentByEntry>
 	<ShuffleFilters
 		slot="sidebarSubheaderMobile"

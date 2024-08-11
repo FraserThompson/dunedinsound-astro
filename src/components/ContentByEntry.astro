@@ -1,8 +1,17 @@
 ---
+/**
+ * Displays all content associated with a particular venue/artist.
+ *
+ * Props:
+ *  - entry: The entry.
+ *
+ * Slots:
+ *  - banner: Content to put in the banner instead of the cover image.
+ */
 import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
 import Tile from 'src/components/Tile.astro'
-import DropdownMenu from 'src/components/DropdownMenu.tsx'
+import DropdownMenu from 'src/components/DropdownMenu'
 import Divider from 'src/components/Divider.astro'
 import ContentTabs from 'src/components/ContentTabs.astro'
 import Banner from 'src/components/Banner.astro'
@@ -50,6 +59,8 @@ let tabs = [{ title: `Gigs (${gigs.length})`, id: 'gigs' }]
 blogs.length > 0 && tabs.push({ title: `Articles (${blogs.length})`, id: 'blogs' })
 images && tabs.push({ title: `Images (${Object.keys(images).length})`, id: 'images' })
 vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessions' })
+
+const hasBanner = Astro.slots.has('banner')
 ---
 
 <Banner
@@ -79,9 +90,7 @@ vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessio
 			</blockquote>
 		)
 	}
-	<div slot="background">
-		<slot />
-	</div>
+	<slot name="banner" slot={hasBanner ? 'background' : ''} />
 </Banner>
 <Divider sticky={true} backgroundColor={theme.color.primary} color={theme.color.text}>
 	<h3 style={{ marginBottom: 0 }}>{entryData.title}</h3>
@@ -107,7 +116,6 @@ vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessio
 							top={theme.dimensions.headerHeight}
 							topMobile={theme.dimensions.headerHeightWithSubheader}
 							smoothScroll={true}
-							client:load
 						>
 							{year} ({gigs?.length})
 						</Divider>

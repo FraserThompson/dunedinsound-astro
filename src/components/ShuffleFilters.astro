@@ -43,7 +43,6 @@ const { itemselector, boardselector, className } = Astro.props
 	import Shuffle from 'shufflejs'
 
 	class ShuffleFilters extends HTMLElement {
-
 		shuffleBoard: HTMLElement | null
 		shuffleInstance: Shuffle | null
 
@@ -130,7 +129,12 @@ const { itemselector, boardselector, className } = Astro.props
 
 			this.shuffleInstance?.sort({
 				reverse: reversesort ? true : false,
-				by: (el) => el.getAttribute(`data-${sortby}`)?.toLowerCase()
+				by: (el) => {
+					const param = el.getAttribute(`data-${sortby}`)?.toLowerCase()
+					const intParam = param && parseInt(param)
+					// @ts-ignore
+					return intParam && intParam !== '' ? intParam : param
+				}
 			})
 		}
 

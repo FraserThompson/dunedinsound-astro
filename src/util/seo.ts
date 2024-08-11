@@ -12,8 +12,7 @@ export function getCollectionMetaDescription<C extends CollectionKey>(entry: Col
 		gig: `Gig media from ${entry.data.title}.`,
 		blog: entry.data.description,
 		vaultsession: entry.data.description,
-		page: entry.data.description,
-		manifest: ''
+		page: entry.data.description
 	}
 
 	return descriptions[entry.collection]

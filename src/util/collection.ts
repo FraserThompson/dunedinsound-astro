@@ -4,11 +4,10 @@ import { toMachineName } from 'src/util/names'
 import { fdir } from 'fdir'
 import { getEntry } from 'astro:content'
 import * as path from 'node:path'
-import { getResponsiveImages, getResponsiveImagesByDir } from './image'
+import { getResponsiveImage, getResponsiveImagesByDir } from './image'
 import type { ResponsiveImage } from './ResponsiveImage'
 import { monthMap } from './helpers'
 import { getCollectionMetaDescription } from './seo'
-
 
 type EntryExtraCommon = {
 	slug: string
@@ -38,7 +37,6 @@ export type EntryExtraMap = {
 	}
 	artist: EntryExtraCommon
 	venue: EntryExtraCommon
-	manifest: EntryExtraCommon
 	vaultsession: EntryExtraCommon & {
 		artist: CollectionEntry<'artist'>
 		audio: ArtistAudio
@@ -68,7 +66,9 @@ export interface ProcessedEntry<C extends CollectionKey> {
  */
 export async function loadAndFormatCollection<C extends CollectionKey>(name: C, filter?: (arg: any) => void) {
 	const entries = await getCollection(name, filter)
-	const sortedEntries = sortCollectionByDate(entries).filter((thing) => !thing.data.hidden)
+	const sortedEntries = sortCollectionByDate(entries).filter((thing) =>
+		'hidden' in thing.data ? !thing.data.hidden : true
+	)
 	return await Promise.all(sortedEntries.map(async (entry, i) => await processEntry(entry, entries, i)))
 }
 
@@ -124,6 +124,13 @@ export async function processEntry<C extends CollectionKey>(
 				prev,
 				next,
 				extra: (await getVaultSessionExtra(entry, extraCommon)) as EntryExtraMap[C]
+			}
+		case 'artist':
+			return {
+				entry,
+				prev,
+				next,
+				extra: (await getArtistExtra(entry, extraCommon)) as EntryExtraMap[C]
 			}
 		default:
 			return {
@@ -318,6 +325,40 @@ export async function getVaultSessionExtra(
 }
 
 /**
+ * Extends extra fields for artists:
+ * - cover: override the default cover with the latest gig cover.
+ * @param entry: The artist entry.
+ * @returns extras with artist fields.
+ */
+export async function getArtistExtra(
+	entry: CollectionEntry<'artist'>,
+	extra: EntryExtraCommon
+): Promise<EntryExtraMap['artist']> {
+	const artistId = entry.id
+
+	// Get the latest gig featuring this artist
+	const artistGigs = await getCollection('gig', (gig) =>
+		gig.data.artists.find((gigArtist) => gigArtist.id.id === artistId)
+	)
+	const latestGig = artistGigs.length && artistGigs.reverse()[0]
+
+	// If there wasn't one we can't get the cover
+	if (!latestGig) {
+		return extra
+	}
+
+	// Resolve an image
+	const dir = `public/media/gig/${latestGig.id}/${artistId}`
+	const images = await getResponsiveImagesByDir(dir)
+	const cover: ResponsiveImage | undefined = images ? Object.values(images)[0] : undefined
+
+	return {
+		...extra,
+		cover
+	}
+}
+
+/**
  * Gets the cover image srcset for an entry.
  * @param entry
  * @returns ResponsiveImage object for cover image.
@@ -325,8 +366,8 @@ export async function getVaultSessionExtra(
 export async function getCover(entry: CollectionEntry<CollectionKey>): Promise<ResponsiveImage | undefined> {
 	const type = entry.collection
 	const dir = `public/media/${type}/${getEntryId(entry)}/cover`
-	const images = await getResponsiveImages(dir)
-	return images
+	const image = await getResponsiveImage(dir)
+	return image
 }
 
 /**
@@ -357,7 +398,11 @@ export function getEntryPath(title: string, collection: string): string {
  * @returns
  */
 export function sortCollectionByDate<C extends CollectionKey>(entries: CollectionEntry<C>[]) {
-	return entries.sort((a, b) => b.data?.date - a.data?.date)
+	return entries.sort((a, b) =>
+		'date' in a.data && 'date' in b.data && a.data.date && b.data.date
+			? b.data.date.getTime() - a.data.date.getTime()
+			: 0
+	)
 }
 
 interface MonthsGroup {
