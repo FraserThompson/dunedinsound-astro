@@ -216,7 +216,7 @@ const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = 
 				{!barebones && (
 					<div>
 						<button className={`${TransportButton} left`} disabled={!ready} id="prev" onClick={() => previous()}></button>
-						<button disabled={!ready} className={playing ? `${TransportButton} play` : `${TransportButton} pause`} onClick={() => wavesurfer && wavesurfer.playPause()}></button>
+						<button disabled={!ready} className={playing ? `${TransportButton} pause` : `${TransportButton} play`} onClick={() => wavesurfer && wavesurfer.playPause()}></button>
 						<button className={`${TransportButton} right`} disabled={!ready} id="next" onClick={() => next()}></button>
 					</div>
 				)}

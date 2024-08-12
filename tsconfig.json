@@ -15,5 +15,8 @@
       "unplugin-icons/types/astro",
       "unplugin-icons/types/preact",
     ]
+  },
+  "watchOptions": {
+    "excludeDirectories": ["**/node_modules", "dist", "media"]
   }
 }

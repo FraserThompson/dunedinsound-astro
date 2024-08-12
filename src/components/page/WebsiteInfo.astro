@@ -1,14 +1,10 @@
 ---
 /**
  * Displays metadata about all content on the website by counting content.
- * 
- * CSS is stored globally in GlobalStyles.astro.
- * 
- * This is because of a bug with using using components in MDX, meaning we can't use
- * vanilla extract OR style tags.
  */
 import { getCollection } from 'astro:content'
 import { fdir } from 'fdir'
+import { infoHeader, infoTitle, infoContent } from './WebsiteInfo.css'
 
 const currentYear = new Date().getFullYear()
 
@@ -20,9 +16,9 @@ const imagesCount = await new fdir().onlyCounts().onlyDirs().glob('**/**/*').cra
 const audioCount = await new fdir().onlyCounts().glob('*.mp3').crawl('public/media/gig').withPromise()
 ---
 
-<div class="website-info-header">
-	<div class="content">
-		<div class="title">
+<div class={infoHeader}>
+	<div class={infoContent}>
+		<div class={infoTitle}>
 			<h1>THE DUNEDINSOUND.COM UNIVERSE</h1>
 		</div>
 		<table>

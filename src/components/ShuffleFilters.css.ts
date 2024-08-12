@@ -11,39 +11,35 @@ export const shuffleFilter = style({
 	minHeight: theme.dimensions.subheaderHeight,
 	'@media': {
 		'screen and (--xs)': {
-			paddingLeft: theme.dimensions.basePadding,
-			paddingRight: theme.dimensions.basePadding,
 			flexWrap: 'nowrap'
 		}
 	}
 })
 
-globalStyle(`${shuffleFilter} > div`, {
+globalStyle(`${shuffleFilter} .filterGroup`, {
+	display: 'flex',
+	marginLeft: 'auto',
+	gap: theme.dimensions.basePaddingMobile,
+	'@media': {
+		'screen and (--xs)': {
+			gap: theme.dimensions.basePadding
+		}
+	}
+})
+
+globalStyle(`${shuffleFilter} div:not(.buttonGroup)`, {
 	paddingRight: '0px',
 	display: 'flex',
 	textWrap: 'nowrap',
+	gap: theme.dimensions.basePaddingMobile,
 	'@media': {
 		'screen and (--xs)': {
-			paddingRight: theme.dimensions.basePadding
+			gap: theme.dimensions.basePadding
 		}
 	}
 })
 
-globalStyle(`${shuffleFilter} label, ${shuffleFilter} span`, {
+globalStyle(`${shuffleFilter} label`, {
 	display: 'flex',
-	lineHeight: theme.dimensions.subheaderHeight,
-	paddingRight: 0,
-	'@media': {
-		'screen and (--xs)': {
-			paddingRight: theme.dimensions.basePadding
-		}
-	}
-})
-
-globalStyle(`${shuffleFilter} input, ${shuffleFilter} select, ${shuffleFilter} .buttonGroup`, {
-	marginLeft: '0px'
-})
-
-globalStyle(`${shuffleFilter} .buttonGroup`, {
-	display: 'flex'
+	lineHeight: theme.dimensions.subheaderHeight
 })

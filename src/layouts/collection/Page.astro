@@ -1,4 +1,5 @@
 ---
+import WebsiteInfo from 'src/components/page/WebsiteInfo.astro'
 import TextContainer from 'src/components/TextContainer.astro'
 import type { ProcessedEntry } from 'src/util/collection.ts'
 
@@ -13,7 +14,7 @@ const { Content, headings, remarkPluginFrontmatter } = await entry.entry.render(
 {
 	!entry.entry.data.fullWidth && (
 		<TextContainer>
-			<Content />
+			<Content components={{ WebsiteInfo }} />
 		</TextContainer>
 	)
 }

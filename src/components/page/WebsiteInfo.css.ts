@@ -1,4 +1,5 @@
 import { style, keyframes } from '@vanilla-extract/css'
+import { theme } from 'src/Theme.css'
 
 export const infoHeader = style({
 	backgroundColor: 'black',
@@ -8,11 +9,22 @@ export const infoHeader = style({
 	backgroundPosition: '0 0, 40px 60px, 130px 270px, 70px 100px'
 })
 
-const fade = keyframes({
-  'to': { opacity: '1' }
-});
+export const infoContent = style({
+	maxWidth: '740px',
+	padding: theme.dimensions.basePaddingMobile,
+	margin: '0 auto',
+	'@media': {
+		'screen and (--xs)': {
+			padding: theme.dimensions.basePadding
+		}
+	}
+})
 
-export const title = style({
+const fade = keyframes({
+	to: { opacity: '1' }
+})
+
+export const infoTitle = style({
 	margin: '0 auto',
 	borderBottom: '5px solid',
 	borderImageSlice: '1',

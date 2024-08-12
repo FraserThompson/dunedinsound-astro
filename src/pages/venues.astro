@@ -20,7 +20,7 @@ const markers = venues.map((venue) => ({
 <SidebarLayout hideFooter={true} scrollContext="venues" poo={{ title: 'Venues' }}>
 	<ShuffleFilters slot="subheaderTop" itemselector=".sidebar-item" boardselector="#sidebar-menu">
 		<SearchBox className="hideMobile" placeholder="Search venues" />
-		<div style={{ marginLeft: 'auto' }}>
+		<div class="filterGroup">
 			<label>
 				<input name="hideInactive" type="checkbox" data-filter="active=true" />
 				Hide dead

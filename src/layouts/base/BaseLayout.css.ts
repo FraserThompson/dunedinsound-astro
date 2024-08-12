@@ -148,7 +148,7 @@ globalStyle('input[type="text"]', {
 	transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s',
 	'@media': {
 		'screen and (--md)': {
-			maxWidth: '220px',
+			maxWidth: '260px',
 			paddingLeft: theme.dimensions.basePadding,
 			paddingRight: theme.dimensions.basePadding,
 		}

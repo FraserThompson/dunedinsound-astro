@@ -6,6 +6,8 @@ import ImageGallery from 'src/components/ImageGallery.astro'
 import BlogSidebar from 'src/components/blog/BlogSidebar.astro'
 import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
+import Player from 'src/components/gig/Player'
+import Image2 from 'src/components/Image2.astro'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>
@@ -22,7 +24,7 @@ const entryExtra = entry.extra
 <div style={{ display: 'flex', maxWidth: '1600px', margin: '0 auto' }}>
 	<BlogSidebar entry={entry} />
 	<TextContainer featureMode={entryData.featureMode}>
-		<Content />
+		<Content components={{ Player, Image2 }}/>
 	</TextContainer>
 </div>
 {entryData.gallery && entryExtra.images && <ImageGallery images={Object.values(entryExtra.images)} />}

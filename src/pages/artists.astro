@@ -40,9 +40,9 @@ for (const artist of artists) {
 <SubheadersLayout poo={{ title: 'Artists' }}>
 	<ShuffleFilters slot="subheaderTop" itemselector=".tile" boardselector="#artist-grid">
 		<SearchBox className="hideMobile" placeholder="Search artists" />
-		<div style={{ marginLeft: 'auto' }}>
-			<div class="flex">
-				<span>Sort by: </span>
+		<div class="filterGroup">
+			<div>
+				<label>Sort by: </label>
 				<div class="buttonGroup">
 					<button data-sortby="title"> Title </button>
 					<button data-sortby="lastgig" data-reversesort="true"> Last Played </button>
