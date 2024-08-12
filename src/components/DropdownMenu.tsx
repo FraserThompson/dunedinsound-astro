@@ -7,8 +7,7 @@
  * @returns 
  */
 
-import type React from "preact/compat"
-import { useRef, useState, useEffect, useCallback } from "preact/compat"
+import { useRef, useState, useEffect, useCallback } from "preact/hooks"
 import MenuIcon from '~icons/bx/menu'
 import { background, dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownTopMobile, dropdownWrapper, menuWidth, color, additionalLink } from './DropdownMenu.css'
 import { scrollTo } from 'src/util/helpers'

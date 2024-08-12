@@ -7,8 +7,7 @@
 	 - playOnLoad: If true it will play the track once it loads.
 */
 
-import type React from "preact/compat"
-import { useRef, useState, useEffect, useCallback } from "preact/compat"
+import { useRef, useState, useEffect, useCallback } from "preact/hooks"
 import DownloadIcon from '~icons/bx/download'
 import LoadingSpinner from '../LoadingSpinner.tsx'
 import { timeToSeconds } from '../../util/helpers.ts'

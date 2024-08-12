@@ -1,9 +1,13 @@
 ---
 /**
  * Displays metadata about all content on the website by counting content.
+ * 
+ * CSS is stored globally in GlobalStyles.astro.
+ * 
+ * This is because of a bug with using using components in MDX, meaning we can't use
+ * vanilla extract OR style tags.
  */
 import { getCollection } from 'astro:content'
-import { infoHeader } from './WebsiteInfo.css'
 import { fdir } from 'fdir'
 
 const currentYear = new Date().getFullYear()

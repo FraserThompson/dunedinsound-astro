@@ -1,5 +1,3 @@
-import { stripUnit } from 'polished'
-import { theme } from 'src/Theme.css'
 import fbIcon from 'src/assets/fb-icon.png'
 import bcIcon from 'src/assets/bc-icon.png'
 import instaIcon from 'src/assets/instagram-icon.png'

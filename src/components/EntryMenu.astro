@@ -35,17 +35,17 @@ const entries = await loadAndFormatCollection(collection)
 		entries.map((entry, i) => (
 			<li
 				data-title={entry.entry.data.title}
-				data-active={entry.entry.data.died === undefined ? 'true' : 'false'}
+				data-active={'died' in entry.entry.data && entry.entry.data.died === undefined ? 'true' : 'false'}
 				class={`sidebar-item ${MenuLi['vertical']} ${entry.entry.id === selected ? 'active' : ''}`}
 			>
 				<a
 					class={MenuLinkWrapper['vertical']}
 					data-markerindex={i}
 					href={selected ? entry.extra.absolutePath : undefined}
-				>
+			>
 					{entry.entry.data.title}
 					<div style={{ position: 'absolute', right: '5px', top: '0px' }}>
-						<ActiveIndicator died={entry.entry.data.died} hideText={true} />
+						<ActiveIndicator died={'died' in entry.entry.data ? entry.entry.data.died : undefined} hideText={true} />
 					</div>
 				</a>
 			</li>

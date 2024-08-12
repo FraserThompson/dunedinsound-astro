@@ -1,7 +1,6 @@
 import { createVar, style } from '@vanilla-extract/css'
 
 export const colXs = createVar()
-export const colSm = createVar()
 export const colMd = createVar()
 export const colLg = createVar()
 

@@ -28,7 +28,10 @@ export async function getResponsiveImage(imageDir: string): Promise<ResponsiveIm
  * @param alt Alt text (optional)
  * @returns Key/value array keyed by image name of ResponsiveImage objects.
  */
-export async function getResponsiveImagesByDir(dir: string, alt?: string): Promise<{ [id: string]: ResponsiveImage } | undefined> {
+export async function getResponsiveImagesByDir(
+	dir: string,
+	alt?: string
+): Promise<{ [id: string]: ResponsiveImage } | undefined> {
 	// Find media dirs for this entry (if it exists)
 	const mediaDirs = await new fdir({
 		pathSeparator: '/',
@@ -61,7 +64,7 @@ export async function getResponsiveImagesByDir(dir: string, alt?: string): Promi
  * @returns Key value array of filename => src
  */
 export async function getImagesByDir(imageDir: string) {
-	const srcs = await (
+	const srcs = (
 		await new fdir({
 			pathSeparator: '/',
 			includeBasePath: true,

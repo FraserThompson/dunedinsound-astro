@@ -8,8 +8,7 @@
  * ts-nocheck is because lite-youtube throws an error.
  */
 
-import type React from "preact/compat"
-import { useCallback, useEffect } from "preact/compat"
+import { useCallback, useEffect } from "preact/hooks"
 
 interface Props {
 	videoid: string

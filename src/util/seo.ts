@@ -10,9 +10,9 @@ export function getCollectionMetaDescription<C extends CollectionKey>(entry: Col
 		artist: `Discover media from live gigs featuring ${entry.data.title} and heaps of other local artists.`,
 		venue: `Discover media from live gigs at ${entry.data.title} and heaps of other local venues.`,
 		gig: `Gig media from ${entry.data.title}.`,
-		blog: entry.data.description,
-		vaultsession: entry.data.description,
-		page: entry.data.description
+		blog: 'description' in entry.data ? entry.data.description : undefined,
+		vaultsession: 'description' in entry.data ? entry.data.description : undefined,
+		page: 'description' in entry.data ? entry.data.description : undefined
 	}
 
 	return descriptions[entry.collection]

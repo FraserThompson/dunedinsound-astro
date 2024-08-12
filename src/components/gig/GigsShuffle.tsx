@@ -1,5 +1,4 @@
-import type React from "preact/compat"
-import { useEffect, useMemo, useRef, useState } from "preact/compat"
+import { useEffect, useMemo, useState } from "preact/hooks"
 import { AudioWrapper, PlayerWrapper, ToggleButton, TracklistTrack, TracklistWrapper, TransportButton } from 'src/components/gig/Player.css'
 import CloudBackground from 'src/components/gig/CloudBackground'
 import { getRandom } from 'src/util/helpers'
@@ -32,8 +31,6 @@ const GigsJukebox: React.FC<Props> = ({ gigs }) => {
 	const [currentVideo, setCurrentVideo] = useState<string | undefined>(undefined)
 
 	const [wavesurfer, setWaveSurfer] = useState<WaveSurfer | undefined>(undefined)
-
-	const ytRef = useRef();
 
 	// Shuffled gigs
 	const shuffledGigs: any[] = useMemo(() => shuffler(gigs), [gigs])
@@ -82,9 +79,9 @@ const GigsJukebox: React.FC<Props> = ({ gigs }) => {
 						)}
 					</div>
 					<div className={`${AudioWrapper}`}>
-						<button className={`${TransportButton} left`} disabled={shuffleIndex - 1 < 0} onClick={(e: MouseEvent) => setShuffleIndex(shuffleIndex - 1)}></button>
-						<button className={`${TransportButton} play ${mode === 'video' ? 'hidden' : ''}`} onClick={(e: MouseEvent) => wavesurfer && wavesurfer.play()}></button>
-						<button className={`${TransportButton} right`} onClick={(e: MouseEvent) => setShuffleIndex(shuffleIndex + 1)}>	</button>
+						<button className={`${TransportButton} left`} disabled={shuffleIndex - 1 < 0} onClick={() => setShuffleIndex(shuffleIndex - 1)}></button>
+						<button className={`${TransportButton} play ${mode === 'video' ? 'hidden' : ''}`} onClick={() => wavesurfer && wavesurfer.play()}></button>
+						<button className={`${TransportButton} right`} onClick={() => setShuffleIndex(shuffleIndex + 1)}>	</button>
 						<div style={{ marginLeft: 'auto' }}>
 							<div className={`${mode === 'video' ? 'active' : ''} ${ToggleButton}`} onClick={() => setMode('video')} style={{ paddingLeft: '5px' }}>
 								Video

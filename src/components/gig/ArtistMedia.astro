@@ -34,7 +34,7 @@ const allImages = Object.values(entryExtra.artistImages).reduce((acc, images) =>
 const getGalleryOffset = (entryExtra: any, i: any) => {
 	if (i === 0) return 0
 	const prevArtistId = entryExtra.artists[i - 1].id
-	return entryExtra.artistImages[prevArtistId].length
+	return entryExtra.artistImages[prevArtistId]?.length || 0
 }
 ---
 
@@ -51,7 +51,7 @@ const getGalleryOffset = (entryExtra: any, i: any) => {
 				{artist.data.title}
 			</Divider>
 			<FlexGridContainer grid={{ xs: 12, md: 6 }} maxWidth="1080px">
-				{entryData.artists[i].vid?.map((vid, i) => (
+				{entryData.artists[i].vid?.map((vid) => (
 					<LiteYoutube videoid={vid.link} />
 				))}
 			</FlexGridContainer>

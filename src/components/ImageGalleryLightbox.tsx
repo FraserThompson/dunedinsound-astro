@@ -2,7 +2,7 @@
  * An image gallery lightbox intended for use with ImageGallery.
  */
 
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'preact/compat'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'preact/hooks'
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Download, Zoom } from "yet-another-react-lightbox/plugins";

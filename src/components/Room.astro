@@ -143,7 +143,7 @@ import { RoomWrapper, Surface } from './Room.css'
 			this.lightson = true
 		}
 
-		unhoverElement = (e: MouseEvent) => {
+		unhoverElement = () => {
 			if (!this.surfaces) return
 			this.lightson = false
 			this.surfaces.left.innerHTML = ''
@@ -163,13 +163,13 @@ import { RoomWrapper, Surface } from './Room.css'
 		}
 
 		connectedCallback() {
-			if (window.DeviceMotionEvent) window.addEventListener('deviceorientation', this.updatePosition, false)
-			this.hoverElements.forEach((el) => el.addEventListener('mouseover', this.hoverElement, false))
-			this.hoverElements.forEach((el) => el.addEventListener('mouseout', this.unhoverElement, false))
+			if (window.DeviceMotionEvent) window.addEventListener('deviceorientation', (e) => this.updatePosition(e), false)
+			this.hoverElements.forEach((el) => el.addEventListener('mouseover', (e: MouseEvent) => this.hoverElement(e), false))
+			this.hoverElements.forEach((el) => el.addEventListener('mouseout', () => this.unhoverElement(), false))
 		}
 
 		disconnectedCallback() {
-			window.removeEventListener('deviceorientation', this.updatePosition)
+			window.removeEventListener('deviceorientation', (e) => this.updatePosition(e))
 		}
 	}
 

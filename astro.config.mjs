@@ -8,6 +8,7 @@ import { remarkImagesPlugin } from './src/remark-images-plugin.ts'
 // https://astro.build/config
 export default defineConfig({
 	integrations: [mdx({ remarkPlugins: [remarkImagesPlugin] }), preact({ compat: true })],
+	site: 'https://beta.dunedinsound.com',
 	vite: {
 		plugins: [
 			vanillaExtractPlugin(),

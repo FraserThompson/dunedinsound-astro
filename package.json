@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "build": "astro build --verbose",
+    "deploy": "aws s3 sync dist/ s3://beta.dunedinsound.com/",
     "preview": "astro preview",
     "astro": "astro",
     "media": "node ./scripts/generateMedia.mjs",
@@ -17,7 +18,7 @@
     "@svgr/plugin-jsx": "^8.1.0",
     "@types/html-to-text": "^9.0.4",
     "@types/markdown-it": "^14.1.2",
-    "@vanilla-extract/vite-plugin": "4.0.9",
+    "@vanilla-extract/vite-plugin": "3.9.5",
     "async": "^3.2.5",
     "fs-extra": "^11.2.0",
     "glob": "^11.0.0",

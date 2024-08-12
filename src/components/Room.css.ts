@@ -1,4 +1,4 @@
-import { createVar, fallbackVar, globalStyle, keyframes, style, styleVariants } from '@vanilla-extract/css'
+import { globalStyle, keyframes, style, styleVariants } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 const camFocus = keyframes({

@@ -73,7 +73,7 @@ const hasSidebarSubheaderMobile = Astro.slots.has('sidebarSubheaderMobile')
 	<slot name="content" />
 </div>
 
-<script async>
+<script async is:inline>
 	// Duplicated from Helpers because we can't import with async
 	const scrollToElement = (element, headerOffset, parent = window, behavior = 'smooth') => {
 		if (!headerOffset) {
