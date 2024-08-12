@@ -3,6 +3,7 @@ import { theme } from 'src/Theme.css'
 
 export const dividerColor = createVar()
 export const dividerBackgroundColor = createVar()
+export const dividerZIndex = createVar()
 
 export const stickyTop = createVar()
 export const stickyTopMobile = createVar()
@@ -19,7 +20,7 @@ const dividerBase = style({
 	backgroundColor: fallbackVar(dividerBackgroundColor, theme.color.contrast),
 	borderBottom: '1px solid black',
 	top: '10px',
-	zIndex: '6',
+	zIndex: fallbackVar(dividerZIndex, '6'),
 	boxShadow: theme.borders.shadow,
 	'@media': {
 		'screen and (--xs)': {
@@ -38,7 +39,7 @@ export const dividerWrapper = styleVariants({
 	sticky: [
 		{
 			position: 'sticky',
-			zIndex: '6',
+			zIndex: fallbackVar(dividerZIndex, '6'),
 			boxShadow: theme.borders.shadow,
 			top: fallbackVar(stickyTopMobile || stickyTop, '0px'),
 			'@media': {
@@ -52,7 +53,7 @@ export const dividerWrapper = styleVariants({
 	normal: [
 		{
 			position: 'relative',
-			zIndex: '5'
+			zIndex: fallbackVar(dividerZIndex, '5'),
 		},
 		dividerBase
 	]

@@ -11,8 +11,6 @@
  *  - topMobile: Offset from top on mobile (xs).
  *  - bottom: Offset from the bottom on desktop.
  *  - bottomMobile: Offset from bottom on mobile (xs).
- *  - scrollContext: If a context is supplied it will remember the scroll
- *    position within that context.
  *  - customButton: If true, it will not render its own button.
  *    You will need to put a button with id 'sidebar-button' somewhere on the page.
  */
@@ -34,16 +32,15 @@ interface Props {
 	topMobile?: string
 	bottom?: string
 	bottomMobile?: string
-	scrollContext?: string
 	customButton?: boolean
 }
 
-const { top, topMobile, bottom, bottomMobile, scrollContext, customButton } = Astro.props
+const { top, topMobile, bottom, bottomMobile, customButton } = Astro.props
 
 const hasSidebarSubheaderMobile = Astro.slots.has('sidebarSubheaderMobile')
 ---
 
-<sidebar-wrapper data-scrollcontext={scrollContext}>
+<sidebar-wrapper>
 	<div
 		id="sidebar"
 		class={sidebarWrapper}
@@ -54,7 +51,7 @@ const hasSidebarSubheaderMobile = Astro.slots.has('sidebarSubheaderMobile')
 			[offsetBottomMobile]: bottomMobile
 		})}
 	>
-		<div class={`${sidebarMenuWrapper} ${hasSidebarSubheaderMobile ? 'hasSubheaderMobile' : ''}`}>
+		<div id="sidebar-menu" class={`${sidebarMenuWrapper} ${hasSidebarSubheaderMobile ? 'hasSubheaderMobile' : ''}`}>
 			<slot name="sidebarMenu" />
 		</div>
 		<slot name="sidebarSubheaderMobile" />
@@ -73,41 +70,15 @@ const hasSidebarSubheaderMobile = Astro.slots.has('sidebarSubheaderMobile')
 	<slot name="content" />
 </div>
 
-<script async is:inline>
-	// Duplicated from Helpers because we can't import with async
-	const scrollToElement = (element, headerOffset, parent = window, behavior = 'smooth') => {
-		if (!headerOffset) {
-			element.scrollIntoView({ behavior: behavior })
-		} else {
-			const y = element.getBoundingClientRect().top + parent.scrollTop
-			parent.scrollTo(0, y - headerOffset)
-		}
-	}
-
+<script>
 	class SidebarWrapper extends HTMLElement {
 		sidebar
 		button
-		scrollContext
-		scrollStorageKey = 'sidebarScroll'
-		contextStorageKey = 'scrollContext'
-
-		storedScrollPosition
-		prevScrollContext
 
 		constructor() {
 			super()
 			this.sidebar = this.querySelector('#sidebar')
 			this.button = document.querySelector('#sidebar-button')
-			this.scrollContext = this.getAttribute('data-scrollcontext')
-
-			// Recalled items
-			this.prevScrollContext = sessionStorage.getItem(this.contextStorageKey)
-			this.storedScrollPosition = sessionStorage.getItem(this.scrollStorageKey)
-
-			// If we've moved context, delete scroll position
-			if (this.scrollContext === this.prevScrollContext) {
-				sessionStorage.removeItem(this.scrollStorageKey)
-			}
 		}
 
 		toggleSidebar() {
@@ -115,60 +86,12 @@ const hasSidebarSubheaderMobile = Astro.slots.has('sidebarSubheaderMobile')
 			this.button?.classList.toggle('open')
 		}
 
-		/**
-		 * Store the current scrollbar position.
-		 */
-		storeScrollPosition() {
-			if (this.sidebar) {
-				sessionStorage.setItem(this.scrollStorageKey, this.sidebar.scrollTop.toString())
-			}
-		}
-
-		/**
-		 * If we have a context, store it.
-		 */
-		storeScrollContext() {
-			this.scrollContext && sessionStorage.setItem(this.contextStorageKey, this.scrollContext)
-		}
-
-		/**
-		 * Scroll to the stored scroll position if we have one.
-		 */
-		scrollToPosition() {
-			// Retrieve the stored scroll position from sessionStorage
-			// If a stored scroll position exists, scroll the sidebar to that position
-			if (this.sidebar) {
-				this.sidebar.scrollTop = Number(this.storedScrollPosition)
-			}
-		}
-
 		connectedCallback() {
-			// Button which opens and closes the isdebar
+			// Button which opens and closes the sidebar
 			this.button?.addEventListener('mousedown', () => this.toggleSidebar())
-
-			// Handles scroll recall behavour
-			if (this.storedScrollPosition && this.scrollContext) {
-				// We're in the same page context: Scroll to the previous scroll position
-				this.scrollToPosition()
-				document.addEventListener('DOMContentLoaded', () => this.scrollToPosition())
-			} else {
-				// We've moved scroll contexts
-				const activeItem = this.sidebar?.querySelector('.active')
-				if (activeItem) {
-					scrollToElement(activeItem, -30, this.sidebar, 'instant')
-				}
-			}
-
-			// Save the current scroll context
-			this.storeScrollContext()
-
-			// And before we leave, save the scroll position
-			window.addEventListener('beforeunload', () => this.storeScrollPosition())
 		}
 
-		disconnectedCallback() {
-			window.removeEventListener('beforeunload', () => this.storeScrollPosition())
-		}
+		disconnectedCallback() {}
 	}
 
 	customElements.define('sidebar-wrapper', SidebarWrapper)

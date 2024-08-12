@@ -30,7 +30,7 @@ const entries = await loadAndFormatCollection(collection)
 	)
 }
 
-<ul id="sidebar-menu" class={MenuWrapper['vertical']}>
+<ul id="shuffle-menu" class={MenuWrapper['vertical']}>
 	{
 		entries.map((entry, i) => (
 			<li
@@ -42,7 +42,7 @@ const entries = await loadAndFormatCollection(collection)
 					class={MenuLinkWrapper['vertical']}
 					data-markerindex={i}
 					href={selected ? entry.extra.absolutePath : undefined}
-			>
+				>
 					{entry.entry.data.title}
 					<div style={{ position: 'absolute', right: '5px', top: '0px' }}>
 						<ActiveIndicator died={'died' in entry.entry.data ? entry.entry.data.died : undefined} hideText={true} />
@@ -52,3 +52,8 @@ const entries = await loadAndFormatCollection(collection)
 		))
 	}
 </ul>
+
+<script define:vars={{ collection }}>
+	import { maintainSidebarScrollPosition } from 'src/util/helpers'
+	maintainSidebarScrollPosition(collection)
+</script>

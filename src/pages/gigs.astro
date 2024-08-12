@@ -25,7 +25,7 @@ const gigs = await loadAndFormatCollection('gig')
 			</div>
 		</div>
 	</ShuffleFilters>
-	<GigsMenu slot="sidebarMenu" />
+	<GigsMenu slot="sidebarMenu" transition:name={'gigs'} transition:persist />
 	<FlexGridContainer grid={{ xs: 12 }} id="gigs" slot="content" fixedWidth={true}>
 		{gigs.map((gig) => <GigTile gig={gig} />)}
 	</FlexGridContainer>

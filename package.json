@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build --verbose",
+    "build": "astro check && astro build --verbose",
     "deploy": "aws s3 sync dist/ s3://beta.dunedinsound.com/",
     "preview": "astro preview",
     "astro": "astro",

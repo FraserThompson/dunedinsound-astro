@@ -68,13 +68,11 @@ const hasBanner = Astro.slots.has('banner')
 	backgroundImage={entryExtra.cover}
 	bottomMargin={theme.dimensions.headerHeightNegative}
 >
-	<div slot="subtitle">
-		<ActiveIndicator
-			born={entryData.date}
-			died={entryData.died}
-			inactiveText={entry.entry.collection === 'artist' ? 'Inactive' : 'Defunct'}
-		/>
-	</div>
+	<ActiveIndicator
+		born={entryData.date}
+		died={entryData.died}
+		inactiveText={entry.entry.collection === 'artist' ? 'Inactive' : 'Defunct'}
+	/>
 	{entryData.links && <SocialLinks links={entryData.links} />}
 	{
 		entryData.description && (
@@ -92,7 +90,7 @@ const hasBanner = Astro.slots.has('banner')
 	}
 	<slot name="banner" slot={hasBanner ? 'background' : ''} />
 </Banner>
-<Divider sticky={true} backgroundColor={theme.color.primary} color={theme.color.text}>
+<Divider sticky={true} backgroundColor={theme.color.primary} color={theme.color.text} zIndex={'7'}>
 	<h3 style={{ marginBottom: 0 }}>{entryData.title}</h3>
 </Divider>
 <ContentTabs tabs={tabs}>

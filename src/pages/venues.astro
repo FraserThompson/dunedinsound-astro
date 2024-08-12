@@ -18,7 +18,7 @@ const markers = venues.map((venue) => ({
 ---
 
 <SidebarLayout hideFooter={true} scrollContext="venues" poo={{ title: 'Venues' }}>
-	<ShuffleFilters slot="subheaderTop" itemselector=".sidebar-item" boardselector="#sidebar-menu">
+	<ShuffleFilters slot="subheaderTop" itemselector=".sidebar-item" boardselector="#shuffle-menu">
 		<SearchBox className="hideMobile" placeholder="Search venues" />
 		<div class="filterGroup">
 			<label>
@@ -31,7 +31,7 @@ const markers = venues.map((venue) => ({
 			</label>
 		</div>
 	</ShuffleFilters>
-	<EntryMenu collection="venue" slot="sidebarMenu" />
+	<EntryMenu collection="venue" slot="sidebarMenu" transition:name={'venues'} transition:persist />
 	<Map markers={markers} slot="content">
 		<div slot="popups">
 			{
@@ -63,7 +63,7 @@ const markers = venues.map((venue) => ({
 		slot="subheaderBottomMobile"
 		className="fullWidth"
 		itemselector=".sidebar-item"
-		boardselector="#sidebar-menu"
+		boardselector="#shuffle-menu"
 	>
 		<SearchBox placeholder=`Search venues` />
 	</ShuffleFilters>

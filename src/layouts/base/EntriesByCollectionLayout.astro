@@ -40,10 +40,16 @@ const hasBanner = Astro.slots.has('banner')
 	}}
 	scrollContext={collection}
 >
-	<ShuffleFilters slot="subheaderTopDesktop" itemselector=".sidebar-item" boardselector="#sidebar-menu">
+	<ShuffleFilters slot="subheaderTopDesktop" itemselector=".sidebar-item" boardselector="#shuffle-menu">
 		<SearchBox placeholder=`Search ${collection}` />
 	</ShuffleFilters>
-	<EntryMenu slot="sidebarMenu" collection={collection} selected={entry.entry.id} />
+	<EntryMenu
+		slot="sidebarMenu"
+		collection={collection}
+		selected={entry.entry.id}
+		transition:name={collection}
+		transition:persist
+	/>
 	<ContentByEntry entry={entry} slot="content">
 		<slot name="banner" slot={hasBanner ? 'banner' : ''} />
 	</ContentByEntry>
@@ -51,7 +57,7 @@ const hasBanner = Astro.slots.has('banner')
 		slot="sidebarSubheaderMobile"
 		className="fullWidth"
 		itemselector=".sidebar-item"
-		boardselector="#sidebar-menu"
+		boardselector="#shuffle-menu"
 	>
 		<SearchBox placeholder=`Search ${collection}s` />
 	</ShuffleFilters>

@@ -230,3 +230,38 @@ export function getRandom(min: number, max: number, floor?: boolean) {
 	const randomFloat = Math.random() * (max - min + 1) + min
 	return floor ? Math.floor(randomFloat) : randomFloat
 }
+
+export function maintainSidebarScrollPosition(collection: string) {
+	// On first load scroll to active element
+	document.addEventListener(
+		'astro:page-load',
+		() => {
+			const sidebarMenu = document.querySelector('#sidebar-menu')
+			const activeElement = sidebarMenu?.querySelector('.gigItem.active')
+			if (activeElement) {
+				scrollToElement(activeElement, 60, sidebarMenu)
+			}
+		},
+		{ once: true }
+	)
+
+	// Before going to the next page, store the scroll position
+	document.addEventListener('astro:before-swap', () => {
+		const scrollPosition = document.querySelector('#sidebar-menu')?.scrollTop.toString()
+		if (scrollPosition) {
+			sessionStorage.setItem(`scrollPosition-${collection}`, scrollPosition)
+		}
+	})
+
+	// After going to next page, scroll to correct position
+	document.addEventListener('astro:after-swap', () => {
+		const scrollPosition = sessionStorage.getItem(`scrollPosition-${collection}`)
+		if (scrollPosition) {
+			document.querySelector('#sidebar-menu')?.scrollTo({
+				top: parseInt(scrollPosition, 10),
+				behavior: 'instant'
+			})
+			sessionStorage.removeItem(`scrollPosition-${collection}`)
+		}
+	})
+}

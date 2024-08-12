@@ -2,7 +2,7 @@
 /**
  * Menu of all gigs on the website, sorted by date and month, and filterable
  * via shuffle.
- * 
+ *
  * Props:
  *  selected (optional): it will show the artists under that gig.
  */
@@ -53,7 +53,7 @@ const { selected } = Astro.props
 		Object.entries(sortedGigs)
 			.reverse()
 			.map(([year, months]) => (
-				<ul class={`${gigsMenuWrapper} yearList`} style={{ overflow: 'initial' }}>
+				<ul class={`${gigsMenuWrapper} yearList`} id="shuffle-menu" style={{ overflow: 'initial' }}>
 					<li class={yearHeader} id={makeHash(year)}>
 						<a class={yearLink}>{year}</a>
 					</li>
@@ -101,6 +101,9 @@ const { selected } = Astro.props
 	import { scrollTo } from 'src/util/helpers'
 	import browserHistory from 'src/util/history'
 	import type { Location } from 'history'
+	import { maintainSidebarScrollPosition } from 'src/util/helpers'
+
+	maintainSidebarScrollPosition('gig')
 
 	class ArtistsMenu extends HTMLElement {
 		unlisten: any
@@ -120,7 +123,12 @@ const { selected } = Astro.props
 			if (location.hash) {
 				const newSelectedId = location.hash
 				const selectedItem = this.querySelector(`[href="${newSelectedId}"]`)
-				if (!selectedItem) return
+
+				if (!selectedItem) {
+					this.selectedArtist && this.selectedArtist.classList.remove('active')
+					this.selectedArtist = undefined
+					return
+				}
 
 				this.selectedArtist && this.selectedArtist.classList.remove('active')
 				this.selectedArtist = selectedItem
@@ -132,7 +140,7 @@ const { selected } = Astro.props
 		}
 
 		itemClick(e: MouseEvent) {
-			scrollTo(e)			
+			scrollTo(e)
 			// Close sidebar on mobile
 			// See: SidebarNav.astro
 			// @ts-ignore
@@ -152,7 +160,6 @@ const { selected } = Astro.props
 	}
 
 	class GigsMenu extends HTMLElement {
-
 		sidebar: HTMLElement | null
 		months: NodeListOf<HTMLElement> | null
 		years: NodeListOf<HTMLElement> | null
@@ -171,7 +178,7 @@ const { selected } = Astro.props
 		}
 
 		itemClick(e: MouseEvent) {
-			scrollTo(e)			
+			scrollTo(e)
 			// Close sidebar on mobile
 			// See: SidebarNav.astro
 			// @ts-ignore

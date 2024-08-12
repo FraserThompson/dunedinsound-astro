@@ -6,17 +6,17 @@
  *  - hideFooter (optional): The footer will be hidden if true.
  *  - className (optional): Classes added to the content wrapper.
  *  - poo: SEO gubbins
- * 
+ *
  * Slot:
  *  - default: All site content should go here.
  */
-import GlobalStyle from 'src/components/GlobalStyle.astro'
 import SiteFooter from 'src/components/SiteFooter.astro'
 import SiteHeader from 'src/components/SiteHeader.astro'
 import SEO, { type Poo } from 'src/components/SEO.astro'
 import '../../Theme.css.ts'
 import './BaseLayout.css.ts'
 import { Content, SiteContainer } from 'src/components/UtilClasses.css'
+import { ViewTransitions } from 'astro:transitions'
 
 interface Props {
 	hideFooter?: boolean
@@ -27,7 +27,6 @@ interface Props {
 const { hideFooter, className, poo } = Astro.props
 ---
 
-<GlobalStyle />
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
@@ -35,17 +34,18 @@ const { hideFooter, className, poo } = Astro.props
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<SEO poo={poo} />
+		<ViewTransitions />
 		<script type="application/javascript" is:inline>
 			var global = window
 		</script>
 	</head>
 	<body>
 		<div class={SiteContainer[hideFooter ? 'hideFooter' : 'default']}>
-			<SiteHeader />
+			<SiteHeader transition:persist />
 			<div class={`${Content} ${className}`}>
 				<slot />
 			</div>
 		</div>
-		{!hideFooter && <SiteFooter />}
+		{!hideFooter && <SiteFooter transition:persist />}
 	</body>
 </html>

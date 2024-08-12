@@ -10,12 +10,13 @@
  *  - sticky: if true it will be sticky
  *  - stickyTop: 
  *  - smoothScroll: if true it will scroll smoothly to the anchor specified in the href, and not update the URL
+ *  - zIndex: Override the default zIndex (5 for normal, 6 for sticky)
  *
  * @param param0
  * @returns
  */
 
-import { dividerWrapper, dividerColor, dividerBackgroundColor, stickyTop, stickyTopMobile } from './Divider.css'
+import { dividerWrapper, dividerColor, dividerBackgroundColor, stickyTop, stickyTopMobile, dividerZIndex } from './Divider.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
@@ -27,9 +28,10 @@ interface Props {
 	top?: string
 	topMobile?: string
 	smoothScroll?: boolean
+	zIndex?: string
 }
 
-const { href, color, backgroundColor, className, sticky, top, topMobile, smoothScroll } = Astro.props
+const { href, color, backgroundColor, className, sticky, top, topMobile, smoothScroll, zIndex } = Astro.props
 ---
 
 <div
@@ -38,7 +40,8 @@ const { href, color, backgroundColor, className, sticky, top, topMobile, smoothS
 		[dividerColor]: color,
 		[dividerBackgroundColor]: backgroundColor,
 		[stickyTop]: top ? top : undefined,
-		[stickyTopMobile]: topMobile ? topMobile : undefined
+		[stickyTopMobile]: topMobile ? topMobile : undefined,
+		[dividerZIndex]: zIndex
 	})}
 >
 	{

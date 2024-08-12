@@ -1,6 +1,9 @@
 import { globalStyle } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
+/**
+ * Base element style defaults.
+ */
 globalStyle('html', {
 	fontFamily: 'sans-serif',
 	overflowY: 'auto'
@@ -18,10 +21,6 @@ globalStyle('body', {
 	maxWidth: '100vw',
 	height: '100%',
 	width: '100%'
-})
-
-globalStyle('.padding', {
-	padding: theme.dimensions.basePadding
 })
 
 globalStyle('h1, h2, h3, h4, h5, h6', {
@@ -148,9 +147,9 @@ globalStyle('input[type="text"]', {
 	transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s',
 	'@media': {
 		'screen and (--md)': {
-			maxWidth: '260px',
+			maxWidth: `calc(${theme.dimensions.sidebarWidth} - ${theme.dimensions.basePadding} - ${theme.dimensions.basePadding})`,
 			paddingLeft: theme.dimensions.basePadding,
-			paddingRight: theme.dimensions.basePadding,
+			paddingRight: theme.dimensions.basePadding
 		}
 	}
 })
@@ -195,4 +194,82 @@ globalStyle('table td, table th', {
 	fontFeatureSettings: "'tnum'",
 	paddingTop: '1rem',
 	paddingBottom: 'calc(1rem - 1px)'
+})
+
+/**
+ * Utility classes
+ */
+globalStyle('.hidden', {
+	display: 'none !important'
+})
+
+globalStyle('.showMobile', {
+	display: 'inline-block !important',
+	'@media': {
+		'screen and (--md)': {
+			display: 'none !important'
+		}
+	}
+})
+
+globalStyle('.hideMobile', {
+	display: 'none !important',
+	'@media': {
+		'screen and (--md)': {
+			display: 'inline-block !important'
+		}
+	}
+})
+
+globalStyle('.hideMobile.flex', {
+	display: 'none !important',
+	'@media': {
+		'screen and (--md)': {
+			display: 'flex !important'
+		}
+	}
+})
+
+globalStyle('.flex', {
+	display: 'flex'
+})
+
+globalStyle('.visible', {
+	display: 'inline-block'
+})
+
+globalStyle('.hidden', {
+	display: 'none'
+})
+
+globalStyle('.center', {
+	textAlign: 'center'
+})
+
+globalStyle('.monospace', {
+	fontFamily: 'monospace'
+})
+
+globalStyle('.fullWidth', {
+	width: '100%'
+})
+
+globalStyle('.padding', {
+	padding: theme.dimensions.basePadding
+})
+
+globalStyle('.noPadding', {
+	padding: '0 !important',
+	minWidth: '0 !important',
+	minHeight: '0 !important'
+})
+
+globalStyle('.headerButton', {
+	width: '30px !important',
+	height: '30px !important'
+})
+
+globalStyle('.left0', {
+	left: 0,
+	marginLeft: 0
 })
