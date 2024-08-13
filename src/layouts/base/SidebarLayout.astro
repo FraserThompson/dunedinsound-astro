@@ -4,7 +4,6 @@
  * Makes things easier by automatically doing top and bottom margins.
  *
  * Props:
- *  - scrollContext: See SidebarNav
  *  - hideFooter: See BaseLayout
  *  - poo: SEO gubbins
  *
@@ -24,12 +23,11 @@ import type { Poo } from 'src/components/SEO.astro'
 import { WithTopSubheader, WithBottomSubheaderMobile, Subheader } from 'src/components/UtilClasses.css'
 
 interface Props {
-	scrollContext?: string
 	hideFooter?: boolean
 	poo: Poo
 }
 
-const { scrollContext, hideFooter, poo } = Astro.props
+const { hideFooter, poo } = Astro.props
 
 const hasSubheaderTop = Astro.slots.has('subheaderTop')
 const hasSubheaderTopMobile = Astro.slots.has('subheaderTopMobile')

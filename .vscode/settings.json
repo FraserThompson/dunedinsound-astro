@@ -3,6 +3,7 @@
     "**/.git": true,
     "dist": true,
     "media": true,
+    "dist_media": true,
     "node_modules": true
   },
 }

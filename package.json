@@ -6,11 +6,11 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build --verbose",
-    "deploy": "aws s3 sync dist/ s3://beta.dunedinsound.com/",
+    "deploy": "npm run link_media && aws s3 sync dist/ s3://beta.dunedinsound.com/ --follow-symlinks",
     "preview": "astro preview",
     "astro": "astro",
     "media": "node ./scripts/generateMedia.mjs",
-    "convert": "node ./scripts/convert.mjs"
+    "link_media": "powershell -Command \"New-Item -Path .\\dist\\dist_media -ItemType Junction -Value .\\dist_media\" > nul"
   },
   "devDependencies": {
     "@iconify-json/bx": "^1.1.11",

@@ -1,3 +1,5 @@
+import { DIST_MEDIA_DIR } from './constants'
+
 /**
  * ResponsiveImage
  *
@@ -24,7 +26,6 @@ export class ResponsiveImage {
 
 		const parsedImages = images.reduce(
 			(acc: any, src: string) => {
-				src = src.replace('public/', '/')
 				const pathComponents = src.split('.')
 				const ext = pathComponents[pathComponents.length - 1]
 				if (pathComponents.length > 2 && ext === 'webp') {

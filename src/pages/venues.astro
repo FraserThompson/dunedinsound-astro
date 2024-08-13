@@ -17,7 +17,7 @@ const markers = venues.map((venue) => ({
 }))
 ---
 
-<SidebarLayout hideFooter={true} scrollContext="venues" poo={{ title: 'Venues' }}>
+<SidebarLayout hideFooter={true} poo={{ title: 'Venues' }}>
 	<ShuffleFilters slot="subheaderTop" itemselector=".sidebar-item" boardselector="#shuffle-menu">
 		<SearchBox className="hideMobile" placeholder="Search venues" />
 		<div class="filterGroup">

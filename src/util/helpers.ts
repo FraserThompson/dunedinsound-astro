@@ -231,13 +231,18 @@ export function getRandom(min: number, max: number, floor?: boolean) {
 	return floor ? Math.floor(randomFloat) : randomFloat
 }
 
+/**
+ * Maintains the scroll position of the sidebar during page transitions.
+ * 
+ * @param collection name of the collection the sidebar appears on
+ */
 export function maintainSidebarScrollPosition(collection: string) {
 	// On first load scroll to active element
 	document.addEventListener(
 		'astro:page-load',
 		() => {
 			const sidebarMenu = document.querySelector('#sidebar-menu')
-			const activeElement = sidebarMenu?.querySelector('.gigItem.active')
+			const activeElement = sidebarMenu?.querySelector('.active')
 			if (activeElement) {
 				scrollToElement(activeElement, 60, sidebarMenu)
 			}

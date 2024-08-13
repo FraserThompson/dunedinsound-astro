@@ -8,6 +8,7 @@ import { getResponsiveImage, getResponsiveImagesByDir } from './image'
 import type { ResponsiveImage } from './ResponsiveImage'
 import { monthMap } from './helpers'
 import { getCollectionMetaDescription } from './seo'
+import { DIST_MEDIA_DIR } from './constants'
 
 type EntryExtraCommon = {
 	slug: string
@@ -156,7 +157,7 @@ async function getCommonExtra<C extends CollectionKey>(entry: CollectionEntry<C>
 	// To preserve URLs from old site
 	const postSlug = getEntrySlug(title, entry.collection)
 
-	const images = await getResponsiveImagesByDir(`public/media/${entry.collection}/${getEntryId(entry)}`, title)
+	const images = await getResponsiveImagesByDir(`${DIST_MEDIA_DIR}/${entry.collection}/${getEntryId(entry)}`, title)
 
 	return {
 		slug: postSlug,
@@ -193,7 +194,7 @@ export async function getGigExtra(
 		maxDepth: 1
 	})
 		.onlyDirs()
-		.crawl(`public/media/gig/${entry.id}`)
+		.crawl(`${DIST_MEDIA_DIR}/gig/${entry.id}`)
 		.withPromise()
 
 	let artistImages: { [id: string]: ResponsiveImage[] } = {}
@@ -218,7 +219,7 @@ export async function getGigExtra(
 				.glob(`**@(mp3|json)`)
 				.crawl(artistDir)
 				.withPromise()
-		).map((file) => file.replace('public/', '/'))
+		).map((src) => `/${src}`)
 
 		if (audioFiles.length) {
 			audio.push({
@@ -298,7 +299,7 @@ export async function getVaultSessionExtra(
 	const artist = await getEntry('artist', entry.data.artist.id)
 
 	const type = entry.collection
-	const dir = `public/media/${type}/${getEntryId(entry)}`
+	const dir = `${DIST_MEDIA_DIR}/${type}/${getEntryId(entry)}`
 
 	// Get the audio
 	const audioFiles = (
@@ -309,7 +310,7 @@ export async function getVaultSessionExtra(
 			.glob(`**@(mp3|json)`)
 			.crawl(dir)
 			.withPromise()
-	).map((file) => file.replace('public/', '/'))
+	).map((src) => `/${src}`)
 
 	const audio = {
 		title: entry.data.title,
@@ -348,7 +349,7 @@ export async function getArtistExtra(
 	}
 
 	// Resolve an image
-	const dir = `public/media/gig/${latestGig.id}/${artistId}`
+	const dir = `${DIST_MEDIA_DIR}/gig/${latestGig.id}/${artistId}`
 	const images = await getResponsiveImagesByDir(dir)
 	const cover: ResponsiveImage | undefined = images ? Object.values(images)[0] : undefined
 
@@ -365,7 +366,7 @@ export async function getArtistExtra(
  */
 export async function getCover(entry: CollectionEntry<CollectionKey>): Promise<ResponsiveImage | undefined> {
 	const type = entry.collection
-	const dir = `public/media/${type}/${getEntryId(entry)}/cover`
+	const dir = `${DIST_MEDIA_DIR}/${type}/${getEntryId(entry)}/cover`
 	const image = await getResponsiveImage(dir)
 	return image
 }

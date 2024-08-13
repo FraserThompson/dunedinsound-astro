@@ -38,7 +38,6 @@ const hasBanner = Astro.slots.has('banner')
 		image: entryExtra.cover?.src,
 		date: entryData.date?.toISOString()
 	}}
-	scrollContext={collection}
 >
 	<ShuffleFilters slot="subheaderTopDesktop" itemselector=".sidebar-item" boardselector="#shuffle-menu">
 		<SearchBox placeholder=`Search ${collection}` />

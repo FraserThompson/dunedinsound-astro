@@ -26,11 +26,11 @@ globalStyle(`${FlexGridWrapper} > *`, {
 	flexWrap: 'wrap',
 	justifyContent: 'center',
 	'@media': {
-		'screen and (--md)': {
+		'screen and (--xs)': {
 			flex: flexMd,
 			width: widthMd
 		},
-		'screen and (--lg)': {
+		'screen and (--md)': {
 			flex: flexLg,
 			width: widthLg
 		}

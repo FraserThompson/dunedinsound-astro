@@ -17,7 +17,8 @@ export async function getResponsiveImage(imageDir: string): Promise<ResponsiveIm
 			.glob('**@(jpg|webp)')
 			.crawl(imageDir)
 			.withPromise()
-	).map((img) => img.replace('public/', '/'))
+	).map((src) => `/${src}`)
+
 	return srcs.length > 1 ? new ResponsiveImage(srcs) : undefined
 }
 
@@ -43,15 +44,16 @@ export async function getResponsiveImagesByDir(
 		.withPromise()
 
 	// It always returns itself, so this is 1 not 0
-	if (mediaDirs.length === 1) return
+	if (mediaDirs.length <= 1) return
 
 	let images: { [id: string]: ResponsiveImage } = {}
 
 	// Get all responsive image entities
 	for (const group of mediaDirs) {
 		if (!group.files.length) continue
+		const files = group.files.map((src) => `/${src}`)
 		const filename = path.basename(group.directory)
-		images[filename] = new ResponsiveImage(group.files, alt)
+		images[filename] = new ResponsiveImage(files, alt)
 	}
 
 	return images
@@ -73,7 +75,7 @@ export async function getImagesByDir(imageDir: string) {
 			.glob(`**@(jpg|webp)`)
 			.crawl(imageDir)
 			.withPromise()
-	).map((img) => img.replace('public/', '/'))
+	).map((src) => `/${src}`)
 
 	const images: { [id: string]: string } = {}
 

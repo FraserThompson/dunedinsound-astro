@@ -3,9 +3,10 @@ import fs from 'fs-extra'
 import path from 'path'
 import sharp from 'sharp'
 import parallelLimit from 'async/parallelLimit.js'
+import { DIST_MEDIA_DIR } from 'src/util/constants'
 
-const inputDir = './media'
-const outputDir = './public/media'
+const inputDir = 'media'
+const outputDir = DIST_MEDIA_DIR
 
 const media = globSync(`${inputDir}/**/**/**/*`)
 

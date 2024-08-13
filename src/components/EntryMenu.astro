@@ -35,7 +35,7 @@ const entries = await loadAndFormatCollection(collection)
 		entries.map((entry, i) => (
 			<li
 				data-title={entry.entry.data.title}
-				data-active={'died' in entry.entry.data && entry.entry.data.died === undefined ? 'true' : 'false'}
+				data-active={'died' in entry.entry.data && entry.entry.data.died !== undefined ? 'false' : 'true'}
 				class={`sidebar-item ${MenuLi['vertical']} ${entry.entry.id === selected ? 'active' : ''}`}
 			>
 				<a

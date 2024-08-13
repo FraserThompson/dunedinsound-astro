@@ -1,6 +1,6 @@
 ---
-import EntriesByCollectionLayout from 'src/layouts/base/EntriesByCollectionLayout.astro'
 import { loadAndFormatCollection } from 'src/util/collection.ts'
+import EntriesByCollectionLayout from 'src/layouts/base/EntriesByCollectionLayout.astro'
 
 export async function getStaticPaths() {
 	const entries = await loadAndFormatCollection('artist')
