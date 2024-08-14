@@ -146,7 +146,7 @@ globalStyle('input[type="text"]', {
 	boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
 	transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s',
 	'@media': {
-		'screen and (--md)': {
+		'screen and (--lg)': {
 			maxWidth: `calc(${theme.dimensions.sidebarWidth} - ${theme.dimensions.basePadding} - ${theme.dimensions.basePadding})`,
 			paddingLeft: theme.dimensions.basePadding,
 			paddingRight: theme.dimensions.basePadding

@@ -3,7 +3,7 @@ import { styleVariants } from '@vanilla-extract/css'
 export const gridWrapper = styleVariants({
 	autoflow: {
 		display: 'grid',
-		gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+		gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
 		gridAutoFlow: 'dense'
 	},
 	fixed: {

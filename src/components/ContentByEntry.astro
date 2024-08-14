@@ -27,9 +27,9 @@ interface Props {
 
 const { entry } = Astro.props
 
-const gigs = await loadAndFormatCollection('gig', ({ data }) => {
-	const matchByArtist = data.artists?.find((artist: any) => artist.id.id === entry.entry.id)
-	const matchByVenue = data.venue.id === entry.entry.id
+const gigs = await loadAndFormatCollection('gig', (thing) => {
+	const matchByArtist = thing.entry.data.artists?.find((artist) => artist.id.id === entry.entry.id)
+	const matchByVenue = thing.entry.data.venue.id === entry.entry.id
 	return matchByArtist || matchByVenue
 })
 
@@ -38,15 +38,15 @@ const gigsByYear = Object.groupBy(gigs, (gig) => gig.entry.data.date.getFullYear
 const years = Object.keys(gigsByYear).reverse()
 
 // Find related blogs
-const blogs = await loadAndFormatCollection('blog', ({ data }) => {
-	const matchByArtist = data.relatedArtists?.find((artist: any) => artist.id === entry.entry.id)
-	const matchByVenue = data.relatedVenues?.find((venue: any) => venue.id === entry.entry.id)
+const blogs = await loadAndFormatCollection('blog', (thing) => {
+	const matchByArtist = thing.entry.data.relatedArtists?.find((artist) => artist.id === entry.entry.id)
+	const matchByVenue = thing.entry.data.relatedVenues?.find((venue) => venue.id === entry.entry.id)
 	return matchByArtist || matchByVenue
 })
 
 // Find related vaultsessions
-const vaultSessions = await loadAndFormatCollection('vaultsession', ({ data }) => {
-	const matchByArtist = data.artist.id === entry.entry.id
+const vaultSessions = await loadAndFormatCollection('vaultsession', (thing) => {
+	const matchByArtist = thing.entry.data.artist.id === entry.entry.id
 	return matchByArtist
 })
 

@@ -246,6 +246,7 @@ export function maintainSidebarScrollPosition(collection: string) {
 			if (activeElement) {
 				scrollToElement(activeElement, 60, sidebarMenu)
 			}
+			sessionStorage.removeItem(`scrollPosition-${collection}`)
 		},
 		{ once: true }
 	)

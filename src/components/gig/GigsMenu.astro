@@ -1,7 +1,8 @@
 ---
 /**
- * Menu of all gigs on the website, sorted by date and month, and filterable
- * via shuffle.
+ * Menu of all gigs on the website, sorted by date and month.
+ *
+ * It responds to shuffle events to filter its items.
  *
  * Props:
  *  selected (optional): it will show the artists under that gig.
@@ -18,7 +19,7 @@ import {
 	gigsMenuWrapper,
 	artistsMenuWrapper
 } from './GigsMenu.css'
-import { makeHash } from 'src/util/helpers'
+import { makeHash, artistsToString } from 'src/util/helpers'
 import DropdownMenu from '../DropdownMenu'
 import { theme } from 'src/Theme.css'
 
@@ -53,7 +54,7 @@ const { selected } = Astro.props
 		Object.entries(sortedGigs)
 			.reverse()
 			.map(([year, months]) => (
-				<ul class={`${gigsMenuWrapper} yearList`} id="shuffle-menu" style={{ overflow: 'initial' }}>
+				<ul class={`${gigsMenuWrapper} yearList`} style={{ overflow: 'initial' }}>
 					<li class={yearHeader} id={makeHash(year)}>
 						<a class={yearLink}>{year}</a>
 					</li>
@@ -94,6 +95,25 @@ const { selected } = Astro.props
 	}
 </gigs-menu>
 
+<!-- 
+	This is a bit of an ugly workaround.
+	On the gigs page we shuffle the tiles and listen on the menu.
+	On individual gig pages there are no tiles, so we shuffle this hidden list instead.
+-->
+{
+	selected && (
+		<ul id="shuffle-menu" class="hidden">
+			{gigs.map((gig) => (
+				<li
+					id={makeHash(gig.entry.id)}
+					class="hiddenItem"
+					data-title={`${gig.entry.data.title} ${gig.extra.venue.data.title} ${artistsToString(gig.extra.artists)}`}
+				/>
+			))}
+		</ul>
+	)
+}
+
 <slot />
 
 <script>
@@ -105,6 +125,9 @@ const { selected } = Astro.props
 
 	maintainSidebarScrollPosition('gig')
 
+	/**
+	 * Artists menu which sits under a gig if its selected.
+	 */
 	class ArtistsMenu extends HTMLElement {
 		unlisten: any
 
@@ -119,6 +142,13 @@ const { selected } = Astro.props
 			this.links = this.querySelectorAll('a')
 		}
 
+		/**
+		 * Respond to the Gig layout changing the hash.
+		 * 
+		 * Highlights the active artist.
+		 * 
+		 * @param location 
+		 */
 		handleURLChange(location: Location) {
 			if (location.hash) {
 				const newSelectedId = location.hash
@@ -139,6 +169,9 @@ const { selected } = Astro.props
 			}
 		}
 
+		/**
+		 * Scroll to an artist and hide the sidebar if it's open.
+		 */
 		itemClick(e: MouseEvent) {
 			scrollTo(e)
 			// Close sidebar on mobile
@@ -147,6 +180,9 @@ const { selected } = Astro.props
 			this.sidebar.toggleSidebar()
 		}
 
+		/**
+		 * Adds event listeners.
+		 */
 		connectedCallback() {
 			this.unlisten = browserHistory?.listen((location) => this.handleURLChange(location.location))
 			this.links?.forEach((link) => {
@@ -159,11 +195,20 @@ const { selected } = Astro.props
 		}
 	}
 
+	/**
+	 * A menu of gigs.
+	 * 
+	 * Similar to EntryMenu.astro but with subcategories for year/month.
+	 * 
+	 * Because of these subcategories we can't Shuffle it directly, so 
+	 * instead we respond to shuffle events from another list.
+	 */
 	class GigsMenu extends HTMLElement {
 		sidebar: HTMLElement | null
 		months: NodeListOf<HTMLElement> | null
 		years: NodeListOf<HTMLElement> | null
 		gigLinks: NodeListOf<HTMLElement> | null
+		artistsMenu: HTMLElement | null
 		selected: string | null
 
 		constructor() {
@@ -173,6 +218,7 @@ const { selected } = Astro.props
 			this.months = this.querySelectorAll('.monthList')
 			this.years = this.querySelectorAll('.yearList')
 			this.gigLinks = this.querySelectorAll('[data-gig]')
+			this.artistsMenu = this.querySelector('artists-menu')
 
 			this.selected = this.getAttribute('data-selected')
 		}
@@ -185,10 +231,21 @@ const { selected } = Astro.props
 			this.sidebar.toggleSidebar()
 		}
 
+		/**
+		 * Respond to shuffle events and hide gigs/years/months.
+		 * @param e 
+		 */
 		onShuffle(e: any) {
 			const shuffle = e.detail as Shuffle
 
-			shuffle.items.forEach((item) => {
+			// Hide the artists menu if we're shuffling
+			if (shuffle.visibleItems !== shuffle.items.length && this.selected) {
+				this.artistsMenu?.classList.add('hidden')
+			} else {
+				this.artistsMenu?.classList.remove('hidden')
+			}
+
+			shuffle?.items?.forEach((item) => {
 				const gigId = item.element.id
 				const sidebarItem = this.querySelector(`[data-gig="${gigId}"]`)
 

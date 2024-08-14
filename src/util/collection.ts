@@ -58,6 +58,15 @@ export interface ProcessedEntry<C extends CollectionKey> {
 }
 
 /**
+ * So entries aren't processed multiple times, we cache full collection results.
+ */
+type CachedResults<C extends CollectionKey> = {
+	[key: string]: ProcessedEntry<C>[]
+}
+
+const cachedResults: CachedResults<any> = {}
+
+/**
  * Loads a collection and adds extra generated fields to each entry.
  *
  * Which fields are added depends on the collection type.
@@ -65,12 +74,26 @@ export interface ProcessedEntry<C extends CollectionKey> {
  * @param name Name of the collection to load
  * @returns Array of ProcessedEntry's.
  */
-export async function loadAndFormatCollection<C extends CollectionKey>(name: C, filter?: (arg: any) => void) {
-	const entries = await getCollection(name, filter)
-	const sortedEntries = sortCollectionByDate(entries).filter((thing) =>
-		'hidden' in thing.data ? !thing.data.hidden : true
-	)
-	return await Promise.all(sortedEntries.map(async (entry, i) => await processEntry(entry, entries, i)))
+export async function loadAndFormatCollection<C extends CollectionKey>(
+	name: C,
+	filter?: (arg: ProcessedEntry<C>) => void
+): Promise<ProcessedEntry<C>[]> {
+	if (!cachedResults[name]) {
+		const entries = await getCollection(name)
+		const sortedEntries = sortCollectionByDate(entries).filter((thing) =>
+			'hidden' in thing.data ? !thing.data.hidden : true
+		)
+		const processedEntries = await Promise.all(
+			sortedEntries.map(async (entry, i) => await processEntry(entry, entries, i))
+		)
+		cachedResults[name] = processedEntries
+	}
+
+	if (filter) {
+		return cachedResults[name].filter(filter)
+	}
+
+	return cachedResults[name]
 }
 
 /**
@@ -260,8 +283,8 @@ export async function getBlogExtra(
 		: []
 
 	// Find gigs which mention related artists
-	const relatedGigsByArtist = await loadAndFormatCollection('gig', ({ data }) =>
-		data.artists?.find((artist: any) =>
+	const relatedGigsByArtist = await loadAndFormatCollection('gig', (gig) =>
+		gig.entry.data.artists?.find((artist) =>
 			entry.data.relatedArtists?.find((relatedArtist) => relatedArtist.id === artist.id.id)
 		)
 	)
