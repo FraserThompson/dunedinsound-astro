@@ -33,6 +33,7 @@ const hasSubheaderTop = Astro.slots.has('subheaderTop')
 const hasSubheaderTopMobile = Astro.slots.has('subheaderTopMobile')
 const hasSubheaderTopDesktop = Astro.slots.has('subheaderTopDesktop')
 const hasSubheaderBottomMobile = Astro.slots.has('subheaderBottomMobile')
+const hasSidebarSubheaderMobile = Astro.slots.has('sidebarSubheaderMobile')
 ---
 
 <BaseLayout
@@ -63,18 +64,18 @@ const hasSubheaderBottomMobile = Astro.slots.has('subheaderBottomMobile')
 	}
 	<SidebarNav
 		top={hasSubheaderTopDesktop || hasSubheaderTop ? theme.dimensions.subheaderHeight : undefined}
-		topMobile={hasSubheaderTopMobile || hasSubheaderTop ? theme.dimensions.subheaderHeight : undefined}
-		bottomMobile={hasSubheaderBottomMobile ? theme.dimensions.subheaderHeight : undefined}
+		topMobile={hasSubheaderTopMobile || hasSubheaderTop ? theme.dimensions.headerHeightMobile : undefined}
+		bottomMobile={hasSubheaderBottomMobile ? theme.dimensions.headerHeightMobile : undefined}
 		customButton={true}
 	>
 		<slot name="sidebarMenu" slot="sidebarMenu" />
-		<slot name="sidebarSubheaderMobile" slot="sidebarSubheaderMobile" />
+		<slot name="sidebarSubheaderMobile" slot={`${hasSidebarSubheaderMobile && 'sidebarSubheaderMobile'}`} />
 		<slot name="content" slot="content" />
 	</SidebarNav>
 
 	{
 		hasSubheaderBottomMobile && (
-			<div class={`${Subheader['bottom']} showMobile`}>
+			<div class={`${Subheader['bottomMobile']} showMobile`}>
 				<slot name="subheaderBottomMobile" />
 			</div>
 		)

@@ -24,11 +24,10 @@ export const BackgroundContent = style({
 })
 
 export const BannerContent = style({
-	position: 'absolute',
 	zIndex: '8',
 	flexGrow: '1',
-	padding: theme.dimensions.basePadding,
-	paddingTop: '1.5em',
+	padding: 0,
+	paddingTop: 0,
 	display: 'flex',
 	flexDirection: 'column',
 	margin: '0 auto',

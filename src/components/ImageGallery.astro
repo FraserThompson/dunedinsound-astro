@@ -39,6 +39,9 @@ const { images, galleryOffset, noLightbox } = Astro.props
 <script>
 	import browserHistory from 'src/util/history'
 
+	/**
+	 * This is just a simple component to wrap Image2 so it works with a lightbox.
+	 */
 	class GalleryImage extends HTMLElement {
 		imageIndex = 0
 		galleryOffset = 0

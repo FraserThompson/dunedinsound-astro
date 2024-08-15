@@ -233,7 +233,7 @@ export function getRandom(min: number, max: number, floor?: boolean) {
 
 /**
  * Maintains the scroll position of the sidebar during page transitions.
- * 
+ *
  * @param collection name of the collection the sidebar appears on
  */
 export function maintainSidebarScrollPosition(collection: string) {
@@ -244,7 +244,7 @@ export function maintainSidebarScrollPosition(collection: string) {
 			const sidebarMenu = document.querySelector('#sidebar-menu')
 			const activeElement = sidebarMenu?.querySelector('.active')
 			if (activeElement) {
-				scrollToElement(activeElement, 60, sidebarMenu)
+				activeElement.scrollIntoView({ behavior: 'instant', block: 'center' })
 			}
 			sessionStorage.removeItem(`scrollPosition-${collection}`)
 		},
@@ -262,12 +262,36 @@ export function maintainSidebarScrollPosition(collection: string) {
 	// After going to next page, scroll to correct position
 	document.addEventListener('astro:after-swap', () => {
 		const scrollPosition = sessionStorage.getItem(`scrollPosition-${collection}`)
-		if (scrollPosition) {
+		const depth = window.location.pathname.split("/").length
+		if (scrollPosition && depth > 2) {
 			document.querySelector('#sidebar-menu')?.scrollTo({
 				top: parseInt(scrollPosition, 10),
 				behavior: 'instant'
 			})
-			sessionStorage.removeItem(`scrollPosition-${collection}`)
 		}
+		sessionStorage.removeItem(`scrollPosition-${collection}`)
 	})
+}
+
+/**
+ * Returns true of the currentPath includes part or all of the href.
+ *
+ * If strict is passed only returns true if currentPath includes part, but NOT all of the href.
+ *
+ * @param href
+ * @param currentPath
+ * @param strict
+ */
+export const isPartiallyActive = (href: string, currentPath: string, strict?: boolean) => {
+	if (!currentPath) {
+		return ''
+	}
+
+	const isItActive = href == '/' ? currentPath == href : currentPath.includes(href)
+
+	if (strict) {
+		return isItActive && currentPath !== href
+	}
+
+	return isItActive
 }

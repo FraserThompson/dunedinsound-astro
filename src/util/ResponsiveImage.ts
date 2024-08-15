@@ -1,5 +1,3 @@
-import { DIST_MEDIA_DIR } from './constants'
-
 /**
  * ResponsiveImage
  *

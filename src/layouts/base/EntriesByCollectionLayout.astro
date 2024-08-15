@@ -46,7 +46,6 @@ const hasBanner = Astro.slots.has('banner')
 		slot="sidebarMenu"
 		collection={collection}
 		selected={entry.entry.id}
-		transition:name={collection}
 		transition:persist
 	/>
 	<ContentByEntry entry={entry} slot="content">

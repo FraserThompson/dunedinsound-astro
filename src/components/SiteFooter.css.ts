@@ -5,7 +5,7 @@ export const footerWrapper = style({
 	backgroundColor: theme.color.primary,
 	minHeight: theme.dimensions.footerHeight,
 	position: 'fixed',
-	bottom: theme.dimensions.headerHeight,
+	bottom: theme.dimensions.headerHeightMobile,
 	boxSizing: "border-box",
 	width: '100%',
 	'@media': {

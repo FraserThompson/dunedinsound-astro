@@ -8,6 +8,9 @@ import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
 import Player from 'src/components/gig/Player'
 import Image2 from 'src/components/Image2.astro'
+import SidebarNav from 'src/components/SidebarNav.astro'
+import ChevronLeftIcon from '~icons/bx/chevron-left'
+import { backButton } from 'src/components/gig/GigsMenu.css'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>
@@ -22,10 +25,19 @@ const entryExtra = entry.extra
 
 {entryExtra.cover && <Banner backgroundImage={entryExtra.cover} title={entryData.title} />}
 <div style={{ display: 'flex', maxWidth: '1600px', margin: '0 auto' }}>
-	<BlogSidebar entry={entry} />
+	<BlogSidebar className="hideMobile" entry={entry} />
 	<TextContainer featureMode={entryData.featureMode}>
-		<Content components={{ Player, Image2 }}/>
+		<Content components={{ Player, Image2 }} />
 	</TextContainer>
+</div>
+<div class="showMobile">
+	<SidebarNav customButton={true}>
+		<BlogSidebar slot="sidebarMenu" entry={entry}>
+			<a class={`showMobile flex ${backButton}`} href="/blog">
+				<ChevronLeftIcon /> Go to blogs home
+			</a>
+		</BlogSidebar>
+	</SidebarNav>
 </div>
 {entryData.gallery && entryExtra.images && <ImageGallery images={Object.values(entryExtra.images)} />}
 <div class="padding">

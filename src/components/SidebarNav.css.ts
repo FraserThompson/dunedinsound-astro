@@ -14,16 +14,16 @@ export const sidebarWrapper = style({
 	backgroundColor: theme.color.primary,
 	boxSizing: 'border-box',
 	top: fallbackVar(offsetTopMobile, '0px'),
-	bottom: `calc(${fallbackVar(offsetBottomMobile, '0px')} + ${theme.dimensions.headerHeight})`,
+	bottom: `calc(${fallbackVar(offsetBottomMobile, '0px')} + ${theme.dimensions.headerHeightMobile})`,
 	height: `calc(100vh - ${fallbackVar(offsetTopMobile, '0px')} - ${fallbackVar(offsetBottomMobile, '0px')} - ${
-		theme.dimensions.headerHeight
+		theme.dimensions.headerHeightMobile
 	})`,
 	left: 0,
 	width: defaultWidth,
 	zIndex: '10',
 	boxShadow: theme.borders.shadow,
 	borderRight: theme.borders.primary,
-	transform: `translateY(calc(100vh - ${fallbackVar(offsetTopMobile, '0px')} - ${theme.dimensions.headerHeight}))`,
+	transform: `translateY(calc(100vh - ${fallbackVar(offsetTopMobile, '0px')} - ${theme.dimensions.headerHeightMobile}))`,
 	transitionProperty: 'opacity, transform',
 	transitionDuration: '0.2s',
 	transitionTimingFunction: 'ease-in',
@@ -53,13 +53,13 @@ export const sidebarWrapper = style({
 
 export const sidebarMenuWrapper = style({
 	overflowX: 'hidden',
-	overflowY: 'auto',
+	overflowY: 'scroll',
 	scrollbarWidth: 'thin',
 	scrollbarColor: 'gray black',
 	height: `100%`,
 	selectors: {
 		'&.hasSubheaderMobile': {
-			height: `calc(100% - ${theme.dimensions.subheaderHeight})`
+			height: `calc(100% - ${theme.dimensions.headerHeightMobile})`
 		}
 	},
 	'@media': {

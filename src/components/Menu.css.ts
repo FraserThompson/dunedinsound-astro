@@ -75,8 +75,8 @@ const MenuLinkWrapperBase = style({
 	position: 'relative',
 	textDecoration: 'none',
 	whiteSpace: 'nowrap',
-	lineHeight: theme.dimensions.headerHeight,
-	height: theme.dimensions.headerHeight,
+	lineHeight: theme.dimensions.headerHeightMobile,
+	height: theme.dimensions.headerHeightMobile,
 	margin: '0px',
 	paddingLeft: theme.dimensions.basePaddingMobile,
 	paddingRight: theme.dimensions.basePaddingMobile,
@@ -93,7 +93,9 @@ const MenuLinkWrapperBase = style({
 	'@media': {
 		'screen and (--xs)': {
 			paddingLeft: theme.dimensions.basePadding,
-			paddingRight: theme.dimensions.basePadding
+			paddingRight: theme.dimensions.basePadding,
+			lineHeight: theme.dimensions.headerHeight,
+			height: theme.dimensions.headerHeight,
 		}
 	}
 })

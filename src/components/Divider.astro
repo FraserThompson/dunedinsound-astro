@@ -16,7 +16,7 @@
  * @returns
  */
 
-import { dividerWrapper, dividerColor, dividerBackgroundColor, stickyTop, stickyTopMobile, dividerZIndex } from './Divider.css'
+import { dividerWrapper, dividerColor, dividerBackgroundColor, stickyTop, stickyTopMobile, dividerZIndex, dividerHeight } from './Divider.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
@@ -28,10 +28,11 @@ interface Props {
 	top?: string
 	topMobile?: string
 	smoothScroll?: boolean
+	height?: string
 	zIndex?: string
 }
 
-const { href, color, backgroundColor, className, sticky, top, topMobile, smoothScroll, zIndex } = Astro.props
+const { href, color, backgroundColor, className, sticky, top, topMobile, smoothScroll, height, zIndex } = Astro.props
 ---
 
 <div
@@ -41,6 +42,7 @@ const { href, color, backgroundColor, className, sticky, top, topMobile, smoothS
 		[dividerBackgroundColor]: backgroundColor,
 		[stickyTop]: top ? top : undefined,
 		[stickyTopMobile]: topMobile ? topMobile : undefined,
+		[dividerHeight]: height,
 		[dividerZIndex]: zIndex
 	})}
 >
@@ -58,6 +60,6 @@ const { href, color, backgroundColor, className, sticky, top, topMobile, smoothS
 	import { scrollTo } from 'src/util/helpers'
 	const dividers = document.querySelectorAll<HTMLElement>('.dividerLink')
 	dividers.forEach(
-		(divider) => divider.dataset.smoothscroll && divider.addEventListener('mousedown', (e: any) => scrollTo(e))
+		(divider) => divider.dataset.smoothscroll && divider.addEventListener('click', (e: any) => scrollTo(e))
 	)
 </script>

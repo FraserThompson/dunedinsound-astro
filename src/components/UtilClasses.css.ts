@@ -8,10 +8,11 @@ const SubheaderBase = style({
 	borderBottom: '1px solid black',
 	boxShadow: theme.borders.shadowLight,
 	backgroundColor: theme.color.primary,
-	height: theme.dimensions.subheaderHeight,
+	height: theme.dimensions.headerHeightMobile,
 	'@media': {
-		'screen and (--md)': {
-			width: `calc(100% - ${theme.dimensions.headerHeight})`
+		'screen and (--xs)': {
+			width: `calc(100% - ${theme.dimensions.headerHeight})`,
+			height: theme.dimensions.subheaderHeight
 		}
 	}
 })
@@ -47,10 +48,15 @@ export const Subheader = styleVariants({
 			}
 		}
 	],
-	bottom: [
+	bottomMobile: [
 		SubheaderBase,
 		{
-			bottom: theme.dimensions.headerHeight
+			bottom: theme.dimensions.headerHeightMobile,
+			'@media': {
+				'screen and (--xs)': {
+					bottom: theme.dimensions.headerHeight
+				}
+			}
 		}
 	]
 })
@@ -69,11 +75,16 @@ export const Content = style({
 })
 
 export const WithTopSubheader = style({
-	marginTop: theme.dimensions.subheaderHeight
+	marginTop: theme.dimensions.headerHeightMobile,
+	'@media': {
+		'screen and (--xs)': {
+			marginTop: theme.dimensions.subheaderHeight,
+		}
+	}
 })
 
 export const WithTopSubheaderMobile = style({
-	marginTop: theme.dimensions.subheaderHeight,
+	marginTop: theme.dimensions.headerHeightMobile,
 	'@media': {
 		'screen and (--md)': {
 			marginTop: '0px'
@@ -82,7 +93,7 @@ export const WithTopSubheaderMobile = style({
 })
 
 export const WithBottomSubheaderMobile = style({
-	marginBottom: theme.dimensions.subheaderHeight,
+	marginBottom: theme.dimensions.headerHeightMobile,
 	'@media': {
 		'screen and (--md)': {
 			marginBottom: '0px'

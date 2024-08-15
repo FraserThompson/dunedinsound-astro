@@ -30,8 +30,8 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 <Banner
 	id="top"
 	title={entryData.title}
-	bottomMargin={theme.dimensions.headerHeightNegative}
 	backgroundImage={entryExtra.cover}
+	bottomMargin={theme.dimensions.headerHeightNegative}
 >
 	<div>
 		{
@@ -64,8 +64,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 			}}
 		/>
 	</div>
-	<div slot="customContent">
-		<div style={{ width: '100%', margin: '0 auto' }}></div>
+	<div slot="customContent" style={{ width: '100%', margin: '0 auto', paddingTop: '30px' }}>
 		{!entry.next && <CornerLabel>LATEST GIG</CornerLabel>}
 		{
 			entryExtra.audio?.length && (
@@ -76,7 +75,13 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 		}
 	</div>
 </Banner>
-<Divider sticky={true} backgroundColor={theme.color.primary} color={theme.color.text}>
+<Divider
+	sticky={true}
+	backgroundColor={theme.color.primary}
+	color={theme.color.text}
+	height={theme.dimensions.headerHeightMobile}
+	zIndex="7"
+>
 	<h3 style={{ marginBottom: 0 }}>{entryData.title}</h3>
 </Divider>
 {entryData.intro && <BigIntro text={entryData.intro} />}
@@ -93,7 +98,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 						{ href: `/artists/${artist.id}`, title: 'MORE GIGS FROM THIS ARTIST' }
 					]
 				}))}
-				topMobile={theme.dimensions.headerHeight}
+				topMobile={theme.dimensions.headerHeightMobile}
 				direction="down"
 				client:load
 			/>

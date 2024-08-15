@@ -8,6 +8,7 @@ import "yet-another-react-lightbox/styles.css";
 import { Download, Zoom } from "yet-another-react-lightbox/plugins";
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import browserHistory from 'src/util/history';
+import { LightboxHeader } from './ImageGalleryLightbox.css';
 
 interface Props {
 	images: ResponsiveImage[]
@@ -91,7 +92,7 @@ const ImageGalleryLightbox: React.FC<Props> = ({ images, title, imageCaption }: 
 				scrollToZoom: true
 			}}
 			render={{
-				slideHeader: () => <div style={{ position: "absolute", padding: "8px", top: "0px", zIndex: "5" }}><h2>{title}</h2></div>,
+				slideHeader: () => <div className={LightboxHeader}><h2>{title}</h2></div>,
 				slideFooter: () => <div style={{ position: "absolute", padding: "8px", bottom: "0px" }}><h4>{selectedImage ? getImageCaption(selectedImage) : imageCaption}</h4></div>,
 			}}
 		/>

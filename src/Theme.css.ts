@@ -46,8 +46,11 @@ export const theme = createThemeContract({
 		basePadding: '',
 		basePaddingMobile: '',
 		headerHeight: '',
+		headerHeightMobile: '',
 		headerHeightWithSubheader: '',
+		headerHeightMobileWithSubheader: '',
 		headerHeightNegative: '',
+		headerHeightMobileNegative: '',
 		subheaderHeight: '',
 		sidebarWidth: '',
 		viewportHeight: '',
@@ -58,6 +61,7 @@ export const theme = createThemeContract({
 })
 
 const headerHeight = '30px'
+const headerHeightMobile = '40px'
 const subheaderHeight = '30px'
 const basePadding = '0.86558rem'
 
@@ -114,8 +118,11 @@ createGlobalTheme(':root', theme, {
 		basePadding: basePadding,
 		basePaddingMobile: `calc(${basePadding} / 2)`,
 		headerHeight: headerHeight,
+		headerHeightMobile: headerHeightMobile,
 		headerHeightNegative: `-${headerHeight}`,
+		headerHeightMobileNegative: `-${headerHeightMobile}`,
 		headerHeightWithSubheader: `calc(${headerHeight} + ${subheaderHeight} + 1px)`,
+		headerHeightMobileWithSubheader: `calc(${headerHeightMobile} + ${subheaderHeight} + 1px)`,
 		subheaderHeight: subheaderHeight,
 		sidebarWidth: '320px',
 		viewportHeight: `calc(100vh - ${headerHeight})`,

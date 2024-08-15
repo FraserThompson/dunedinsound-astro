@@ -7,6 +7,7 @@ import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import { getCollection } from 'astro:content'
 import SearchBox from 'src/components/SearchBox.astro'
 import SubheadersLayout from 'src/layouts/base/SubheadersLayout.astro'
+import SortIcon from '~icons/bx/sort'
 
 const artists = await loadAndFormatCollection('artist')
 
@@ -42,7 +43,7 @@ for (const artist of artists) {
 		<SearchBox className="hideMobile" placeholder="Search artists" />
 		<div class="filterGroup">
 			<div>
-				<label>Sort by: </label>
+				<label><SortIcon /></label>
 				<div class="buttonGroup">
 					<button data-sortby="title"> Title </button>
 					<button data-sortby="lastgig" data-reversesort="true"> Last Played </button>
@@ -55,7 +56,7 @@ for (const artist of artists) {
 					Hide inactive
 				</label>
 			</div>
-			<div>
+			<div class="hideMobile">
 				<select name="countries" data-filter="origin=value">
 					<option value={'all'}>All origins ({artists.length})</option>
 					{

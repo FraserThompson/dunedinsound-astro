@@ -59,7 +59,7 @@ const hasSubheaderBottomMobile = Astro.slots.has('subheaderBottomMobile')
 	<slot />
 	{
 		hasSubheaderBottomMobile && (
-			<div class={`${Subheader['bottom']} showMobile`}>
+			<div class={`${Subheader['bottomMobile']} showMobile`}>
 				<slot name="subheaderBottomMobile" />
 			</div>
 		)

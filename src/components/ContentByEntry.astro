@@ -33,7 +33,6 @@ const gigs = await loadAndFormatCollection('gig', (thing) => {
 	return matchByArtist || matchByVenue
 })
 
-// For some reason this groups them in reversed order, so we reverse the array later
 const gigsByYear = Object.groupBy(gigs, (gig) => gig.entry.data.date.getFullYear())
 const years = Object.keys(gigsByYear).reverse()
 
@@ -98,7 +97,7 @@ const hasBanner = Astro.slots.has('banner')
 		<DropdownMenu
 			direction="down"
 			top={theme.dimensions.headerHeight}
-			topMobile={theme.dimensions.headerHeightWithSubheader}
+			topMobile={theme.dimensions.headerHeightMobileWithSubheader}
 			list={years.map((year) => ({ title: year, hash: `y${year}` }))}
 			client:load
 		/>
@@ -112,7 +111,7 @@ const hasBanner = Astro.slots.has('banner')
 							href={`#y${year}`}
 							sticky={true}
 							top={theme.dimensions.headerHeight}
-							topMobile={theme.dimensions.headerHeightWithSubheader}
+							topMobile={theme.dimensions.headerHeightMobileWithSubheader}
 							smoothScroll={true}
 						>
 							{year} ({gigs?.length})

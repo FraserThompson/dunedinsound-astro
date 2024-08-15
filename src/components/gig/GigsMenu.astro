@@ -17,11 +17,13 @@ import {
 	yearLink,
 	monthLink,
 	gigsMenuWrapper,
-	artistsMenuWrapper
+	artistsMenuWrapper,
+	backButton
 } from './GigsMenu.css'
 import { makeHash, artistsToString } from 'src/util/helpers'
 import DropdownMenu from '../DropdownMenu'
 import { theme } from 'src/Theme.css'
+import ChevronLeftIcon from '~icons/bx/chevron-left'
 
 interface Props {
 	selected?: string
@@ -47,9 +49,13 @@ const { selected } = Astro.props
 />
 
 <gigs-menu data-selected={selected}>
-	<a class="showMobile" href="/gigs">
-		<button>Back to gigs home</button>
-	</a>
+	{
+		selected && (
+			<a class={`showMobile flex ${backButton}`} href="/gigs">
+				<ChevronLeftIcon /> Go to gigs home{' '}
+			</a>
+		)
+	}
 	{
 		Object.entries(sortedGigs)
 			.reverse()
@@ -144,10 +150,10 @@ const { selected } = Astro.props
 
 		/**
 		 * Respond to the Gig layout changing the hash.
-		 * 
+		 *
 		 * Highlights the active artist.
-		 * 
-		 * @param location 
+		 *
+		 * @param location
 		 */
 		handleURLChange(location: Location) {
 			if (location.hash) {
@@ -186,7 +192,7 @@ const { selected } = Astro.props
 		connectedCallback() {
 			this.unlisten = browserHistory?.listen((location) => this.handleURLChange(location.location))
 			this.links?.forEach((link) => {
-				link.addEventListener('mousedown', (e) => this.itemClick(e))
+				link.addEventListener('click', (e) => this.itemClick(e))
 			})
 		}
 
@@ -197,10 +203,10 @@ const { selected } = Astro.props
 
 	/**
 	 * A menu of gigs.
-	 * 
+	 *
 	 * Similar to EntryMenu.astro but with subcategories for year/month.
-	 * 
-	 * Because of these subcategories we can't Shuffle it directly, so 
+	 *
+	 * Because of these subcategories we can't Shuffle it directly, so
 	 * instead we respond to shuffle events from another list.
 	 */
 	class GigsMenu extends HTMLElement {
@@ -233,7 +239,7 @@ const { selected } = Astro.props
 
 		/**
 		 * Respond to shuffle events and hide gigs/years/months.
-		 * @param e 
+		 * @param e
 		 */
 		onShuffle(e: any) {
 			const shuffle = e.detail as Shuffle
@@ -287,7 +293,7 @@ const { selected } = Astro.props
 		connectedCallback() {
 			document.addEventListener('shuffle-filter', (e: any) => this.onShuffle(e), false)
 			!this.selected &&
-				this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('mousedown', (e) => this.itemClick(e)))
+				this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e) => this.itemClick(e)))
 		}
 
 		disconnectedCallback() {}

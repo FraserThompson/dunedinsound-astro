@@ -15,7 +15,6 @@ export const gigsMenuWrapper = style([
 export const artistsMenuWrapper = style([
 	MenuWrapper['vertical'],
 	{
-		backgroundColor: `black !important`,
 		borderLeft: `6px solid ${theme.color.secondary} !important`,
 		borderBottom: `6px solid ${theme.color.secondary} !important`
 	}
@@ -46,13 +45,17 @@ export const monthHeader = style([
 
 export const gigLi = style([MenuLi['vertical']])
 
-export const gigLink = style([MenuLinkWrapper['vertical'], {
-	textOverflow: 'ellipsis'
-}])
+export const gigLink = style([
+	MenuLinkWrapper['vertical'],
+	{
+		textOverflow: 'ellipsis'
+	}
+])
 
 export const artistLink = style([
 	MenuLinkWrapper['vertical'],
 	{
+		backgroundColor: 'black',
 		paddingLeft: `calc(${theme.dimensions.basePadding})`,
 		selectors: {
 			'&.active': {
@@ -62,7 +65,7 @@ export const artistLink = style([
 		},
 		'@media': {
 			'screen and (--md)': {
-				paddingLeft: `calc(${theme.dimensions.basePadding} * 2) !important`,
+				paddingLeft: `calc(${theme.dimensions.basePadding} * 2) !important`
 			}
 		}
 	}
@@ -87,3 +90,14 @@ export const yearLink = style([
 		color: `black !important`
 	}
 ])
+
+export const backButton = style({
+	height: theme.dimensions.subheaderHeight,
+	display: 'flex',
+	alignItems: 'center',
+	top: 0,
+	backgroundColor: theme.color.background,
+	width: '100%',
+	zIndex: 10,
+	position: 'relative'
+})

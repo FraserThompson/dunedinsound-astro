@@ -3,8 +3,13 @@ import { styleVariants } from '@vanilla-extract/css'
 export const gridWrapper = styleVariants({
 	autoflow: {
 		display: 'grid',
-		gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-		gridAutoFlow: 'dense'
+		gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+		gridAutoFlow: 'dense',
+		'@media': {
+			'screen and (--xs)': {
+				gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+			}
+		}
 	},
 	fixed: {
 		display: 'grid',

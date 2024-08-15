@@ -10,7 +10,12 @@ const tileWrapperBase = style({
 	position: 'relative',
 	overflow: 'clip',
 	height: fallbackVar(height, '40vh'),
-	scrollMarginTop: theme.dimensions.headerHeightWithSubheader
+	scrollMarginTop: theme.dimensions.headerHeightMobileWithSubheader,
+	'@media': {
+		'screen and (--xs)': {
+			scrollMarginTop: theme.dimensions.headerHeightWithSubheader,
+		}
+	}
 })
 
 /**

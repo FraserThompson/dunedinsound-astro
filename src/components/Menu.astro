@@ -9,7 +9,8 @@
  * Menu links:
  *  - can specify a title or an image. if both are present it will prefer the image.
  *  - also can use a number of preset icons.
- *  - sidebarOnActive (optional): If true, thiis link will open a sidebar on mobile when active.
+ *  - sidebarOnActive (optional): If true, this link will open a sidebar on mobile when active.
+ *    If 'partial', will only open a sidebar when partially, not fully, active.
  *
  * @param props
  * @returns
@@ -18,6 +19,7 @@
 import HomeIcon from '~icons/bx/home'
 import { sidebarButtonWrapper } from './SidebarNav.css'
 import { MenuLinkWrapper, MenuLi, MenuWrapper } from './Menu.css'
+import { isPartiallyActive } from 'src/util/helpers'
 
 type PresetIcons = 'home'
 
@@ -28,7 +30,7 @@ export interface MenuLink {
 	id?: string
 	class?: string
 	icon?: PresetIcons
-	sidebarOnActive?: boolean
+	sidebarOnActive?: true | false | 'partial'
 }
 
 interface Props {
@@ -38,27 +40,22 @@ interface Props {
 
 const currentPath = new URL(Astro.request.url).pathname
 
-export const isActive = (href: string, currentPath: string) => {
-	if (!currentPath) {
-		return ''
-	}
-
-	const isItActive = href == '/' ? currentPath == href : currentPath.includes(href)
-	return isItActive ? 'active' : ''
-}
-
 const { links, menuType = 'horizontal' } = Astro.props
 ---
 
 <ul class={MenuWrapper[menuType]}>
 	{
 		links.map((link) => {
-			const activeClass = isActive(link.href, currentPath)
-			const sidebarButtonClass = link.sidebarOnActive && activeClass ? 'sidebar-button' : ''
+			const partiallyActive = isPartiallyActive(link.href, currentPath)
+			const sidebarButtonClass =
+				(link.sidebarOnActive === true && partiallyActive) ||
+				(link.sidebarOnActive === 'partial' && isPartiallyActive(link.href, currentPath, true))
+					? 'sidebar-button'
+					: ''
 			return (
 				<li class={`${MenuLi[menuType]} ${link.class || ''}`}>
 					<a
-						class={`${MenuLinkWrapper[menuType]} ${activeClass} ${sidebarButtonClass ? sidebarButtonWrapper['base'] : ''}`}
+						class={`${MenuLinkWrapper[menuType]} ${partiallyActive ? 'active' : ''} ${sidebarButtonClass ? sidebarButtonWrapper['base'] : ''}`}
 						href={sidebarButtonClass ? undefined : link.href}
 						title={link.title}
 						id={`${sidebarButtonClass || link.id}`}

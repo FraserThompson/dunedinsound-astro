@@ -4,12 +4,13 @@ import { theme } from 'src/Theme.css'
 export const dividerColor = createVar()
 export const dividerBackgroundColor = createVar()
 export const dividerZIndex = createVar()
+export const dividerHeight = createVar()
 
 export const stickyTop = createVar()
 export const stickyTopMobile = createVar()
 
 const dividerBase = style({
-	height: theme.dimensions.subheaderHeight,
+	height: fallbackVar(dividerHeight, theme.dimensions.subheaderHeight),
 	color: fallbackVar(dividerColor, 'black'),
 	lineHeight: '2',
 	verticalAlign: 'middle',

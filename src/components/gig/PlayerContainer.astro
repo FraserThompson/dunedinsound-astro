@@ -105,7 +105,7 @@ const { minimizedAlways } = Astro.props
 
 		connectedCallback() {
 			this.openButton &&
-				this.openButton.addEventListener('mousedown', () => {
+				this.openButton.addEventListener('click', () => {
 					this.open = !this.open
 				})
 			window.addEventListener('scroll', this.onScroll, { passive: true })

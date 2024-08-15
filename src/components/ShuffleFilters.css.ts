@@ -8,16 +8,18 @@ export const shuffleFilter = style({
 	alignItems: 'center',
 	flexWrap: 'wrap',
 	color: theme.color.text,
-	minHeight: theme.dimensions.subheaderHeight,
+	minHeight: theme.dimensions.headerHeightMobile,
 	'@media': {
 		'screen and (--xs)': {
-			flexWrap: 'nowrap'
+			flexWrap: 'nowrap',
+			minHeight: theme.dimensions.subheaderHeight,
 		}
 	}
 })
 
 globalStyle(`${shuffleFilter} .filterGroup`, {
 	display: 'flex',
+	alignItems: 'center',
 	marginLeft: 'auto',
 	gap: theme.dimensions.basePaddingMobile,
 	'@media': {
@@ -30,6 +32,7 @@ globalStyle(`${shuffleFilter} .filterGroup`, {
 globalStyle(`${shuffleFilter} div:not(.buttonGroup)`, {
 	paddingRight: '0px',
 	display: 'flex',
+	alignItems: 'center',
 	textWrap: 'nowrap',
 	gap: theme.dimensions.basePaddingMobile,
 	'@media': {
@@ -41,5 +44,6 @@ globalStyle(`${shuffleFilter} div:not(.buttonGroup)`, {
 
 globalStyle(`${shuffleFilter} label`, {
 	display: 'flex',
+	alignItems: 'center',
 	lineHeight: theme.dimensions.subheaderHeight
 })

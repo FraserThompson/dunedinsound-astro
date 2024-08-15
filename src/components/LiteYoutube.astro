@@ -1,6 +1,6 @@
 ---
 /**
- * Astro wrapper for lite YouTube Component which doesnt immediately load 
+ * Astro wrapper for lite YouTube Component which doesnt immediately load
  * tonnes of Google rubbish. Also uses the YouTube API to grab the video title.
  */
 interface Props {
@@ -17,14 +17,13 @@ const { videoid, loadAPI, autoload } = Astro.props
 		autoload={autoload}
 		videoid={videoid}
 		nocookie={'true'}
-		posterquality="maxresdefault"
+		posterquality="hqdefault"
 		params="enablejsapi=1&rel=0"></lite-youtube>
 </lite-youtube-toucher>
 
 {loadAPI && <script src="https://www.youtube.com/iframe_api" />}
 
 <script>
-	
 	// Clientside import because of SSR issues with web components
 	import('@justinribeiro/lite-youtube')
 
@@ -50,8 +49,18 @@ const { videoid, loadAPI, autoload } = Astro.props
 			const data = await response.json()
 			if (data.items && data.items.length) {
 				const title = data.items[0].snippet.title
+				const thumbnail = data.items[0].snippet.thumbnails.maxres
+					? data.items[0].snippet.thumbnails.maxres.url
+					: data.items[0].snippet.thumbnails.high.url
+
 				const el = this.querySelector<HTMLElement>('lite-youtube')
 				el?.setAttribute('videotitle', title)
+
+				// The thumbnail from the API will be used if the element itself failed for some reason.
+				const fallbackPlaceholder = el?.querySelector<HTMLImageElement>('img#fallbackPlaceholder')
+				if (fallbackPlaceholder) {
+					fallbackPlaceholder.src = thumbnail
+				}
 			}
 		}
 

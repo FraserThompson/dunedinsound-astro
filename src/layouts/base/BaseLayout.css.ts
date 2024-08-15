@@ -142,7 +142,7 @@ globalStyle('input[type="text"]', {
 	paddingRight: theme.dimensions.basePaddingMobile,
 	width: '100%',
 	boxSizing: 'border-box',
-	height: `calc(${theme.dimensions.subheaderHeight} - 2px)`,
+	height: `calc(${theme.dimensions.headerHeightMobile} - 2px)`,
 	boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
 	transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s',
 	'@media': {
@@ -150,6 +150,9 @@ globalStyle('input[type="text"]', {
 			maxWidth: `calc(${theme.dimensions.sidebarWidth} - ${theme.dimensions.basePadding} - ${theme.dimensions.basePadding})`,
 			paddingLeft: theme.dimensions.basePadding,
 			paddingRight: theme.dimensions.basePadding
+		},
+		'screen and (--xs)': {
+			height: `calc(${theme.dimensions.headerHeight} - 2px)`
 		}
 	}
 })
@@ -205,6 +208,15 @@ globalStyle('.hidden', {
 
 globalStyle('.showMobile', {
 	display: 'inline-block !important',
+	'@media': {
+		'screen and (--md)': {
+			display: 'none !important'
+		}
+	}
+})
+
+globalStyle('.showMobile.flex', {
+	display: 'flex !important',
 	'@media': {
 		'screen and (--md)': {
 			display: 'none !important'

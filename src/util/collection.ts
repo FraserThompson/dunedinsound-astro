@@ -220,7 +220,13 @@ export async function getGigExtra(
 		.crawl(`${DIST_MEDIA_DIR}/gig/${entry.id}`)
 		.withPromise()
 
-	let artistImages: { [id: string]: ResponsiveImage[] } = {}
+	let artistImages: { [id: string]: ResponsiveImage[] } = entry.data.artists.reduce(
+		(acc: { [id: string]: ResponsiveImage[] }, artist) => {
+			acc[artist.id.id] = []
+			return acc
+		},
+		{}
+	)
 	let audio: ArtistAudio[] = []
 
 	// Get all media from each subdirectory
@@ -422,7 +428,7 @@ export function getEntryPath(title: string, collection: string): string {
  * @returns
  */
 export function sortCollectionByDate<C extends CollectionKey>(entries: CollectionEntry<C>[]) {
-	return entries.sort((a, b) =>
+	return entries.toSorted((a, b) =>
 		'date' in a.data && 'date' in b.data && a.data.date && b.data.date
 			? b.data.date.getTime() - a.data.date.getTime()
 			: 0
@@ -442,7 +448,7 @@ export interface SortedGigs {
  * @param gigs
  * @returns
  */
-export const sortGigs = (gigs: ProcessedEntry<'gig'>[]) =>
+export const sortGigs = (gigs: ProcessedEntry<'gig'>[]): SortedGigs =>
 	gigs.reduce((acc, gig) => {
 		const year = gig.entry.data.date.getFullYear()
 		const month = monthMap[gig.entry.data.date.getMonth()]

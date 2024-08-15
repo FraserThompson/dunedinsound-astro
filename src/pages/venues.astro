@@ -31,7 +31,7 @@ const markers = venues.map((venue) => ({
 			</label>
 		</div>
 	</ShuffleFilters>
-	<EntryMenu collection="venue" slot="sidebarMenu" transition:name={'venues'} transition:persist />
+	<EntryMenu collection="venue" slot="sidebarMenu" transition:persist />
 	<Map markers={markers} slot="content">
 		<div slot="popups">
 			{

@@ -7,7 +7,7 @@ export const tabsWrapper = style([
 	{
 		padding: 0,
 		zIndex: 7,
-		top: theme.dimensions.headerHeight,
+		top: theme.dimensions.headerHeightMobile,
 		'@media': {
 			'screen and (--md)': {
 				top: '0px'

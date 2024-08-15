@@ -1,15 +1,16 @@
 ---
 import type { MenuLink } from './Menu.astro'
-import Menu, { isActive } from './Menu.astro'
+import Menu from './Menu.astro'
 import InfoCircle from '~icons/bx/info-circle'
 import { headerWrapper, headerMobile, header, infoLink } from './SiteHeader.css'
+import { isPartiallyActive } from 'src/util/helpers'
 
 const links: MenuLink[] = [
 	{ icon: 'home', href: '/', class: 'headerButton noPadding hideMobile flex' },
 	{ title: 'Gigs', href: '/gigs', sidebarOnActive: true },
-	{ title: 'Artists', href: '/artists', sidebarOnActive: true },
+	{ title: 'Artists', href: '/artists', sidebarOnActive: 'partial' },
 	{ title: 'Venues', href: '/venues', sidebarOnActive: true },
-	{ title: 'Articles', href: '/blog' },
+	{ title: 'Articles', href: '/blog', sidebarOnActive: true },
 	{ title: 'VAULT', href: '/vaultsessions' }
 ]
 
@@ -22,7 +23,7 @@ const currentPath = new URL(Astro.request.url).pathname
 <div class={headerWrapper}>
 	<div class={header}>
 		<Menu links={links} menuType={'sideways'} />
-		<a class={`${infoLink} ${isActive('/page/info', currentPath)}`} href="/page/info">
+		<a class={`${infoLink} ${isPartiallyActive('/page/info', currentPath) ? 'active' : ''}`} href="/page/info">
 			<InfoCircle />
 		</a>
 	</div>

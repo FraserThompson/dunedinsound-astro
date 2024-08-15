@@ -2,7 +2,6 @@ import { style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 export const playerWrapper = style({
-	position: 'absolute',
 	bottom: '0px',
 	left: '0px',
 	zIndex: '11',
@@ -21,7 +20,7 @@ export const playerWrapper = style({
 			pointerEvents: 'none',
 		},
 		'&:state(minimized):state(open)': {
-			transform: `translateY(${theme.dimensions.headerHeightNegative})`
+			transform: `translateY(${theme.dimensions.headerHeightMobileNegative})`
 		},
 		'&:state(open)': {
 			pointerEvents: 'auto'
@@ -47,7 +46,7 @@ export const openButtonWrapper = style({
 	position: 'absolute',
 	textAlign: 'center',
 	width: '100%',
-	bottom: `calc(${theme.dimensions.headerHeight} + 100px)`,
+	bottom: `calc(${theme.dimensions.headerHeightMobile} + 100px)`,
 	boxSizing: 'border-box',
 	left: '0px',
 	selectors: {

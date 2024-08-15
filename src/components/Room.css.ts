@@ -17,7 +17,7 @@ export const RoomWrapper = style({
 	perspective: '300px',
 	transition: 'perspective 0.3s ease-in-out',
 	width: '100%',
-	height: `calc(100vh - ${theme.dimensions.headerHeight})`,
+	height: `calc(100vh - ${theme.dimensions.headerHeightMobile})`,
 	position: 'relative',
 	backfaceVisibility: 'hidden',
 	transformStyle: 'preserve-3d',
@@ -94,7 +94,7 @@ export const Surface = styleVariants({
 	back: [
 		SurfaceBase,
 		{
-			height: `calc(100vh - ${theme.dimensions.headerHeight} - 2px)`,
+			height: `calc(100vh - ${theme.dimensions.headerHeightMobile} - 2px)`,
 			width: '100vw',
 			backgroundColor: 'black',
 			transform: 'translate3d(0, 0, -600px)',

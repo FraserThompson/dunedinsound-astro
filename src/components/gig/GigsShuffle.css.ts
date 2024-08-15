@@ -18,7 +18,8 @@ export const GigsPlayerWrapper = style({
 	margin: '0 auto',
 	padding: '20px',
 	maxWidth: '1200px',
-	width: '100%'
+	width: '100%',
+	boxSizing: 'border-box'
 })
 
 export const GigsTitlebar = style([

@@ -9,6 +9,7 @@
  */
 import { loadAndFormatCollection } from 'src/util/collection'
 import { MenuLi, MenuLinkWrapper, MenuWrapper } from 'src/components/Menu.css'
+import { backButton } from 'src/components/gig/GigsMenu.css'
 import ActiveIndicator from 'src/components/ActiveIndicator.astro'
 import type { CollectionKey } from 'astro:content'
 
@@ -24,8 +25,8 @@ const entries = await loadAndFormatCollection(collection)
 
 {
 	selected && (
-		<a class="showMobile" href={`/${collection}s`}>
-			<button>Back to {collection}s home</button>
+		<a class={`showMobile flex ${backButton}`} href={`/${collection}s`}>
+			Go to {collection}s home
 		</a>
 	)
 }
@@ -53,7 +54,8 @@ const entries = await loadAndFormatCollection(collection)
 	}
 </ul>
 
-<script define:vars={{ collection }}>
+<script>
 	import { maintainSidebarScrollPosition } from 'src/util/helpers'
+	const collection = window.location.pathname.split('/')[1]
 	maintainSidebarScrollPosition(collection)
 </script>
