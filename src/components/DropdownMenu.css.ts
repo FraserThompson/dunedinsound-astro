@@ -67,7 +67,7 @@ export const dropdownMenu = style([
 			}
 		},
 		'@media': {
-			'screen and (--xs)': {
+			'screen and (--md)': {
 				width: fallbackVar(menuWidth, 'auto')
 			}
 		}

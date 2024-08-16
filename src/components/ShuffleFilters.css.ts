@@ -10,7 +10,7 @@ export const shuffleFilter = style({
 	color: theme.color.text,
 	minHeight: theme.dimensions.headerHeightMobile,
 	'@media': {
-		'screen and (--xs)': {
+		'screen and (--md)': {
 			flexWrap: 'nowrap',
 			minHeight: theme.dimensions.subheaderHeight,
 		}
@@ -23,7 +23,7 @@ globalStyle(`${shuffleFilter} .filterGroup`, {
 	marginLeft: 'auto',
 	gap: theme.dimensions.basePaddingMobile,
 	'@media': {
-		'screen and (--xs)': {
+		'screen and (--md)': {
 			gap: theme.dimensions.basePadding
 		}
 	}
@@ -36,7 +36,7 @@ globalStyle(`${shuffleFilter} div:not(.buttonGroup)`, {
 	textWrap: 'nowrap',
 	gap: theme.dimensions.basePaddingMobile,
 	'@media': {
-		'screen and (--xs)': {
+		'screen and (--md)': {
 			gap: theme.dimensions.basePadding
 		}
 	}

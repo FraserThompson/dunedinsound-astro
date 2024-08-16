@@ -3,6 +3,7 @@ import { theme } from 'src/Theme.css'
 
 export const bannerHeight = createVar()
 export const marginBottom = createVar()
+export const marginBottomMobile = createVar()
 
 export const BannerWrapper = style({
 	background: 'radial-gradient(circle, black 0%, rgba(12, 24, 33, 1) 70%)',
@@ -13,7 +14,12 @@ export const BannerWrapper = style({
 	flexDirection: 'column',
 	alignItems: 'center',
 	zIndex: '8',
-	marginBottom: fallbackVar(marginBottom, '0px')
+	marginBottom: fallbackVar(marginBottomMobile, '0px'),
+	'@media': {
+		'screen and (--md)': {
+			marginBottom: fallbackVar(marginBottom, '0px')
+		}
+	}
 })
 
 export const BackgroundContent = style({

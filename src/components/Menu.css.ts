@@ -91,7 +91,7 @@ const MenuLinkWrapperBase = style({
 		}
 	},
 	'@media': {
-		'screen and (--xs)': {
+		'screen and (--md)': {
 			paddingLeft: theme.dimensions.basePadding,
 			paddingRight: theme.dimensions.basePadding,
 			lineHeight: theme.dimensions.headerHeight,
@@ -133,7 +133,7 @@ export const MenuLinkWrapper = styleVariants({
 			paddingTop: theme.dimensions.basePaddingMobile,
 			paddingBottom: theme.dimensions.basePaddingMobile,
 			'@media': {
-				'screen and (--xs)': {
+				'screen and (--md)': {
 					paddingLeft: 0,
 					paddingRight: 0,
 					paddingTop: theme.dimensions.basePadding,

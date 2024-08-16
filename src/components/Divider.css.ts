@@ -24,7 +24,7 @@ const dividerBase = style({
 	zIndex: fallbackVar(dividerZIndex, '6'),
 	boxShadow: theme.borders.shadow,
 	'@media': {
-		'screen and (--xs)': {
+		'screen and (--md)': {
 			paddingLeft: theme.dimensions.basePadding,
 			paddingRight: theme.dimensions.basePadding
 		}

@@ -31,7 +31,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	id="top"
 	title={entryData.title}
 	backgroundImage={entryExtra.cover}
-	bottomMargin={theme.dimensions.headerHeightNegative}
+	bottomMarginMobile={theme.dimensions.headerHeightNegative}
 >
 	<div>
 		{
@@ -80,6 +80,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	backgroundColor={theme.color.primary}
 	color={theme.color.text}
 	height={theme.dimensions.headerHeightMobile}
+	className="showMobile"
 	zIndex="7"
 >
 	<h3 style={{ marginBottom: 0 }}>{entryData.title}</h3>

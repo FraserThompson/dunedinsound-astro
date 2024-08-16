@@ -15,7 +15,7 @@ export const sidebarWrapper = style({
 	boxSizing: 'border-box',
 	top: fallbackVar(offsetTopMobile, '0px'),
 	bottom: `calc(${fallbackVar(offsetBottomMobile, '0px')} + ${theme.dimensions.headerHeightMobile})`,
-	height: `calc(100vh - ${fallbackVar(offsetTopMobile, '0px')} - ${fallbackVar(offsetBottomMobile, '0px')} - ${
+	height: `calc(100% - ${fallbackVar(offsetTopMobile, '0px')} - ${fallbackVar(offsetBottomMobile, '0px')} - ${
 		theme.dimensions.headerHeightMobile
 	})`,
 	left: 0,
@@ -39,7 +39,7 @@ export const sidebarWrapper = style({
 	'@media': {
 		'screen and (--md)': {
 			width: theme.dimensions.sidebarWidth,
-			height: `calc(100vh - ${fallbackVar(offsetTop, '0px')} - ${fallbackVar(offsetBottom, '0px')})`,
+			height: `calc(100% - ${fallbackVar(offsetTop, '0px')} - ${fallbackVar(offsetBottom, '0px')})`,
 			visibility: 'visible',
 			top: fallbackVar(offsetTop, '0px'),
 			bottom: fallbackVar(offsetBottom, '0px'),

@@ -151,7 +151,7 @@ globalStyle('input[type="text"]', {
 			paddingLeft: theme.dimensions.basePadding,
 			paddingRight: theme.dimensions.basePadding
 		},
-		'screen and (--xs)': {
+		'screen and (--md)': {
 			height: `calc(${theme.dimensions.headerHeight} - 2px)`
 		}
 	}

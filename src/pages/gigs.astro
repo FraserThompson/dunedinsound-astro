@@ -10,7 +10,7 @@ import GigTile from 'src/components/gig/GigTile.astro'
 const gigs = await loadAndFormatCollection('gig')
 ---
 
-<SidebarLayout poo={{ title: 'Gigs' }}>
+<SidebarLayout poo={{ title: 'Gigs', image: gigs[0].extra.cover?.src }}>
 	<ShuffleFilters slot="subheaderTop" itemselector=".tile" boardselector="#gigs">
 		<SearchBox className="hideMobile" placeholder="Search gigs by title, artist, venue" />
 		<div class="filterGroup">

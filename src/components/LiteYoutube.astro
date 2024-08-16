@@ -37,6 +37,26 @@ const { videoid, loadAPI, autoload } = Astro.props
 			this.videoid = this.getAttribute('data-videoid')
 		}
 
+		autoplay() {
+			// @ts-ignore
+			new YT.Player(this.querySelector('iframe'), {
+				events: {
+					onReady: (e: any) => {
+						e.target.setPlaybackQuality('hd720')
+						e.target.playVideo()
+					}
+				}
+			})
+		}
+
+		tryAutoplay(e: any) {
+			try {
+				this.autoplay()
+			} catch (error) {
+				setTimeout(() => this.tryAutoplay(e), 100)
+			}
+		}
+
 		async connectedCallback() {
 			let response
 			try {
@@ -46,7 +66,9 @@ const { videoid, loadAPI, autoload } = Astro.props
 			} catch (e) {
 				return
 			}
+
 			const data = await response.json()
+
 			if (data.items && data.items.length) {
 				const title = data.items[0].snippet.title
 				const thumbnail = data.items[0].snippet.thumbnails.maxres
@@ -62,6 +84,8 @@ const { videoid, loadAPI, autoload } = Astro.props
 					fallbackPlaceholder.src = thumbnail
 				}
 			}
+
+			document.addEventListener('liteYoutubeIframeLoaded', (e: any) => this.tryAutoplay(e))
 		}
 
 		disconnectedCallback() {}

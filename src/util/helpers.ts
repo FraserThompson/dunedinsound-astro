@@ -231,6 +231,11 @@ export function getRandom(min: number, max: number, floor?: boolean) {
 	return floor ? Math.floor(randomFloat) : randomFloat
 }
 
+interface StoredScrollPosition {
+	collection: string
+	position: string
+}
+
 /**
  * Maintains the scroll position of the sidebar during page transitions.
  *
@@ -246,7 +251,8 @@ export function maintainSidebarScrollPosition(collection: string) {
 			if (activeElement) {
 				activeElement.scrollIntoView({ behavior: 'instant', block: 'center' })
 			}
-			sessionStorage.removeItem(`scrollPosition-${collection}`)
+			// Probably not there but remove it anyway
+			sessionStorage.removeItem(`scrollPosition`)
 		},
 		{ once: true }
 	)
@@ -255,17 +261,23 @@ export function maintainSidebarScrollPosition(collection: string) {
 	document.addEventListener('astro:before-swap', () => {
 		const scrollPosition = document.querySelector('#sidebar-menu')?.scrollTop.toString()
 		if (scrollPosition) {
-			sessionStorage.setItem(`scrollPosition-${collection}`, scrollPosition)
+			const storedScroll: StoredScrollPosition = { position: scrollPosition, collection: collection }
+			sessionStorage.setItem(`scrollPosition`, JSON.stringify(storedScroll))
 		}
 	})
 
-	// After going to next page, scroll to correct position
+	// After going to next page, scroll to correct position, unless the collection changed
 	document.addEventListener('astro:after-swap', () => {
-		const scrollPosition = sessionStorage.getItem(`scrollPosition-${collection}`)
+		const scrollPosition = sessionStorage.getItem(`scrollPosition`)
+		const storedScroll: StoredScrollPosition = scrollPosition ? JSON.parse(scrollPosition) : null
+
 		const depth = window.location.pathname.split('/').length
-		if (scrollPosition && depth > 2) {
+
+		// Only remember scroll positions for collection entries, not the parent page
+		// Also forget it when changing collections
+		if (storedScroll && storedScroll.collection === collection && depth > 2) {
 			document.querySelector('#sidebar-menu')?.scrollTo({
-				top: parseInt(scrollPosition, 10),
+				top: parseInt(storedScroll.position, 10),
 				behavior: 'instant'
 			})
 		} else {
@@ -275,7 +287,7 @@ export function maintainSidebarScrollPosition(collection: string) {
 				activeElement.scrollIntoView({ behavior: 'instant', block: 'center' })
 			}
 		}
-		sessionStorage.removeItem(`scrollPosition-${collection}`)
+		sessionStorage.removeItem(`scrollPosition`)
 	})
 }
 

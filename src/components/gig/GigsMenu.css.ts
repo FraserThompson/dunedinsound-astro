@@ -16,7 +16,8 @@ export const artistsMenuWrapper = style([
 	MenuWrapper['vertical'],
 	{
 		borderLeft: `6px solid ${theme.color.secondary} !important`,
-		borderBottom: `6px solid ${theme.color.secondary} !important`
+		borderBottom: `6px solid ${theme.color.secondary} !important`,
+		borderRight: `6px solid ${theme.color.secondary} !important`
 	}
 ])
 
@@ -55,7 +56,7 @@ export const gigLink = style([
 export const artistLink = style([
 	MenuLinkWrapper['vertical'],
 	{
-		backgroundColor: 'black',
+		backgroundColor: theme.color.darkSecondary,
 		paddingLeft: `calc(${theme.dimensions.basePadding})`,
 		selectors: {
 			'&.active': {

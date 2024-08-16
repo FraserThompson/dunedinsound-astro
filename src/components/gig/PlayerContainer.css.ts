@@ -27,7 +27,7 @@ export const playerWrapper = style({
 		}
 	},
 	'@media': {
-		'screen and (--xs)': {
+		'screen and (--md)': {
 			selectors: {
 				'&:state(minimized)': {
 					transform: 'translateY(100px)',
@@ -62,7 +62,7 @@ export const openButtonWrapper = style({
 		}
 	},
 	'@media': {
-		'screen and (--xs)': {
+		'screen and (--md)': {
 			bottom: '100px',
 			selectors: {
 				'&.minimized': {

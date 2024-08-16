@@ -9,7 +9,7 @@ export const footerWrapper = style({
 	boxSizing: "border-box",
 	width: '100%',
 	'@media': {
-		'screen and (--xs)': {
+		'screen and (--md)': {
 			bottom: '0',
 		}
 	}

@@ -14,7 +14,7 @@ export const infoContent = style({
 	padding: theme.dimensions.basePaddingMobile,
 	margin: '0 auto',
 	'@media': {
-		'screen and (--xs)': {
+		'screen and (--md)': {
 			padding: theme.dimensions.basePadding
 		}
 	}

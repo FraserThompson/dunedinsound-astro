@@ -5,6 +5,7 @@
 import { getCollection } from 'astro:content'
 import { fdir } from 'fdir'
 import { infoHeader, infoTitle, infoContent } from './WebsiteInfo.css'
+import { DIST_MEDIA_DIR } from 'src/util/constants'
 
 const currentYear = new Date().getFullYear()
 
@@ -12,8 +13,13 @@ const gigs = await getCollection('gig')
 const artists = await getCollection('artist')
 const venues = await getCollection('venue')
 
-const imagesCount = await new fdir().onlyCounts().onlyDirs().glob('**/**/*').crawl('public/media/gig').withPromise()
-const audioCount = await new fdir().onlyCounts().glob('*.mp3').crawl('public/media/gig').withPromise()
+const imagesCount = await new fdir()
+	.onlyCounts()
+	.onlyDirs()
+	.glob('**/**/*')
+	.crawl(`${DIST_MEDIA_DIR}/gig`)
+	.withPromise()
+const audioCount = await new fdir().onlyCounts().glob('*.mp3').crawl(`${DIST_MEDIA_DIR}/gig`).withPromise()
 ---
 
 <div class={infoHeader}>
