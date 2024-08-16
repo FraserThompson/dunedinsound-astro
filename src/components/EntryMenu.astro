@@ -12,6 +12,7 @@ import { MenuLi, MenuLinkWrapper, MenuWrapper } from 'src/components/Menu.css'
 import { backButton } from 'src/components/gig/GigsMenu.css'
 import ActiveIndicator from 'src/components/ActiveIndicator.astro'
 import type { CollectionKey } from 'astro:content'
+import ChevronLeftIcon from '~icons/bx/chevron-left'
 
 interface Props {
 	collection: CollectionKey
@@ -26,7 +27,7 @@ const entries = await loadAndFormatCollection(collection)
 {
 	selected && (
 		<a class={`showMobile flex ${backButton}`} href={`/${collection}s`}>
-			Go to {collection}s home
+			<ChevronLeftIcon /> Go to {collection}s home
 		</a>
 	)
 }

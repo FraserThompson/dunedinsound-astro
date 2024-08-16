@@ -89,7 +89,13 @@ const hasBanner = Astro.slots.has('banner')
 	}
 	<slot name="banner" slot={hasBanner ? 'background' : ''} />
 </Banner>
-<Divider sticky={true} backgroundColor={theme.color.primary} color={theme.color.text} zIndex={'7'}>
+<Divider
+	sticky={true}
+	backgroundColor={theme.color.primary}
+	color={theme.color.text}
+	height={theme.dimensions.headerHeightMobile}
+	zIndex={'7'}
+>
 	<h3 style={{ marginBottom: 0 }}>{entryData.title}</h3>
 </Divider>
 <ContentTabs tabs={tabs}>

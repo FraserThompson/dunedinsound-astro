@@ -1,7 +1,7 @@
 ---
 /**
  * Displays all the images and videos for each artist in a gig.
- * 
+ *
  * Props:
  *  - entry: The current entry.
  */
@@ -25,17 +25,6 @@ const entryData = entry.entry.data
 const allImages = Object.values(entryExtra.artistImages).reduce((acc, images) => {
 	return [...acc, ...images]
 }, [])
-
-/**
- * We have multiple galleries, and one lightbox.
- * So we need a way for the galleries to know the index of their images
- * in relation to the totality of images which the lightbox has.
- */
-const getGalleryOffset = (entryExtra: any, i: any) => {
-	if (i === 0) return 0
-	const prevArtistId = entryExtra.artists[i - 1].id
-	return entryExtra.artistImages[prevArtistId]?.length || 0
-}
 ---
 
 {
@@ -56,11 +45,7 @@ const getGalleryOffset = (entryExtra: any, i: any) => {
 				))}
 			</FlexGridContainer>
 			{entryExtra.artistImages[artist.id] && (
-				<ImageGallery
-					noLightbox={true}
-					images={entryExtra.artistImages[artist.id]}
-					galleryOffset={getGalleryOffset(entryExtra, i)}
-				/>
+				<ImageGallery noLightbox={true} images={entryExtra.artistImages[artist.id]} />
 			)}
 		</div>
 	))

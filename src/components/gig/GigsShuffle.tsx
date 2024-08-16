@@ -33,7 +33,7 @@ const GigsJukebox: React.FC<Props> = ({ gigs }) => {
 	const [wavesurfer, setWaveSurfer] = useState<WaveSurfer | undefined>(undefined)
 
 	// Shuffled gigs
-	const shuffledGigs: any[] = useMemo(() => shuffler(gigs), [gigs])
+	const shuffledGigs: any[] = useMemo(() => shuffler([...gigs]), [gigs])
 
 	useEffect(() => {
 		const currentGig = shuffledGigs[shuffleIndex]

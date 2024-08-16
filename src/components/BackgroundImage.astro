@@ -22,9 +22,5 @@ const { verticalImage, responsiveImage, responsiveImageSizes = 'full' } = Astro.
 
 <div class={backgroundImageWrapper}>
 	<Image2 size={responsiveImageSizes} responsiveImage={responsiveImage} />
-	{
-		verticalImage && !Array.isArray(verticalImage) && (
-			<Image2 size={responsiveImageSizes} responsiveImage={verticalImage} />
-		)
-	}
+	{verticalImage && <Image2 size={responsiveImageSizes} responsiveImage={verticalImage} />}
 </div>

@@ -262,12 +262,18 @@ export function maintainSidebarScrollPosition(collection: string) {
 	// After going to next page, scroll to correct position
 	document.addEventListener('astro:after-swap', () => {
 		const scrollPosition = sessionStorage.getItem(`scrollPosition-${collection}`)
-		const depth = window.location.pathname.split("/").length
+		const depth = window.location.pathname.split('/').length
 		if (scrollPosition && depth > 2) {
 			document.querySelector('#sidebar-menu')?.scrollTo({
 				top: parseInt(scrollPosition, 10),
 				behavior: 'instant'
 			})
+		} else {
+			const sidebarMenu = document.querySelector('#sidebar-menu')
+			const activeElement = sidebarMenu?.querySelector('.active')
+			if (activeElement) {
+				activeElement.scrollIntoView({ behavior: 'instant', block: 'center' })
+			}
 		}
 		sessionStorage.removeItem(`scrollPosition-${collection}`)
 	})

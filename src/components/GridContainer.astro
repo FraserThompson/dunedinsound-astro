@@ -10,11 +10,12 @@ import { gridWrapper } from './GridContainer.css'
 interface Props {
 	fixed?: boolean
 	id?: string
+	className?: string
 }
 
-const { fixed, id } = Astro.props
+const { fixed, id, className } = Astro.props
 ---
 
-<div class={gridWrapper[fixed ? 'fixed' : 'autoflow']} id={id}>
+<div class={`${gridWrapper[fixed ? 'fixed' : 'autoflow']} ${className}`} id={id}>
 	<slot />
 </div>

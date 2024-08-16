@@ -220,13 +220,14 @@ export async function getGigExtra(
 		.crawl(`${DIST_MEDIA_DIR}/gig/${entry.id}`)
 		.withPromise()
 
-	let artistImages: { [id: string]: ResponsiveImage[] } = entry.data.artists.reduce(
-		(acc: { [id: string]: ResponsiveImage[] }, artist) => {
+	// We initialize this so they're in the right order.
+	let artistImages: { [id: string]: ResponsiveImage[] } = {
+		_uncategorized: [],
+		...entry.data.artists.reduce((acc: { [id: string]: ResponsiveImage[] }, artist) => {
 			acc[artist.id.id] = []
 			return acc
-		},
-		{}
-	)
+		}, {})
+	}
 	let audio: ArtistAudio[] = []
 
 	// Get all media from each subdirectory
