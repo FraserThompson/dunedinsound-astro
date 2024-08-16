@@ -21,5 +21,6 @@ export const ImageStyle = style({
 	maxWidth: 'none',
 	padding: 0,
 	transform: 'translateZ(0)',
-	objectFit: 'cover'
+	objectFit: 'cover',
+	transition: 'transform 0.3s ease-in-out',
 })

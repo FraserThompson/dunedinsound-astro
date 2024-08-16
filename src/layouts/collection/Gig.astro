@@ -31,7 +31,8 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	id="top"
 	title={entryData.title}
 	backgroundImage={entryExtra.cover}
-	bottomMarginMobile={theme.dimensions.headerHeightNegative}
+	bottomMarginMobile={theme.dimensions.headerHeightMobileNegative}
+	transition:name="gigtile"
 >
 	<div>
 		{
@@ -80,7 +81,8 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	backgroundColor={theme.color.primary}
 	color={theme.color.text}
 	height={theme.dimensions.headerHeightMobile}
-	className="showMobile"
+	href="#top"
+	className="showMobile flex"
 	zIndex="7"
 >
 	<h3 style={{ marginBottom: 0 }}>{entryData.title}</h3>
@@ -109,36 +111,44 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 }
 
 <script>
-	import { navigate } from 'astro:transitions/client'
+	import browserHistory from 'src/util/history'
 
-	document.addEventListener('astro:page-load', () => {
-		// Add the intersectionObserver which updates the browser hash.
-		// GigsMenu listens for this and highlights the artist.
-		const artistElements = document.querySelectorAll('.artist')
+	document.addEventListener(
+		'astro:page-load',
+		() => {
 
-		const options = {
-			rootMargin: '0px 0px -97%'
-		}
+			// Add the intersectionObserver which updates the browser hash.
+			// GigsMenu listens for this and highlights the artist.
+			const artistElements = document.querySelectorAll('.artist')
 
-		const callback = (entries: IntersectionObserverEntry[]) => {
-			if (location.search) return
+			const options = {
+				rootMargin: '0px 0px -97%'
+			}
 
-			entries.forEach((entry) => {
-				if (entry.isIntersecting) {
-					const el = entry.target
-					navigate(`#${el.id}`, { history: 'replace' })
-				} else {
-					const bannerHeight = document.querySelector('.banner')?.clientHeight || 0
-					if (window.scrollY < bannerHeight + 150) {
-						navigate(`#top`, { history: 'replace' })
+			const callback = (entries: IntersectionObserverEntry[]) => {
+				if (location.search) return
+
+				const bannerHeight = document.querySelector('#top')?.clientHeight || 0
+
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						const el = entry.target
+						browserHistory?.replace({
+							pathname: window.location.pathname,
+							hash: `#${el.id}`
+						})
+					} else {
+						if (window.scrollY < bannerHeight) {
+							browserHistory?.replace({ pathname: window.location.pathname, hash: `#top` })
+						}
 					}
-				}
-			})
-		}
+				})
+			}
 
-		const observer = new IntersectionObserver(callback, options)
-		artistElements.forEach((el) => observer.observe(el))
-	})
+			const observer = new IntersectionObserver(callback, options)
+			artistElements.forEach((el) => observer.observe(el))
+		},
+	)
 </script>
 
 <style>

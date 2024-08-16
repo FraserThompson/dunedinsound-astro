@@ -53,15 +53,16 @@ const ImageGalleryLightbox: React.FC<Props> = ({ images, title, imageCaption }: 
 		if (!directLinked) {
 			history.current?.back()
 		} else {
-			history.current?.replace({ pathname: history.current?.location.pathname, search: '' })
+			history.current?.replace({ pathname: history.current?.location.pathname, hash: history.current?.location.hash, search: '' })
 		}
 	}, [history])
 
 	const onImageView = useCallback(
 		(imageIndex: number) => {
-			if (!history) return
+			if (!history || !selectedImage || imageIndex === selectedImage) return
 			history.current?.replace({
 				pathname: history.current?.location.pathname,
+				hash: history.current?.location.hash,
 				search: `?image=${imageIndex}`,
 			}, { lightboxOpen: true })
 		},

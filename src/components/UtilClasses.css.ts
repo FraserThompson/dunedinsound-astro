@@ -6,7 +6,7 @@ const SubheaderBase = style({
 	position: 'fixed',
 	width: '100%',
 	borderBottom: '1px solid black',
-	boxShadow: theme.borders.shadowLight,
+	boxShadow: theme.borders.shadow,
 	backgroundColor: theme.color.primary,
 	height: theme.dimensions.headerHeightMobile,
 	'@media': {

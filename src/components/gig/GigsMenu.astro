@@ -44,6 +44,7 @@ const { selected } = Astro.props
 		}))}
 	direction="down"
 	backgroundColor={theme.color.foreground}
+	heightMobile={theme.dimensions.headerHeightMobile}
 	top={'0px'}
 	client:load
 />
@@ -133,6 +134,9 @@ const { selected } = Astro.props
 
 	/**
 	 * Artists menu which sits under a gig if its selected.
+	 *
+	 * Handles highlighting the active artist, and scrolling smoothly
+	 * to the artist on click.
 	 */
 	class ArtistsMenu extends HTMLElement {
 		unlisten: any
@@ -292,8 +296,7 @@ const { selected } = Astro.props
 
 		connectedCallback() {
 			document.addEventListener('shuffle-filter', (e: any) => this.onShuffle(e), false)
-			!this.selected &&
-				this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e) => this.itemClick(e)))
+			!this.selected && this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e) => this.itemClick(e)))
 		}
 
 		disconnectedCallback() {}

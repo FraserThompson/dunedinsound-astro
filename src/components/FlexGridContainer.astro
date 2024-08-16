@@ -32,7 +32,7 @@ interface Props {
 
 const cols = 12
 
-const { grid, maxWidth, fixedWidth, id, className } = Astro.props
+const { grid, maxWidth, fixedWidth, id, className = '' } = Astro.props
 
 const processedGrid = {
 	xs: grid?.xs || 6,

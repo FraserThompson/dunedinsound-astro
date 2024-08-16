@@ -10,8 +10,6 @@ export const backgroundImageWrapper = style({
 globalStyle(`${backgroundImageWrapper} img`, {
 	width: '100%',
 	zIndex: '0',
-	transition: 'transform 0.3s ease-in-out',
-	transform: 'scale(1, 1)',
 })
 
 globalStyle(`${backgroundImageWrapper} > div`, {

@@ -113,9 +113,9 @@ createGlobalTheme(':root', theme, {
 		contrast: `1px solid ${contrastColor}`,
 		background: `1px solid ${backgroundColor}`,
 		groove: '3px groove #585662',
-		shadow: '0 0px 10px black',
+		shadow: '0 2px 12px black',
 		shadowLight: '0 2px 12px rgba(0,0,0,0.4)',
-		shadowTop: '0 -3px 8px rgba(0, 0, 0, 0.25)'
+		shadowTop: '0 -3px 12px black'
 	},
 	dimensions: {
 		basePadding: basePadding,

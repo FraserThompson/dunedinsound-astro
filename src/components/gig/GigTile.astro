@@ -3,7 +3,7 @@
  * A regular tile but pre-filled with gig metadata.
  */
 import type { ProcessedEntry } from 'src/util/collection'
-import Tile from '../Tile.astro'
+import Tile, { type BackgroundStyle } from '../Tile.astro'
 import { artistsToString, makeHash } from 'src/util/helpers'
 import type { ResponsiveImageSizes } from '../Image2.astro'
 
@@ -12,9 +12,10 @@ interface Props {
 	containerHeight?: string
 	className?: string
 	responsiveImageSizes?: keyof ResponsiveImageSizes
+	backgroundStyle?: BackgroundStyle
 }
 
-const { gig, containerHeight, className, responsiveImageSizes } = Astro.props
+const { gig, containerHeight, className = '', backgroundStyle, responsiveImageSizes } = Astro.props
 
 const gigData = gig.entry.data
 const gigExtra = gig.extra
@@ -25,11 +26,12 @@ const gigExtra = gig.extra
 	href={gigExtra.absolutePath}
 	responsiveImage={gigExtra.cover}
 	responsiveImageSizes={responsiveImageSizes}
+	backgroundStyle={backgroundStyle}
 	id={makeHash(gig.entry.id)}
 	subtitle={gigExtra.venue.data.title}
 	label={gigData.date.toLocaleDateString()}
 	title={gigData.title}
-	containerHeight={containerHeight || '30vh'}
+	containerHeight={containerHeight || '40vh'}
 	dataAttributes={{
 		'data-title': `${gigData.title} ${gigExtra.venue.data.title} ${artistsToString(gigExtra.artists)}`
 	}}

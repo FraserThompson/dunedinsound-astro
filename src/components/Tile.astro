@@ -1,10 +1,12 @@
 ---
 /**
  * A clickable tile used for displaying a link to content in a cool way.
- * 
+ *
  * Props:
  *  - href: the link
  *  - responsiveImage (optional): the background image
+ *  - backgroundStyle (optional): by default the background image is centered.
+ *    Pass full to make it span the entire tile.
  *  - title (optional): displayed at the top
  *  - label (optional): displayed at the bottom
  *  - subtitle (optional): displayed under the title
@@ -15,7 +17,7 @@
  *  - containerWidth (optional)
  *  - className (optional)
  *  - id (optional)
- * 
+ *
  */
 import BackgroundImage from './BackgroundImage.astro'
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
@@ -28,20 +30,25 @@ import {
 	tileTitle,
 	tileLabel,
 	background,
+	centerImageWrapper,
 	height,
 	width,
 	tileSubtitle
 } from './Tile.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
+import Image2 from 'src/components/Image2.astro'
+
+export type BackgroundStyle = 'full' | 'center'
 
 interface Props {
 	href: string
 	responsiveImage?: ResponsiveImage
+	backgroundStyle?: BackgroundStyle
 	title?: string
 	label?: string
 	subtitle?: string
 	dataAttributes?: any
-	responsiveImageSizes?: keyof ResponsiveImageSizes,
+	responsiveImageSizes?: keyof ResponsiveImageSizes
 	backgroundColor?: string
 	containerHeight?: string
 	containerWidth?: string
@@ -51,8 +58,8 @@ interface Props {
 
 const {
 	href,
-	className,
-	id,
+	className = '',
+	id = '',
 	responsiveImage,
 	title,
 	subtitle,
@@ -61,13 +68,14 @@ const {
 	containerHeight,
 	containerWidth,
 	dataAttributes,
+	backgroundStyle = 'center',
 	responsiveImageSizes
 } = Astro.props
 ---
 
 <div
 	{...dataAttributes}
-	class={`${tileWrapper[containerWidth ? 'fixedWidth' : 'noWidth']} ${className || ''} tile`}
+	class={`${tileWrapper[containerWidth ? 'fixedWidth' : 'noWidth']} ${className} tile`}
 	style={assignInlineVars({
 		[height]: containerHeight
 	})}
@@ -81,10 +89,17 @@ const {
 			[width]: containerWidth
 		})}
 	>
-		<a href={href} title={title} style={{ height: '100%', display: 'block' }}>
+		<a href={href} title={title}>
 			{
-				responsiveImage && (
+				responsiveImage && backgroundStyle == 'full' && (
 					<BackgroundImage responsiveImageSizes={responsiveImageSizes} responsiveImage={responsiveImage} />
+				)
+			}
+			{
+				responsiveImage && backgroundStyle == 'center' && (
+					<div class={centerImageWrapper}>
+						<Image2 size={responsiveImageSizes} responsiveImage={responsiveImage} />
+					</div>
 				)
 			}
 			<div class={titleWrapper}>

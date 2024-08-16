@@ -81,7 +81,7 @@ const { images, noLightbox } = Astro.props
 
 	/**
 	 * This is just a simple component to wrap Image2 so it works with a lightbox.
-	 * 
+	 *
 	 * It gets the offset from the parent image-gallery component, which is determined
 	 * based on the number of galleries on the page.
 	 */
@@ -103,9 +103,11 @@ const { images, noLightbox } = Astro.props
 			// @ts-ignore
 			const galleryOffset = parentGallery?.galleryOffset || 0
 
+			// Open the lightbox with Push so the back button works.
 			browserHistory?.push(
 				{
 					pathname: browserHistory?.location.pathname,
+					hash: browserHistory?.location.hash,
 					search: `?image=${this.imageIndex + galleryOffset}`
 				},
 				{ lightboxOpen: true }

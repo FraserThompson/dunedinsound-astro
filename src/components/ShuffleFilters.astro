@@ -28,7 +28,7 @@ interface Props {
 	className?: string
 }
 
-const { itemselector, boardselector, className } = Astro.props
+const { itemselector, boardselector, className = '' } = Astro.props
 ---
 
 <shuffle-filters
@@ -169,6 +169,11 @@ const { itemselector, boardselector, className } = Astro.props
 			}
 
 			this.shuffleInstance?.filter((el) => this.shuffleFilter(el))
+
+			// Scroll to top so results aren't lost
+			if (type === 'text') {
+				window.scroll(0, 0)
+			}
 
 			// Let other components know what's up
 			const event = new CustomEvent('shuffle-filter', { detail: this.shuffleInstance })

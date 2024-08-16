@@ -35,7 +35,7 @@ interface Props {
 	backgroundImageVertical?: ResponsiveImage
 }
 
-const { title, id, height, bottomMargin, bottomMarginMobile, backgroundImage, backgroundImageVertical } = Astro.props
+const { title, id = '', height, bottomMargin, bottomMarginMobile, backgroundImage, backgroundImageVertical } = Astro.props
 ---
 
 <div

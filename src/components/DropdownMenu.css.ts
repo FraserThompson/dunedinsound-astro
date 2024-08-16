@@ -7,6 +7,8 @@ export const dropdownTopMobile = createVar()
 export const menuWidth = createVar()
 export const background = createVar()
 export const color = createVar()
+export const dropdownHeight = createVar()
+export const dropdownHeightMobile = createVar()
 
 export const dropdownWrapper = style({
 	position: 'sticky',
@@ -29,10 +31,15 @@ export const dropdownButtonWrapper = style({
 
 export const dropdownButtonIcon = style({
 	display: 'flex',
-	height: theme.dimensions.subheaderHeight,
+	height: fallbackVar(dropdownHeightMobile, theme.dimensions.subheaderHeight),
 	alignItems: 'center',
 	float: 'right',
-	color: 'black'
+	color: 'black',
+	'@media': {
+		'screen and (--md)': {
+			height: fallbackVar(dropdownHeight, theme.dimensions.subheaderHeight)
+		}
+	}
 })
 
 export const dropdownMenu = style([
@@ -98,6 +105,8 @@ export const additionalLink = style([
 	MenuLinkWrapper['vertical'],
 	{
 		color: theme.color.contrast2,
+		width: 'auto !important',
+		minWidth: '30px !important',
 		selectors: {
 			'&:hover': {
 				color: theme.color.lightContrast2,

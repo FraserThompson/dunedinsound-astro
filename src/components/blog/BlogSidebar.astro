@@ -17,7 +17,7 @@ interface Props {
 	className?: string
 }
 
-const { entry, className } = Astro.props
+const { entry, className = '' } = Astro.props
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra

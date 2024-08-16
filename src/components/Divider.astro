@@ -29,10 +29,11 @@ interface Props {
 	topMobile?: string
 	smoothScroll?: boolean
 	height?: string
+	heightMobile?: string
 	zIndex?: string
 }
 
-const { href, color, backgroundColor, className, sticky, top, topMobile, smoothScroll, height, zIndex } = Astro.props
+const { href, color, backgroundColor, className = '', sticky, top, topMobile, smoothScroll, height, zIndex } = Astro.props
 ---
 
 <div

@@ -29,7 +29,7 @@ export const timeToSeconds = (str: string) => {
 export const calculateScrollHeaderOffset = (window: any, modifierDesktop = 0, modifierMobile = 0) => {
 	const bannerEl = document.querySelector<HTMLElement>('#top')
 	const bannerHeight = 60 / 100
-	const mobileHeaderHeight = 30 + 30
+	const mobileHeaderHeight = 0
 	if (window.innerWidth < 768) {
 		if (bannerEl) {
 			return bannerEl.offsetHeight - mobileHeaderHeight + modifierMobile
@@ -305,7 +305,7 @@ export const isPartiallyActive = (href: string, currentPath: string, strict?: bo
 		return ''
 	}
 
-	const isItActive = href == '/' ? currentPath == href : currentPath.includes(href)
+	const isItActive = href == '/' ? currentPath == href : currentPath.includes(href.replace(/\/$/, ''))
 
 	if (strict) {
 		return isItActive && currentPath !== href

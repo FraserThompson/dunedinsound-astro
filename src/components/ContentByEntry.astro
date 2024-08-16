@@ -64,8 +64,9 @@ const hasBanner = Astro.slots.has('banner')
 
 <Banner
 	title={entryData.title + ('origin' in entryData ? ` (${entryData.origin})` : '')}
+	id="top"
 	backgroundImage={entryExtra.cover}
-	bottomMargin={theme.dimensions.headerHeightNegative}
+	bottomMarginMobile={theme.dimensions.headerHeightMobileNegative}
 >
 	<ActiveIndicator
 		born={entryData.date}
@@ -91,6 +92,8 @@ const hasBanner = Astro.slots.has('banner')
 </Banner>
 <Divider
 	sticky={true}
+	className="showMobile flex"
+	href="#top"
 	backgroundColor={theme.color.primary}
 	color={theme.color.text}
 	height={theme.dimensions.headerHeightMobile}

@@ -11,9 +11,11 @@ const tileWrapperBase = style({
 	overflow: 'clip',
 	height: fallbackVar(height, '40vh'),
 	scrollMarginTop: theme.dimensions.headerHeightMobileWithSubheader,
+	border: `1px solid ${theme.color.background}`,
+	boxSizing: 'border-box',
 	'@media': {
 		'screen and (--xs)': {
-			scrollMarginTop: theme.dimensions.headerHeightWithSubheader,
+			scrollMarginTop: theme.dimensions.headerHeightWithSubheader
 		}
 	}
 })
@@ -32,7 +34,7 @@ export const tileWrapper = styleVariants({
 })
 
 export const tileInner = style({
-	background: fallbackVar(background, 'radial-gradient(circle, black 0%, #161616 70%)'),
+	background: fallbackVar(background, 'black'),
 	width: '100%',
 	height: fallbackVar(height, '40vh'),
 	transition: 'height 100ms ease-in-out',
@@ -50,6 +52,10 @@ globalStyle(`${tileInner} > a:hover`, {
 })
 
 globalStyle(`${tileInner} > a`, {
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+	height: '100%',
 	color: theme.color.text
 })
 
@@ -86,6 +92,15 @@ export const tileTextContent = style({
 	alignItems: 'center'
 })
 
+export const centerImageWrapper = style({
+	padding: 0,
+	'@media': {
+		'screen and (--xs)': {
+			padding: theme.dimensions.basePadding
+		}
+	}
+})
+
 export const tileLabel = style({
 	fontWeight: 600,
 	position: 'absolute',
@@ -94,7 +109,8 @@ export const tileLabel = style({
 	paddingLeft: theme.dimensions.basePaddingMobile,
 	paddingRight: theme.dimensions.basePaddingMobile,
 	borderBottomRightRadius: '6px',
-	backgroundColor: 'black',
+	backgroundColor: 'white',
+	color: theme.color.darkText,
 	'@media': {
 		'screen and (--xs)': {
 			paddingLeft: theme.dimensions.basePadding,

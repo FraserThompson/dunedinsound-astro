@@ -21,12 +21,13 @@ export type ResponsiveImageSizes = {
 
 interface Props {
 	responsiveImage?: ResponsiveImage
+	className?: string
 	image?: string
 	alt?: string
 	size?: keyof ResponsiveImageSizes
 }
 
-const { responsiveImage, image, alt, size = 'grid' } = Astro.props
+const { responsiveImage, className = '', image, alt, size = 'grid' } = Astro.props
 
 const sizes: ResponsiveImageSizes = {
 	full: '(min-width: 1600px) 80vw, 100vw',
@@ -45,7 +46,7 @@ const sizes: ResponsiveImageSizes = {
 }
 ---
 
-<div class={ImageWrapper}>
+<div class={`${ImageWrapper} ${className}`}>
 	<picture>
 		<source type="image/webp" srcset={responsiveImage && responsiveImage.srcset} sizes={sizes[size]} />
 		<img
