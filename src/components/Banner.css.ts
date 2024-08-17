@@ -14,7 +14,7 @@ export const BannerWrapper = style({
 	flexDirection: 'column',
 	alignItems: 'center',
 	zIndex: '8',
-	marginBottom: fallbackVar(marginBottomMobile, '0px'),
+	marginBottom: fallbackVar(marginBottomMobile, marginBottom, '0px'),
 	'@media': {
 		'screen and (--md)': {
 			marginBottom: fallbackVar(marginBottom, '0px')

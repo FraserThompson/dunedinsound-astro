@@ -12,7 +12,7 @@ export const dropdownHeightMobile = createVar()
 
 export const dropdownWrapper = style({
 	position: 'sticky',
-	top: fallbackVar(dropdownTopMobile || dropdownTop, '0px'),
+	top: fallbackVar(dropdownTopMobile, dropdownTop, '0px'),
 	zIndex: '7',
 	right: '0',
 	height: '0',

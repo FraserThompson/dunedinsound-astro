@@ -66,8 +66,7 @@ const hasBanner = Astro.slots.has('banner')
 	title={entryData.title + ('origin' in entryData ? ` (${entryData.origin})` : '')}
 	id="top"
 	backgroundImage={entryExtra.cover}
-	bottomMargin={`calc(${theme.dimensions.headerHeightNegative} * 2)`}
-	bottomMarginMobile={`calc(${theme.dimensions.headerHeightMobileNegative} * 2)`}
+	bottomMargin={`calc(${theme.dimensions.subheaderHeightNegative} * 2)`}
 >
 	<ActiveIndicator
 		born={entryData.date}
@@ -97,8 +96,7 @@ const hasBanner = Astro.slots.has('banner')
 	href="#top"
 	backgroundColor={theme.color.primary}
 	color={theme.color.text}
-	height={theme.dimensions.headerHeight}
-	heightMobile={theme.dimensions.headerHeightMobile}
+	height={theme.dimensions.subheaderHeight}
 	zIndex={'7'}
 >
 	<h3 style={{ marginBottom: 0, textAlign: 'right' }}>{entryData.title}</h3>
@@ -107,8 +105,7 @@ const hasBanner = Astro.slots.has('banner')
 	<div data-tabid="gigs">
 		<DropdownMenu
 			direction="down"
-			top={theme.dimensions.headerHeight}
-			topMobile={theme.dimensions.headerHeightMobile}
+			top={theme.dimensions.subheaderHeight}
 			list={years.map((year) => ({ title: year, hash: `y${year}` }))}
 			client:load
 		/>
@@ -121,8 +118,7 @@ const hasBanner = Astro.slots.has('banner')
 							backgroundColor={theme.color.foreground}
 							href={`#y${year}`}
 							sticky={true}
-							top={theme.dimensions.headerHeight}
-							topMobile={theme.dimensions.headerHeightMobile}
+							top={theme.dimensions.subheaderHeight}
 							smoothScroll={true}
 						>
 							{year} ({gigs?.length})

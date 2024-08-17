@@ -63,7 +63,7 @@ export const titleWrapper = style({
 	zIndex: '5',
 	position: 'absolute',
 	bottom: '0px',
-	background: 'radial-gradient(circle, rgba(0,0,0,0.5) 0%, rgba(255,255,255,0) 95%)',
+	background: 'radial-gradient(circle, rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 70%)',
 	height: '100%',
 	width: '100%',
 	display: 'flex'

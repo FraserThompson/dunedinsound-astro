@@ -3,7 +3,7 @@ import { theme } from 'src/Theme.css'
 
 export const tabsWrapper = style([
 	{
-		height: theme.dimensions.headerHeightMobile,
+		height: theme.dimensions.subheaderHeight,
 		color: 'black',
 		lineHeight: '2',
 		verticalAlign: 'middle',
@@ -12,12 +12,7 @@ export const tabsWrapper = style([
 		zIndex: 9,
 		top: '0px',
 		backgroundColor: 'transparent',
-		position: 'sticky',
-		'@media': {
-			'screen and (--md)': {
-				height: theme.dimensions.headerHeight
-			}
-		}
+		position: 'sticky'
 	}
 ])
 
@@ -29,7 +24,7 @@ export const tabButton = style({
 	overflow: 'hidden',
 	backgroundColor: theme.color.text,
 	color: theme.color.darkText,
-	borderLeft: theme.color.text,
+	borderLeft: `2px solid ${theme.color.primary}`,
 	borderRight: theme.color.text,
 	borderBottom: theme.color.text,
 	selectors: {
@@ -37,6 +32,10 @@ export const tabButton = style({
 			borderLeft: theme.borders.secondary,
 			borderRight: theme.borders.secondary,
 			borderBottom: theme.borders.secondary
+		},
+		'&:hover:not(.active)': {
+			color: 'black',
+			backgroundColor: theme.color.text
 		}
 	}
 })
