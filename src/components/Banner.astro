@@ -69,7 +69,12 @@ const {
 		<slot name="background">
 			{
 				backgroundImage && (
-					<BackgroundImage responsiveImage={backgroundImage} verticalImage={backgroundImageVertical} loading="eager" />
+					<BackgroundImage
+						responsiveImageSizes="doubleMobile"
+						responsiveImage={backgroundImage}
+						verticalImage={backgroundImageVertical}
+						loading="eager"
+					/>
 				)
 			}
 		</slot>

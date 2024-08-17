@@ -417,7 +417,7 @@ function getEntrySlug(title: string, collection?: string): string {
  * @param collection
  * @returns The path.
  */
-export function getEntryPath(title: string, collection: string): string {
+export function getEntryPath(title: string, collection: CollectionKey): string {
 	const slug = getEntrySlug(title, collection)
 	const slugType = collection !== 'blog' ? collection + 's' : collection
 	return '/' + slugType + '/' + slug

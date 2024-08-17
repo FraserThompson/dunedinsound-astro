@@ -1,6 +1,6 @@
 ---
 import TextContainer from 'src/components/TextContainer.astro'
-import { type ProcessedEntry } from 'src/util/collection.ts'
+import { getEntryPath, type ProcessedEntry } from 'src/util/collection.ts'
 import Banner from 'src/components/Banner.astro'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import BlogSidebar from 'src/components/blog/BlogSidebar.astro'
@@ -46,7 +46,7 @@ const entryExtra = entry.extra
 		{
 			entry.prev && (
 				<li>
-					<a href={entry.prev.slug} rel="prev">
+					<a href={getEntryPath(entry.prev.data.title, 'blog')} rel="prev">
 						← {entry.prev.data.title}
 					</a>
 				</li>
@@ -55,7 +55,7 @@ const entryExtra = entry.extra
 		{
 			entry.next && (
 				<li>
-					<a href={entry.next.slug} rel="next">
+					<a href={getEntryPath(entry.next.data.title, 'blog')} rel="next">
 						{entry.next.data.title} →
 					</a>
 				</li>

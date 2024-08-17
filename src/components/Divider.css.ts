@@ -5,12 +5,14 @@ export const dividerColor = createVar()
 export const dividerBackgroundColor = createVar()
 export const dividerZIndex = createVar()
 export const dividerHeight = createVar()
+export const dividerHeightMobile = createVar()
+export const dividerMarginBottom = createVar()
 
 export const stickyTop = createVar()
 export const stickyTopMobile = createVar()
 
 const dividerBase = style({
-	height: fallbackVar(dividerHeight, theme.dimensions.subheaderHeight),
+	height: fallbackVar(dividerHeightMobile, theme.dimensions.subheaderHeight),
 	color: fallbackVar(dividerColor, 'black'),
 	lineHeight: '2',
 	verticalAlign: 'middle',
@@ -23,8 +25,10 @@ const dividerBase = style({
 	top: '10px',
 	zIndex: fallbackVar(dividerZIndex, '6'),
 	boxShadow: theme.borders.shadow,
+	marginBottom: fallbackVar(dividerMarginBottom, '0px'),
 	'@media': {
 		'screen and (--md)': {
+			height: fallbackVar(dividerHeight, theme.dimensions.subheaderHeight),
 			paddingLeft: theme.dimensions.basePadding,
 			paddingRight: theme.dimensions.basePadding
 		}
@@ -54,7 +58,7 @@ export const dividerWrapper = styleVariants({
 	normal: [
 		{
 			position: 'relative',
-			zIndex: fallbackVar(dividerZIndex, '5'),
+			zIndex: fallbackVar(dividerZIndex, '5')
 		},
 		dividerBase
 	]

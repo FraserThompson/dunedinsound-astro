@@ -16,7 +16,7 @@
  * @returns
  */
 
-import { dividerWrapper, dividerColor, dividerBackgroundColor, stickyTop, stickyTopMobile, dividerZIndex, dividerHeight } from './Divider.css'
+import { dividerWrapper, dividerColor, dividerBackgroundColor, stickyTop, stickyTopMobile, dividerZIndex, dividerHeight, dividerHeightMobile, dividerMarginBottom } from './Divider.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
@@ -30,10 +30,11 @@ interface Props {
 	smoothScroll?: boolean
 	height?: string
 	heightMobile?: string
+	marginBottom?: string
 	zIndex?: string
 }
 
-const { href, color, backgroundColor, className = '', sticky, top, topMobile, smoothScroll, height, zIndex } = Astro.props
+const { href, color, backgroundColor, className = '', sticky, top, topMobile, smoothScroll, height, heightMobile, marginBottom, zIndex } = Astro.props
 ---
 
 <div
@@ -44,6 +45,8 @@ const { href, color, backgroundColor, className = '', sticky, top, topMobile, sm
 		[stickyTop]: top ? top : undefined,
 		[stickyTopMobile]: topMobile ? topMobile : undefined,
 		[dividerHeight]: height,
+		[dividerHeightMobile]: heightMobile,
+		[dividerMarginBottom]: marginBottom,
 		[dividerZIndex]: zIndex
 	})}
 >

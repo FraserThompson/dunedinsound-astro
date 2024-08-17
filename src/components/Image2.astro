@@ -17,6 +17,7 @@ export type ResponsiveImageSizes = {
 	full: string
 	grid: string
 	smallGrid: string
+	doubleMobile: string
 }
 
 interface Props {
@@ -32,6 +33,7 @@ const { responsiveImage, image, alt, className = '', size = 'grid', loading = 'l
 
 const sizes: ResponsiveImageSizes = {
 	full: '(min-width: 1600px) 80vw, 100vw',
+	doubleMobile: '(min-width: 1600px) 80vw, 200vw',
 	grid: `
 					(min-width: 1600px) 33vw,
 					(min-width: 992px) 33vw,

@@ -66,7 +66,8 @@ const hasBanner = Astro.slots.has('banner')
 	title={entryData.title + ('origin' in entryData ? ` (${entryData.origin})` : '')}
 	id="top"
 	backgroundImage={entryExtra.cover}
-	bottomMarginMobile={theme.dimensions.headerHeightMobileNegative}
+	bottomMargin={`calc(${theme.dimensions.headerHeightNegative} * 2)`}
+	bottomMarginMobile={`calc(${theme.dimensions.headerHeightMobileNegative} * 2)`}
 >
 	<ActiveIndicator
 		born={entryData.date}
@@ -92,21 +93,22 @@ const hasBanner = Astro.slots.has('banner')
 </Banner>
 <Divider
 	sticky={true}
-	className="showMobile flex"
+	className="noShadow"
 	href="#top"
 	backgroundColor={theme.color.primary}
 	color={theme.color.text}
-	height={theme.dimensions.headerHeightMobile}
+	height={theme.dimensions.headerHeight}
+	heightMobile={theme.dimensions.headerHeightMobile}
 	zIndex={'7'}
 >
-	<h3 style={{ marginBottom: 0 }}>{entryData.title}</h3>
+	<h3 style={{ marginBottom: 0, textAlign: 'right' }}>{entryData.title}</h3>
 </Divider>
 <ContentTabs tabs={tabs}>
 	<div data-tabid="gigs">
 		<DropdownMenu
 			direction="down"
 			top={theme.dimensions.headerHeight}
-			topMobile={theme.dimensions.headerHeightMobileWithSubheader}
+			topMobile={theme.dimensions.headerHeightMobile}
 			list={years.map((year) => ({ title: year, hash: `y${year}` }))}
 			client:load
 		/>
@@ -120,7 +122,7 @@ const hasBanner = Astro.slots.has('banner')
 							href={`#y${year}`}
 							sticky={true}
 							top={theme.dimensions.headerHeight}
-							topMobile={theme.dimensions.headerHeightMobileWithSubheader}
+							topMobile={theme.dimensions.headerHeightMobile}
 							smoothScroll={true}
 						>
 							{year} ({gigs?.length})

@@ -285,3 +285,7 @@ globalStyle('.left0', {
 	left: 0,
 	marginLeft: 0
 })
+
+globalStyle('.noShadow', {
+	boxShadow: "none !important"
+})
