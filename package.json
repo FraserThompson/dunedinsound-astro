@@ -6,12 +6,14 @@
 		"dev": "astro dev",
 		"start": "astro dev",
 		"build": "astro check && astro build",
-		"deploy": "npm run link_media && aws s3 sync dist/ s3://beta.dunedinsound.com/ --follow-symlinks",
+		"deploy": "npm run link_media && aws s3 sync dist/ s3://dunedinsound.com/ --follow-symlinks",
 		"build-deploy": "npm run build && npm run deploy",
 		"preview": "astro preview",
 		"astro": "astro",
 		"media": "node ./scripts/generateMedia.mjs",
-		"link_media": "powershell -Command \"New-Item -Path .\\dist\\dist_media -ItemType Junction -Value .\\dist_media\" > nul"
+		"link_media": "powershell -Command \"New-Item -Path .\\dist\\dist_media -ItemType Junction -Value .\\dist_media\" > nul",
+    "new": "node ./scripts/generateGig.mjs",
+    "audio": "docker compose up --build && node ./scripts/copyAudio.mjs"
 	},
 	"devDependencies": {
 		"@iconify-json/bx": "^1.1.11",

@@ -25,9 +25,10 @@ interface Props {
 	image?: string
 	alt?: string
 	size?: keyof ResponsiveImageSizes
+	loading?: 'lazy' | 'eager'
 }
 
-const { responsiveImage, className = '', image, alt, size = 'grid' } = Astro.props
+const { responsiveImage, image, alt, className = '', size = 'grid', loading = 'lazy' } = Astro.props
 
 const sizes: ResponsiveImageSizes = {
 	full: '(min-width: 1600px) 80vw, 100vw',
@@ -38,9 +39,9 @@ const sizes: ResponsiveImageSizes = {
 					50vw
 					`,
 	smallGrid: `
-					(min-width: 1600px) 20vw,
-					(min-width: 992px) 25vw,
-					(min-width: 768px) 33vw, 
+					(min-width: 1600px) 16vw,
+					(min-width: 992px) 16vw,
+					(min-width: 768px) 25vw, 
 					50vw
 					`
 }
@@ -55,7 +56,7 @@ const sizes: ResponsiveImageSizes = {
 			srcset={responsiveImage && responsiveImage.srcset}
 			sizes={sizes[size]}
 			alt={alt}
-			loading="lazy"
+			loading={loading}
 			decoding="async"
 		/>
 	</picture>

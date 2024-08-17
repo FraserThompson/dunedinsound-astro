@@ -122,3 +122,9 @@ const { images, noLightbox } = Astro.props
 	customElements.define('gallery-image', GalleryImage)
 	customElements.define('image-gallery', ImageGallery)
 </script>
+
+<style is:global>
+	gallery-image {
+		aspect-ratio: 3/2;
+	}
+</style>

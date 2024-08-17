@@ -35,7 +35,15 @@ interface Props {
 	backgroundImageVertical?: ResponsiveImage
 }
 
-const { title, id = '', height, bottomMargin, bottomMarginMobile, backgroundImage, backgroundImageVertical } = Astro.props
+const {
+	title,
+	id = '',
+	height,
+	bottomMargin,
+	bottomMarginMobile,
+	backgroundImage,
+	backgroundImageVertical
+} = Astro.props
 ---
 
 <div
@@ -59,7 +67,11 @@ const { title, id = '', height, bottomMargin, bottomMarginMobile, backgroundImag
 	</div>
 	<div class={BackgroundContent}>
 		<slot name="background">
-			{backgroundImage && <BackgroundImage responsiveImage={backgroundImage} verticalImage={backgroundImageVertical} />}
+			{
+				backgroundImage && (
+					<BackgroundImage responsiveImage={backgroundImage} verticalImage={backgroundImageVertical} loading="eager" />
+				)
+			}
 		</slot>
 	</div>
 	<slot name="customContent" />

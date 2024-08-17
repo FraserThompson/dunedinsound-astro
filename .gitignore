@@ -22,3 +22,4 @@ pnpm-debug.log*
 
 media/
 dist_media/
+audio/

@@ -21,6 +21,12 @@ const { videoid, loadAPI, autoload } = Astro.props
 		params="enablejsapi=1&rel=0"></lite-youtube>
 </lite-youtube-toucher>
 
+<style is:global>
+	lite-youtube-toucher {
+		aspect-ratio: 16/9;
+	}
+</style>
+
 {loadAPI && <script src="https://www.youtube.com/iframe_api" />}
 
 <script>

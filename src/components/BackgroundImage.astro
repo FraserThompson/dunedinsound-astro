@@ -15,12 +15,13 @@ interface Props {
 	responsiveImage: ResponsiveImage
 	verticalImage?: ResponsiveImage
 	responsiveImageSizes?: keyof ResponsiveImageSizes
+	loading?: 'lazy' | 'eager'
 }
 
-const { verticalImage, responsiveImage, responsiveImageSizes = 'full' } = Astro.props
+const { verticalImage, responsiveImage, responsiveImageSizes = 'full', loading = 'lazy' } = Astro.props
 ---
 
 <div class={backgroundImageWrapper}>
-	<Image2 size={responsiveImageSizes} responsiveImage={responsiveImage} />
-	{verticalImage && <Image2 size={responsiveImageSizes} responsiveImage={verticalImage} />}
+	<Image2 size={responsiveImageSizes} responsiveImage={responsiveImage} loading={loading} />
+	{verticalImage && <Image2 size={responsiveImageSizes} responsiveImage={verticalImage} loading={loading} />}
 </div>

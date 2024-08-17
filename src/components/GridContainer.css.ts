@@ -7,7 +7,7 @@ export const gridWrapper = styleVariants({
 		gridAutoFlow: 'dense',
 		'@media': {
 			'screen and (--xs)': {
-				gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+				gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
 			}
 		}
 	},

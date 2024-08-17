@@ -5,12 +5,12 @@ import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin'
 import Icons from 'unplugin-icons/vite'
 import { remarkImagesPlugin } from './src/remark-images-plugin.ts'
 
-const ignoredDirs = ['**/media', '**/dist_media', '**/dist']
+const ignoredDirs = ['**/media', '**/dist_media', '**/dist', '**/audio']
 
 // https://astro.build/config
 export default defineConfig({
 	integrations: [mdx({ remarkPlugins: [remarkImagesPlugin] }), preact({ compat: true })],
-	site: 'https://beta.dunedinsound.com',
+	site: 'https://dunedinsound.com',
 	build: {
 		rollupOptions: {
 			external: ignoredDirs

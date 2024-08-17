@@ -81,6 +81,7 @@ for (const artist of artists) {
 					title={artist.entry.data.title + (artist.entry.data.origin ? ` (${artist.entry.data.origin})` : '')}
 					label={`${artistMetadata[artist.entry.id]?.totalCount} gigs`}
 					containerHeight={'15vh'}
+					backgroundStyle="full"
 					dataAttributes={{
 						'data-title': artist.entry.data.title,
 						'data-machinename': artist.entry.id,
