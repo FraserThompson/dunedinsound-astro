@@ -38,8 +38,8 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 		{
 			entryExtra.venue && (
 				<h3 style={{ marginBottom: '2px' }}>
-					<a href={`/venues/${entryExtra.venue.id}`} class="highlighted">
-						<MapIcon style={{ marginBottom: '-2px' }} />
+					<a href={!entryExtra.venue.data.hidden ? `/venues/${entryExtra.venue.id}` : ''} class="highlighted">
+						{!entryExtra.venue.data.hidden && <MapIcon style={{ marginBottom: '-2px' }} />}
 						{entryExtra.venue.data.title}
 					</a>
 				</h3>
@@ -101,8 +101,9 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 						{ href: `/artists/${artist.id}`, title: 'MORE GIGS FROM THIS ARTIST' }
 					]
 				}))}
-				topMobile={theme.dimensions.headerHeightMobile}
 				direction="down"
+				height={theme.dimensions.headerHeightMobile}
+				textColor={theme.color.contrast}
 				client:load
 			/>
 			<ArtistMedia entry={entry} />
@@ -113,40 +114,36 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 <script>
 	import browserHistory from 'src/util/history'
 
-	document.addEventListener(
-		'astro:page-load',
-		() => {
+	document.addEventListener('astro:page-load', () => {
+		// Add the intersectionObserver which updates the browser hash.
+		// GigsMenu listens for this and highlights the artist.
+		const artistElements = document.querySelectorAll('.artist')
 
-			// Add the intersectionObserver which updates the browser hash.
-			// GigsMenu listens for this and highlights the artist.
-			const artistElements = document.querySelectorAll('.artist')
+		const options = {
+			rootMargin: '0px 0px -97%'
+		}
 
-			const options = {
-				rootMargin: '0px 0px -97%'
-			}
+		const callback = (entries: IntersectionObserverEntry[]) => {
+			if (location.search) return
 
-			const callback = (entries: IntersectionObserverEntry[]) => {
-				if (location.search) return
+			const bannerHeight = document.querySelector('#top')?.clientHeight || 0
 
-				const bannerHeight = document.querySelector('#top')?.clientHeight || 0
-
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						const el = entry.target
-						browserHistory?.replace({
-							pathname: window.location.pathname,
-							hash: `#${el.id}`
-						})
-					} else {
-						if (window.scrollY < bannerHeight) {
-							browserHistory?.replace({ pathname: window.location.pathname, hash: `#top` })
-						}
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					const el = entry.target
+					browserHistory?.replace({
+						pathname: window.location.pathname,
+						hash: `#${el.id}`
+					})
+				} else {
+					if (window.scrollY < bannerHeight) {
+						browserHistory?.replace({ pathname: window.location.pathname, hash: `#top` })
 					}
-				})
-			}
+				}
+			})
+		}
 
-			const observer = new IntersectionObserver(callback, options)
-			artistElements.forEach((el) => observer.observe(el))
-		},
-	)
+		const observer = new IntersectionObserver(callback, options)
+		artistElements.forEach((el) => observer.observe(el))
+	})
 </script>

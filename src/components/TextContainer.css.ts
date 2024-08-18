@@ -15,11 +15,12 @@ export const textContainer = styleVariants({
 	}
 })
 
+// Both normal and feature styles
 globalStyle(`${textContainer['normal']} > *:not(blockquote), ${textContainer['feature']} > *:not(blockquote)`, {
-	fontSize: 'inherit',
-	paddingBottom: theme.dimensions.basePadding
+	fontSize: 'inherit'
 })
 
+// Feature styles
 globalStyle(`${textContainer['feature']} > *:not(${ImageWrapper})`, {
 	margin: '0 auto',
 	padding: `calc(${theme.dimensions.basePadding} * 1.5)`,
@@ -27,5 +28,5 @@ globalStyle(`${textContainer['feature']} > *:not(${ImageWrapper})`, {
 })
 
 globalStyle(`${textContainer['feature']} ${ImageWrapper}`, {
-	margin: '0 auto',
+	margin: '0 auto'
 })

@@ -25,7 +25,7 @@ const entryExtra = entry.extra
 
 <div class={`${blogSidebarWrapper} ${className}`}>
 	<div>
-		<small style={{ color: theme.color.dullText }}>{entryData.date.toLocaleDateString()}</small>
+		<small style={{ color: theme.color.dullText }}>Published {entryData.date.toLocaleDateString()}</small>
 	</div>
 	{
 		!!entryExtra.relatedArtists.length && (

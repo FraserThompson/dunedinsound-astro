@@ -41,7 +41,7 @@ const allImages = Object.values(entryExtra.artistImages).reduce((acc, images) =>
 			</Divider>
 			<FlexGridContainer grid={{ xs: 12, md: 6 }} maxWidth="1080px">
 				{entryData.artists[i].vid?.map((vid) => (
-					<LiteYoutube videoid={vid.link} />
+					<LiteYoutube videoid={vid.link} loadAPI={true} />
 				))}
 			</FlexGridContainer>
 			{entryExtra.artistImages[artist.id] && (

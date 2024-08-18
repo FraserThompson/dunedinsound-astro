@@ -17,6 +17,8 @@ import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import ContentByEntry from '../../components/ContentByEntry.astro'
 import type { ProcessedEntry } from 'src/util/collection'
 import SidebarLayout from './SidebarLayout.astro'
+import ChevronLeftIcon from '~icons/bx/chevron-left'
+import { backButton } from 'src/components/gig/GigsMenu.css'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
@@ -42,17 +44,15 @@ const hasBanner = Astro.slots.has('banner')
 	<ShuffleFilters slot="subheaderTopDesktop" itemselector=".sidebar-item" boardselector="#shuffle-menu">
 		<SearchBox placeholder=`Search ${collection}` />
 	</ShuffleFilters>
-	<EntryMenu
-		slot="sidebarMenu"
-		collection={collection}
-		selected={entry.entry.id}
-		transition:persist
-	/>
+	<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href=`/${collection}s`>
+		<ChevronLeftIcon /> Go to ${collection}s home
+	</a>
+	<EntryMenu slot="sidebarMenu" collection={collection} selected={entry.entry.id} transition:persist />
 	<ContentByEntry entry={entry} slot="content">
 		<slot name="banner" slot={hasBanner ? 'banner' : ''} />
 	</ContentByEntry>
 	<ShuffleFilters
-		slot="sidebarSubheaderMobile"
+		slot="sidebarSubheaderBottomMobile"
 		className="fullWidth"
 		itemselector=".sidebar-item"
 		boardselector="#shuffle-menu"

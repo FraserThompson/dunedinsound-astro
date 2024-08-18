@@ -33,7 +33,8 @@ const hasSubheaderTop = Astro.slots.has('subheaderTop')
 const hasSubheaderTopMobile = Astro.slots.has('subheaderTopMobile')
 const hasSubheaderTopDesktop = Astro.slots.has('subheaderTopDesktop')
 const hasSubheaderBottomMobile = Astro.slots.has('subheaderBottomMobile')
-const hasSidebarSubheaderMobile = Astro.slots.has('sidebarSubheaderMobile')
+const hasSidebarSubheaderBottomMobile = Astro.slots.has('sidebarSubheaderBottomMobile')
+const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile')
 ---
 
 <BaseLayout
@@ -69,7 +70,11 @@ const hasSidebarSubheaderMobile = Astro.slots.has('sidebarSubheaderMobile')
 		customButton={true}
 	>
 		<slot name="sidebarMenu" slot="sidebarMenu" />
-		<slot name="sidebarSubheaderMobile" slot={`${hasSidebarSubheaderMobile && 'sidebarSubheaderMobile'}`} />
+		<slot
+			name="sidebarSubheaderBottomMobile"
+			slot={`${hasSidebarSubheaderBottomMobile && 'sidebarSubheaderBottomMobile'}`}
+		/>
+		<slot name="sidebarSubheaderTopMobile" slot={`${hasSidebarSubheaderTopMobile && 'sidebarSubheaderTopMobile'}`} />
 		<slot name="content" slot="content" />
 	</SidebarNav>
 

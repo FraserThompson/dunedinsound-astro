@@ -57,7 +57,7 @@ const sizes: ResponsiveImageSizes = {
 			src={responsiveImage ? responsiveImage.images[0] : image}
 			srcset={responsiveImage && responsiveImage.srcset}
 			sizes={sizes[size]}
-			alt={alt}
+			alt={responsiveImage?.alt || alt}
 			loading={loading}
 			decoding="async"
 		/>

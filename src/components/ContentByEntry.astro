@@ -34,7 +34,13 @@ const gigs = await loadAndFormatCollection('gig', (thing) => {
 })
 
 const gigsByYear = Object.groupBy(gigs, (gig) => gig.entry.data.date.getFullYear())
-const years = Object.keys(gigsByYear).reverse()
+
+const gigsYearDropdownItems = Object.entries(gigsByYear)
+	.reverse()
+	.map(([year, gigs]) => ({
+		year: year,
+		count: gigs?.length || 0
+	}))
 
 // Find related blogs
 const blogs = await loadAndFormatCollection('blog', (thing) => {
@@ -106,7 +112,7 @@ const hasBanner = Astro.slots.has('banner')
 		<DropdownMenu
 			direction="down"
 			top={theme.dimensions.subheaderHeight}
-			list={years.map((year) => ({ title: year, hash: `y${year}` }))}
+			list={gigsYearDropdownItems.map((item) => ({ title: `${item.year} (${item.count})`, hash: `y${item.year}` }))}
 			client:load
 		/>
 		{
@@ -123,9 +129,9 @@ const hasBanner = Astro.slots.has('banner')
 						>
 							{year} ({gigs?.length})
 						</Divider>
-						<FlexGridContainer>
+						<FlexGridContainer grid={gigs && gigs.length <= 2 ? { xs: 12, md: 6 } : undefined}>
 							{gigs?.map((gig) => (
-								<GigTile gig={gig} responsiveImageSizes={'grid'} />
+								<GigTile gig={gig} responsiveImageSizes={gigs.length <= 2 ? 'full' : 'grid'} />
 							))}
 						</FlexGridContainer>
 					</div>

@@ -84,7 +84,7 @@ export async function loadAndFormatCollection<C extends CollectionKey>(
 			'hidden' in thing.data ? !thing.data.hidden : true
 		)
 		const processedEntries = await Promise.all(
-			sortedEntries.map(async (entry, i) => await processEntry(entry, entries, i))
+			sortedEntries.map(async (entry, i) => await processEntry(entry, sortedEntries, i))
 		)
 		cachedResults[name] = processedEntries
 	}
@@ -124,8 +124,8 @@ export async function processEntry<C extends CollectionKey>(
 ): Promise<ProcessedEntry<C>> {
 	const extraCommon: EntryExtraCommon = await getCommonExtra(entry)
 
-	const prev = !i || i + 1 === entries.length ? undefined : entries[i + 1]
-	const next = !i || i === 0 ? undefined : entries[i - 1]
+	const next = i === undefined || i + 1 === entries.length ? undefined : entries[i + 1]
+	const prev = i === undefined || i === 0 ? undefined : entries[i - 1]
 
 	switch (entry.collection) {
 		case 'gig':
@@ -207,6 +207,9 @@ export async function getGigExtra(
 		entry.data.artists.map(async (artist: any) => await getEntry('artist', artist.id.id))
 	)
 
+	// This is used for sorting media into the correct order
+	const artistIds: string[] = entry.data.artists.map((artist) => artist.id.id)
+
 	// Get associated venue entry
 	const venue = await getEntry('venue', entry.data.venue.id)
 
@@ -223,12 +226,14 @@ export async function getGigExtra(
 	// We initialize this so they're in the right order.
 	let artistImages: { [id: string]: ResponsiveImage[] } = {
 		_uncategorized: [],
-		...entry.data.artists.reduce((acc: { [id: string]: ResponsiveImage[] }, artist) => {
-			acc[artist.id.id] = []
+		...artistIds.reduce((acc: { [id: string]: ResponsiveImage[] }, artistId) => {
+			acc[artistId] = []
 			return acc
 		}, {})
 	}
 	let audio: ArtistAudio[] = []
+
+	artistDirs.sort((a, b) => artistIds.indexOf(path.basename(a)) - artistIds.indexOf(path.basename(b)))
 
 	// Get all media from each subdirectory
 	for (const artistDir of artistDirs) {

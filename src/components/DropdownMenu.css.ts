@@ -31,10 +31,10 @@ export const dropdownButtonWrapper = style({
 
 export const dropdownButtonIcon = style({
 	display: 'flex',
-	height: fallbackVar(dropdownHeightMobile, theme.dimensions.subheaderHeight),
+	height: fallbackVar(dropdownHeightMobile, dropdownHeight, theme.dimensions.subheaderHeight),
 	alignItems: 'center',
 	float: 'right',
-	color: 'black',
+	color: fallbackVar(color, 'black'),
 	'@media': {
 		'screen and (--md)': {
 			height: fallbackVar(dropdownHeight, theme.dimensions.subheaderHeight)

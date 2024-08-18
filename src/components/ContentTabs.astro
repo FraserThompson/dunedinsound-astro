@@ -68,6 +68,8 @@ const { tabs } = Astro.props
 		public selectTab(tabid: string) {
 			if (tabid == this.selectedTabId) return
 
+			window.location.hash = tabid
+
 			const oldTabContent = this.selectedTabId ? this.getTabContent(this.selectedTabId) : undefined
 			const newTabContent = this.getTabContent(tabid)
 

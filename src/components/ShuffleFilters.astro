@@ -172,8 +172,9 @@ const { itemselector, boardselector, className = '' } = Astro.props
 
 			// Scroll to top so results aren't lost
 			if (type === 'text') {
-				if (this.parentElement?.id === 'sidebar') {
-					this.parentElement.querySelector('#sidebar-menu')?.scroll(0, 0)
+				const sidebar = document.querySelector('#sidebar-menu')
+				if (sidebar) {
+					sidebar.scroll(0, 0)
 				} else {
 					window.scroll(0, 0)
 				}

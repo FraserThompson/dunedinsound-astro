@@ -8,7 +8,7 @@ import "yet-another-react-lightbox/styles.css";
 import { Download, Zoom } from "yet-another-react-lightbox/plugins";
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import browserHistory from 'src/util/history';
-import { LightboxHeader } from './ImageGalleryLightbox.css';
+import { LightboxFooter, LightboxHeader } from './ImageGalleryLightbox.css';
 
 interface Props {
 	images: ResponsiveImage[]
@@ -21,6 +21,7 @@ const ImageGalleryLightbox: React.FC<Props> = ({ images, title, imageCaption }: 
 	const [selectedImage, setSelectedImage] = useState(undefined as number | undefined)
 	const [directLinked, setDirectLinked] = useState(false)
 
+	const zoomRef = useRef<any>(null)
 	const history = useRef(browserHistory)
 
 	useEffect(() => {
@@ -59,14 +60,23 @@ const ImageGalleryLightbox: React.FC<Props> = ({ images, title, imageCaption }: 
 
 	const onImageView = useCallback(
 		(imageIndex: number) => {
+
+			// On small screens zoom it in a bit by default
+			if (window.innerWidth < 768) {
+				setTimeout(() => {
+					zoomRef.current?.changeZoom(2)
+				})
+			}
+
 			if (!history || !selectedImage || imageIndex === selectedImage) return
+
 			history.current?.replace({
 				pathname: history.current?.location.pathname,
 				hash: history.current?.location.hash,
 				search: `?image=${imageIndex}`,
 			}, { lightboxOpen: true })
 		},
-		[history]
+		[history, zoomRef]
 	)
 
 	const getImageCaption = useCallback((imageIndex: number) => images[imageIndex].alt, [images])
@@ -90,11 +100,13 @@ const ImageGalleryLightbox: React.FC<Props> = ({ images, title, imageCaption }: 
 			slides={imageSlides}
 			plugins={[Download, Zoom]}
 			zoom={{
-				scrollToZoom: true
+				scrollToZoom: true,
+				ref: zoomRef
 			}}
 			render={{
+				iconLoading: () => <div className="spinner"></div>,
 				slideHeader: () => <div className={LightboxHeader}><h2>{title}</h2></div>,
-				slideFooter: () => <div style={{ position: "absolute", padding: "8px", bottom: "0px" }}><h4>{selectedImage ? getImageCaption(selectedImage) : imageCaption}</h4></div>,
+				slideFooter: () => <div className={LightboxFooter}><h4>{selectedImage ? getImageCaption(selectedImage) : imageCaption}</h4></div>,
 			}}
 		/>
 	)

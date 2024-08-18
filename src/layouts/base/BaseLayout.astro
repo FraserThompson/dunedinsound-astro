@@ -32,6 +32,7 @@ const { hideFooter, className = '', poo } = Astro.props
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/ico" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
+		<meta name="theme-color" content="black" />
 		<meta name="generator" content={Astro.generator} />
 		<SEO poo={poo} />
 		<ViewTransitions />
@@ -54,7 +55,7 @@ const { hideFooter, className = '', poo } = Astro.props
 	// Adds a loading spinner to the clicked element
 	document.addEventListener('astro:before-preparation', (ev) => {
 		const sourceElement = ev.sourceElement
-		sourceElement.classList.add('spinner')
+		sourceElement?.classList.add('spinner')
 	})
 </script>
 

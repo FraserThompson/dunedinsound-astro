@@ -100,5 +100,5 @@ export const backButton = style({
 	backgroundColor: theme.color.background,
 	width: '100%',
 	zIndex: 10,
-	position: 'relative'
+	position: 'fixed'
 })

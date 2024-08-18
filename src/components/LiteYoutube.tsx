@@ -8,7 +8,7 @@
  * ts-nocheck is because lite-youtube throws an error.
  */
 
-import { useCallback, useEffect } from "preact/hooks"
+import { useCallback, useEffect, useRef, type MutableRef } from "preact/hooks"
 
 interface Props {
 	videoid: string
@@ -18,9 +18,13 @@ interface Props {
 
 const LiteYoutube: React.FC<Props> = ({ videoid, loadAPI, autoload }) => {
 
-	const autoPlay = useCallback((e: any) => {
+	const timeout: MutableRef<any> = useRef()
+	const attempts: MutableRef<number> = useRef(0)
+
+	const setupAutoPlay = useCallback((e: any) => {
+		const youtubeIframe = e.target.shadowRoot.querySelector('iframe')
 		// @ts-ignore
-		new YT.Player(e.target.shadowRoot.querySelector('iframe'), {
+		new YT.Player(youtubeIframe, {
 			events: {
 				onReady: (e: any) => {
 					e.target.setPlaybackQuality('hd720')
@@ -30,21 +34,31 @@ const LiteYoutube: React.FC<Props> = ({ videoid, loadAPI, autoload }) => {
 		})
 	}, [])
 
-	const tryAutoplay = useCallback((e: any) => {
-		try {
-			autoPlay(e)
-		} catch (error) {
-			setTimeout(() => tryAutoplay(e), 100)
+	const trySetupAutoplay = useCallback((e: any) => {
+		// So elements dont respond to other elements events
+		// Consider failed after 20 attempts
+		if (attempts.current > 20) {
+			timeout.current && clearTimeout(timeout.current)
+			return
 		}
-	}, [autoPlay])
+
+		attempts.current = attempts.current + 1
+
+		try {
+			setupAutoPlay(e)
+			timeout.current && clearTimeout(timeout.current)
+		} catch (error) {
+			timeout.current = setTimeout(() => trySetupAutoplay(e), 100)
+		}
+	}, [setupAutoPlay])
 
 	useEffect(() => {
 		// This is because web components have issues with SSR rendering
 		import("@justinribeiro/lite-youtube")
-		document.addEventListener('liteYoutubeIframeLoaded', (e: any) => tryAutoplay(e))
+		document.addEventListener('liteYoutubeIframeLoaded', (e: any) => trySetupAutoplay(e))
 	}
 		, [])
-	
+
 	return (
 		<>
 			{loadAPI && <script src="https://www.youtube.com/iframe_api" />}

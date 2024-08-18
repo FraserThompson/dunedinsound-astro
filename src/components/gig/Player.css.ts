@@ -21,6 +21,7 @@ export const WaveWrapper = style({
 	border: theme.borders.groove,
 	backgroundColor: 'black',
 	marginLeft: '5px',
+	minHeight: '65px',
 	position: 'relative',
 	selectors: {
 		'&::part(marker)': {

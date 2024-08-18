@@ -17,13 +17,11 @@ import {
 	yearLink,
 	monthLink,
 	gigsMenuWrapper,
-	artistsMenuWrapper,
-	backButton
+	artistsMenuWrapper
 } from './GigsMenu.css'
 import { makeHash, artistsToString } from 'src/util/helpers'
 import DropdownMenu from '../DropdownMenu'
 import { theme } from 'src/Theme.css'
-import ChevronLeftIcon from '~icons/bx/chevron-left'
 
 interface Props {
 	selected?: string
@@ -50,13 +48,6 @@ const { selected } = Astro.props
 />
 
 <gigs-menu data-selected={selected}>
-	{
-		selected && (
-			<a class={`showMobile flex ${backButton}`} href="/gigs">
-				<ChevronLeftIcon /> Go to gigs home{' '}
-			</a>
-		)
-	}
 	{
 		Object.entries(sortedGigs)
 			.reverse()

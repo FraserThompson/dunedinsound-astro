@@ -32,11 +32,10 @@ const entryExtra = entry.extra
 </div>
 <div class="showMobile">
 	<SidebarNav customButton={true}>
-		<BlogSidebar slot="sidebarMenu" entry={entry}>
-			<a class={`showMobile flex ${backButton}`} href="/blog">
-				<ChevronLeftIcon /> Go to blogs home
-			</a>
-		</BlogSidebar>
+		<BlogSidebar slot="sidebarMenu" entry={entry} />
+		<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href="/blog">
+			<ChevronLeftIcon /> Go to blogs home
+		</a>
 	</SidebarNav>
 </div>
 {entryData.gallery && entryExtra.images && <ImageGallery images={Object.values(entryExtra.images)} />}

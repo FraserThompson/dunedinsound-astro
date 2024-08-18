@@ -14,6 +14,8 @@ const widths = [400, 800, 1600, 3200]
 
 const quality = 80
 
+const concurrency = 30
+
 /**
  * Checks if a file exists.
  * @param {*} path
@@ -84,7 +86,7 @@ const tasks = media.map((inputPath) => {
 		await fs.mkdir(basePath, { recursive: true })
 
 		// Create proxies from input images
-		if (parsedPath.ext === '.jpg') {
+		if (parsedPath.ext.toLowerCase() === '.jpg') {
 			const inputStats = await fs.stat(inputPath)
 
 			// We use this for cache busting and determining when the file has changed
@@ -165,4 +167,4 @@ const tasks = media.map((inputPath) => {
 	return thing
 })
 
-parallelLimit(tasks, 24)
+parallelLimit(tasks, concurrency)

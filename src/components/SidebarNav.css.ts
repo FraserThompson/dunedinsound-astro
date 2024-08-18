@@ -23,7 +23,9 @@ export const sidebarWrapper = style({
 	zIndex: '10',
 	boxShadow: theme.borders.shadow,
 	borderRight: theme.borders.primary,
-	transform: `translateY(calc(100vh - ${fallbackVar(offsetTopMobile, '0px')} - ${theme.dimensions.headerHeightMobile}))`,
+	transform: `translateY(calc(100vh - ${fallbackVar(offsetTopMobile, '0px')} - ${
+		theme.dimensions.headerHeightMobile
+	}))`,
 	transitionProperty: 'opacity, transform',
 	transitionDuration: '0.2s',
 	transitionTimingFunction: 'ease-in',
@@ -58,14 +60,28 @@ export const sidebarMenuWrapper = style({
 	scrollbarColor: 'gray black',
 	height: `100%`,
 	selectors: {
-		'&.hasSubheaderMobile': {
+		'&.hasSubheaderBottomMobile': {
 			height: `calc(100% - ${theme.dimensions.headerHeightMobile})`
+		},
+		'&.hasSubheaderTopMobile': {
+			marginTop: theme.dimensions.subheaderHeight,
+			height: `calc(100% - ${theme.dimensions.subheaderHeight})`
+		},
+		'&.hasSubheaderTopMobile.hasSubheaderBottomMobile': {
+			height: `calc(100% - ${theme.dimensions.headerHeightMobile} -  ${theme.dimensions.subheaderHeight})`
 		}
 	},
 	'@media': {
 		'screen and (--md)': {
 			selectors: {
-				'&.hasSubheaderMobile': {
+				'&.hasSubheaderBottomMobile': {
+					height: `100%`
+				},
+				'&.hasSubheaderTopMobile': {
+					marginTop: 0,
+					height: `100%`
+				},
+				'&.hasSubheaderTopMobile.hasSubheaderBottomMobile': {
 					height: `100%`
 				}
 			}

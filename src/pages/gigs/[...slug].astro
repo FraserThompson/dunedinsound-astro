@@ -5,6 +5,8 @@ import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 import Gig from 'src/layouts/collection/Gig.astro'
 import { loadAndFormatCollection } from 'src/util/collection.ts'
+import ChevronLeftIcon from '~icons/bx/chevron-left'
+import { backButton } from 'src/components/gig/GigsMenu.css'
 
 export async function getStaticPaths() {
 	const entries = await loadAndFormatCollection('gig')
@@ -32,9 +34,12 @@ const entryExtra = entry.extra
 	<ShuffleFilters slot="subheaderTopDesktop" itemselector=".hiddenItem" boardselector="#shuffle-menu">
 		<SearchBox placeholder=`Search gigs by title, artist, venue` />
 	</ShuffleFilters>
+	<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href="/gigs">
+		<ChevronLeftIcon /> Go to gigs home
+	</a>
 	<GigsMenu slot="sidebarMenu" selected={entry.entry.id} transition:persist />
 	<ShuffleFilters
-		slot="sidebarSubheaderMobile"
+		slot="sidebarSubheaderBottomMobile"
 		className="fullWidth"
 		itemselector=".hiddenItem"
 		boardselector="#shuffle-menu"

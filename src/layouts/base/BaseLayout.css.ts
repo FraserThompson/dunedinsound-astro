@@ -287,5 +287,23 @@ globalStyle('.left0', {
 })
 
 globalStyle('.noShadow', {
-	boxShadow: "none !important"
+	boxShadow: 'none !important'
+})
+
+globalStyle('.trippy', {
+	zIndex: '1000',
+	display: 'inline-block',
+	color: 'white',
+	transition: 'all 0.2s ease-in-out',
+	transform: 'skew(-30deg) scale(1, 2)',
+	background: 'linear-gradient(to right, #ff0080, #ff8c00, #40e0d0)',
+	WebkitBackgroundClip: 'text',
+	backgroundClip: 'text',
+	WebkitTextFillColor: 'transparent'
+})
+
+globalStyle('.trippy:hover', {
+	color: 'limegreen',
+	textDecoration: 'none',
+	transform: 'scaleY(10) scaleX(5) rotateX(360deg) translateX(20px) translateY(-5px)'
 })

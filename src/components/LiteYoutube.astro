@@ -1,7 +1,12 @@
 ---
 /**
  * Astro wrapper for lite YouTube Component which doesnt immediately load
- * tonnes of Google rubbish. Also uses the YouTube API to grab the video title.
+ * tonnes of Google rubbish. Also uses the YouTube API to grab metadata.
+ * 
+ * Props:
+ *  - videoid: the Id of the video
+ *  - loadAPI (optional): If true the API will be loaded
+ *  - autoload (optional): If true the video will be loaded on page load
  */
 interface Props {
 	videoid: string
@@ -12,9 +17,9 @@ interface Props {
 const { videoid, loadAPI, autoload } = Astro.props
 ---
 
-<lite-youtube-toucher data-videoid={videoid}>
+<lite-youtube-toucher data-videoid={videoid} data-loadapi={loadAPI ? 'true' : undefined}>
 	<lite-youtube
-		autoload={autoload}
+		autoload={autoload ? 'true' : undefined}
 		videoid={videoid}
 		nocookie={'true'}
 		posterquality="hqdefault"
@@ -27,25 +32,64 @@ const { videoid, loadAPI, autoload } = Astro.props
 	}
 </style>
 
-{loadAPI && <script src="https://www.youtube.com/iframe_api" />}
-
 <script>
+	import type { LiteYTEmbed } from '@justinribeiro/lite-youtube'
+
 	// Clientside import because of SSR issues with web components
 	import('@justinribeiro/lite-youtube')
 
-	// Wraps the element and just calls the youtube API to get the video title
+	// Wraps the element and calls the youtube API to get the video title and autoplay
 	class LiteYoutubeToucher extends HTMLElement {
 		APIKey = 'AIzaSyBUlBQysAAKfuSmm4Z92VBMAE9lli3zL58'
+		liteYoutube: LiteYTEmbed | null
+		autoplaySetteruperrer: any | undefined
+		autoplayTries = 0
+		titleEl: HTMLElement | undefined
 		videoid
 
 		constructor() {
 			super()
+
+			const shadow = this.attachShadow({ mode: 'closed' })
+
+			// Attach the API script if we want it
+			const shouldLoadAPI = this.getAttribute('data-loadapi')
+
+			if (shouldLoadAPI) {
+				const script = document.createElement('script')
+				script.setAttribute('src', 'https://www.youtube.com/iframe_api')
+				shadow.appendChild(script)
+			}
+
+			// Add an element for the title
+			this.titleEl = document.createElement('h4')
+			const style = document.createElement('style')
+			style.innerHTML = `
+				h4 { 
+				  position: absolute;
+					left: 10px; 
+					margin-top: 10px; 
+				}
+				:host { 
+				  position: relative;
+				}
+			`
+			const slot = document.createElement('slot')
+			shadow.appendChild(slot)
+			shadow.appendChild(style)
+			shadow.appendChild(this.titleEl)
+
 			this.videoid = this.getAttribute('data-videoid')
+			this.liteYoutube = this.querySelector('lite-youtube')
 		}
 
-		autoplay() {
+		/**
+		 * Use the YouTube API to autoplay when the iframe loads.
+		 */
+		setupAutoplay() {
+			const youtubeIframe = this.liteYoutube?.shadowRoot.querySelector('iframe')
 			// @ts-ignore
-			new YT.Player(this.querySelector('iframe'), {
+			new YT.Player(youtubeIframe, {
 				events: {
 					onReady: (e: any) => {
 						e.target.setPlaybackQuality('hd720')
@@ -55,14 +99,35 @@ const { videoid, loadAPI, autoload } = Astro.props
 			})
 		}
 
-		tryAutoplay(e: any) {
+		/**
+		 * Since it can take a sec for the iframe to load in, we attempt autoplay multiple times.
+		 * @param e
+		 */
+		trySetupAutoplay(e: any) {
+			// So elements dont respond to other elements events
+			if (e.target !== this.liteYoutube) {
+				return
+			}
+
+			// Consider failed after 20 attempts
+			if (this.autoplayTries > 20) {
+				this.autoplaySetteruperrer && clearTimeout(this.autoplaySetteruperrer)
+				return
+			}
+
+			this.autoplayTries = this.autoplayTries + 1
+
 			try {
-				this.autoplay()
+				this.setupAutoplay()
+				this.autoplaySetteruperrer && clearTimeout(this.autoplaySetteruperrer)
 			} catch (error) {
-				setTimeout(() => this.tryAutoplay(e), 100)
+				this.autoplaySetteruperrer = setTimeout(() => this.trySetupAutoplay(e), 100)
 			}
 		}
 
+		/**
+		 * Get the thumbnail and title via the YouTube API.
+		 */
 		async connectedCallback() {
 			let response
 			try {
@@ -81,17 +146,18 @@ const { videoid, loadAPI, autoload } = Astro.props
 					? data.items[0].snippet.thumbnails.maxres.url
 					: data.items[0].snippet.thumbnails.high.url
 
-				const el = this.querySelector<HTMLElement>('lite-youtube')
-				el?.setAttribute('videotitle', title)
+				if (this.titleEl && title) {
+					this.titleEl.innerHTML = title
+				}
 
 				// The thumbnail from the API will be used if the element itself failed for some reason.
-				const fallbackPlaceholder = el?.querySelector<HTMLImageElement>('img#fallbackPlaceholder')
+				const fallbackPlaceholder = this.liteYoutube?.querySelector<HTMLImageElement>('img#fallbackPlaceholder')
 				if (fallbackPlaceholder) {
 					fallbackPlaceholder.src = thumbnail
 				}
 			}
 
-			document.addEventListener('liteYoutubeIframeLoaded', (e: any) => this.tryAutoplay(e))
+			document.addEventListener('liteYoutubeIframeLoaded', (e: any) => this.trySetupAutoplay(e))
 		}
 
 		disconnectedCallback() {}

@@ -87,7 +87,11 @@ const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top, topMob
 			[background]: backgroundColor
 		})}>
 			<a className={dropdownButtonWrapper} aria-haspopup="true" onClick={toggleMenu}>
-				<div className={dropdownButtonIcon}>
+				<div className={dropdownButtonIcon} style={assignInlineVars({
+					[color]: textColor,
+					[dropdownHeight]: height,
+					[dropdownHeightMobile]: heightMobile,
+				})}>
 					{menuTitle}
 					<MenuIcon />
 				</div>
