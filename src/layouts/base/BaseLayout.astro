@@ -17,6 +17,7 @@ import '../../Theme.css.ts'
 import './BaseLayout.css.ts'
 import { Content, SiteContainer } from 'src/components/UtilClasses.css'
 import { ViewTransitions } from 'astro:transitions'
+import siteIcon from 'src/assets/site-icon.jpg'
 
 interface Props {
 	hideFooter?: boolean
@@ -30,9 +31,9 @@ const { hideFooter, className = '', poo } = Astro.props
 <html lang="en" transition:animate="none">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/ico" href="/favicon.ico" />
+		<link rel="icon" type="image/jpg" href={siteIcon.src} />
 		<meta name="viewport" content="width=device-width" />
-		<meta name="theme-color" content="black" />
+		<meta name="theme-color" content="#08090C" />
 		<meta name="generator" content={Astro.generator} />
 		<SEO poo={poo} />
 		<ViewTransitions />

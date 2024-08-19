@@ -1,9 +1,15 @@
 /**
  * An image gallery lightbox intended for use with ImageGallery.
+ * 
+ * Props:
+ *  - images: Array of images which will open in the lightbox when their index is in the
+ *    'image' query param.
+ *  - title (optional): Optional header
+ *  - imageCaption (optional): Caption to display below image. Will use alt text if not.
  */
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'preact/hooks'
-import Lightbox from "yet-another-react-lightbox";
+import Lightbox, { type SlideImage } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Download, Zoom } from "yet-another-react-lightbox/plugins";
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
@@ -68,7 +74,7 @@ const ImageGalleryLightbox: React.FC<Props> = ({ images, title, imageCaption }: 
 				})
 			}
 
-			if (!history || !selectedImage || imageIndex === selectedImage) return
+			if (!history || !!selectedImage) return
 
 			history.current?.replace({
 				pathname: history.current?.location.pathname,
@@ -79,11 +85,10 @@ const ImageGalleryLightbox: React.FC<Props> = ({ images, title, imageCaption }: 
 		[history, zoomRef]
 	)
 
-	const getImageCaption = useCallback((imageIndex: number) => images[imageIndex].alt, [images])
-
-	const imageSlides = useMemo(() => images.map((image) => (
+	const imageSlides: SlideImage[] = useMemo(() => images.map((image) => (
 		{
 			src: image.images['3200'],
+			alt: image.alt,
 			width: 3200,
 			height: 2113
 		}
@@ -106,7 +111,7 @@ const ImageGalleryLightbox: React.FC<Props> = ({ images, title, imageCaption }: 
 			render={{
 				iconLoading: () => <div className="spinner"></div>,
 				slideHeader: () => <div className={LightboxHeader}><h2>{title}</h2></div>,
-				slideFooter: () => <div className={LightboxFooter}><h4>{selectedImage ? getImageCaption(selectedImage) : imageCaption}</h4></div>,
+				slideFooter: ({ slide }) => <div className={LightboxFooter}><h4>{('alt' in slide && slide.alt) || imageCaption}</h4></div>,
 			}}
 		/>
 	)

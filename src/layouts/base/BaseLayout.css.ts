@@ -276,6 +276,10 @@ globalStyle('.noPadding', {
 	minHeight: '0 !important'
 })
 
+globalStyle('.noScroll', {
+	overflow: 'hidden'
+})
+
 globalStyle('.headerButton', {
 	width: '30px !important',
 	height: '30px !important'

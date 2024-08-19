@@ -129,7 +129,7 @@ const hasBanner = Astro.slots.has('banner')
 						>
 							{year} ({gigs?.length})
 						</Divider>
-						<FlexGridContainer grid={gigs && gigs.length <= 2 ? { xs: 12, md: 6 } : undefined}>
+						<FlexGridContainer grid={gigs && gigs.length <= 4 ? { xs: 12, md: 6 } : undefined}>
 							{gigs?.map((gig) => (
 								<GigTile gig={gig} responsiveImageSizes={gigs.length <= 2 ? 'full' : 'grid'} />
 							))}

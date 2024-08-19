@@ -1,19 +1,11 @@
 ---
 /**
  * Width restricted container for readable text.
- * 
- * Props:
- *  - featureMode (optional): changes how things are displayed to be more bigly.
  */
 import { textContainer } from './TextContainer.css'
 
-interface Props {
-	featureMode?: boolean
-}
-
-const { featureMode } = Astro.props
 ---
 
-<div class={textContainer[featureMode ? 'feature' : 'normal']}>
+<div class={textContainer}>
 	<slot />
 </div>

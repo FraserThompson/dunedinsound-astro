@@ -35,7 +35,7 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 					<h4>{blog.entry.data.date.toLocaleDateString()}</h4>
 					{blog.extra.cover && (
 						<a href={blog.extra.absolutePath}>
-							<Banner height="20vh" backgroundImage={blog.extra.cover} />
+							<Banner height="20vh" responsiveImageSizes={'blog'} backgroundImage={blog.extra.cover} />
 						</a>
 					)}
 					<p>

@@ -17,6 +17,7 @@ import BackgroundImage from './BackgroundImage.astro'
 import {
 	BannerWrapper,
 	BackgroundContent,
+	CustomContent,
 	BannerTitle,
 	BannerContent,
 	bannerHeight,
@@ -24,6 +25,7 @@ import {
 	marginBottomMobile
 } from './Banner.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
+import type { ResponsiveImageSizes } from './Image2.astro'
 
 interface Props {
 	id?: string
@@ -31,6 +33,7 @@ interface Props {
 	height?: string
 	bottomMargin?: string
 	bottomMarginMobile?: string
+	responsiveImageSizes?: keyof ResponsiveImageSizes
 	backgroundImage?: ResponsiveImage
 	backgroundImageVertical?: ResponsiveImage
 }
@@ -39,6 +42,7 @@ const {
 	title,
 	id = '',
 	height,
+	responsiveImageSizes = "full",
 	bottomMargin,
 	bottomMarginMobile,
 	backgroundImage,
@@ -70,7 +74,7 @@ const {
 			{
 				backgroundImage && (
 					<BackgroundImage
-						responsiveImageSizes="doubleMobile"
+						responsiveImageSizes={responsiveImageSizes}
 						responsiveImage={backgroundImage}
 						verticalImage={backgroundImageVertical}
 						loading="eager"
@@ -79,7 +83,9 @@ const {
 			}
 		</slot>
 	</div>
-	<slot name="customContent" />
+	<div class={CustomContent}>
+		<slot name="customContent" />
+	</div>
 </div>
 
 <style>

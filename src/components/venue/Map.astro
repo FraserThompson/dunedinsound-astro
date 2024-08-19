@@ -18,7 +18,8 @@
  */
 
 import 'mapbox-gl/dist/mapbox-gl.css'
-import { MapWrapperStyle } from './Map.css'
+import { MapWrapperStyle, mapHeight, mapHeightMobile } from './Map.css'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Marker {
 	coords: number[]
@@ -29,10 +30,12 @@ interface Props {
 	markers: Marker[]
 	zoom?: string
 	center?: number[]
+	height?: string
+	heightMobile?: string
 	nointeract?: boolean
 }
 
-const { markers, zoom, center, nointeract } = Astro.props
+const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 ---
 
 <map-wrapper
@@ -42,7 +45,15 @@ const { markers, zoom, center, nointeract } = Astro.props
 	data-zoom={zoom}
 	style={{ position: 'relative', overflow: 'hidden' }}
 >
-	<div id="map" class={MapWrapperStyle}></div>
+	<div
+		id="map"
+		class={MapWrapperStyle}
+		style={assignInlineVars({
+			[mapHeight]: height,
+			[mapHeightMobile]: heightMobile
+		})}
+	>
+	</div>
 	<div style={{ display: 'none' }}>
 		<slot name="popups" />
 	</div>
@@ -53,7 +64,6 @@ const { markers, zoom, center, nointeract } = Astro.props
 	import type Shuffle from 'shufflejs'
 
 	class MapWrapper extends HTMLElement {
-
 		map: mapboxgl.Map
 		markers: mapboxgl.Marker[]
 		sidebar: Element | null

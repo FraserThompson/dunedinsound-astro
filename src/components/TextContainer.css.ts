@@ -1,32 +1,24 @@
-import { globalStyle, styleVariants } from '@vanilla-extract/css'
+import { globalStyle, style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 import { ImageWrapper } from './Image2.css'
 
-export const textContainer = styleVariants({
-	normal: {
+export const textContainer = style({
 		fontSize: `calc(${theme.font.baseSize} * 1.2)`,
 		padding: theme.dimensions.basePadding,
 		maxWidth: theme.dimensions.contentContainerWidth,
 		margin: '0 auto'
-	},
-	feature: {
-		fontSize: `calc(${theme.font.baseSize} * 1.4)`,
-		margin: '0 auto'
-	}
 })
 
-// Both normal and feature styles
-globalStyle(`${textContainer['normal']} > *:not(blockquote), ${textContainer['feature']} > *:not(blockquote)`, {
+globalStyle(`${textContainer} > *:not(blockquote), ${textContainer} > *:not(blockquote)`, {
 	fontSize: 'inherit'
 })
 
-// Feature styles
-globalStyle(`${textContainer['feature']} > *:not(${ImageWrapper})`, {
+globalStyle(`${textContainer} > *:not(${ImageWrapper})`, {
 	margin: '0 auto',
 	padding: `calc(${theme.dimensions.basePadding} * 1.5)`,
 	maxWidth: theme.dimensions.contentContainerWidth
 })
 
-globalStyle(`${textContainer['feature']} ${ImageWrapper}`, {
+globalStyle(`${textContainer} ${ImageWrapper}`, {
 	margin: '0 auto'
 })

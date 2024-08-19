@@ -27,7 +27,7 @@ const entries = await loadAndFormatCollection(collection)
 {
 	selected && (
 		<a class={`showMobile flex ${backButton}`} href={`/${collection}s`}>
-			<ChevronLeftIcon /> Go to {collection}s home
+			<ChevronLeftIcon /> Go to {collection === 'blog' ? 'article' : collection}s home
 		</a>
 	)
 }

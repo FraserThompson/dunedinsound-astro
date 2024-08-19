@@ -86,7 +86,6 @@ const Blog = defineCollection({
 		date: z.date(),
 		author: z.string(),
 		tags: z.array(z.string()),
-		featureMode: z.boolean().optional(),
 		gallery: z.boolean().optional(),
 		hideCaptions: z.boolean().optional(),
 		relatedGigs: z.array(reference('gig')).optional(),

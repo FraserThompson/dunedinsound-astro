@@ -8,7 +8,7 @@ description: blah blah blah
 tags:
   - Tech
 ---
-import Image2 from "src/components/Image2.astro"
+import Image from "src/components/blog/BlogImage.astro"
 
 
 I thought it might be a good time to write a little rundown of the tech behind dunedinsound.com, partially as a way for me to clarify my reasoning to myself, and partially because it might be interesting to someone. I've tried to make it understandable for anyone as well as offering enough detail to satisfy people who are into this kind of thing.
@@ -41,10 +41,10 @@ My next iteration was making it prettier, trying to make it feel less like an en
 
 And since then the basic design has solidified and it's just been progressive enhancements and new features. The biggest changes have been in the layout for individual gigs which moved from using a sidebar for artist navigation to just letting people scroll.
 
-<Image2 responsiveImage={frontmatter.responsiveImages["oldlayout1"]} alt="Old Layout 1"/>
+<Image images={frontmatter.responsiveImages} src="oldlayout1" alt="Old Layout 1"/>
 _Layout for a gig page on April 20, 2017. Imagine the images are there._
 
-<Image2 responsiveImage={frontmatter.responsiveImages["oldlayout2"]} alt="Old Layout 2"/>
+<Image images={frontmatter.responsiveImages} src="oldlayout2" alt="Old Layout 2"/>
 _Layout for a gig page in November 2017._
 
 To be honest I'm still not too happy with this so expect more changes in the future.
@@ -67,14 +67,14 @@ The result of all this is very tiny assets. My CSS file is 19kb gzipped and my m
 
 Currently the total size of the website is about 26gb, which is pretty small really, but obviously it'll grow more and more the longer I do this.
 
-<Image2 responsiveImage={frontmatter.responsiveImages["files2"]} alt="Files 2"/>
+<Image images={frontmatter.responsiveImages} src="files2" alt="Files 2"/>
 _Breakdown of where that 26gb goes._
 
 It's all hosted on Amazon S3 because I think that's the most reliable way to store it long term. It's also reasonably cheap, currently data storage costs are around $2 a month and transfer is like $5.
 
 I use also use CloudFlare's free plan so assets are cached nearby which saves me bandwidth and makes it faster.
 
-<Image2 responsiveImage={frontmatter.responsiveImages["files"]} alt="Files"/>
+<Image images={frontmatter.responsiveImages} src="files" alt="Files"/>
 _Just a pretty graph of all the files 😍_
 
 **Process (ensuring I don't lose my sanity)**

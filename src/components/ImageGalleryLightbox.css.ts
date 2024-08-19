@@ -3,6 +3,7 @@ import { theme } from 'src/Theme.css'
 
 export const LightboxHeader = style({
 	position: 'fixed',
+	zIndex: 4,
 	top: '60px',
 	'@media': {
 		'screen and (--xs)': {
@@ -13,6 +14,7 @@ export const LightboxHeader = style({
 
 export const LightboxFooter = style({
 	position: 'fixed',
+	zIndex: 4,
 	bottom: '0px',
 	padding: theme.dimensions.basePadding
 })

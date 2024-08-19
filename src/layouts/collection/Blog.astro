@@ -7,10 +7,12 @@ import BlogSidebar from 'src/components/blog/BlogSidebar.astro'
 import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
 import Player from 'src/components/gig/Player'
-import Image2 from 'src/components/Image2.astro'
+import Image from 'src/components/blog/BlogImage.astro'
 import SidebarNav from 'src/components/SidebarNav.astro'
 import ChevronLeftIcon from '~icons/bx/chevron-left'
 import { backButton } from 'src/components/gig/GigsMenu.css'
+import ImageGalleryLightbox from 'src/components/ImageGalleryLightbox'
+import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>
@@ -21,13 +23,15 @@ const { Content, headings, remarkPluginFrontmatter } = await entry.entry.render(
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
+
+const responsiveImages: ResponsiveImage[] = Object.values(remarkPluginFrontmatter.responsiveImages)
 ---
 
 {entryExtra.cover && <Banner backgroundImage={entryExtra.cover} title={entryData.title} />}
 <div style={{ display: 'flex', maxWidth: '1600px', margin: '0 auto' }}>
 	<BlogSidebar className="hideMobile" entry={entry} />
-	<TextContainer featureMode={entryData.featureMode}>
-		<Content components={{ Player, Image2 }} />
+	<TextContainer>
+		<Content components={{ Player, Image }} />
 	</TextContainer>
 </div>
 <div class="showMobile">
@@ -72,3 +76,4 @@ const entryExtra = entry.extra
 		</FlexGridContainer>
 	)
 }
+<ImageGalleryLightbox images={responsiveImages} client:load/>

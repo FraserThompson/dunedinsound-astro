@@ -58,7 +58,7 @@ const { links, menuType = 'horizontal' } = Astro.props
 						class={`${MenuLinkWrapper[menuType]} ${partiallyActive ? 'active' : ''} ${sidebarButtonClass ? sidebarButtonWrapper['base'] : ''}`}
 						href={sidebarButtonClass ? undefined : link.href}
 						title={link.title}
-						id={`${sidebarButtonClass || link.id}`}
+						id={sidebarButtonClass || link.id}
 					>
 						{!link.image && link.title}
 						{link.image && <img src={link.image} />}

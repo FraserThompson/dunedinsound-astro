@@ -14,6 +14,7 @@ import ArtistMedia from 'src/components/gig/ArtistMedia.astro'
 import LiteYoutube from 'src/components/LiteYoutube.astro'
 import Divider from 'src/components/Divider.astro'
 import { theme } from 'src/Theme.css'
+import { GigBannerPlayer } from './Gig.css'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -31,17 +32,21 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	id="top"
 	title={entryData.title}
 	backgroundImage={entryExtra.cover}
+	bottomMargin={theme.dimensions.headerHeightNegative}
 	bottomMarginMobile={theme.dimensions.headerHeightMobileNegative}
-	transition:name="gigtile"
+	height="80vh"
 >
 	<div>
 		{
 			entryExtra.venue && (
 				<h3 style={{ marginBottom: '2px' }}>
-					<a href={!entryExtra.venue.data.hidden ? `/venues/${entryExtra.venue.id}` : ''} class="highlighted">
-						{!entryExtra.venue.data.hidden && <MapIcon style={{ marginBottom: '-2px' }} />}
-						{entryExtra.venue.data.title}
-					</a>
+					{!entryExtra.venue.data.hidden && (
+						<a href={`/venues/${entryExtra.venue.id}`} class="highlighted">
+							<MapIcon style={{ marginBottom: '-2px' }} />
+							{entryExtra.venue.data.title}
+						</a>
+					)}
+					{entryExtra.venue.data.hidden ? entryExtra.venue.data.title : ''}
 				</h3>
 			)
 		}
@@ -55,7 +60,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 				</p>
 			)
 		}
-		{entryData.feature_vid && <LiteYoutube videoid={entryData.feature_vid} />}
+		{entryData.feature_vid && <LiteYoutube videoid={entryData.feature_vid} loadAPI={true} />}
 		<ShareButton
 			style={{ position: 'absolute', left: '50%', transform: 'translate(-50%)' }}
 			shareData={{
@@ -65,24 +70,24 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 			}}
 		/>
 	</div>
-	<div slot="customContent" style={{ width: '100%', margin: '0 auto', paddingTop: '30px' }}>
-		{!entry.next && <CornerLabel>LATEST GIG</CornerLabel>}
-		{
-			!!entryExtra.audio?.length && (
+	{!entry.next && <CornerLabel slot="customContent">LATEST GIG</CornerLabel>}
+	{
+		!!entryExtra.audio?.length && (
+			<div class={GigBannerPlayer} slot="customContent">
 				<PlayerContainer>
 					<Player artistAudio={entryExtra.audio} client:load />
 				</PlayerContainer>
-			)
-		}
-	</div>
+			</div>
+		)
+	}
 </Banner>
 <Divider
 	sticky={true}
 	backgroundColor={theme.color.primary}
 	color={theme.color.text}
+	height={theme.dimensions.headerHeight}
 	heightMobile={theme.dimensions.headerHeightMobile}
 	href="#top"
-	className="showMobile flex"
 	zIndex="7"
 >
 	<h3 style={{ marginBottom: 0 }}>{entryData.title}</h3>
@@ -102,7 +107,8 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 					]
 				}))}
 				direction="down"
-				height={theme.dimensions.headerHeightMobile}
+				heightMobile={theme.dimensions.headerHeightMobile}
+				height={theme.dimensions.headerHeight}
 				textColor={theme.color.contrast}
 				client:load
 			/>

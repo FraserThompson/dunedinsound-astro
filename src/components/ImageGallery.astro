@@ -3,7 +3,7 @@
  * A gallery of ResponsiveImage's with an optional lightbox.
  *
  * If you are using multiple gallerys in one page you shuld pass noLightbox=true
- * and set a galleryOffset to the length of the previous gallery.
+ * and use your own lightbox outside of this component.
  *
  */
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
@@ -19,112 +19,8 @@ interface Props {
 const { images, noLightbox } = Astro.props
 ---
 
-<image-gallery className={gridWrapper['autoflow']}>
-	{
-		images.map((responsiveImage, imageIndex) => (
-			<gallery-image
-				data-imageindex={imageIndex}
-				style={{ cursor: 'pointer', display: 'block', height: '100%', width: '100%' }}
-			>
-				<Image2 responsiveImage={responsiveImage} />
-			</gallery-image>
-		))
-	}
-</image-gallery>
+<div class={gridWrapper['autoflow']}>
+	{images.map((responsiveImage) => <Image2 responsiveImage={responsiveImage} lightboxEnabled={true} />)}
+</div>
 
 {!noLightbox && <ImageGalleryLightbox images={images} client:load />}
-
-<script>
-	import browserHistory from 'src/util/history'
-
-	/**
-	 * Wraps the entire gallery and provides attributes for the gallery-image elements.
-	 */
-	class ImageGallery extends HTMLElement {
-		constructor() {
-			super()
-		}
-
-		connectedCallback() {
-			this.imageCount = this.querySelectorAll('gallery-image').length
-
-			const galleriesOnPage = [...document.querySelectorAll('image-gallery')]
-			const thisIndex = galleriesOnPage.findIndex((element) => element === this)
-
-			// Get the total amount of images up until this one to use for the lightbox offset.
-			this.galleryOffset = galleriesOnPage.slice(0, thisIndex).reduce((acc, gallery) => {
-				//@ts-ignore
-				const count = gallery.imageCount
-				acc += count
-				return acc
-			}, 0)
-		}
-
-		get imageCount() {
-			const count = this.getAttribute('imagecount')
-			return count ? parseInt(count) : 0
-		}
-
-		set imageCount(count: number) {
-			this.setAttribute('imagecount', count.toString())
-		}
-
-		get galleryOffset() {
-			const offset = this.getAttribute('galleryoffset')
-			return offset ? parseInt(offset) : 0
-		}
-
-		set galleryOffset(offset: number) {
-			this.setAttribute('galleryoffset', offset.toString())
-		}
-	}
-
-	/**
-	 * This is just a simple component to wrap Image2 so it works with a lightbox.
-	 *
-	 * It gets the offset from the parent image-gallery component, which is determined
-	 * based on the number of galleries on the page.
-	 */
-	class GalleryImage extends HTMLElement {
-		imageIndex = 0
-
-		constructor() {
-			super()
-			if (!this.dataset.imageindex) return
-			this.imageIndex = parseInt(this.dataset.imageindex)
-		}
-
-		openLightbox = (event: MouseEvent) => {
-			if (!(event.target instanceof HTMLElement)) return
-
-			event.preventDefault()
-
-			const parentGallery = this.parentElement
-			// @ts-ignore
-			const galleryOffset = parentGallery?.galleryOffset || 0
-
-			// Open the lightbox with Push so the back button works.
-			browserHistory?.push(
-				{
-					pathname: browserHistory?.location.pathname,
-					hash: browserHistory?.location.hash,
-					search: `?image=${this.imageIndex + galleryOffset}`
-				},
-				{ lightboxOpen: true }
-			)
-		}
-
-		connectedCallback() {
-			this.addEventListener('mousedown', (e: MouseEvent) => this.openLightbox(e))
-		}
-	}
-
-	customElements.define('gallery-image', GalleryImage)
-	customElements.define('image-gallery', ImageGallery)
-</script>
-
-<style is:global>
-	gallery-image {
-		aspect-ratio: 3/2;
-	}
-</style>

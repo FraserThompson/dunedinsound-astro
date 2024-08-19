@@ -3,17 +3,21 @@ import { theme } from 'src/Theme.css'
 
 export const background = createVar()
 export const height = createVar()
+export const heightMobile = createVar()
 export const width = createVar()
 
 const tileWrapperBase = style({
 	color: theme.color.text,
 	position: 'relative',
 	overflow: 'clip',
-	height: fallbackVar(height, '40vh'),
+	height: fallbackVar(heightMobile, height, '40vh'),
 	scrollMarginTop: theme.dimensions.headerHeightMobileWithSubheader,
 	border: `1px solid ${theme.color.background}`,
 	boxSizing: 'border-box',
 	'@media': {
+		'screen and (--md)': {
+			height: fallbackVar(height, '40vh')
+		},
 		'screen and (--xs)': {
 			scrollMarginTop: theme.dimensions.headerHeightWithSubheader
 		}
@@ -36,13 +40,18 @@ export const tileWrapper = styleVariants({
 export const tileInner = style({
 	background: fallbackVar(background, 'black'),
 	width: '100%',
-	height: fallbackVar(height, '40vh'),
+	height: fallbackVar(heightMobile, height, '40vh'),
 	transition: 'height 100ms ease-in-out',
 	position: 'relative',
 	selectors: {
 		'&:hover': {
 			color: theme.color.lightText,
 			textDecoration: 'none'
+		}
+	},
+	'@media': {
+		'screen and (--md)': {
+			height: fallbackVar(height, '40vh')
 		}
 	}
 })
@@ -94,11 +103,6 @@ export const tileTextContent = style({
 
 export const centerImageWrapper = style({
 	padding: 0,
-	'@media': {
-		'screen and (--xs)': {
-			padding: theme.dimensions.basePadding
-		}
-	}
 })
 
 export const tileLabel = style({

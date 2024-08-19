@@ -9,14 +9,14 @@ description: For many joining a virtual "crowd" on Facebook or Zoom seems
 tags:
   - Opinion
 ---
-import Image2 from "src/components/Image2.astro"
+import Image from "src/components/blog/BlogImage.astro"
 
 
 It’s hard to believe just over a week ago I was interviewing a band who were preparing to embark on a national tour, and now we’re living in a world where every step outside our bubbles must be carefully considered. We could all see the storm clouds on the horizon but had no idea how quickly and viciously it would hit.
 
 The local live music scene quickly had to adapt, and we’ve seen a flourish of online livestreamed performances. Experimental artist Mud Death performed a mind-numbing set earlier in the week, Nadia Reid has performed in a few livestreams, and even the infamous U-Bar pint nights have headed online, minus the unique multi-sensory cultural experience of the line outside.
 
-<Image2 responsiveImage={frontmatter.responsiveImages["band"]} alt="Virtual pint night 1/4/20 via Zoom"/>
+<Image images={frontmatter.responsiveImages} src="band" alt="Virtual pint night 1/4/20 via Zoom"/>
 
 For many joining a virtual “crowd” on Facebook or Zoom seems strange and antithetical, but it’s not a new concept.
 
@@ -26,7 +26,7 @@ Making an online event feel as significant as a physical event poses many challe
 
 Last Saturday, in amongst numerous livestreamed performances from the likes of Benjamin Gibbard and Charli XCX, SPF420 returned for the first time since 2015 for a show in the online venue syncup.world. From the moment I joined I understood why the SPF420 events are remembered so fondly.
 
-<Image2 responsiveImage={frontmatter.responsiveImages["oster"]} alt="SPF420 27/3/2020 Poster"/>
+<Image images={frontmatter.responsiveImages} src="oster" alt="SPF420 27/3/2020 Poster"/>
 
 A big part of what made it feel significant was the mere fact that it wasn’t on Facebook, it was on some unknown site which you rarely have a reason to visit. The site also offered interactive elements: Attendees could click to place stickers in the empty space around the video window, and move them around. This quickly allowed for a micro-culture to develop as attendees learnt the ruleset and engaged with each other.
 
@@ -34,7 +34,7 @@ Whereas on most platforms spamming (repeatedly sending the same message) is disc
 
 It’s hard to describe to someone who hasn’t experienced it. One of my favorite moments was when a track played by one of the DJs, Et Aliae, included a vocal sample which sounded like the word “foot” and everyone in the chat started spamming “foot”. Strangely enough I’ll probably never forget that.
 
-<Image2 responsiveImage={frontmatter.responsiveImages["pf420"]} alt="SPF420 27/3/2020: Et Aliae"/>
+<Image images={frontmatter.responsiveImages} src="pf420" alt="SPF420 27/3/2020: Et Aliae"/>
 
 What I want people to take away from this is that online music events can fill the hole left by physical events. It could be a long time before it’s safe to return to crowded bars and venues. What I hope to see is the rise of online music venues, hyperspaces specifically designed for hosting gigs.
 

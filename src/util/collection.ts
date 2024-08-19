@@ -124,8 +124,8 @@ export async function processEntry<C extends CollectionKey>(
 ): Promise<ProcessedEntry<C>> {
 	const extraCommon: EntryExtraCommon = await getCommonExtra(entry)
 
-	const next = i === undefined || i + 1 === entries.length ? undefined : entries[i + 1]
-	const prev = i === undefined || i === 0 ? undefined : entries[i - 1]
+	const prev = i === undefined || i + 1 === entries.length ? undefined : entries[i + 1]
+	const next = i === undefined || i === 0 ? undefined : entries[i - 1]
 
 	switch (entry.collection) {
 		case 'gig':
@@ -403,6 +403,7 @@ export async function getCover(entry: CollectionEntry<CollectionKey>): Promise<R
 	const type = entry.collection
 	const dir = `${DIST_MEDIA_DIR}/${type}/${getEntryId(entry)}/cover`
 	const image = await getResponsiveImage(dir)
+	if (image) image.alt = `Cover image for ${entry.data.title}`
 	return image
 }
 

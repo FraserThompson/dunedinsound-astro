@@ -27,7 +27,7 @@ const gigs = await loadAndFormatCollection('gig')
 	</ShuffleFilters>
 	<GigsMenu slot="sidebarMenu" transition:persist />
 	<FlexGridContainer grid={{ xs: 12 }} id="gigs" slot="content" fixedWidth={true}>
-		{gigs.map((gig) => <GigTile gig={gig} backgroundStyle="full" />)}
+		{gigs.map((gig) => <GigTile gig={gig} responsiveImageSizes="full" />)}
 	</FlexGridContainer>
 	<ShuffleFilters slot="subheaderBottomMobile" itemselector=".tile" boardselector="#gigs">
 		<SearchBox placeholder="Search gigs by title, artist, venue" />

@@ -22,6 +22,8 @@ export async function getResponsiveImage(imageDir: string): Promise<ResponsiveIm
 	return srcs.length > 1 ? new ResponsiveImage(srcs) : undefined
 }
 
+const cachedResponsiveImages: any = {}
+
 /**
  * Gets all responsive images from a directory of responsive image directories.
  *
@@ -33,6 +35,9 @@ export async function getResponsiveImagesByDir(
 	dir: string,
 	alt?: string
 ): Promise<{ [id: string]: ResponsiveImage } | undefined> {
+
+	if (cachedResponsiveImages[dir]) return cachedResponsiveImages[dir]
+
 	// Find media dirs for this entry (if it exists)
 	const mediaDirs = await new fdir({
 		pathSeparator: '/',
@@ -56,8 +61,12 @@ export async function getResponsiveImagesByDir(
 		images[filename] = new ResponsiveImage(files, alt)
 	}
 
+	cachedResponsiveImages[dir] = images;
+
 	return images
 }
+
+const cachedImages: any = {}
 
 /**
  * Gets raw image src's from a directory.
@@ -66,6 +75,8 @@ export async function getResponsiveImagesByDir(
  * @returns Key value array of filename => src
  */
 export async function getImagesByDir(imageDir: string) {
+	if (cachedImages[imageDir]) return cachedImages[imageDir]
+
 	const srcs = (
 		await new fdir({
 			pathSeparator: '/',
@@ -83,6 +94,8 @@ export async function getImagesByDir(imageDir: string) {
 		const filename = path.basename(src, path.extname(src))
 		images[filename] = src
 	}
+
+	cachedImages[imageDir] = images
 
 	return images
 }

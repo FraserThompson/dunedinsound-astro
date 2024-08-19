@@ -1,13 +1,21 @@
 ---
 /*
-	Image2: Image component for displaying responsive images via a srcset.\
+	Image component for displaying responsive images via a srcset.
+	Also will allow the image to be opened in a lightbox (not included).
 
 	Props:
 	 - responsiveImage: the ResponsiveImage to display
-	  - image (optional): a regular image src
-		- alt (optional) : alt text
-		- size (optional): specifies how it will be displayed, so the browser
+	 - className (optional): classname
+	 - image (optional): a regular image src to use instead of a responsive image
+	 - lightboxEnabled (optional): if true images can be opened in a lightbox.
+	    For this to work there needs to be an <ImageGalleryLightbox/> component on the page.
+	 - imageIndex (optional): the index of the image in the array given to the lightbox.
+	    If not supplied it will assume the image array to the lightbox is the same order
+			as images on the page.
+	 - alt (optional) : alt text
+	 - size (optional): specifies how it will be displayed, so the browser
 		  can select the optional image. Defaults to a grid.
+	 - loading (optional): how to load. defaults to lazy.
 */
 
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
@@ -15,8 +23,10 @@ import { ImageStyle, ImageWrapper } from './Image2.css'
 
 export type ResponsiveImageSizes = {
 	full: string
+	blog: string
 	grid: string
 	smallGrid: string
+	largeGrid: string
 	doubleMobile: string
 }
 
@@ -24,18 +34,30 @@ interface Props {
 	responsiveImage?: ResponsiveImage
 	className?: string
 	image?: string
+	imageIndex?: number
+	lightboxEnabled?: boolean
 	alt?: string
 	size?: keyof ResponsiveImageSizes
 	loading?: 'lazy' | 'eager'
 }
 
-const { responsiveImage, image, alt, className = '', size = 'grid', loading = 'lazy' } = Astro.props
+const {
+	responsiveImage,
+	image,
+	imageIndex,
+	alt,
+	lightboxEnabled,
+	className = '',
+	size = 'grid',
+	loading = 'lazy'
+} = Astro.props
 
 const sizes: ResponsiveImageSizes = {
 	full: '(min-width: 1600px) 80vw, 100vw',
+	blog: '(min-width: 768px) 800px, 100vw',
 	doubleMobile: '(min-width: 1600px) 80vw, 200vw',
 	grid: `
-					(min-width: 1600px) 33vw,
+					(min-width: 1600px) 25vw,
 					(min-width: 992px) 33vw,
 					(min-width: 768px) 50vw, 
 					50vw
@@ -45,11 +67,21 @@ const sizes: ResponsiveImageSizes = {
 					(min-width: 992px) 16vw,
 					(min-width: 768px) 25vw, 
 					50vw
+					`,
+	largeGrid: `
+					(min-width: 1600px) 33vw,
+					(min-width: 992px) 33vw,
+					(min-width: 768px) 50vw, 
+					100vw
 					`
 }
 ---
 
-<div class={`${ImageWrapper} ${className}`}>
+<gallery-image
+	data-imageindex={imageIndex}
+	data-lightboxenabled={lightboxEnabled ? 'true' : undefined}
+	class={`${ImageWrapper} ${className}`}
+>
 	<picture>
 		<source type="image/webp" srcset={responsiveImage && responsiveImage.srcset} sizes={sizes[size]} />
 		<img
@@ -62,4 +94,76 @@ const sizes: ResponsiveImageSizes = {
 			decoding="async"
 		/>
 	</picture>
-</div>
+</gallery-image>
+
+<script>
+	import browserHistory from 'src/util/history'
+
+	/**
+	 * This is just a simple component to wrap Image2 so it works with a lightbox.
+	 *
+	 * If used inside an image-gallery it automatically gets the offset which is
+	 * determined based on the number of galleries on the page.
+	 */
+	class GalleryImage extends HTMLElement {
+		lightboxEnabled = false
+		imageIndex = 0
+
+		constructor() {
+			super()
+
+			if (!this.dataset.lightboxenabled) return
+
+			this.lightboxEnabled = true
+
+			if (!this.dataset.imageindex) {
+				const allImages = document.querySelectorAll('gallery-image[data-lightboxenabled="true"]')
+				this.imageIndex = [...allImages].findIndex((element) => element === this)
+			} else {
+				this.imageIndex = parseInt(this.dataset.imageindex)
+			}
+
+			const shadow = this.attachShadow({ mode: 'closed' })
+
+			const style = document.createElement('style')
+
+			style.innerHTML = `
+				:host { 
+					position: relative;
+					cursor: pointer;
+					display: block;
+					aspect-ratio: 3/2;
+				}
+			`
+
+			const slot = document.createElement('slot')
+
+			shadow.appendChild(slot)
+			shadow.appendChild(style)
+		}
+
+		openLightbox = (event: MouseEvent) => {
+			if (!(event.target instanceof HTMLElement)) return
+
+			event.preventDefault()
+
+			console.log(this.imageIndex)
+
+			// Open the lightbox with Push so the back button works.
+			browserHistory?.push(
+				{
+					pathname: browserHistory?.location.pathname,
+					hash: browserHistory?.location.hash,
+					search: `?image=${this.imageIndex}`
+				},
+				{ lightboxOpen: true }
+			)
+		}
+
+		connectedCallback() {
+			this.lightboxEnabled && this.addEventListener('mousedown', (e: MouseEvent) => this.openLightbox(e))
+		}
+	}
+
+	customElements.define('gallery-image', GalleryImage)
+</script>

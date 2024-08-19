@@ -1,0 +1,26 @@
+---
+/**
+ * Makes it easier to use images in blogs.
+ * 
+ * Props:
+ *  - src: the name of the image
+ *  - images: all images in the entry frontmatter
+ *  - alt (optional): alt text
+ */
+import type { ResponsiveImage } from 'src/util/ResponsiveImage'
+import Image2 from '../Image2.astro'
+
+interface Props {
+	src: string
+	images: { [key: string]: ResponsiveImage }
+	alt?: string
+}
+
+const { src, images, alt } = Astro.props
+
+// Find the index so we can open the correct image in the lightbox (see Blog.astro)
+const image = images[src]
+const imageIndex = Object.values(images).indexOf(image)
+---
+
+<Image2 size="blog" imageIndex={imageIndex} responsiveImage={image} lightboxEnabled={true} alt={alt} />

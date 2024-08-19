@@ -1,11 +1,18 @@
-import { style } from '@vanilla-extract/css'
+import { createVar, fallbackVar, style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
+export const mapHeight = createVar()
+export const mapHeightMobile = createVar()
+
 export const MapWrapperStyle = style({
-	height: `calc(100vh - ${theme.dimensions.headerHeightMobile} - ${theme.dimensions.headerHeightMobile} - ${theme.dimensions.headerHeightMobile})`,
+	height: fallbackVar(
+		mapHeightMobile,
+		mapHeight,
+		`calc(100vh - ${theme.dimensions.headerHeightMobile} - ${theme.dimensions.headerHeightMobile} - ${theme.dimensions.headerHeightMobile})`
+	),
 	'@media': {
 		'screen and (--md)': {
-			height: `calc(100vh - ${theme.dimensions.headerHeight})`,
+			height: fallbackVar(mapHeight, `calc(100vh - ${theme.dimensions.headerHeight})`)
 		}
 	}
 })

@@ -27,12 +27,12 @@ const vaultsessions = await loadAndFormatCollection('vaultsession')
 						</a>
 					))
 				}
+				<a class="room-hover entry-link" href={'https://www.youtube.com/@syrupbois'}>
+					<article>
+						<h2>friends of the vault</h2>
+					</article>
+				</a>
 			</div>
-			<a class="entry-link" href={'https://www.youtube.com/@syrupbois'} style={{ paddingTop: '1.5em' }}>
-				<article>
-					<h3>friends of the vault</h3>
-				</article>
-			</a>
 		</div>
 		<div slot="top">
 			<img class="lightson-hidden logo top" style={{ filter: 'invert(80%)' }} src={vslogo_mono.src} />
@@ -91,18 +91,9 @@ const vaultsessions = await loadAndFormatCollection('vaultsession')
 		text-transform: uppercase;
 		color: #282828;
 		font-family: monospace;
-		font-size: 80px;
+		font-size: 65px;
 		@media (--md) {
 			font-size: 130px;
-		}
-	}
-	h3 {
-		text-align: center;
-		color: #410000;
-		font-family: serif;
-		font-size: 5vh;
-		@media screen and var(--md) {
-			font-size: 6vh;
 		}
 	}
 </style>

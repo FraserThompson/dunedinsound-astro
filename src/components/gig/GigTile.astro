@@ -10,12 +10,13 @@ import type { ResponsiveImageSizes } from '../Image2.astro'
 interface Props {
 	gig: ProcessedEntry<'gig'>
 	containerHeight?: string
+	containerHeightMobile?: string
 	className?: string
 	responsiveImageSizes?: keyof ResponsiveImageSizes
 	backgroundStyle?: BackgroundStyle
 }
 
-const { gig, containerHeight, className = '', backgroundStyle, responsiveImageSizes } = Astro.props
+const { gig, containerHeight, containerHeightMobile, className = '', backgroundStyle, responsiveImageSizes } = Astro.props
 
 const gigData = gig.entry.data
 const gigExtra = gig.extra
@@ -31,7 +32,8 @@ const gigExtra = gig.extra
 	subtitle={gigExtra.venue.data.title}
 	label={gigData.date.toLocaleDateString()}
 	title={gigData.title}
-	containerHeight={containerHeight || '40vh'}
+	containerHeight={containerHeight}
+	containerHeightMobile={containerHeightMobile}
 	dataAttributes={{
 		'data-title': `${gigData.title} ${gigExtra.venue.data.title} ${artistsToString(gigExtra.artists)}`
 	}}

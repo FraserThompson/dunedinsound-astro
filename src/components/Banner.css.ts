@@ -7,7 +7,7 @@ export const marginBottomMobile = createVar()
 
 export const BannerWrapper = style({
 	background: 'radial-gradient(circle, black 0%, rgba(12, 24, 33, 1) 70%)',
-	minHeight: fallbackVar(bannerHeight, theme.dimensions.defaultBannerHeight),
+	height: 'auto',
 	overflow: 'hidden',
 	position: 'relative',
 	display: 'flex',
@@ -17,16 +17,28 @@ export const BannerWrapper = style({
 	marginBottom: fallbackVar(marginBottomMobile, marginBottom, '0px'),
 	'@media': {
 		'screen and (--md)': {
+			height: fallbackVar(bannerHeight, theme.dimensions.defaultBannerHeight),
 			marginBottom: fallbackVar(marginBottom, '0px')
 		}
 	}
 })
 
 export const BackgroundContent = style({
-	position: 'absolute',
+	position: 'static',
 	zIndex: '0',
 	width: '100%',
-	height: '100%'
+	height: '100%',
+	'@media': {
+		'screen and (--md)': {
+			position: 'absolute'
+		}
+	}
+})
+
+export const CustomContent = style({
+	width: '100%',
+	height: '100%',
+	display: 'flex'
 })
 
 export const BannerContent = style({
@@ -42,6 +54,7 @@ export const BannerContent = style({
 	width: '100%',
 	'@media': {
 		'screen and (--md)': {
+			position: 'absolute',
 			padding: theme.dimensions.basePadding,
 			paddingTop: '1.5em',
 			width: theme.dimensions.contentContainerWidth,

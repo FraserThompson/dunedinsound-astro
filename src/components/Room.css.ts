@@ -14,7 +14,7 @@ export const RoomWrapper = style({
 	display: 'block',
 	overflow: 'hidden',
 	backgroundColor: 'black',
-	perspective: '300px',
+	perspective: '280px',
 	transition: 'perspective 0.3s ease-in-out',
 	width: '100%',
 	height: `calc(100vh - ${theme.dimensions.headerHeightMobile})`,
@@ -29,7 +29,7 @@ export const RoomWrapper = style({
 	},
 	selectors: {
 		'&:state(lightson)': {
-			perspective: '320px'
+			perspective: '300px'
 		}
 	}
 })

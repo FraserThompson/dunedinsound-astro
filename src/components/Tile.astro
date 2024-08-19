@@ -32,6 +32,7 @@ import {
 	background,
 	centerImageWrapper,
 	height,
+	heightMobile,
 	width,
 	tileSubtitle
 } from './Tile.css'
@@ -51,6 +52,7 @@ interface Props {
 	responsiveImageSizes?: keyof ResponsiveImageSizes
 	backgroundColor?: string
 	containerHeight?: string
+	containerHeightMobile?: string
 	containerWidth?: string
 	className?: string
 	id?: string
@@ -66,6 +68,7 @@ const {
 	label,
 	backgroundColor,
 	containerHeight,
+	containerHeightMobile,
 	containerWidth,
 	dataAttributes,
 	backgroundStyle = 'center',
@@ -77,7 +80,8 @@ const {
 	{...dataAttributes}
 	class={`${tileWrapper[containerWidth ? 'fixedWidth' : 'noWidth']} ${className} tile`}
 	style={assignInlineVars({
-		[height]: containerHeight
+		[height]: containerHeight,
+		[heightMobile]: containerHeightMobile,
 	})}
 	id={id}
 >
@@ -86,6 +90,7 @@ const {
 		style={assignInlineVars({
 			[background]: backgroundColor,
 			[height]: containerHeight,
+			[heightMobile]: containerHeightMobile,
 			[width]: containerWidth
 		})}
 	>

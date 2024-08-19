@@ -113,9 +113,9 @@ import { RoomWrapper, Surface } from './Room.css'
 			this.surfaces.right.style.transform = `translateZ(0) rotate3d(0, 1, 0, ${-90 - tiltXDeg}deg) skew(0, ${-tiltYDeg}deg)`
 
 			if (this.tiltX < 0) {
-				this.surfaces.left.style.boxShadow = `inset 10px 10px 120px 35px rgba(${-this.tiltX},0,${-this.tiltX},0.75)`
+				this.surfaces.left.style.boxShadow = `inset 10px 10px 120px 35px rgba(${-this.tiltY},0,${-this.tiltX},0.75)`
 			} else {
-				this.surfaces.right.style.boxShadow = `inset 10px 10px 120px 35px rgba(${this.tiltX},0,${this.tiltX},0.75)`
+				this.surfaces.right.style.boxShadow = `inset 10px 10px 120px 35px rgba(${this.tiltY},0,${this.tiltX},0.75)`
 			}
 		}
 
