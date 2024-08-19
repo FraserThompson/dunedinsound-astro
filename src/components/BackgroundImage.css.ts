@@ -3,10 +3,11 @@ import { style, globalStyle } from '@vanilla-extract/css'
 export const backgroundImageWrapper = style({
 	position: 'static',
 	width: '100%',
-	height: '100%',
+	height: 'auto',
 	zIndex: '0',
 	'@media': {
 		'screen and (--md)': {
+			height: '100%',
 			position: 'absolute'
 		}
 	}
@@ -14,7 +15,7 @@ export const backgroundImageWrapper = style({
 
 globalStyle(`${backgroundImageWrapper} img`, {
 	width: '100%',
-	zIndex: '0',
+	zIndex: '0'
 })
 
 globalStyle(`${backgroundImageWrapper} > div`, {

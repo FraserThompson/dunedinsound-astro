@@ -24,7 +24,9 @@ const { Content, headings, remarkPluginFrontmatter } = await entry.entry.render(
 const entryData = entry.entry.data
 const entryExtra = entry.extra
 
-const responsiveImages: ResponsiveImage[] = Object.values(remarkPluginFrontmatter.responsiveImages)
+const responsiveImages: ResponsiveImage[] | undefined = remarkPluginFrontmatter.responsiveImages
+	? Object.values(remarkPluginFrontmatter.responsiveImages)
+	: undefined
 ---
 
 {entryExtra.cover && <Banner backgroundImage={entryExtra.cover} title={entryData.title} />}
@@ -76,4 +78,4 @@ const responsiveImages: ResponsiveImage[] = Object.values(remarkPluginFrontmatte
 		</FlexGridContainer>
 	)
 }
-<ImageGalleryLightbox images={responsiveImages} client:load/>
+{responsiveImages && <ImageGalleryLightbox images={responsiveImages} client:load />}

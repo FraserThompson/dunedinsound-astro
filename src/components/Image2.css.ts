@@ -7,7 +7,9 @@ export const ImageWrapper = style({
 	bottom: '0px',
 	left: '0px',
 	backgroundSize: 'cover',
-	display: 'block'
+	display: 'block',
+	height: '100%',
+	width: '100%'
 })
 
 export const ImageStyle = style({
@@ -22,5 +24,5 @@ export const ImageStyle = style({
 	padding: 0,
 	transform: 'translateZ(0)',
 	objectFit: 'cover',
-	transition: 'transform 0.3s ease-in-out',
+	transition: 'transform 0.3s ease-in-out'
 })

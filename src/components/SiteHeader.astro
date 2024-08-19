@@ -6,7 +6,15 @@ import { headerWrapper, headerMobile, header, infoLink } from './SiteHeader.css'
 import { isPartiallyActive } from 'src/util/helpers'
 
 const links: MenuLink[] = [
-	{ icon: 'home', href: '/', class: 'headerButton noPadding hideMobile flex' },
+	{ icon: 'home', href: '/', class: 'headerButton noPadding' },
+	{ title: 'Gigs', href: '/gigs/' },
+	{ title: 'Artists', href: '/artists/' },
+	{ title: 'Venues', href: '/venues/' },
+	{ title: 'Articles', href: '/blog/' },
+	{ title: 'VAULT', href: '/vaultsessions/' }
+]
+
+const linksMobile: MenuLink[] = [
 	{ title: 'Gigs', href: '/gigs/', sidebarOnActive: true },
 	{ title: 'Artists', href: '/artists/', sidebarOnActive: 'partial' },
 	{ title: 'Venues', href: '/venues/', sidebarOnActive: true },
@@ -18,7 +26,7 @@ const currentPath = new URL(Astro.request.url).pathname
 ---
 
 <div class={headerMobile}>
-	<Menu links={links} menuType={'horizontal'} />
+	<Menu links={linksMobile} menuType={'horizontal'} />
 </div>
 <div class={headerWrapper}>
 	<div class={header}>

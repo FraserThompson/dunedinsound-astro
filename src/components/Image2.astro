@@ -132,7 +132,6 @@ const sizes: ResponsiveImageSizes = {
 					position: relative;
 					cursor: pointer;
 					display: block;
-					aspect-ratio: 3/2;
 				}
 			`
 
@@ -167,3 +166,9 @@ const sizes: ResponsiveImageSizes = {
 
 	customElements.define('gallery-image', GalleryImage)
 </script>
+
+<style>
+	gallery-image {
+		aspect-ratio: 3/2;
+	}
+</style>
