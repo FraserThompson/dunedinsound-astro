@@ -201,9 +201,18 @@ export const TracklistTrack = style({
 	selectors: {
 		'&.active': {
 			backgroundColor: '#0818c4'
-		},
-		'&:hover:not(.noHover)': {
-			color: theme.color.lightContrast2
 		}
 	}
+})
+
+globalStyle(`${TracklistTrack} a`, {
+	color: '#28da1d',
+})
+
+globalStyle(`${TracklistTrack} a:hover`, {
+	color: theme.color.lightContrast2
+})
+
+globalStyle("div[part='region-content']", {
+	color: 'rgb(8, 24, 196)'
 })

@@ -1,0 +1,36 @@
+---
+import Blog from '../../blog.astro'
+import { toMachineName } from '../../../util/names'
+import { loadAndFormatCollection } from '../../../util/collection'
+
+export async function getStaticPaths() {
+	const allPosts = await loadAndFormatCollection('blog')
+	const allTags = new Set()
+	allPosts.forEach((post) => {
+		post.entry.data.tags?.forEach((tag) => allTags.add(tag))
+		post.entry.data.relatedArtists?.forEach((tag) => allTags.add(tag.id))
+		post.entry.data.relatedVenues?.forEach((tag) => allTags.add(tag.id))
+	})
+
+	return Array.from(allTags).map((tag: any) => {
+		const filteredPosts = allPosts.filter(
+			(post) =>
+				post.entry.data.tags.includes(tag) ||
+				post.entry.data.relatedArtists?.find((artist) => tag === artist.id) ||
+				post.entry.data.relatedVenues?.find((venue) => tag === venue.id)
+		)
+
+		return {
+			params: { slug: toMachineName(tag) },
+			props: {
+				entries: filteredPosts,
+				tag
+			}
+		}
+	})
+}
+
+const { entries, tag } = Astro.props
+---
+
+<Blog entries={entries} selectedTag={tag} />

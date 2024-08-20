@@ -1,7 +1,7 @@
 ---
 /**
  * List of clickable tags used in blog articles
- * 
+ *
  * Props:
  *  - selected (optional): The current tag (if any).
  */
@@ -17,27 +17,64 @@ const { selected } = Astro.props
 
 const allBlogs = await getCollection('blog')
 const blogsCount = allBlogs.length
-const allTags = allBlogs.map((blog) => blog.data.tags).flat()
-const processedTags = allTags.reduce((acc, tag) => {
-	const value = acc[tag] || 0
-	const pTags = {
-		...acc,
-		[tag]: value + 1
+const flattenRelated = (artists?: any[]) => {
+	if (artists) {
+		return artists.map((artist) => artist.id)
+	} else {
+		return []
 	}
+}
 
-	const sortedTags = Object.fromEntries(Object.entries(pTags).sort((a: any, b: any) => b[1] - a[1]))
+const processTags = (tags?: any[]) => {
+	return tags?.reduce((acc, tag) => {
+		const value = acc[tag] || 0
+		const pTags = {
+			...acc,
+			[tag]: value + 1
+		}
 
-	return sortedTags
-}, {} as any)
+		const sortedTags = Object.fromEntries(Object.entries(pTags).sort((a: any, b: any) => b[1] - a[1]))
+
+		return sortedTags
+	}, {} as any)
+}
+
+const allTags = processTags(allBlogs.map((blog) => [...blog.data.tags]).flat())
+const allArtists = processTags(allBlogs.map((blog) => [...flattenRelated(blog.data.relatedArtists)]).flat())
+const allVenues = processTags(allBlogs.map((blog) => [...flattenRelated(blog.data.relatedVenues)]).flat())
 ---
 
+<h2 class="padding noMargin">Filter by tag</h2>
 <span class={tagsWrapper}>
 	<a class={`${tagLink} ${!selected ? 'active' : ''}`} title="Reset filter" href="/blog">All ({blogsCount})</a>
 	{
-		Object.entries(processedTags).map(([tag, count]) => (
-			<a class={`${tagLink} ${tag === selected ? 'active' : ''}`} title={tag} href={`/tags/${toMachineName(tag)}/`}>
+		Object.entries(allTags).map(([tag, count]) => (
+			<a class={`${tagLink} ${tag === selected ? 'active' : ''}`} title={tag} href={`/blog/tags/${toMachineName(tag)}/`}>
 				{tag} {`(${count})`}
 			</a>
 		))
 	}
 </span>
+
+<h2 class="padding noMargin">Filter by venues</h2>
+<span class={tagsWrapper}>
+	{
+		Object.entries(allVenues).map(([tag, count]) => (
+			<a class={`${tagLink} ${tag === selected ? 'active' : ''}`} title={tag} href={`/blog/tags/${toMachineName(tag)}/`}>
+				{tag} {`(${count})`}
+			</a>
+		))
+	}
+</span>
+
+<h2 class="padding noMargin">Filter by artist</h2>
+<span class={tagsWrapper}>
+	{
+		Object.entries(allArtists).map(([tag, count]) => (
+			<a class={`${tagLink} ${tag === selected ? 'active' : ''}`} title={tag} href={`/blog/tags/${toMachineName(tag)}/`}>
+				{tag} {`(${count})`}
+			</a>
+		))
+	}
+</span>
+

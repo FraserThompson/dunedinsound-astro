@@ -13,14 +13,14 @@ interface Props {
 const { minimizedAlways } = Astro.props
 ---
 
-<player-wrapper class={playerWrapper} data-minimizedAlways={minimizedAlways}>
+<player-wrapper class={playerWrapper} data-minimizedalways={minimizedAlways ? 'true' : undefined}>
 	<div class={openButtonWrapper} id="open-button-wrapper" title="Audio Player">
-		<button class={openButton} id="open-button">
+		<button class={openButton} id="open-button" aria-label="Open audio player">
 			<span>AUDIO</span>
-			<span class="up-icon">
+			<span class="up-icon" aria-role="presentation">
 				<ChevronUpIcon />
 			</span>
-			<span class="down-icon hidden">
+			<span class="down-icon hidden" aria-role="presentation">
 				<ChevronDownIcon />
 			</span>
 		</button>
@@ -35,6 +35,8 @@ const { minimizedAlways } = Astro.props
 
 	class PlayerWrapper extends HTMLElement {
 		private _internals
+
+		sidebarExists: boolean
 		minimizedAlways: boolean
 		player: HTMLElement | null
 		openButton: HTMLElement | null
@@ -46,13 +48,15 @@ const { minimizedAlways } = Astro.props
 			super()
 
 			this._internals = this.attachInternals()
-			this.minimizedAlways = !!this.dataset.minimizedAlways
+			this.minimizedAlways = !!this.dataset.minimizedalways
 
 			this.openButton = this.querySelector<HTMLElement>('button#open-button')
 			this.openButtonWrapper = this.querySelector<HTMLElement>('#open-button-wrapper')
 			this.upIcon = this.querySelector<HTMLElement>('.up-icon')
 			this.downIcon = this.querySelector<HTMLElement>('.down-icon')
 			this.player = this.querySelector<HTMLElement>('#player')
+
+			this.sidebarExists = !!document.querySelector<HTMLElement>('#sidebar')
 		}
 
 		get open() {
@@ -108,6 +112,17 @@ const { minimizedAlways } = Astro.props
 				this.openButton.addEventListener('click', () => {
 					this.open = !this.open
 				})
+
+			if (this.minimizedAlways) {
+				this.open = false
+				this.minimized = true
+			}
+
+			if (this.sidebarExists) {
+				this.classList.add('sidebarExists')
+				this.openButtonWrapper?.classList.add('sidebarExists')
+			}
+
 			window.addEventListener('scroll', this.onScroll, { passive: true })
 		}
 

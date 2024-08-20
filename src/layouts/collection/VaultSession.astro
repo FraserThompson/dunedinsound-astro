@@ -57,15 +57,13 @@ const entryExtra = entry.extra
 			))
 		}
 	</div>
-	<div>
-		{
-			entryExtra.audio && (
-				<PlayerContainer minimizedAlways={true}>
-					<Player artistAudio={[entryExtra.audio]} client:load />
-				</PlayerContainer>
-			)
-		}
-	</div>
+	{
+		entryExtra.audio && (
+			<PlayerContainer minimizedAlways={true}>
+				<Player artistAudio={[entryExtra.audio]} client:load />
+			</PlayerContainer>
+		)
+	}
 </Room>
 
 <script>

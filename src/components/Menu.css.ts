@@ -4,6 +4,7 @@ import { theme } from 'src/Theme.css'
 const MenuWrapperBase = style({
 	paddingLeft: 0,
 	paddingRight: 0,
+	listStyle: 'none',
 	textAlign: 'left',
 	position: 'relative',
 	zIndex: '6',
@@ -50,8 +51,6 @@ export const MenuLi = styleVariants({
 	vertical: [
 		MenuLiBase,
 		{
-			display: 'flex',
-			alignItems: 'center',
 			width: '100%'
 		}
 	],
@@ -69,17 +68,15 @@ export const MenuLi = styleVariants({
 })
 
 const MenuLinkWrapperBase = style({
+	boxSizing: 'border-box',
 	color: theme.color.text,
 	width: '100%',
 	cursor: 'pointer',
-	position: 'relative',
 	textDecoration: 'none',
 	whiteSpace: 'nowrap',
 	lineHeight: theme.dimensions.headerHeightMobile,
 	height: theme.dimensions.headerHeightMobile,
 	margin: '0px',
-	paddingLeft: theme.dimensions.basePaddingMobile,
-	paddingRight: theme.dimensions.basePaddingMobile,
 	selectors: {
 		'&:hover': {
 			color: 'white',
@@ -92,10 +89,8 @@ const MenuLinkWrapperBase = style({
 	},
 	'@media': {
 		'screen and (--md)': {
-			paddingLeft: theme.dimensions.basePadding,
-			paddingRight: theme.dimensions.basePadding,
 			lineHeight: theme.dimensions.headerHeight,
-			height: theme.dimensions.headerHeight,
+			height: theme.dimensions.headerHeight
 		}
 	}
 })
@@ -112,30 +107,43 @@ export const MenuLinkWrapper = styleVariants({
 			justifyContent: 'center',
 			alignItems: 'center',
 			borderBottom: 'none',
-			borderTop: 'none'
+			borderTop: 'none',
+			paddingLeft: theme.dimensions.basePaddingMobile,
+			paddingRight: theme.dimensions.basePaddingMobile,
+			'@media': {
+				'screen and (--md)': {
+					paddingLeft: theme.dimensions.basePadding,
+					paddingRight: theme.dimensions.basePadding
+				}
+			}
 		}
 	],
 	vertical: [
 		MenuLinkWrapperBase,
 		{
-			display: 'block'
+			display: 'block',
+			paddingLeft: theme.dimensions.basePaddingMobile,
+			paddingRight: theme.dimensions.basePaddingMobile,
+			'@media': {
+				'screen and (--md)': {
+					paddingLeft: theme.dimensions.basePadding,
+					paddingRight: theme.dimensions.basePadding
+				}
+			}
 		}
 	],
 	sideways: [
 		MenuLinkWrapperBase,
 		{
+			boxSizing: 'content-box',
 			writingMode: 'vertical-rl',
 			textOrientation: 'mixed',
 			textAlign: 'center',
 			minHeight: '50px',
-			paddingLeft: 0,
-			paddingRight: 0,
 			paddingTop: theme.dimensions.basePaddingMobile,
 			paddingBottom: theme.dimensions.basePaddingMobile,
 			'@media': {
 				'screen and (--md)': {
-					paddingLeft: 0,
-					paddingRight: 0,
 					paddingTop: theme.dimensions.basePadding,
 					paddingBottom: theme.dimensions.basePadding
 				}

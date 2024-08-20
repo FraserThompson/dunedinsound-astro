@@ -56,7 +56,7 @@
 		"throttle-debounce": "^5.0.2",
 		"typescript": "^5.5.4",
 		"unplugin-icons": "^0.19.2",
-		"wavesurfer.js": "^7.8.2",
+		"wavesurfer.js": "^7.8.4",
 		"yet-another-react-lightbox": "^3.21.3"
 	},
 	"overrides": {

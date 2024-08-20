@@ -276,6 +276,10 @@ globalStyle('.noPadding', {
 	minHeight: '0 !important'
 })
 
+globalStyle('.noMargin', {
+	margin: '0 !important'
+})
+
 globalStyle('.noScroll', {
 	overflow: 'hidden'
 })

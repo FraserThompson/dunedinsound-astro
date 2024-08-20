@@ -18,7 +18,6 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 
 <SidebarLayout poo={{ title: 'Blog' }}>
 	<div slot="sidebarMenu">
-		<h2 class="padding">Filter by tag</h2>
 		<BlogTags selected={selectedTag} />
 	</div>
 	<TextContainer slot="content">

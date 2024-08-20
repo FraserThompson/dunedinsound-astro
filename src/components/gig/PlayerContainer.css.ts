@@ -17,7 +17,7 @@ export const playerWrapper = style({
 			position: 'fixed',
 			paddingLeft: 0,
 			width: `100%`,
-			pointerEvents: 'none',
+			pointerEvents: 'none'
 		},
 		'&:state(minimized):state(open)': {
 			transform: `translateY(${theme.dimensions.headerHeightMobileNegative})`
@@ -31,7 +31,9 @@ export const playerWrapper = style({
 			selectors: {
 				'&:state(minimized)': {
 					transform: 'translateY(100px)',
-					paddingLeft: `calc(${theme.dimensions.sidebarWidth} + ${theme.dimensions.headerHeight})`,
+				},
+				'&:state(minimized).sidebarExists': {
+					paddingLeft: `calc(${theme.dimensions.sidebarWidth} + ${theme.dimensions.headerHeight})`
 				},
 				'&:state(minimized):state(open)': {
 					transform: 'translateY(0)'
@@ -52,7 +54,8 @@ export const openButtonWrapper = style({
 	selectors: {
 		'&.minimized': {
 			display: 'inline-block',
-			paddingLeft: 0,
+
+			paddingLeft: `calc(${theme.dimensions.sidebarWidth} + ${theme.dimensions.headerHeight})`,
 			width: `100%`
 		},
 		'&.open': {
@@ -67,7 +70,9 @@ export const openButtonWrapper = style({
 			selectors: {
 				'&.minimized': {
 					display: 'inline-block',
-					paddingLeft: `calc(${theme.dimensions.sidebarWidth} + ${theme.dimensions.headerHeight})`,
+				},
+				'&:state(minimized).sidebarExists': {
+					paddingLeft: `calc(${theme.dimensions.sidebarWidth} + ${theme.dimensions.headerHeight})`
 				},
 				'&.open': {
 					position: 'static',

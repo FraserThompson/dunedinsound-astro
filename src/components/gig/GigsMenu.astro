@@ -8,20 +8,12 @@
  *  selected (optional): it will show the artists under that gig.
  */
 import { loadAndFormatCollection, sortGigs } from 'src/util/collection.ts'
-import {
-	yearHeader,
-	monthHeader,
-	gigLi,
-	gigLink,
-	artistLink,
-	yearLink,
-	monthLink,
-	gigsMenuWrapper,
-	artistsMenuWrapper
-} from './GigsMenu.css'
+import { gigLink, artistLink, yearLink, monthLink, yearsMenuWrapper, artistsMenuWrapper } from './GigsMenu.css'
 import { makeHash, artistsToString } from 'src/util/helpers'
 import DropdownMenu from '../DropdownMenu'
 import { theme } from 'src/Theme.css'
+import { MenuLi } from '../Menu.css'
+import { MenuWrapper } from '../Menu.css'
 
 interface Props {
 	selected?: string
@@ -47,51 +39,47 @@ const { selected } = Astro.props
 	client:load
 />
 
-<gigs-menu data-selected={selected}>
+<ul is="gigs-menu" data-selected={selected} class={`${yearsMenuWrapper} yearList`} style={{ overflow: 'initial' }}>
 	{
 		Object.entries(sortedGigs)
 			.reverse()
 			.map(([year, months]) => (
-				<ul class={`${gigsMenuWrapper} yearList`} style={{ overflow: 'initial' }}>
-					<li class={yearHeader} id={makeHash(year)}>
-						<a class={yearLink}>{year}</a>
-					</li>
-					{Object.entries(months).map(([month, gigs]) => (
-						<ul class={`${gigsMenuWrapper} monthList`}>
-							<li class={monthHeader}>
+				<li class={MenuLi['vertical']} id={makeHash(year)}>
+					<a class={yearLink}>{year}</a>
+					<ul class={`${MenuWrapper['vertical']} monthList`}>
+						{Object.entries(months).map(([month, gigs]) => (
+							<li class={`${MenuLi['vertical']} monthItem`}>
 								<a class={monthLink}>{month}</a>
+								<ul class={`${MenuWrapper['vertical']} gigList`}>
+									{gigs.map((gig) => (
+										<li
+											class={`${MenuLi['vertical']} gigItem ${gig.entry.id === selected ? 'active' : ''}`}
+											data-gig={makeHash(gig.entry.id)}
+										>
+											<a class={gigLink} href={!selected ? `#${makeHash(gig.entry.id)}` : gig.extra.absolutePath}>
+												{gig.entry.data.title}
+											</a>
+											{gig.entry.id === selected && (
+												<ul is="artists-menu" class={artistsMenuWrapper}>
+													{gig.extra.artists.map((artist) => (
+														<li class={MenuLi['vertical']}>
+															<a class={artistLink} href={`#${artist.id}`}>
+																{artist.data.title}
+															</a>
+														</li>
+													))}
+												</ul>
+											)}
+										</li>
+									))}
+								</ul>
 							</li>
-							{gigs.map((gig) => (
-								<Fragment>
-									<li
-										class={`${gigLi} gigItem ${gig.entry.id === selected ? 'active' : ''}`}
-										data-gig={makeHash(gig.entry.id)}
-									>
-										<a class={gigLink} href={!selected ? `#${makeHash(gig.entry.id)}` : gig.extra.absolutePath}>
-											{gig.entry.data.title}
-										</a>
-									</li>
-									{gig.entry.id === selected && (
-										<artists-menu>
-											<ul class={artistsMenuWrapper}>
-												{gig.extra.artists.map((artist) => (
-													<li class={gigLi}>
-														<a class={artistLink} href={`#${artist.id}`}>
-															{artist.data.title}
-														</a>
-													</li>
-												))}
-											</ul>
-										</artists-menu>
-									)}
-								</Fragment>
-							))}
-						</ul>
-					))}
-				</ul>
+						))}
+					</ul>
+				</li>
 			))
 	}
-</gigs-menu>
+</ul>
 
 <!-- 
 	This is a bit of an ugly workaround.
@@ -129,7 +117,7 @@ const { selected } = Astro.props
 	 * Handles highlighting the active artist, and scrolling smoothly
 	 * to the artist on click.
 	 */
-	class ArtistsMenu extends HTMLElement {
+	class ArtistsMenu extends HTMLUListElement {
 		unlisten: any
 
 		sidebar: HTMLElement | null
@@ -204,10 +192,8 @@ const { selected } = Astro.props
 	 * Because of these subcategories we can't Shuffle it directly, so
 	 * instead we respond to shuffle events from another list.
 	 */
-	class GigsMenu extends HTMLElement {
+	class GigsMenu extends HTMLUListElement {
 		sidebar: HTMLElement | null
-		months: NodeListOf<HTMLElement> | null
-		years: NodeListOf<HTMLElement> | null
 		gigLinks: NodeListOf<HTMLElement> | null
 		artistsMenu: HTMLElement | null
 		selected: string | null
@@ -215,12 +201,8 @@ const { selected } = Astro.props
 		constructor() {
 			super()
 			this.sidebar = document.querySelector('sidebar-wrapper')
-
-			this.months = this.querySelectorAll('.monthList')
-			this.years = this.querySelectorAll('.yearList')
 			this.gigLinks = this.querySelectorAll('[data-gig]')
 			this.artistsMenu = this.querySelector('artists-menu')
-
 			this.selected = this.getAttribute('data-selected')
 		}
 
@@ -250,11 +232,11 @@ const { selected } = Astro.props
 				const gigId = item.element.id
 				const sidebarItem = this.querySelector(`[data-gig="${gigId}"]`)
 
-				const monthList = sidebarItem?.parentElement
-				if (!monthList) return
+				const gigList = sidebarItem?.closest('.gigList')
+				if (!gigList) return
 
-				const yearList = monthList.parentElement
-				if (!yearList) return
+				const monthList = gigList.closest('.monthList')
+				if (!monthList) return
 
 				// Hide items filtered out by shuffle
 				if (!item.isVisible) {
@@ -264,23 +246,23 @@ const { selected } = Astro.props
 				}
 
 				// Hide months without any visible gigs
-				const gigsInGroup = monthList.childElementCount - 1
-				const hiddenGigsInGroup = monthList?.querySelectorAll('.gigItem.hidden').length
+				const gigsInGroup = gigList.childElementCount
+				const hiddenGigsInGroup = gigList.querySelectorAll('.gigItem.hidden').length
 
 				if (gigsInGroup === hiddenGigsInGroup) {
-					monthList.classList.add('hidden')
+					gigList.parentElement?.classList.add('hidden')
 				} else {
-					monthList.classList.remove('hidden')
+					gigList.parentElement?.classList.remove('hidden')
 				}
 
 				// Hide years without any visible months
-				const monthsInYear = yearList.childElementCount - 1
-				const hiddenMonthsInGroup = yearList.querySelectorAll('.monthList.hidden').length
+				const monthsInYear = monthList.childElementCount
+				const hiddenMonthsInYear = monthList.querySelectorAll('.monthItem.hidden').length
 
-				if (monthsInYear === hiddenMonthsInGroup) {
-					yearList.classList.add('hidden')
+				if (monthsInYear === hiddenMonthsInYear) {
+					monthList.parentElement?.classList.add('hidden')
 				} else {
-					yearList.classList.remove('hidden')
+					monthList.parentElement?.classList.remove('hidden')
 				}
 			})
 		}
@@ -293,6 +275,6 @@ const { selected } = Astro.props
 		disconnectedCallback() {}
 	}
 
-	customElements.define('gigs-menu', GigsMenu)
-	customElements.define('artists-menu', ArtistsMenu)
+	customElements.define('gigs-menu', GigsMenu, { extends: 'ul' })
+	customElements.define('artists-menu', ArtistsMenu, { extends: 'ul' })
 </script>

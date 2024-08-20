@@ -112,6 +112,7 @@ const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = 
 				start: timeToSeconds(track.time),
 				drag: false,
 				resize: false,
+				color: "#0818c4"
 			}
 			regionsPlugin.addRegion(region)
 		})
@@ -215,9 +216,26 @@ const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = 
 			<div className={AudioWrapper}>
 				{!barebones && (
 					<div>
-						<button className={`${TransportButton} left`} disabled={!ready} id="prev" onClick={() => previous()}></button>
-						<button disabled={!ready} className={playing ? `${TransportButton} pause` : `${TransportButton} play`} onClick={() => wavesurfer && wavesurfer.playPause()}></button>
-						<button className={`${TransportButton} right`} disabled={!ready} id="next" onClick={() => next()}></button>
+						<button
+							className={`${TransportButton} left`}
+							disabled={!ready}
+							id="prev"
+							onClick={() => previous()}
+							aria-label="Previous track">
+						</button>
+						<button
+							disabled={!ready}
+							className={playing ? `${TransportButton} pause` : `${TransportButton} play`}
+							onClick={() => wavesurfer && wavesurfer.playPause()}
+							aria-label="Play/Pause">
+						</button>
+						<button
+							className={`${TransportButton} right`}
+							disabled={!ready}
+							id="next"
+							onClick={() => next()}
+							aria-label="Next track">
+						</button>
 					</div>
 				)}
 				<div className={WaveWrapper} id="waveform" ref={waveformRef}>
@@ -234,29 +252,28 @@ const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = 
 			{!barebones && (
 				<ul className={TracklistWrapper}>
 					{artistAudio.map((item, index) => (
-						<div key={item.title}>
-							<li className={selectedArtist == index ? TracklistTrack + ' active' : TracklistTrack} onClick={() => selectArtist(index)} style={{ cursor: "pointer" }}>
-								<span>
-									{index + 1}. {item.title}
-								</span>
-								<span style={{ marginLeft: "auto" }}>
-									<a title={'Download MP3: ' + item.title} href={item.files[0]} target="_blank">
-										<DownloadIcon />
-									</a>
-								</span>
-							</li>
+						<li key={item.title} className={selectedArtist == index ? TracklistTrack + ' active' : TracklistTrack}>
+							<a role="button" onClick={() => selectArtist(index)} style={{ cursor: "pointer" }}>
+								{index + 1}. {item.title}
+							</a>
 							{item.tracklist && (
 								<ul className="tracklist">
-									{item.tracklist.map((item) => {
-										return (
-											<li key={item.title} onClick={() => seekToTime(item.time, index, true)}>
+									{item.tracklist.map((item) => (
+										<li key={item.title}>
+											<a onClick={() => seekToTime(item.time, index, true)} style={{ cursor: "pointer" }} role="button">
 												{item.title} ({item.time})
-											</li>
-										)
-									})}
+											</a>
+										</li>
+									)
+									)}
 								</ul>
 							)}
-						</div>
+							<span style={{ marginLeft: "auto" }}>
+								<a title={'Download MP3: ' + item.title} href={item.files[0]} target="_blank">
+									<DownloadIcon />
+								</a>
+							</span>
+						</li>
 					))}
 				</ul>
 			)}
