@@ -1,0 +1,41 @@
+---
+import type { ProcessedEntry } from 'src/util/collection'
+import DropdownMenu from '../DropdownMenu'
+import { socialLinksToMenuItems } from 'src/util/helpers'
+import { theme } from 'src/Theme.css'
+
+interface Props {
+	entry: ProcessedEntry<'gig'>
+}
+
+const getAdditionalLinks = (artist: ProcessedEntry<'artist'>) => {
+	let socialLinks = []
+
+	if (artist.extra.gigCount > 1) {
+		socialLinks.push({
+			href: `/artists/${artist.entry.id}`,
+			title: `SEE ${artist.extra.gigCount - 1} OTHER GIGS FROM THIS ARTIST`
+		})
+	}
+
+	socialLinks.push(...socialLinksToMenuItems(artist.entry.data.links))
+
+	return socialLinks
+}
+
+const { entry } = Astro.props
+const entryExtra = entry.extra
+---
+
+<DropdownMenu
+	list={entryExtra.artists.map((artist) => ({
+		hash: `${artist.entry.id}`,
+		title: artist.entry.data.title,
+		additionalLinks: getAdditionalLinks(artist)
+	}))}
+	direction="down"
+	heightMobile={theme.dimensions.headerHeightMobile}
+	height={theme.dimensions.headerHeight}
+	textColor={theme.color.contrast}
+	client:load
+/>

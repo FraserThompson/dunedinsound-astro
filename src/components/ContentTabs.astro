@@ -38,6 +38,8 @@ const { tabs } = Astro.props
 </content-tabs>
 
 <script>
+	import browserHistory from 'src/util/history'
+
 	class ContentTabs extends HTMLElement {
 		tabs: HTMLElement | null
 		content: HTMLElement | null
@@ -68,7 +70,10 @@ const { tabs } = Astro.props
 		public selectTab(tabid: string) {
 			if (tabid == this.selectedTabId) return
 
-			window.location.hash = tabid
+			browserHistory?.replace({
+				pathname: window.location.pathname,
+				hash: `#${tabid}`
+			})
 
 			const oldTabContent = this.selectedTabId ? this.getTabContent(this.selectedTabId) : undefined
 			const newTabContent = this.getTabContent(tabid)

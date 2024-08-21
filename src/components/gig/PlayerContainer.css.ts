@@ -30,7 +30,7 @@ export const playerWrapper = style({
 		'screen and (--md)': {
 			selectors: {
 				'&:state(minimized)': {
-					transform: 'translateY(100px)',
+					transform: 'translateY(100px)'
 				},
 				'&:state(minimized).sidebarExists': {
 					paddingLeft: `calc(${theme.dimensions.sidebarWidth} + ${theme.dimensions.headerHeight})`
@@ -54,8 +54,7 @@ export const openButtonWrapper = style({
 	selectors: {
 		'&.minimized': {
 			display: 'inline-block',
-
-			paddingLeft: `calc(${theme.dimensions.sidebarWidth} + ${theme.dimensions.headerHeight})`,
+			paddingLeft: 0,
 			width: `100%`
 		},
 		'&.open': {
@@ -69,9 +68,9 @@ export const openButtonWrapper = style({
 			bottom: '100px',
 			selectors: {
 				'&.minimized': {
-					display: 'inline-block',
+					display: 'inline-block'
 				},
-				'&:state(minimized).sidebarExists': {
+				'&.minimized.sidebarExists:not(.open)': {
 					paddingLeft: `calc(${theme.dimensions.sidebarWidth} + ${theme.dimensions.headerHeight})`
 				},
 				'&.open': {

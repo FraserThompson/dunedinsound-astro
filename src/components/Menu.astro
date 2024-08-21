@@ -17,11 +17,12 @@
  */
 
 import HomeIcon from '~icons/bx/home'
+import InfoIcon from '~icons/bx/info-circle'
 import { sidebarButtonWrapper } from './SidebarNav.css'
 import { MenuLinkWrapper, MenuLi, MenuWrapper } from './Menu.css'
 import { isPartiallyActive } from 'src/util/helpers'
 
-type PresetIcons = 'home'
+type PresetIcons = 'home' | 'info'
 
 export interface MenuLink {
 	title?: string
@@ -62,7 +63,7 @@ const { links, menuType = 'horizontal' } = Astro.props
 					>
 						{!link.image && link.title}
 						{link.image && <img src={link.image} />}
-						{link.icon && link.icon === 'home' ? <HomeIcon /> : ''}
+						{link.icon && link.icon === 'home' ? <HomeIcon /> : link.icon === 'info' ? <InfoIcon /> : ''}
 					</a>
 				</li>
 			)

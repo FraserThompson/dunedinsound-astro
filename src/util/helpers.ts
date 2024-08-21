@@ -3,11 +3,11 @@ import bcIcon from 'src/assets/bc-icon.png'
 import instaIcon from 'src/assets/instagram-icon.png'
 import type { z } from 'astro/zod'
 import type { webLinks } from 'src/content/config'
-import type { CollectionEntry } from 'astro:content'
 import { toMachineName } from './names'
 import MarkdownIt from 'markdown-it'
 import { convert } from 'html-to-text'
 import type { MenuLink } from 'src/components/DropdownMenu'
+import type { ProcessedEntry } from './collection'
 
 /**
  * Turns a 00:00 timestring into total seconds.
@@ -156,9 +156,9 @@ export const elementIsVisibleInViewport = (el: Element, partiallyVisible = false
  * @param artistList
  * @returns
  */
-export const artistsToString = (artistList: CollectionEntry<'artist'>[]) => {
+export const artistsToString = (artistList: ProcessedEntry<'artist'>[]) => {
 	return artistList.reduce((acc, artist, i) => {
-		acc += artist.data.title + (i < artistList.length - 1 ? ', ' : '')
+		acc += artist.entry.data.title + (i < artistList.length - 1 ? ', ' : '')
 		return acc
 	}, '')
 }

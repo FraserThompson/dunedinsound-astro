@@ -15,6 +15,7 @@ import LiteYoutube from 'src/components/LiteYoutube.astro'
 import Divider from 'src/components/Divider.astro'
 import { theme } from 'src/Theme.css'
 import { GigBannerPlayer } from './Gig.css'
+import ArtistDropdown from 'src/components/gig/ArtistDropdown.astro'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -97,21 +98,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 {
 	!entryData.audioOnly && (
 		<div>
-			<DropdownMenu
-				list={entryExtra.artists.map((artist) => ({
-					hash: `${artist.id}`,
-					title: artist.data.title,
-					additionalLinks: [
-						...socialLinksToMenuItems(artist.data.links),
-						{ href: `/artists/${artist.id}`, title: 'MORE GIGS FROM THIS ARTIST' }
-					]
-				}))}
-				direction="down"
-				heightMobile={theme.dimensions.headerHeightMobile}
-				height={theme.dimensions.headerHeight}
-				textColor={theme.color.contrast}
-				client:load
-			/>
+			<ArtistDropdown entry={entry} />
 			<ArtistMedia entry={entry} />
 		</div>
 	)

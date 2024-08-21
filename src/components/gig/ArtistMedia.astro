@@ -29,24 +29,24 @@ const allImages = Object.values(entryExtra.artistImages).reduce((acc, images) =>
 
 {
 	entryExtra.artists.map((artist, i) => (
-		<div class="artist" id={artist.id}>
+		<div class="artist" id={artist.entry.id}>
 			<Divider
-				href={`#${artist.id}`}
+				href={`#${artist.entry.id}`}
 				color="black"
 				backgroundColor="white"
 				sticky={true}
 				topMobile={theme.dimensions.headerHeightMobile}
 				top={theme.dimensions.headerHeight}
 			>
-				{artist.data.title}
+				{artist.entry.data.title}
 			</Divider>
 			<FlexGridContainer grid={{ xs: 12, md: 6 }} maxWidth="1080px">
 				{entryData.artists[i].vid?.map((vid) => (
 					<LiteYoutube videoid={vid.link} loadAPI={true} />
 				))}
 			</FlexGridContainer>
-			{entryExtra.artistImages[artist.id] && (
-				<ImageGallery noLightbox={true} images={entryExtra.artistImages[artist.id]} />
+			{entryExtra.artistImages[artist.entry.id] && (
+				<ImageGallery noLightbox={true} images={entryExtra.artistImages[artist.entry.id]} />
 			)}
 		</div>
 	))

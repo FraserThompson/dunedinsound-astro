@@ -78,7 +78,7 @@ const sizes: ResponsiveImageSizes = {
 ---
 
 <gallery-image
-	data-imageindex={imageIndex}
+	data-imageindex={imageIndex?.toString()}
 	data-lightboxenabled={lightboxEnabled ? 'true' : undefined}
 	class={`${ImageWrapper} ${className}`}
 >
@@ -116,7 +116,7 @@ const sizes: ResponsiveImageSizes = {
 
 			this.lightboxEnabled = true
 
-			if (!this.dataset.imageindex) {
+			if (this.dataset.imageindex === undefined) {
 				const allImages = document.querySelectorAll('gallery-image[data-lightboxenabled="true"]')
 				this.imageIndex = [...allImages].findIndex((element) => element === this)
 			} else {
@@ -145,8 +145,6 @@ const sizes: ResponsiveImageSizes = {
 			if (!(event.target instanceof HTMLElement)) return
 
 			event.preventDefault()
-
-			console.log(this.imageIndex)
 
 			// Open the lightbox with Push so the back button works.
 			browserHistory?.push(

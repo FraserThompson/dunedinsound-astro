@@ -15,3 +15,17 @@ export const toMachineName = (string: string, space_character?: string) => {
 		.replace(/\s/g, space_character)
 		.replace(/[$]/g, 'z')
 }
+
+/**
+ * Normalizes a string, removing diacritics and stuff. Used for search.
+ * @param string
+ * @returns Normalized string or a blank string if no input
+ */
+export const stringNormalize = (string?: string | null) => {
+	return string
+		? string
+				.toLowerCase()
+				.normalize('NFD')
+				.replace(/\p{Diacritic}/gu, '')
+		: ''
+}

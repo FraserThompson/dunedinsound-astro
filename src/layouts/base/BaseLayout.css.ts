@@ -286,7 +286,13 @@ globalStyle('.noScroll', {
 
 globalStyle('.headerButton', {
 	width: '30px !important',
-	height: '30px !important'
+	height: `${theme.dimensions.headerHeightMobile} !important`,
+	'@media': {
+		'screen and (--md)': {
+			width: `${theme.dimensions.headerHeight} !important`,
+			height: `${theme.dimensions.headerHeight} !important`,
+		}
+	}
 })
 
 globalStyle('.left0', {

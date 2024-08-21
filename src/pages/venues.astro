@@ -51,7 +51,7 @@ const markers = venues.map((venue) => ({
 						)}
 						<p class="center">
 							<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
-								See gigs at this venue
+								See <strong>{venue.extra.gigCount}</strong> gigs at this venue
 							</a>
 						</p>
 					</div>

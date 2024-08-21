@@ -63,8 +63,8 @@ const { selected } = Astro.props
 												<ul is="artists-menu" class={artistsMenuWrapper}>
 													{gig.extra.artists.map((artist) => (
 														<li class={MenuLi['vertical']}>
-															<a class={artistLink} href={`#${artist.id}`}>
-																{artist.data.title}
+															<a class={artistLink} href={`#${artist.entry.id}`}>
+																{artist.entry.data.title}
 															</a>
 														</li>
 													))}

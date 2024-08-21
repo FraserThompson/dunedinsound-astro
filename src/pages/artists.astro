@@ -4,7 +4,6 @@ import { loadAndFormatCollection } from 'src/util/collection'
 import { ResponsiveImage } from 'src/util/ResponsiveImage'
 import Tile from 'src/components/Tile.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
-import { getCollection } from 'astro:content'
 import SearchBox from 'src/components/SearchBox.astro'
 import SubheadersLayout from 'src/layouts/base/SubheadersLayout.astro'
 import SortIcon from '~icons/bx/sort'
@@ -17,21 +16,10 @@ export interface ArtistMetadata {
 	lastGig?: number
 }
 
-let artistMetadata: { [key: string]: ArtistMetadata } = {}
 let origins: { [key: string]: number } = {}
 
+// Get the origins list for the dropdown
 for (const artist of artists) {
-	const artistId = artist.entry.id
-
-	const artistGigs = await getCollection('gig', (gig) =>
-		gig.data.artists.find((gigArtist) => gigArtist.id.id === artistId)
-	)
-
-	artistMetadata[artistId] = {
-		totalCount: artistGigs.length || 0,
-		lastGig: artistGigs[artistGigs.length - 1]?.data.date.getTime()
-	}
-
 	const origin = artist.entry.data.origin || 'Dunedin'
 	if (!origins[origin]) origins[origin] = 0
 	origins[origin]++
@@ -79,14 +67,14 @@ for (const artist of artists) {
 					responsiveImage={artist.extra.cover}
 					responsiveImageSizes={'smallGrid'}
 					title={artist.entry.data.title + (artist.entry.data.origin ? ` (${artist.entry.data.origin})` : '')}
-					label={`${artistMetadata[artist.entry.id]?.totalCount} gigs`}
+					label={`${artist.extra.gigCount} gigs`}
 					containerHeight={'15vh'}
 					backgroundStyle="full"
 					dataAttributes={{
 						'data-title': artist.entry.data.title,
 						'data-machinename': artist.entry.id,
-						'data-lastgig': artistMetadata[artist.entry.id]?.lastGig || 0,
-						'data-numbergigs': artistMetadata[artist.entry.id]?.totalCount || 0,
+						'data-lastgig': artist.extra.lastGig || 0,
+						'data-numbergigs': artist.extra.gigCount || 0,
 						'data-active': artist.entry.data.died === undefined ? 'true' : 'false',
 						'data-origin': artist.entry.data.origin || 'Dunedin'
 					}}

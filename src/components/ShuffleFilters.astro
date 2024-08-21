@@ -41,6 +41,7 @@ const { itemselector, boardselector, className = '' } = Astro.props
 
 <script>
 	import Shuffle from 'shufflejs'
+	import { stringNormalize } from 'src/util/names'
 
 	class ShuffleFilters extends HTMLElement {
 		shuffleBoard: HTMLElement | null
@@ -91,13 +92,8 @@ const { itemselector, boardselector, className = '' } = Astro.props
 				// Check the value of the filter element
 				if (val && val == 'value') {
 					if (filter.getAttribute('type') === 'text') {
-						const filterValue = filter.value?.toLowerCase()
-						filterResult.push(
-							!!el
-								.getAttribute(`data-${attr}`)
-								?.toLowerCase()
-								.includes(filterValue || '')
-						)
+						const filterValue = stringNormalize(filter.value)
+						filterResult.push(stringNormalize(el.getAttribute(`data-${attr}`)).includes(filterValue))
 					} else {
 						const filterValue = filter.value
 						filterResult.push(el.getAttribute(`data-${attr}`) == filterValue)

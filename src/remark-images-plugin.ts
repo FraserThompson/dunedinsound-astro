@@ -1,12 +1,12 @@
 import * as path from 'node:path'
-import { getImagesByDir, getResponsiveImagesByDir } from './util/image'
+import { getResponsiveImagesByDir } from './util/image'
 import { DIST_MEDIA_DIR } from './util/constants'
 
 /**
  * Adds images from media directories into the frontmatter for MDX.
- *
  * responsiveImages: Key/value array of responsive image objects.
- * images: Key/value array of image src's.
+ * 
+ * This is identical to entry.extra.images, but MDX can't see that.
  */
 export function remarkImagesPlugin() {
 	// All remark and rehype plugins return a separate function
@@ -17,13 +17,12 @@ export function remarkImagesPlugin() {
 		// Media path
 		const dir = `${DIST_MEDIA_DIR}/blog/${filename}`
 
-		// Get media which is responsive
+		// Get images
 		const responsiveImages = await getResponsiveImagesByDir(dir)
 
-		// Get media which isn't responsive
-		const unresponsiveImages = await getImagesByDir(dir)
+		// We get this in collection.ts instead
+		responsiveImages && delete responsiveImages['cover']
 
 		file.data.astro.frontmatter.responsiveImages = responsiveImages
-		file.data.astro.frontmatter.images = unresponsiveImages
 	}
 }

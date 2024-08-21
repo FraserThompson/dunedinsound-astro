@@ -7,6 +7,9 @@
  * Expects the filenames to follow this format: [anything].[width].[webp]
  */
 export class ResponsiveImage {
+	// The filename without width or extension
+	public name: string
+
 	// Key value array of width => src
 	public images: { [key: string]: string }
 
@@ -21,6 +24,7 @@ export class ResponsiveImage {
 	constructor(images: string[], alt?: string) {
 		this.src = ''
 		this.alt = alt
+		this.name = images[0].split('.')[0]
 
 		const parsedImages = images.reduce(
 			(acc: any, src: string) => {

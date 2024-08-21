@@ -33,11 +33,16 @@ export type EntryExtraMap = {
 	gig: EntryExtraCommon & {
 		artistImages: { [id: string]: ResponsiveImage[] }
 		audio: ArtistAudio[]
-		artists: CollectionEntry<'artist'>[]
+		artists: ProcessedEntry<'artist'>[]
 		venue: CollectionEntry<'venue'>
 	}
-	artist: EntryExtraCommon
-	venue: EntryExtraCommon
+	artist: EntryExtraCommon & {
+		gigCount: number
+		lastGig?: number
+	}
+	venue: EntryExtraCommon & {
+		gigCount: number
+	}
 	vaultsession: EntryExtraCommon & {
 		artist: CollectionEntry<'artist'>
 		audio: ArtistAudio
@@ -71,6 +76,8 @@ const cachedResults: CachedResults<any> = {}
  *
  * Which fields are added depends on the collection type.
  *
+ * It also caches the result so a collection will only ever be processed once.
+ *
  * @param name Name of the collection to load
  * @returns Array of ProcessedEntry's.
  */
@@ -102,12 +109,19 @@ export async function loadAndFormatCollection<C extends CollectionKey>(
  * @returns
  */
 export async function loadAndFormatEntry<C extends keyof DataEntryMap>(collection: C, id: string) {
-	const fullEntry = await getEntry(collection, id)
-	if (fullEntry) {
-		// @ts-ignore
-		const processedEntry: ProcessedEntry<C> = await processEntry(fullEntry)
-		return processedEntry
+	// Try find a cached one if we've already gotten it
+	if (cachedResults[collection]) {
+		//@ts-expect-error
+		const cachedResult = cachedResults[collection].find((entry) => entry.entry.id === id)
+		if (cachedResult) return cachedResult
 	}
+
+	const fullEntry = await getEntry(collection, id)
+
+	//@ts-expect-error
+	const processedEntry: ProcessedEntry<C> = await processEntry(fullEntry)
+
+	return processedEntry
 }
 
 /**
@@ -156,6 +170,13 @@ export async function processEntry<C extends CollectionKey>(
 				next,
 				extra: (await getArtistExtra(entry, extraCommon)) as EntryExtraMap[C]
 			}
+		case 'venue':
+			return {
+				entry,
+				prev,
+				next,
+				extra: (await getVenueExtra(entry, extraCommon)) as EntryExtraMap[C]
+			}
 		default:
 			return {
 				entry,
@@ -181,6 +202,7 @@ async function getCommonExtra<C extends CollectionKey>(entry: CollectionEntry<C>
 	const postSlug = getEntrySlug(title, entry.collection)
 
 	const images = await getResponsiveImagesByDir(`${DIST_MEDIA_DIR}/${entry.collection}/${getEntryId(entry)}`, title)
+	images && delete images['cover']
 
 	return {
 		slug: postSlug,
@@ -204,7 +226,7 @@ export async function getGigExtra(
 	extra: EntryExtraCommon
 ): Promise<EntryExtraMap['gig']> {
 	const artists = await Promise.all(
-		entry.data.artists.map(async (artist: any) => await getEntry('artist', artist.id.id))
+		entry.data.artists.map(async (artist: any) => await loadAndFormatEntry('artist', artist.id.id))
 	)
 
 	// This is used for sorting media into the correct order
@@ -363,6 +385,7 @@ export async function getVaultSessionExtra(
 /**
  * Extends extra fields for artists:
  * - cover: override the default cover with the latest gig cover.
+ * - gigCount: number of gigs featuring this artist.
  * @param entry: The artist entry.
  * @returns extras with artist fields.
  */
@@ -376,21 +399,39 @@ export async function getArtistExtra(
 	const artistGigs = await getCollection('gig', (gig) =>
 		gig.data.artists.find((gigArtist) => gigArtist.id.id === artistId)
 	)
-	const latestGig = artistGigs.length && artistGigs.reverse()[0]
+	const latestGig = artistGigs.length ? artistGigs.reverse()[0] : undefined
 
-	// If there wasn't one we can't get the cover
-	if (!latestGig) {
-		return extra
-	}
-
+	let cover: ResponsiveImage | undefined = undefined
 	// Resolve an image
-	const dir = `${DIST_MEDIA_DIR}/gig/${latestGig.id}/${artistId}`
-	const images = await getResponsiveImagesByDir(dir)
-	const cover: ResponsiveImage | undefined = images ? Object.values(images)[0] : undefined
+	if (latestGig) {
+		const dir = `${DIST_MEDIA_DIR}/gig/${latestGig.id}/${artistId}`
+		const images = await getResponsiveImagesByDir(dir)
+		cover = images ? Object.values(images)[0] : undefined
+	}
 
 	return {
 		...extra,
+		gigCount: artistGigs.length,
+		lastGig: latestGig?.data.date.getTime(),
 		cover
+	}
+}
+
+/**
+ * Extends extra fields for venues:
+ * - gigCount: number of gigs at this venue.
+ * @param entry: The venue entry.
+ * @returns extras with venue fields.
+ */
+export async function getVenueExtra(
+	entry: CollectionEntry<'venue'>,
+	extra: EntryExtraCommon
+): Promise<EntryExtraMap['venue']> {
+	const venueId = entry.id
+	const venueGigs = await getCollection('gig', (gig) => gig.data.venue.id === venueId)
+	return {
+		...extra,
+		gigCount: venueGigs.length
 	}
 }
 

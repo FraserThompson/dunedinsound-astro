@@ -253,7 +253,7 @@ const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = 
 				<ul className={TracklistWrapper}>
 					{artistAudio.map((item, index) => (
 						<li key={item.title} className={selectedArtist == index ? TracklistTrack + ' active' : TracklistTrack}>
-							<a role="button" onClick={() => selectArtist(index)} style={{ cursor: "pointer" }}>
+							<a role="button" onClick={() => selectArtist(index)} style={{ cursor: "pointer", flexGrow: 1 }}>
 								{index + 1}. {item.title}
 							</a>
 							{item.tracklist && (

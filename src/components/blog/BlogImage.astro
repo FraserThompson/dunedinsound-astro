@@ -23,11 +23,12 @@ const image = images[src]
 const imageIndex = image ? Object.values(images).indexOf(image) : null
 ---
 
-<div class="blogImage">
-	{
-		imageIndex && (
+{
+	imageIndex !== null && (
+		<div class="blogImage">
 			<Image2 size="blog" imageIndex={imageIndex} responsiveImage={image} lightboxEnabled={true} alt={alt} />
-		)
-	}
-	{imageIndex === null && <small>image not found</small>}
-</div>
+		</div>
+	)
+}
+
+{imageIndex === null && <small>image {src} not found</small>}

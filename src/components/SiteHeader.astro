@@ -11,7 +11,7 @@ const links: MenuLink[] = [
 	{ title: 'Artists', href: '/artists/' },
 	{ title: 'Venues', href: '/venues/' },
 	{ title: 'Articles', href: '/blog/' },
-	{ title: 'VAULT', href: '/vaultsessions/' }
+	{ title: '[VAULT]', href: '/vaultsessions/', class: 'compressedText' }
 ]
 
 const linksMobile: MenuLink[] = [
@@ -19,7 +19,8 @@ const linksMobile: MenuLink[] = [
 	{ title: 'Artists', href: '/artists/', sidebarOnActive: 'partial' },
 	{ title: 'Venues', href: '/venues/', sidebarOnActive: true },
 	{ title: 'Articles', href: '/blog/', sidebarOnActive: true },
-	{ title: 'VAULT', href: '/vaultsessions/' }
+	{ title: '[VAULT]', href: '/vaultsessions/', class: 'compressedText' },
+	{ href: '/page/info/', icon: 'info', class: 'headerButton' }
 ]
 
 const currentPath = new URL(Astro.request.url).pathname
@@ -36,3 +37,9 @@ const currentPath = new URL(Astro.request.url).pathname
 		</a>
 	</div>
 </div>
+
+<style is:global>
+	.compressedText {
+		letter-spacing: -1px;
+	}
+</style>

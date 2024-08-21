@@ -5,6 +5,8 @@ import TextContainer from 'src/components/TextContainer.astro'
 import { generateExcerpt } from 'src/util/helpers'
 import BlogTags from 'src/components/blog/BlogTags.astro'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
+import ShuffleFilters from 'src/components/ShuffleFilters.astro'
+import SearchBox from 'src/components/SearchBox.astro'
 
 interface Props {
 	entries?: ProcessedEntry<'blog'>[]
@@ -17,35 +19,49 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 ---
 
 <SidebarLayout poo={{ title: 'Blog' }}>
+	<ShuffleFilters slot="subheaderTopDesktop" itemselector=".blogItem" boardselector="#shuffle-menu">
+		<SearchBox placeholder=`Search blogs by title` />
+	</ShuffleFilters>
 	<div slot="sidebarMenu">
 		<BlogTags selected={selectedTag} />
 	</div>
 	<TextContainer slot="content">
 		{selectedTag && <h2>Articles tagged with "{selectedTag}"</h2>}
-		{
-			blogs.map((blog) => (
-				<div>
-					<h2>
-						<a href={blog.extra.absolutePath}>
-							{blog.entry.data.tags.includes('interview') && 'INTERVIEW: '}
-							{blog.entry.data.title}
-						</a>
-					</h2>
-					<h4>{blog.entry.data.date.toLocaleDateString()}</h4>
-					{blog.extra.cover && (
-						<a href={blog.extra.absolutePath}>
-							<Banner height="20vh" responsiveImageSizes={'blog'} backgroundImage={blog.extra.cover} />
-						</a>
-					)}
-					<p>
-						{generateExcerpt(blog.entry.body)}
-						<small>
-							<a href={blog.extra.absolutePath}>More</a>
-						</small>
-					</p>
-					<hr />
-				</div>
-			))
-		}
+		<div id="shuffle-menu">
+			{
+				blogs.map((blog) => (
+					<div class="blogItem" data-title={blog.entry.data.title}>
+						<h2>
+							<a href={blog.extra.absolutePath}>
+								{blog.entry.data.tags.includes('interview') && 'INTERVIEW: '}
+								{blog.entry.data.title}
+							</a>
+						</h2>
+						<h4>{blog.entry.data.date.toLocaleDateString()}</h4>
+						{blog.extra.cover && (
+							<a href={blog.extra.absolutePath}>
+								<Banner height="20vh" responsiveImageSizes={'blog'} backgroundImage={blog.extra.cover} />
+							</a>
+						)}
+						<p>
+							{generateExcerpt(blog.entry.body)}
+							<small>
+								<a href={blog.extra.absolutePath}>More</a>
+							</small>
+						</p>
+						<hr />
+					</div>
+				))
+			}
+		</div>
 	</TextContainer>
+	<ShuffleFilters slot="subheaderBottomMobile" itemselector=".blogItem" boardselector="#shuffle-menu">
+		<SearchBox placeholder="Search blogs by title" />
+	</ShuffleFilters>
 </SidebarLayout>
+
+<style>
+	#shuffle-menu {
+		top: 40px;
+	}
+</style>

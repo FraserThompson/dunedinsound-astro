@@ -2,7 +2,6 @@
 import TextContainer from 'src/components/TextContainer.astro'
 import { getEntryPath, type ProcessedEntry } from 'src/util/collection.ts'
 import Banner from 'src/components/Banner.astro'
-import ImageGallery from 'src/components/ImageGallery.astro'
 import BlogSidebar from 'src/components/blog/BlogSidebar.astro'
 import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
@@ -12,21 +11,17 @@ import SidebarNav from 'src/components/SidebarNav.astro'
 import ChevronLeftIcon from '~icons/bx/chevron-left'
 import { backButton } from 'src/components/gig/GigsMenu.css'
 import ImageGalleryLightbox from 'src/components/ImageGalleryLightbox'
-import type { ResponsiveImage } from 'src/util/ResponsiveImage'
+import BlogImageGallery from 'src/components/blog/BlogImageGallery.astro'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>
 }
 const { entry } = Astro.props
 
-const { Content, headings, remarkPluginFrontmatter } = await entry.entry.render()
+const { Content, headings } = await entry.entry.render()
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
-
-const responsiveImages: ResponsiveImage[] | undefined = remarkPluginFrontmatter.responsiveImages
-	? Object.values(remarkPluginFrontmatter.responsiveImages)
-	: undefined
 ---
 
 {entryExtra.cover && <Banner backgroundImage={entryExtra.cover} title={entryData.title} />}
@@ -40,11 +35,11 @@ const responsiveImages: ResponsiveImage[] | undefined = remarkPluginFrontmatter.
 	<SidebarNav customButton={true}>
 		<BlogSidebar slot="sidebarMenu" entry={entry} />
 		<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href="/blog">
-			<ChevronLeftIcon /> Go to blogs home
+			<ChevronLeftIcon /> Go to articles home
 		</a>
 	</SidebarNav>
 </div>
-{entryData.gallery && entryExtra.images && <ImageGallery images={Object.values(entryExtra.images)} />}
+{entryData.gallery && entryExtra.images && <BlogImageGallery images={entryExtra.images} />}
 <div class="padding">
 	<hr />
 	<ul>
@@ -78,4 +73,4 @@ const responsiveImages: ResponsiveImage[] | undefined = remarkPluginFrontmatter.
 		</FlexGridContainer>
 	)
 }
-{responsiveImages && <ImageGalleryLightbox images={responsiveImages} client:load />}
+{entryExtra.images && <ImageGalleryLightbox images={Object.values(entryExtra.images)} client:load />}
