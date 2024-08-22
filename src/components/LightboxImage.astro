@@ -1,6 +1,8 @@
 ---
 /**
  * Wraps an image and allows it to open in a lightbox.
+ * 
+ * See ImageGalleryLightbox.astro
  *
  * Props:
  *  - see image2
@@ -15,6 +17,8 @@ const props = Astro.props
 	class={`lightboxImage`}
 	style={{ display: 'block' }}
 	href={props.responsiveImage?.images['3200']}
+	data-download-url={props.responsiveImage?.src}
+	data-lg-size={"3200-2134"}
 	data-alt={props.responsiveImage?.alt || props.alt}
 >
 	<Image2 {...props} />

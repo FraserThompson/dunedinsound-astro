@@ -44,7 +44,11 @@ const { responsiveImage, image, alt, className = '', size = 'grid', loading = 'l
 
 const sizes: ResponsiveImageSizes = {
 	full: '(min-width: 1600px) 80vw, 100vw',
-	blog: '(min-width: 768px) 800px, 100vw',
+	blog: `
+				(min-width: 1600px) 1600px, 
+				(min-width: 768px) 800px, 
+				100vw
+				`,
 	doubleMobile: '(min-width: 1600px) 80vw, 200vw',
 	grid: `
 					(min-width: 1600px) 25vw,

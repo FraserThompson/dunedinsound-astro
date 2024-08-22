@@ -44,7 +44,7 @@
 		"autoprefixer": "^10.4.20",
 		"cssnano": "^7.0.5",
 		"fdir": "^6.2.0",
-		"glightbox": "^3.3.0",
+		"lightgallery": "^2.7.2",
 		"mapbox-gl": "^3.6.0",
 		"picomatch": "^4.0.2",
 		"polished": "^4.3.1",

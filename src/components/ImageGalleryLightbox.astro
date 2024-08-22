@@ -1,52 +1,78 @@
 ---
 /**
- * We use glightbox pretty much as is, this component just
+ * We use lightgallery pretty much as is, this component just
  * updates the URL on image change, and opens the corresponding
  * image so people can link directly to images.
  */
-
-import 'glightbox/dist/css/glightbox.min.css'
+import 'lightgallery/css/lightgallery.css'
+import 'lightgallery/css/lg-zoom.css'
 ---
 
 <script>
-	import GLightbox from 'glightbox'
+	import lightGallery from 'lightgallery'
+	import lgZoom from 'lightgallery/plugins/zoom'
 	import { navigate } from 'astro:transitions/client'
 
 	document.addEventListener('astro:page-load', () => {
 		const options = {
-			touchNavigation: true,
-			zoomable: true,
-			draggable: true,
-			selector: '.lightboxImage'
+			selector: '.lightboxImage',
+			plugins: [lgZoom],
+			hideScrollbar: true,
+			speed: 300
 		}
-
-		const lightbox = GLightbox({ ...options })
+		const lightbox = lightGallery(document.body, { ...options })
 
 		const hash = window.location.hash
 
+		// This is set to true when the back button is used to close
+		// the lightbox, so we can avoid triggering afterClose methods
+		// unecessarily (which causes the page to refresh).
+		let lightboxClosedByBack = false
+
+		// Open gallery to hash if we came at it from the URL
 		if (hash.includes('image')) {
 			const imageIndex = hash.split('=')[1]
-			lightbox.openAt(parseInt(imageIndex))
+			lightbox.openGallery(parseInt(imageIndex))
 		}
 
-		//@ts-expect-error
-		lightbox.on('slide_changed', ({prev, current}) => {
-			if (prev.index === null) {
-				navigate(`#image=${current.index}`, { history: 'push' })
+		// Update URL on slide change
+		document.body?.addEventListener('lgBeforeSlide', (e) => {
+			// @ts-expect-error
+			const { index, prevIndex } = e.detail
+			// So the back button on mobile closes the lightbox
+			if (prevIndex === index) {
+				navigate(`#image=${index}`, { history: 'push' })
 			} else {
-				navigate(`#image=${current.index}`, { history: 'replace' })
+				navigate(`#image=${index}`, { history: 'replace' })
 			}
 		})
 
-		// So the back button on mobile closes the lightbox
-		lightbox.on('close', () => {
+		document.body?.addEventListener('lgAfterClose', (e) => {
+
+			// If the lightbox was closed by the back button, we don't
+			// need to do anything to the URL. Just get out.
+			if (lightboxClosedByBack) {
+				lightboxClosedByBack = false
+				return
+			}
+
 			// Index is set on state by Astro view transition API.
 			// If it's 0 then we came from an external link.
+			// Else use browser back.
 			if (window.history.state.index > 0) {
 				window.history.back()
 			} else {
 				navigate(``, { history: 'replace' })
 			}
 		})
+
+		// Close the image gallery on back button
+		window.addEventListener('popstate', (e) => {
+			if (!location.hash.includes("image") && lightbox.lgOpened) {
+				lightboxClosedByBack = true
+				lightbox.closeGallery()
+			}
+		});
 	})
+
 </script>
