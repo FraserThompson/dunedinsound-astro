@@ -8,7 +8,7 @@
 import type { ProcessedEntry } from 'src/util/collection'
 import Divider from '../Divider.astro'
 import ImageGallery from '../ImageGallery.astro'
-import ImageGalleryLightbox from '../ImageGalleryLightbox'
+import ImageGalleryLightbox from '../ImageGalleryLightbox.astro'
 import FlexGridContainer from '../FlexGridContainer.astro'
 import LiteYoutube from '../LiteYoutube.astro'
 import { theme } from 'src/Theme.css'
@@ -20,11 +20,6 @@ interface Props {
 const { entry } = Astro.props
 const entryExtra = entry.extra
 const entryData = entry.entry.data
-
-// For the lightbox
-const allImages = Object.values(entryExtra.artistImages).reduce((acc, images) => {
-	return [...acc, ...images]
-}, [])
 ---
 
 {
@@ -52,4 +47,4 @@ const allImages = Object.values(entryExtra.artistImages).reduce((acc, images) =>
 	))
 }
 
-<ImageGalleryLightbox title={entryData.title} images={allImages} client:load />
+<ImageGalleryLightbox transition:persist />

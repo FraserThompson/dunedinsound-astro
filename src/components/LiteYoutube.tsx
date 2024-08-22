@@ -9,6 +9,7 @@
  */
 
 import { useCallback, useEffect, useRef, type MutableRef } from "preact/hooks"
+import type { FunctionalComponent } from "preact"
 
 interface Props {
 	videoid: string
@@ -16,7 +17,7 @@ interface Props {
 	autoload?: boolean
 }
 
-const LiteYoutube: React.FC<Props> = ({ videoid, loadAPI, autoload }) => {
+const LiteYoutube: FunctionalComponent<Props> = ({ videoid, loadAPI, autoload }) => {
 
 	const timeout: MutableRef<any> = useRef()
 	const attempts: MutableRef<number> = useRef(0)

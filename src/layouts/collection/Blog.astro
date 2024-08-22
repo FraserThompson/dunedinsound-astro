@@ -6,12 +6,12 @@ import BlogSidebar from 'src/components/blog/BlogSidebar.astro'
 import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
 import Player from 'src/components/gig/Player'
-import Image from 'src/components/blog/BlogImage.astro'
+import Image from 'src/components/LightboxImage.astro'
 import SidebarNav from 'src/components/SidebarNav.astro'
 import ChevronLeftIcon from '~icons/bx/chevron-left'
 import { backButton } from 'src/components/gig/GigsMenu.css'
-import ImageGalleryLightbox from 'src/components/ImageGalleryLightbox'
-import BlogImageGallery from 'src/components/blog/BlogImageGallery.astro'
+import ImageGalleryLightbox from 'src/components/ImageGalleryLightbox.astro'
+import ImageGallery from 'src/components/ImageGallery.astro'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>
@@ -39,7 +39,7 @@ const entryExtra = entry.extra
 		</a>
 	</SidebarNav>
 </div>
-{entryData.gallery && entryExtra.images && <BlogImageGallery images={entryExtra.images} />}
+{entryData.gallery && entryExtra.images && <ImageGallery images={Object.values(entryExtra.images)} />}
 <div class="padding">
 	<hr />
 	<ul>
@@ -73,4 +73,4 @@ const entryExtra = entry.extra
 		</FlexGridContainer>
 	)
 }
-{entryExtra.images && <ImageGalleryLightbox images={Object.values(entryExtra.images)} client:load />}
+{entryExtra.images && <ImageGalleryLightbox />}

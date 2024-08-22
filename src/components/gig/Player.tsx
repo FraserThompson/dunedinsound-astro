@@ -8,6 +8,7 @@
 */
 
 import { useRef, useState, useEffect, useCallback } from "preact/hooks"
+import type { FunctionalComponent } from "preact"
 import DownloadIcon from '~icons/bx/download'
 import LoadingSpinner from '../LoadingSpinner.tsx'
 import { timeToSeconds } from '../../util/helpers.ts'
@@ -23,7 +24,7 @@ interface Props {
 	setWaveSurferCallback?: (wavesurfer: WaveSurfer | undefined) => any
 }
 
-const Player: React.FC<Props> = ({ artistAudio, barebones = false, playOnLoad = false, setWaveSurferCallback = null }) => {
+const Player: FunctionalComponent<Props> = ({ artistAudio, barebones = false, playOnLoad = false, setWaveSurferCallback = null }) => {
 	const waveformRef = useRef(null)
 
 	const [playing, setPlaying] = useState(false)

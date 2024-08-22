@@ -7,9 +7,9 @@
  *
  */
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
-import Image2 from './Image2.astro'
-import ImageGalleryLightbox from './ImageGalleryLightbox'
+import ImageGalleryLightbox from './ImageGalleryLightbox.astro'
 import { gridWrapper } from './GridContainer.css'
+import LightboxImage from './LightboxImage.astro'
 
 interface Props {
 	images: ResponsiveImage[]
@@ -20,7 +20,7 @@ const { images, noLightbox } = Astro.props
 ---
 
 <div class={gridWrapper['autoflow']}>
-	{images.map((responsiveImage) => <Image2 responsiveImage={responsiveImage} lightboxEnabled={true} />)}
+	{images.map((responsiveImage) => <LightboxImage responsiveImage={responsiveImage} />)}
 </div>
 
-{!noLightbox && <ImageGalleryLightbox images={images} client:load />}
+{!noLightbox && <ImageGalleryLightbox />}

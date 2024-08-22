@@ -13,15 +13,15 @@ tags:
   - Opinion
   - Ed Sheeran
 ---
-import Image from "src/components/blog/BlogImage.astro"
+import Image from "src/components/LightboxImage.astro"
 
 
 On Tuesday the 27th of February 2018 two masked terrorists committed a heinous act of vandalism.
 
-<Image images={frontmatter.responsiveImages} src="before_after" alt="Before and after Coyote"/>
+<Image responsiveImage={frontmatter.responsiveImages['before_after']} alt="Before and after Coyote"/>
 _before and after coyote_
 
-<Image images={frontmatter.responsiveImages} src="coyote_comments_1" alt="Baying for heretic blood"/>
+<Image responsiveImage={frontmatter.responsiveImages['coyote_comments_1']} alt="Baying for heretic blood"/>
 _Baying for heretic blood_
 
 In an expletive-laden video, they recorded themselves graffiting a powerbox displaying The Chills inspired street art and, in doing so, desecrated a sacred altar to the Dunedin Sound.
@@ -48,10 +48,10 @@ The target they picked might not have been [the best](https://www.odt.co.nz/news
 
 If anything, the vitriolic response only confirms an issue exists. One commenter expressed disbelief at how anyone could do anything to hurt the band who “invented” the Dunedin music scene. Another questioned why they aren’t making their own music instead of just putting down others, apparently ignoring the fact that they literally are. Others simply threw crude insults and the odd threat of violence.
 
-<Image images={frontmatter.responsiveImages} src="coyote_comments_3" alt="Crude insults"/>
+<Image responsiveImage={frontmatter.responsiveImages['coyote_comments_3']} alt="Crude insults"/>
 _Crude insults_
 
-<Image images={frontmatter.responsiveImages} src="coyote_comments_2" alt="They literally are"/>
+<Image responsiveImage={frontmatter.responsiveImages['coyote_comments_2']} alt="They literally are"/>
 _They literally are_
 
 It makes me wonder whether these people know what’s going on today, whether they cling to the past because they believe without it Dunedin has nothing else. Apparently The Chills are more than just a good band from the 80s to these people, they’re a god damn religion. Dunedin Sound is dogma.
@@ -90,15 +90,15 @@ The Chills declined to comment.
 
 Shortly after this article was published the Dunedin City Council were revealed to have spent $8,350 on a mural of Ed Sheeran to commemorate his presence in the city from the 29th of March to the 1st of April 2018. The mural was completed on March 13th, and on March 28th was vandalized with the words "Coyote fuck you".
 
-<Image images={frontmatter.responsiveImages} src="edmural" alt="$8,350 Mural"/>
+<Image responsiveImage={frontmatter.responsiveImages['edmural']} alt="$8,350 Mural"/>
 _$8,350 Mural_
 
-<Image images={frontmatter.responsiveImages} src="coyote_graffiti_1" alt="$8,351 Mural"/>
+<Image responsiveImage={frontmatter.responsiveImages['coyote_graffiti_1']} alt="$8,351 Mural"/>
 _$8,351 Mural_
 
 On March 31st another piece of street art was vandalized with the words "Ed is ded long live coyote 🤘 666".
 
-<Image images={frontmatter.responsiveImages} src="coyote_graffiti_2" alt="Vandalism"/>
+<Image responsiveImage={frontmatter.responsiveImages['coyote_graffiti_2']} alt="Vandalism"/>
 _Vandalism_
 
 It is not clear who is responsible but the police have allegedly told the perpetrators they "think it’s cool and to do more", although a police spokesperson denied these allegations.

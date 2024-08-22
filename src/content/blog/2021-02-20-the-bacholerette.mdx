@@ -9,7 +9,7 @@ description: Finally, the crossover we've all been waiting for - student radio
 tags:
   - Interview
 ---
-import Image from "src/components/blog/BlogImage.astro"
+import Image from "src/components/LightboxImage.astro"
 
 
 There are two things which get me out of bed in the morning: music and reality TV.
@@ -106,7 +106,7 @@ I'm standing by that. The thing that I love the most is… And I would love it i
 
 I think it just goes to show how ridiculous the whole thing is, like how short the media cycle is. Like I told a story about how I shat myself, which I can't believe they put that in there, when I was saying it I was like there's no way they'll share this. Five minutes later I eat an egg, everyone forgot about the story.
 
-<Image images={frontmatter.responsiveImages} src="stupid-meme" alt="had to be done"/>
+<Image responsiveImage={frontmatter.responsiveImages['stupid-meme']} alt="had to be done"/>
 
 **This is sort of a practical question, what did you eat?**
 

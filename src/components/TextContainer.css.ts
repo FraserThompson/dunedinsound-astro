@@ -11,7 +11,7 @@ globalStyle(`${textContainer} > *:not(blockquote), ${textContainer} > *:not(bloc
 	fontSize: 'inherit'
 })
 
-globalStyle(`${textContainer} > *:not(.blogImage):not(ul)`, {
+globalStyle(`${textContainer} > *:not(.lightboxImage):not(ul)`, {
 	margin: '0 auto',
 	padding: theme.dimensions.basePadding,
 	maxWidth: theme.dimensions.contentContainerWidth,
@@ -22,6 +22,6 @@ globalStyle(`${textContainer} > ul`, {
 	paddingRight: theme.dimensions.basePadding,
 })
 
-globalStyle(`${textContainer} .blogImage`, {
+globalStyle(`${textContainer} .lightboxImage`, {
 	margin: '0 auto'
 })

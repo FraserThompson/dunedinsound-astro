@@ -1,0 +1,21 @@
+---
+/**
+ * Wraps an image and allows it to open in a lightbox.
+ *
+ * Props:
+ *  - see image2
+ */
+import Image2 from './Image2.astro'
+import type { Props } from './Image2.astro'
+
+const props = Astro.props
+---
+
+<a
+	class={`lightboxImage`}
+	style={{ display: 'block' }}
+	href={props.responsiveImage?.images['3200']}
+	data-alt={props.responsiveImage?.alt || props.alt}
+>
+	<Image2 {...props} />
+</a>

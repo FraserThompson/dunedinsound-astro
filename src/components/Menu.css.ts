@@ -68,6 +68,7 @@ export const MenuLi = styleVariants({
 })
 
 const MenuLinkWrapperBase = style({
+	position: 'relative',
 	boxSizing: 'border-box',
 	color: theme.color.text,
 	width: '100%',

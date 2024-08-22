@@ -10,7 +10,7 @@ tags:
   - Opinion
   - Venues
 ---
-import Image from "src/components/blog/BlogImage.astro"
+import Image from "src/components/LightboxImage.astro"
 
 
 It’s been a winter of discontent for the local music community here in Otepoti. Old grievances which have tormented the scene for decades are bubbling to the surface and erupting.
@@ -25,7 +25,7 @@ While the council may not be directly responsible for ending these venues, could
 
 At the very least, one thing we finally have is a practice space, thanks to the efforts of some local musicians. But it could have been so much more.
 
-<Image images={frontmatter.responsiveImages} src="spaceland" alt="'Spaceland'"/>
+<Image responsiveImage={frontmatter.responsiveImages['spaceland']} alt="'Spaceland'"/>
 
 Spaceland is located in the industrial precinct and offers rentable practice rooms for musicians, as well as a communal area intended to be a place for gigs.
 
@@ -35,7 +35,7 @@ Things were going well. They hosted a small opening gig with no issues. Any hope
 
 “We are not able to afford the ‘4 toilets’ he quoted to make our building compliant, we won't try to become compliant for fear of thousands wasted.”
 
-<Image images={frontmatter.responsiveImages} src="opening_gig" alt="'The opening gig'"/>
+<Image responsiveImage={frontmatter.responsiveImages['opening_gig']} alt="'The opening gig'"/>
 
 Thankfully Spaceland can still exist as a practice space, but its future as a venue seems to be out the window. Which is a real shame, since it’s location is ideal for the sorts of noisy rackets musicians like to make. The DCCs own guidance on noise control even states quite plainly: [“For regular band practices choose a location where the noise will not disturb others, such as an industrial area.”](https://www.dunedin.govt.nz/services/noise-control/what-we-do)
 
@@ -43,7 +43,7 @@ Thankfully Spaceland can still exist as a practice space, but its future as a ve
 
 “Councils need to help venues meet their costly requirements or maybe do their own version of a venue, or offer sound proofing grants”
 
-<Image images={frontmatter.responsiveImages} src="spaceland_market" alt="'Spaceland market.'"/>
+<Image responsiveImage={frontmatter.responsiveImages['spaceland_market']} alt="'Spaceland market.'"/>
 
 According to an email response from the council, the DCC are “not seeking to close venues” but they do have “a regular role which requires venues to comply with regulation such as the Building Act”. They “encourage organisers to plan for such requirements, and discuss options for safe spaces with the DCC as early as possible in their planning process.”
 

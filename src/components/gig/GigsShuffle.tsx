@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "preact/hooks"
+import type { FunctionalComponent } from "preact"
 import { AudioWrapper, PlayerWrapper, ToggleButton, TracklistTrack, TracklistWrapper, TransportButton } from 'src/components/gig/Player.css'
 import CloudBackground from 'src/components/gig/CloudBackground'
 import { getRandom } from 'src/util/helpers'
@@ -20,7 +21,7 @@ interface Props {
  * @param
  * @returns 
  */
-const GigsJukebox: React.FC<Props> = ({ gigs }) => {
+const GigsJukebox: FunctionalComponent<Props> = ({ gigs }) => {
 	const [mode, setMode] = useState('video')
 	const [shuffleIndex, setShuffleIndex] = useState(0)
 

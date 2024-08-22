@@ -11,7 +11,7 @@ relatedArtists:
 tags:
   - Interview
 ---
-import Image from "src/components/blog/BlogImage.astro"
+import Image from "src/components/LightboxImage.astro"
 
 
 If you’re feeling a little itchy it could be because Methchrist haven’t played a gig here since January, but that all changes tonight. In a vile ritual of hatred at the Crown Hotel, the solar anus will expand and from its foul depths spew forth a torrent of pure evil into the expectant mouths of the cult elite. There will be no escape, and only the true will survive.
@@ -56,7 +56,7 @@ Ben: And then Blasphemy thirty years. Just getting to see how professional they 
 
 Daniel: Fuck yeah.
 
-<Image images={frontmatter.responsiveImages} src="blasphemy" alt="Blasphemy in Auckland"/>
+<Image responsiveImage={frontmatter.responsiveImages['blasphemy']} alt="Blasphemy in Auckland"/>
 _Blasphemy in Auckland_
 
 **What about since then?**

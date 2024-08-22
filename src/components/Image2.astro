@@ -30,27 +30,17 @@ export type ResponsiveImageSizes = {
 	doubleMobile: string
 }
 
-interface Props {
+export interface Props {
 	responsiveImage?: ResponsiveImage
 	className?: string
 	image?: string
-	imageIndex?: number
 	lightboxEnabled?: boolean
 	alt?: string
 	size?: keyof ResponsiveImageSizes
 	loading?: 'lazy' | 'eager'
 }
 
-const {
-	responsiveImage,
-	image,
-	imageIndex,
-	alt,
-	lightboxEnabled,
-	className = '',
-	size = 'grid',
-	loading = 'lazy'
-} = Astro.props
+const { responsiveImage, image, alt, className = '', size = 'grid', loading = 'lazy' } = Astro.props
 
 const sizes: ResponsiveImageSizes = {
 	full: '(min-width: 1600px) 80vw, 100vw',
@@ -77,11 +67,7 @@ const sizes: ResponsiveImageSizes = {
 }
 ---
 
-<gallery-image
-	data-imageindex={imageIndex?.toString()}
-	data-lightboxenabled={lightboxEnabled ? 'true' : undefined}
-	class={`${ImageWrapper} ${className}`}
->
+<div class={`${ImageWrapper} ${className}`}>
 	<picture>
 		<source type="image/webp" srcset={responsiveImage && responsiveImage.srcset} sizes={sizes[size]} />
 		<img
@@ -94,79 +80,4 @@ const sizes: ResponsiveImageSizes = {
 			decoding="async"
 		/>
 	</picture>
-</gallery-image>
-
-<script>
-	import browserHistory from 'src/util/history'
-
-	/**
-	 * This is just a simple component to wrap Image2 so it works with a lightbox.
-	 *
-	 * If used inside an image-gallery it automatically gets the offset which is
-	 * determined based on the number of galleries on the page.
-	 */
-	class GalleryImage extends HTMLElement {
-		lightboxEnabled = false
-		imageIndex = 0
-
-		constructor() {
-			super()
-
-			if (!this.dataset.lightboxenabled) return
-
-			this.lightboxEnabled = true
-
-			if (this.dataset.imageindex === undefined) {
-				const allImages = document.querySelectorAll('gallery-image[data-lightboxenabled="true"]')
-				this.imageIndex = [...allImages].findIndex((element) => element === this)
-			} else {
-				this.imageIndex = parseInt(this.dataset.imageindex)
-			}
-
-			const shadow = this.attachShadow({ mode: 'closed' })
-
-			const style = document.createElement('style')
-
-			style.innerHTML = `
-				:host { 
-					position: relative;
-					cursor: pointer;
-					display: block;
-				}
-			`
-
-			const slot = document.createElement('slot')
-
-			shadow.appendChild(slot)
-			shadow.appendChild(style)
-		}
-
-		openLightbox = (event: MouseEvent) => {
-			if (!(event.target instanceof HTMLElement)) return
-
-			event.preventDefault()
-
-			// Open the lightbox with Push so the back button works.
-			browserHistory?.push(
-				{
-					pathname: browserHistory?.location.pathname,
-					hash: browserHistory?.location.hash,
-					search: `?image=${this.imageIndex}`
-				},
-				{ lightboxOpen: true }
-			)
-		}
-
-		connectedCallback() {
-			this.lightboxEnabled && this.addEventListener('mousedown', (e: MouseEvent) => this.openLightbox(e))
-		}
-	}
-
-	customElements.define('gallery-image', GalleryImage)
-</script>
-
-<style>
-	gallery-image {
-		aspect-ratio: 3/2;
-	}
-</style>
+</div>

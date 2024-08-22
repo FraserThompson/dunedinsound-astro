@@ -105,7 +105,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 }
 
 <script>
-	import browserHistory from 'src/util/history'
+	import { replaceState } from 'src/util/history'
 
 	document.addEventListener('astro:page-load', () => {
 		// Add the intersectionObserver which updates the browser hash.
@@ -117,20 +117,24 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 		}
 
 		const callback = (entries: IntersectionObserverEntry[]) => {
-			if (location.search) return
+			if (window.location.hash.includes('image')) return
 
 			const bannerHeight = document.querySelector('#top')?.clientHeight || 0
 
 			entries.forEach((entry) => {
+				const url = new URL(window.location.href)
+
 				if (entry.isIntersecting) {
 					const el = entry.target
-					browserHistory?.replace({
-						pathname: window.location.pathname,
-						hash: `#${el.id}`
-					})
+
+					if (el.id !== window.location.hash.substring(1)) {
+						url.hash = el.id
+						replaceState(url)
+					}
 				} else {
-					if (window.scrollY < bannerHeight) {
-						browserHistory?.replace({ pathname: window.location.pathname, hash: `#top` })
+					if (window.scrollY < bannerHeight && window.location.hash) {
+						url.hash = ''
+						replaceState(url)
 					}
 				}
 			})

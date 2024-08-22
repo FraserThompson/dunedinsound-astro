@@ -7,7 +7,7 @@ description: Good news - you can! With this one weird trick.
 tags:
   - Tech
 ---
-import Image from "src/components/blog/BlogImage.astro"
+import Image from "src/components/LightboxImage.astro"
 
 import Player from 'src/components/gig/Player'
 
@@ -39,7 +39,7 @@ If you've looked into doing your own Binaural recordings you've likely found the
 
 A “proper” binaural setup would be one of [these guys](https://reverb.com/item/23274939-akg-d-99-c-binaural-harry-dummy-head-stereo-microphone-36387).
 
-<Image images={frontmatter.responsiveImages} src="binaural-head" alt=""/>
+<Image responsiveImage={frontmatter.responsiveImages['binaural-head']} alt=""/>
 
 Obviously this would sound really good, but it also costs over $1,000, and might look a bit funny at your local venue.
 
@@ -60,7 +60,7 @@ Then you've just got to figure out how to get them in your ears. For this, I bou
 
 This is the setup I've used for most dunedinsound.com recordings up until now: JLI 61A capsules glued inside musicians earplugs.
 
-<Image images={frontmatter.responsiveImages} src="diy-mic-hand" alt=""/>
+<Image responsiveImage={frontmatter.responsiveImages['diy-mic-hand']} alt=""/>
 
 They sound fine by themselves, but if you're using WM-61A capsules or equivalent there's one thing you can do to make them more suitable for live music.
 
@@ -68,7 +68,7 @@ Live music is often **very** loud, and most electret capsules aren't designed to
 
 I put my circuit in a little project box that fits in my pocket. It uses a tiny L1022 battery to keep the overall size down while also providing the 9 volts it needs.
 
-<Image images={frontmatter.responsiveImages} src="diy-mic-box-desk" alt=""/>
+<Image responsiveImage={frontmatter.responsiveImages['diy-mic-box-desk']} alt=""/>
 
 The result is a set of microphones you can stick in your ears which will never distort, but might be a bit hissy for quiet stuff. They'll sound pretty good though, the real limiting factor will be the sound of the venue, and your capacity to place yourself in it (channel imbalance can be an issue since you often can't situate yourself directly in the middle of the PA).
 
@@ -104,7 +104,7 @@ I found there is pretty much only one option.
 
 ## The Roland CS-10EM
 
-<Image images={frontmatter.responsiveImages} src="roland-box" alt=""/>
+<Image responsiveImage={frontmatter.responsiveImages['roland-box']} alt=""/>
 
 They cost around $100 and you'll probably have to import them (I bought mine from a Japanese eBay seller).
 
@@ -120,9 +120,9 @@ Overall the build quality feels okay, but the cable is garbage - it tangles very
 
 This is a graph comparing a recording of pink noise on both sets of ear microphones. I did these tests by putting the microphones in my ears, then putting headphones over them and playing pink noise (not entirely scientific, but good enough for comparison)
 
-<Image images={frontmatter.responsiveImages} src="diy-pink-spectrum" alt="DIY"/>
+<Image responsiveImage={frontmatter.responsiveImages['diy-pink-spectrum']} alt="DIY"/>
 
-<Image images={frontmatter.responsiveImages} src="roland-pink-spectrum" alt="Roland"/>
+<Image responsiveImage={frontmatter.responsiveImages['roland-pink-spectrum']} alt="Roland"/>
 
 As you can see they have slightly brighter high end than the DIY capsules, but otherwise look fairly similar.
 
@@ -194,9 +194,9 @@ Maybe if the capsules had more power they'd handle higher volumes? I don't know 
 
 So I built this simple circuit based on [this design](https://www.megalithia.com/elect/battbox.html). It's powered with three CR2023 3V button cells, for a total of 9v. I could have used a regular 9V battery, but this is what I could easily fit in the enclosure I bought for this test.
 
-<Image images={frontmatter.responsiveImages} src="new-battery-box-open" alt=""/>
+<Image responsiveImage={frontmatter.responsiveImages['new-battery-box-open']} alt=""/>
 
-<Image images={frontmatter.responsiveImages} src="new-battery-box-hand" alt=""/>
+<Image responsiveImage={frontmatter.responsiveImages['new-battery-box-hand']} alt=""/>
 
 And here's a recording from [an exceptionally loud DARTZ gig](/gigs/srn-awards-after-party/) powered by the 9V circuit.
 

@@ -1,0 +1,110 @@
+---
+/**
+ * Menu of all gigs on the website, sorted by date and month.
+ *
+ * It responds to shuffle events to filter its items.
+ *
+ * Props:
+ *  selected (optional): it will show the artists under that gig.
+ */
+import { type ProcessedEntry } from 'src/util/collection.ts'
+import { artistLink, artistsMenuWrapper } from './GigsMenu.css'
+import { MenuLi } from '../Menu.css'
+
+interface Props {
+	artists: ProcessedEntry<'artist'>[]
+}
+
+const { artists } = Astro.props
+---
+
+<ul is="artists-menu" class={artistsMenuWrapper}>
+	{
+		artists.map((artist) => (
+			<li class={MenuLi['vertical']}>
+				<a class={`${artistLink}`} href={`#${artist.entry.id}`}>
+					{artist.entry.data.title}
+				</a>
+			</li>
+		))
+	}
+</ul>
+
+<script>
+	import { scrollTo } from 'src/util/helpers'
+	import { replaceEventName } from 'src/util/history'
+
+	/**
+	 * Artists menu which sits under a gig if its selected.
+	 *
+	 * Handles highlighting the active artist, and scrolling smoothly
+	 * to the artist on click.
+	 */
+	class ArtistsMenu extends HTMLUListElement {
+		unlisten: any
+
+		sidebar: HTMLElement | null
+
+		selectedArtist: Element | undefined
+		links: NodeListOf<HTMLElement> | null
+
+		constructor() {
+			super()
+			this.sidebar = document.querySelector<HTMLElement>('sidebar-wrapper')
+			this.links = this.querySelectorAll('a')
+		}
+
+		/**
+		 * Respond to the Gig layout changing the hash.
+		 *
+		 * Highlights the active artist.
+		 *
+		 * @param location
+		 */
+		handleArtistChange(url: URL) {
+			if (url.hash) {
+				const selectedItem = this.querySelector(`[href="${url.hash}"]`)
+
+				if (!selectedItem) {
+					this.selectedArtist && this.selectedArtist.classList.remove('active')
+					this.selectedArtist = undefined
+					return
+				}
+
+				this.selectedArtist && this.selectedArtist.classList.remove('active')
+				this.selectedArtist = selectedItem
+				this.selectedArtist && this.selectedArtist.classList.add('active')
+			} else {
+				this.selectedArtist && this.selectedArtist.classList.remove('active')
+				this.selectedArtist = undefined
+			}
+		}
+
+		/**
+		 * Scroll to an artist and hide the sidebar if it's open.
+		 */
+		itemClick(e: MouseEvent) {
+			scrollTo(e)
+			// Close sidebar on mobile
+			// See: SidebarNav.astro
+			// @ts-ignore
+			this.sidebar.toggleSidebar()
+		}
+
+		/**
+		 * Adds event listeners.
+		 */
+		connectedCallback() {
+			document.addEventListener(replaceEventName, (e: any) => this.handleArtistChange(e.detail))
+			this.links?.forEach((link) => {
+				link.addEventListener('click', (e) => this.itemClick(e))
+			})
+		}
+
+		disconnectedCallback() {
+			this.unlisten && this.unlisten()
+		}
+	}
+
+	customElements.define('artists-menu', ArtistsMenu, { extends: 'ul' })
+</script>

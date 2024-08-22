@@ -37,6 +37,7 @@ const { minimizedAlways } = Astro.props
 		private _internals
 
 		sidebarExists: boolean
+		playerInBanner: HTMLElement | null
 		minimizedAlways: boolean
 		player: HTMLElement | null
 		openButton: HTMLElement | null
@@ -57,6 +58,7 @@ const { minimizedAlways } = Astro.props
 			this.player = this.querySelector<HTMLElement>('#player')
 
 			this.sidebarExists = !!document.querySelector<HTMLElement>('#sidebar')
+			this.playerInBanner = this.closest<HTMLElement>('.banner')
 		}
 
 		get open() {
@@ -95,6 +97,9 @@ const { minimizedAlways } = Astro.props
 			}
 		}
 
+		/**
+		 * Minimize the player to the bottom when scrolled, expand when not.
+		 */
 		onScroll = () => {
 			if (this.minimizedAlways) return
 
@@ -104,6 +109,16 @@ const { minimizedAlways } = Astro.props
 				this.minimized = true
 			} else {
 				this.minimized = false
+			}
+		}
+
+		/**
+		 * Fires when the Wavesurfer instance in the Player component is ready.
+		 */
+		onWavesurferReady = () => {
+			// This is to prevent skipping when scrolling up and down on mobile.
+			if (this.playerInBanner) {
+				this.playerInBanner.style.height = this.playerInBanner.clientHeight.toString() + 'px'
 			}
 		}
 
@@ -123,6 +138,7 @@ const { minimizedAlways } = Astro.props
 				this.openButtonWrapper?.classList.add('sidebarExists')
 			}
 
+			window.addEventListener('wavesurfer_ready', () => this.onWavesurferReady())
 			window.addEventListener('scroll', this.onScroll, { passive: true })
 		}
 

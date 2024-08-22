@@ -7,13 +7,13 @@
  * @returns 
  */
 
-import { useRef, useState, useEffect, useCallback } from "preact/hooks"
+import { useState, useEffect, useCallback } from "preact/hooks"
+import type { FunctionalComponent } from "preact"
 import MenuIcon from '~icons/bx/menu'
 import { background, dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownTopMobile, dropdownWrapper, menuWidth, color, additionalLink, dropdownHeight, dropdownHeightMobile } from './DropdownMenu.css'
 import { scrollTo } from 'src/util/helpers'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
-import browserHistory from 'src/util/history';
-import type { Location } from 'history'
+import { replaceEventName } from "src/util/history"
 
 export interface MenuLink {
 	title?: string
@@ -45,19 +45,18 @@ interface Props {
 	textColor?: string
 }
 
-const DropdownMenu: React.FC<Props> = ({ list, menuTitle, direction, top, topMobile, width, height, heightMobile, backgroundColor, textColor }) => {
+const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, top, topMobile, width, height, heightMobile, backgroundColor, textColor }) => {
 	const [open, setOpen] = useState(false)
 	const [selectedItem, setSelectedItem] = useState(null as string | null)
 
-	const history = useRef(browserHistory)
 
 	useEffect(() => {
-		const unlisten = history.current?.listen((location) => handleURLChange(location.location))
-		return () => unlisten && unlisten()
+		document.addEventListener(replaceEventName, (e: any) => handleURLChange(e.detail))
+		return () => document.removeEventListener(replaceEventName, (e: any) => handleURLChange(e.detail))
 	}, [])
 
-	const handleURLChange = (location: Location) => {
-		if (location.hash) {
+	const handleURLChange = (url: URL) => {
+		if (url.hash) {
 			const newSelectedId = location.hash.substring(1)
 			setSelectedItem(newSelectedId)
 		}

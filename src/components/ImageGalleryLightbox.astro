@@ -1,0 +1,52 @@
+---
+/**
+ * We use glightbox pretty much as is, this component just
+ * updates the URL on image change, and opens the corresponding
+ * image so people can link directly to images.
+ */
+
+import 'glightbox/dist/css/glightbox.min.css'
+---
+
+<script>
+	import GLightbox from 'glightbox'
+	import { navigate } from 'astro:transitions/client'
+
+	document.addEventListener('astro:page-load', () => {
+		const options = {
+			touchNavigation: true,
+			zoomable: true,
+			draggable: true,
+			selector: '.lightboxImage'
+		}
+
+		const lightbox = GLightbox({ ...options })
+
+		const hash = window.location.hash
+
+		if (hash.includes('image')) {
+			const imageIndex = hash.split('=')[1]
+			lightbox.openAt(parseInt(imageIndex))
+		}
+
+		//@ts-expect-error
+		lightbox.on('slide_changed', ({prev, current}) => {
+			if (prev.index === null) {
+				navigate(`#image=${current.index}`, { history: 'push' })
+			} else {
+				navigate(`#image=${current.index}`, { history: 'replace' })
+			}
+		})
+
+		// So the back button on mobile closes the lightbox
+		lightbox.on('close', () => {
+			// Index is set on state by Astro view transition API.
+			// If it's 0 then we came from an external link.
+			if (window.history.state.index > 0) {
+				window.history.back()
+			} else {
+				navigate(``, { history: 'replace' })
+			}
+		})
+	})
+</script>

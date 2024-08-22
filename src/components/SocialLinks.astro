@@ -15,14 +15,14 @@ interface Props {
 const { links, className = '' } = Astro.props
 ---
 
-<div class={className}>
+<div style={{ marginTop: theme.dimensions.basePadding }} class={className}>
 	{
 		socialLinksToMenuItems(links).map((item) => (
 			<a
 				href={item.href}
 				style={{ marginRight: theme.dimensions.basePaddingMobile, marginLeft: theme.dimensions.basePaddingMobile }}
 			>
-				{item.title}
+				{item.image ? <img height="30" width="30" src={item.image} /> : item.title}
 			</a>
 		))
 	}

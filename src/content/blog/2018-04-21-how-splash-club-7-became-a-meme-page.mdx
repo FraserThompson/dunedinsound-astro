@@ -9,7 +9,7 @@ description: I somehow convinced the elusive Jamie Dickson into an interview to
 tags:
   - Interview
 ---
-import Image from "src/components/blog/BlogImage.astro"
+import Image from "src/components/LightboxImage.astro"
 
 
 Way back in 2012 Dunedin local Jamie Dickson started releasing music online.
@@ -40,8 +40,8 @@ The reason for the page’s popularity is obvious: people desire bite-sized piec
 
 “It’s a lot easier just to like scroll past a meme and be like ha that’s funny and share it.”
 
-<Image images={frontmatter.responsiveImages} src="3" alt="3"/>
-<Image images={frontmatter.responsiveImages} src="4" alt="4"/>
+<Image responsiveImage={frontmatter.responsiveImages['3']} alt="3"/>
+<Image responsiveImage={frontmatter.responsiveImages['4']} alt="4"/>
 
 After his seapunk releases he started to take on aspects of vaporwave, another internet micro-genre defined by its obsession with 80s aesthetics and exotic hyper-consumerist imagery. It highlights the hollow promises and “nothingness” at the heart of capitalism.
 

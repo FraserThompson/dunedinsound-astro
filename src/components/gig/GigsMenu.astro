@@ -8,12 +8,13 @@
  *  selected (optional): it will show the artists under that gig.
  */
 import { loadAndFormatCollection, sortGigs } from 'src/util/collection.ts'
-import { gigLink, artistLink, yearLink, monthLink, yearsMenuWrapper, artistsMenuWrapper } from './GigsMenu.css'
+import { gigLink, yearLink, monthLink, yearsMenuWrapper } from './GigsMenu.css'
 import { makeHash, artistsToString } from 'src/util/helpers'
 import DropdownMenu from '../DropdownMenu'
 import { theme } from 'src/Theme.css'
 import { MenuLi } from '../Menu.css'
 import { MenuWrapper } from '../Menu.css'
+import ArtistsMenu from './ArtistsMenu.astro'
 
 interface Props {
 	selected?: string
@@ -59,17 +60,7 @@ const { selected } = Astro.props
 											<a class={gigLink} href={!selected ? `#${makeHash(gig.entry.id)}` : gig.extra.absolutePath}>
 												{gig.entry.data.title}
 											</a>
-											{gig.entry.id === selected && (
-												<ul is="artists-menu" class={artistsMenuWrapper}>
-													{gig.extra.artists.map((artist) => (
-														<li class={MenuLi['vertical']}>
-															<a class={artistLink} href={`#${artist.entry.id}`}>
-																{artist.entry.data.title}
-															</a>
-														</li>
-													))}
-												</ul>
-											)}
+											{gig.entry.id === selected && <ArtistsMenu artists={gig.extra.artists} transition:persist />}
 										</li>
 									))}
 								</ul>
@@ -105,84 +96,9 @@ const { selected } = Astro.props
 <script>
 	import type Shuffle from 'shufflejs'
 	import { scrollTo } from 'src/util/helpers'
-	import browserHistory from 'src/util/history'
-	import type { Location } from 'history'
 	import { maintainSidebarScrollPosition } from 'src/util/helpers'
 
 	maintainSidebarScrollPosition('gig')
-
-	/**
-	 * Artists menu which sits under a gig if its selected.
-	 *
-	 * Handles highlighting the active artist, and scrolling smoothly
-	 * to the artist on click.
-	 */
-	class ArtistsMenu extends HTMLUListElement {
-		unlisten: any
-
-		sidebar: HTMLElement | null
-
-		selectedArtist: Element | undefined
-		links: NodeListOf<HTMLElement> | null
-
-		constructor() {
-			super()
-			this.sidebar = document.querySelector<HTMLElement>('sidebar-wrapper')
-			this.links = this.querySelectorAll('a')
-		}
-
-		/**
-		 * Respond to the Gig layout changing the hash.
-		 *
-		 * Highlights the active artist.
-		 *
-		 * @param location
-		 */
-		handleURLChange(location: Location) {
-			if (location.hash) {
-				const newSelectedId = location.hash
-				const selectedItem = this.querySelector(`[href="${newSelectedId}"]`)
-
-				if (!selectedItem) {
-					this.selectedArtist && this.selectedArtist.classList.remove('active')
-					this.selectedArtist = undefined
-					return
-				}
-
-				this.selectedArtist && this.selectedArtist.classList.remove('active')
-				this.selectedArtist = selectedItem
-				this.selectedArtist && this.selectedArtist.classList.add('active')
-			} else {
-				this.selectedArtist && this.selectedArtist.classList.remove('active')
-				this.selectedArtist = undefined
-			}
-		}
-
-		/**
-		 * Scroll to an artist and hide the sidebar if it's open.
-		 */
-		itemClick(e: MouseEvent) {
-			scrollTo(e)
-			// Close sidebar on mobile
-			// See: SidebarNav.astro
-			// @ts-ignore
-			this.sidebar.toggleSidebar()
-		}
-
-		/**
-		 * Adds event listeners.
-		 */
-		connectedCallback() {
-			this.unlisten = browserHistory?.listen((location) => this.handleURLChange(location.location))
-			this.links?.forEach((link) => {
-				link.addEventListener('click', (e) => this.itemClick(e))
-			})
-		}
-
-		disconnectedCallback() {
-			this.unlisten && this.unlisten()
-		}
-	}
 
 	/**
 	 * A menu of gigs.
@@ -268,13 +184,16 @@ const { selected } = Astro.props
 		}
 
 		connectedCallback() {
-			document.addEventListener('shuffle-filter', (e: any) => this.onShuffle(e), false)
+			document.addEventListener('shuffle-filter', (e) => this.onShuffle(e), false)
 			!this.selected && this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e) => this.itemClick(e)))
 		}
 
-		disconnectedCallback() {}
+		disconnectedCallback() {
+			document.removeEventListener('shuffle-filter', (e) => this.onShuffle(e))
+			!this.selected &&
+				this.gigLinks?.forEach((gigLink) => gigLink.removeEventListener('click', (e) => this.itemClick(e)))
+		}
 	}
 
 	customElements.define('gigs-menu', GigsMenu, { extends: 'ul' })
-	customElements.define('artists-menu', ArtistsMenu, { extends: 'ul' })
 </script>

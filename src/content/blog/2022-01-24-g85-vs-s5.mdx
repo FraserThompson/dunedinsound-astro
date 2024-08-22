@@ -9,12 +9,12 @@ tags:
   - Photography
   - Tech
 ---
-import Image from "src/components/blog/BlogImage.astro"
+import Image from "src/components/LightboxImage.astro"
 
 
 For the past five years all of the images and videos taken for dunedinsound.com were taken on this camera.
 
-<Image images={frontmatter.responsiveImages} src="g85" alt="The Panasonic G85"/>
+<Image responsiveImage={frontmatter.responsiveImages['g85']} alt="The Panasonic G85"/>
 
 I've driven it hard (77,918 shutter count) and it's served me well, but there are a few areas where I've never really been satisfied. The high ISO performance is my biggest complaint; the image collapses into a smudgy mess above ISO 3200.
 
@@ -22,13 +22,13 @@ This is a problem because, as you probably know, a lot of live music takes place
 
 To work around this limitation I've had to find ways to pull as much light as possible onto that sensor. This meant obtaining lenses with really low F stops, and this combined with budget constraints led me to discover vintage lenses.
 
-<Image images={frontmatter.responsiveImages} src="takumar" alt="Asahi Pentax Super-Takumar 50mm F1.4 from the 1960s"/>
+<Image responsiveImage={frontmatter.responsiveImages['takumar']} alt="Asahi Pentax Super-Takumar 50mm F1.4 from the 1960s"/>
 
 Accounting for crop-factor and a speed booster (which smushes all the light from a Full Frame lens onto a Micro Four Thirds sensor), I end up with a roughly 80mm F0.9 lens full frame equivalent. A modern version would cost thousands, but I bought this lens plus the speed booster for about $150.
 
 To be fair though vintage lenses don't really perform like modern ones. Sharpness often drops off towards the corners, and their anti-flare coatings are often inferior, meaning if you point them anywhere near a light source they flare like mad.
 
-<Image images={frontmatter.responsiveImages} src="flare" alt="Real world example of vintage lens flare"/>
+<Image responsiveImage={frontmatter.responsiveImages['flare']} alt="Real world example of vintage lens flare"/>
 
 These characteristics are considered a flaw, but I've come to love them. It's an interesting look. It sets my photos apart. I value optical interestingness over optical flawlessness.
 
@@ -50,11 +50,11 @@ I'm also not going to bury the price down at the end as if it doesn't matter bec
 
 My new camera is the Panasonic S5.
 
-<Image images={frontmatter.responsiveImages} src="s5" alt=""/>
+<Image responsiveImage={frontmatter.responsiveImages['s5']} alt=""/>
 
 It has a Full Frame sensor, and my old camera had a smaller Micro Four Thirds sensor. A bigger sensor means (theoretically) it can collect a lot more light, which has implications for both ISO performance and depth of field (which I'll get to later).
 
-<Image images={frontmatter.responsiveImages} src="sensor-size" alt="Micro Four Thirds on left, Full Frame on right. Sidenote: I should clean my sensor."/>
+<Image responsiveImage={frontmatter.responsiveImages['sensor-size']} alt="Micro Four Thirds on left, Full Frame on right. Sidenote: I should clean my sensor."/>
 
 The bigger sensor also means it's a lot more expensive, which is why I waited this long.
 
@@ -64,7 +64,7 @@ This is obviously a lot of money. As I mentioned, it's a hobby not a job. But I 
 
 Comparing two cameras at vastly different price points might seem unfair, but I'm really comparing Panasonic's Micro Four Thirds to their Full Frame system. Panasonic makes more expensive "pro" oriented Micro Four Thirds cameras like the [$2800 G9](https://www.photowarehouse.co.nz/shop/shop-by-product/digital-cameras/mirrorless-system-cameras-2/panasonic-lumix-dc-g9-12-60mm-leica-kit/) and the [$3400 GH5 II](https://www.photowarehouse.co.nz/shop/shop-by-product/digital-cameras/mirrorless-system-cameras-2/panasonic-lumix-dc-gh5-mkii-12-60mm-lumix-lens/) which are priced similarly to the S5, but have roughly the same high ISO performance as the G85.
 
-<Image images={frontmatter.responsiveImages} src="mft-high-iso" alt="G85 actually looks a little cleaner at high ISO... Source: dpreview.com"/>
+<Image responsiveImage={frontmatter.responsiveImages['mft-high-iso']} alt="G85 actually looks a little cleaner at high ISO... Source: dpreview.com"/>
 
 So for me, even moving to their top tier Micro Four Thirds body wouldn't be much of an upgrade. Although they differ in terms of handling and features, all of their Micro Four Thirds cameras above a certain point are basically the same to me.
 
@@ -74,13 +74,13 @@ So far I've taken the S5 to three events.
 
 The most immediate difference is the size of the body. In pictures it looks similar but in my (small) hands it feels noticeably chunkier. It's still a fairly compact camera, but I could comfortably hold the G85 by the grip with one hand, and I can't do that confidently with the S5.
 
-<Image images={frontmatter.responsiveImages} src="size" alt="S5 on the left with the 50/1.8, G85 on the right with the 20/1.7"/>
+<Image responsiveImage={frontmatter.responsiveImages['size']} alt="S5 on the left with the 50/1.8, G85 on the right with the 20/1.7"/>
 
 Size isn't really an issue though, just something I'll need to get used to. Handling in general is great. Lots of buttons in smart places.
 
 The screens are a noticeable improvement in resolution, colors and contrast. This is a thing which seems small but actually makes a huge difference when you're using it.
 
-<Image images={frontmatter.responsiveImages} src="screens" alt="Screen quality never comes across in photos but trust me it's better"/>
+<Image responsiveImage={frontmatter.responsiveImages['screens']} alt="Screen quality never comes across in photos but trust me it's better"/>
 
 As for the experience of taking photos, the most jarring change is depth of field.
 
@@ -88,7 +88,7 @@ Full frame depth of field is noticeably shallower at the same focal length. Even
 
 Aso manually focusing my Super-Takumar 50mm F1.4 is near impossible wide open due to the shallow depth of field. This was a problem for me at events, so I found myself stopping down to more like F2.8. More on this later.
 
-<Image images={frontmatter.responsiveImages} src="vintage-s5-example" alt="Taken with the Takumar 50/1.4 on the S5 at like F2.8"/>
+<Image responsiveImage={frontmatter.responsiveImages['vintage-s5-example']} alt="Taken with the Takumar 50/1.4 on the S5 at like F2.8"/>
 
 The colours are also subtly improved since the G85. I used to use a lot of film emulation in post, but I found myself not needing to do this as much on the S5.
 
@@ -106,15 +106,15 @@ The one area where there's no competition is ISO performance.
 
 This is a comparison between two images, one taken on the G85 and one on the S5, both processed with the same noise reduction settings. Can you guess which is which?
 
-<Image images={frontmatter.responsiveImages} src="s5-25k" alt=""/>
+<Image responsiveImage={frontmatter.responsiveImages['s5-25k']} alt=""/>
 
-<Image images={frontmatter.responsiveImages} src="g85-6k" alt=""/>
+<Image responsiveImage={frontmatter.responsiveImages['g85-6k']} alt=""/>
 
 Here are some 100% crops:
 
-<Image images={frontmatter.responsiveImages} src="s5-25k-crop" alt=""/>
+<Image responsiveImage={frontmatter.responsiveImages['s5-25k-crop']} alt=""/>
 
-<Image images={frontmatter.responsiveImages} src="g85-6k-crop" alt=""/>
+<Image responsiveImage={frontmatter.responsiveImages['g85-6k-crop']} alt=""/>
 
 Top is the S5, bottom is the G85. You can see a pretty stark difference in noise levels and detail retention.
 
@@ -122,14 +122,14 @@ But here's the surprise twist: In the above images the G85 was at ISO 6400 and t
 
 This is what the G85 looks like at ISO 25,600.
 
-<Image images={frontmatter.responsiveImages} src="g85-25k" alt=""/>
+<Image responsiveImage={frontmatter.responsiveImages['g85-25k']} alt=""/>
 
-<Image images={frontmatter.responsiveImages} src="g85-25k-crop" alt=""/>
+<Image responsiveImage={frontmatter.responsiveImages['g85-25k-crop']} alt=""/>
 
 The situation in video is equally as impressive. When shooting in V-LOG the sensor operates with dual ISO's at 640 and 4000, meaning ISO 4000 is cleaner than ISO 3200. The G85 at ISO 6400 is unusably smudgy, but it looks fine on the S5. There is noise but details are retained.
 
-<Image images={frontmatter.responsiveImages} src="g85-6400-crop" alt="G85: 150% crop of a 4k video at ISO 6400"/>
-<Image images={frontmatter.responsiveImages} src="s5-6400-crop" alt="S5: 150% crop of a 4k video at ISO 6400"/>
+<Image responsiveImage={frontmatter.responsiveImages['g85-6400-crop']} alt="G85: 150% crop of a 4k video at ISO 6400"/>
+<Image responsiveImage={frontmatter.responsiveImages['s5-6400-crop']} alt="S5: 150% crop of a 4k video at ISO 6400"/>
 
 I expected better performance, but this is kind of mindblowing: **The S5 is cleaner at ISO 25,600 than the G85 is at ISO 6400.**
 
@@ -155,15 +155,15 @@ So you end up with a weird situation where even though you're at ISO 12,800, you
 
 Let me show you what I mean.
 
-<Image images={frontmatter.responsiveImages} src="test-g85-3200-17" alt="G85: 40mm 1/50s ISO 3200 F1.7"/>
+<Image responsiveImage={frontmatter.responsiveImages['test-g85-3200-17']} alt="G85: 40mm 1/50s ISO 3200 F1.7"/>
 
-<Image images={frontmatter.responsiveImages} src="test-s5-12k-35" alt="S5: 50mm 1/50s ISO 12,800 F3.5"/>
+<Image responsiveImage={frontmatter.responsiveImages['test-s5-12k-35']} alt="S5: 50mm 1/50s ISO 12,800 F3.5"/>
 
 The above images are exposed roughly the same, have (roughly) the same depth of field because they're at equivalent F stops, and yet the G85 photo was shot at ISO 3200 and the S5 photo was shot at ISO 12,800.
 
-<Image images={frontmatter.responsiveImages} src="test-g85-6400-20" alt="G85: 14mm 1/50s ISO 6400 F2.0"/>
+<Image responsiveImage={frontmatter.responsiveImages['test-g85-6400-20']} alt="G85: 14mm 1/50s ISO 6400 F2.0"/>
 
-<Image images={frontmatter.responsiveImages} src="test-s5-12k-40" alt="S5: 20mm 1/50s ISO 12,800 F4.0"/>
+<Image responsiveImage={frontmatter.responsiveImages['test-s5-12k-40']} alt="S5: 20mm 1/50s ISO 12,800 F4.0"/>
 
 These were also shot at equivalent F stops in terms of depth of field (F4.0 is equivalent to F2.0), and yet the G85 was at ISO 6400 and the S5 was at ISO 12,800.
 
@@ -181,7 +181,7 @@ The face/body detection magic works surprisingly well in average to good light, 
 
 A shot which includes both the audience and the band might decide to focus on all the bodies in the audience rather than the band. I'd love to have face detection without body detection but it seems this isn't an option.
 
-<Image images={frontmatter.responsiveImages} src="af-fail-example" alt="Body detection refused to focus on the band"/>
+<Image responsiveImage={frontmatter.responsiveImages['af-fail-example']} alt="Body detection refused to focus on the band"/>
 
 It probably doesn't help that I refuse to use the AF light because I don't want annoying red lights distracting everyone.
 
@@ -193,7 +193,7 @@ Because the mount and sensor size are different, none of my Micro Four Thirds le
 
 I'm quickly realising that L mount lenses are **big**. Big and expensive.
 
-<Image images={frontmatter.responsiveImages} src="lens-size" alt="20/1.7 MFT on the left, 50/1.8 L mount on the right"/>
+<Image responsiveImage={frontmatter.responsiveImages['lens-size']} alt="20/1.7 MFT on the left, 50/1.8 L mount on the right"/>
 
 I think this is probably a deliberate strategy from Panasonic. Pro photographers tend to want larger lenses which are higher quality, and from what I've read these lenses are exceptionally high quality. Even the 20-60 kit lens is supposedly great.
 
@@ -205,33 +205,33 @@ The way I worked in the past was to go to events with pockets full of primes. Mi
 
 My go to kit was the Laowa 7.5mm F2, the Super-Takumar 50mm F1.4, and the Panasonic 20mm F1.7. All fast lenses with wide apertures to let in lots of light. Also very compact.
 
-<Image images={frontmatter.responsiveImages} src="g85-lens-kit" alt="Pocketable lens library"/>
+<Image responsiveImage={frontmatter.responsiveImages['g85-lens-kit']} alt="Pocketable lens library"/>
 
 The current lineup of L mount lenses are technically pocketable (depending on the pocket), but not comfortably.
 
 With the S5 I've run with the 20-60mm on the body, the 50mm F1.8 in one pocket, and the adapted 50mm 1.4 in the other. It's a bit much in terms of bulk. Swapping lenses one handed is also kind of precarious.
 
-<Image images={frontmatter.responsiveImages} src="s5-lens-kit" alt="Less pocketable lens library"/>
+<Image responsiveImage={frontmatter.responsiveImages['s5-lens-kit']} alt="Less pocketable lens library"/>
 
 Part of why the lenses are bigger is because the sensor is bigger and requires more glass to cover it, but full frame lenses don't have to be huge. Other mounts offer big ones for the pro's, and little cheap pancakes for the hobbyists. I'd love something like this for the L mount.
 
-<Image images={frontmatter.responsiveImages} src="ef-pancake" alt="Canon EF 40mm 2.8 Pancake. It's tiny."/>
+<Image responsiveImage={frontmatter.responsiveImages['ef-pancake']} alt="Canon EF 40mm 2.8 Pancake. It's tiny."/>
 
 I'm also not going to spend thousands on lenses. My most expensive lens for micro-four thirds was the fantastic Laowa 7.5mm F2 for around $500. Most of my others were just a few hundred. I can't justify spending much more on lenses.
 
-<Image images={frontmatter.responsiveImages} src="wide-eg" alt="The Laowa is how I get really wide shots like this"/>
+<Image responsiveImage={frontmatter.responsiveImages['wide-eg']} alt="The Laowa is how I get really wide shots like this"/>
 
 If I wanted something equivalent for Full Frame I'd be looking at the Laowa 15mm F2 Zero-D for more like $1,500. This is pretty significant: **A single lens for L mount costs the same amount as an entire Micro Four Thirds camera with an equivalent lens.**
 
 If you're after telephoto lenses the situation is even worse. A 300mm telephoto on Micro Four Thirds is easily pocketable, an equivalent on L mount is definitely not pocketable.
 
-<Image images={frontmatter.responsiveImages} src="tele-size-compare" alt="Same focal length telephoto lens on each system: real-world size comparison"/>
+<Image responsiveImage={frontmatter.responsiveImages['tele-size-compare']} alt="Same focal length telephoto lens on each system: real-world size comparison"/>
 
 Also because of the smaller sensor, you can adapt a far wider range of lenses to Micro Four Thirds cameras. For example, I've used C mount CCTV lenses quite successfully, and I have a range of comically small Pentax Auto 110 lenses which perform surprisingly well.
 
-<Image images={frontmatter.responsiveImages} src="comically-small-lenses" alt="Pentax Auto 110 and Cosmicar Pentax 25/1.4 C mount"/>
+<Image responsiveImage={frontmatter.responsiveImages['comically-small-lenses']} alt="Pentax Auto 110 and Cosmicar Pentax 25/1.4 C mount"/>
 
-<Image images={frontmatter.responsiveImages} src="c-mount-example" alt="Taken with the Cosmicar"/>
+<Image responsiveImage={frontmatter.responsiveImages['c-mount-example']} alt="Taken with the Cosmicar"/>
 
 So I'm in a situation where I can either fork out truckloads of cash for native lenses, or buy smaller lenses for other mounts and adapt them, which will also add to the size of the lens.
 
