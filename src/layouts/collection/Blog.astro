@@ -12,6 +12,7 @@ import ChevronLeftIcon from '~icons/bx/chevron-left'
 import { backButton } from 'src/components/gig/GigsMenu.css'
 import ImageGalleryLightbox from 'src/components/ImageGalleryLightbox.astro'
 import ImageGallery from 'src/components/ImageGallery.astro'
+import ShareButton from 'src/components/ShareButton.astro'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>
@@ -24,7 +25,15 @@ const entryData = entry.entry.data
 const entryExtra = entry.extra
 ---
 
-{entryExtra.cover && <Banner backgroundImage={entryExtra.cover} title={entryData.title} />}
+{entryExtra.cover && <Banner backgroundImage={entryExtra.cover} title={entryData.title}>
+		<ShareButton
+			style={{ position: 'absolute', left: '50%', transform: 'translate(-50%)' }}
+			shareData={{
+				title: 'ARTICLE: ' + entryData.title,
+				url: 'https://dunedinsound.com' + entryExtra.slug,
+				text: `${entryData.description}.`
+			}}/>
+</Banner>}
 <div style={{ display: 'flex', maxWidth: '1600px', margin: '0 auto' }}>
 	<BlogSidebar className="hideMobile" entry={entry} />
 	<TextContainer>

@@ -9,7 +9,7 @@ interface Props {
 const { shareData, style } = Astro.props
 ---
 
-<share-button style={style} class={shareButton} data-sharedata={JSON.stringify(shareData)}>
+<share-button style={style} class={shareButton} data-sharedata={JSON.stringify(shareData)} title="Share this page">
 	<small><RedoIcon /> SHARE</small>
 </share-button>
 

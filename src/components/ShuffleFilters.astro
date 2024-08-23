@@ -44,7 +44,6 @@ const { itemselector, boardselector, className = '' } = Astro.props
 	import { stringNormalize } from 'src/util/names'
 
 	class ShuffleFilters extends HTMLElement {
-		shuffleBoard: HTMLElement | null
 		shuffleInstance: Shuffle | null
 
 		sortButtons: NodeListOf<HTMLElement> | null
@@ -59,16 +58,18 @@ const { itemselector, boardselector, className = '' } = Astro.props
 			this.sortButtons = this.querySelectorAll('[data-sortby]')
 			this.filterElements = this.querySelectorAll('[data-filter]')
 
-			this.shuffleBoard = document.querySelector(this.getAttribute('data-boardselector') || '#shuffle')
-
 			this.activeSort = this.sortButtons[0]
 			this.activeSort?.classList.add('active')
 			this.activeFilters = new Set()
 
+			const itemSelector = this.getAttribute('data-itemselector') || '.tile'
+			const boardSelector = this.getAttribute('data-boardselector') || '#shuffle'
+			const shuffleBoard = document.querySelector<HTMLElement>(boardSelector)
+
 			this.shuffleInstance =
-				this.shuffleBoard &&
-				new Shuffle(this.shuffleBoard, {
-					itemSelector: this.getAttribute('data-itemselector') || '.tile',
+				shuffleBoard &&
+				new Shuffle(shuffleBoard, {
+					itemSelector,
 					delimiter: ','
 				})
 		}

@@ -18,7 +18,8 @@ import 'lightgallery/css/lg-zoom.css'
 			selector: '.lightboxImage',
 			plugins: [lgZoom],
 			hideScrollbar: true,
-			speed: 300
+			speed: 300,
+			mobileSettings: { controls: false, showCloseIcon: true, download: true}
 		}
 		const lightbox = lightGallery(document.body, { ...options })
 

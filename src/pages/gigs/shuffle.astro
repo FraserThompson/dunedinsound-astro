@@ -3,8 +3,63 @@ import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
 import GigsShuffle from 'src/components/gig/GigsShuffle.tsx'
 import SubheadersLayout from 'src/layouts/base/SubheadersLayout.astro'
+import fs from 'fs-extra'
 
 const gigs = await loadAndFormatCollection('gig')
+
+/**
+ * This is somewhat insane.
+ * 
+ * Basically since we're serving this up as a big blob to the client,
+ * we want to remove all fields we don't need.
+ * This brings it down from like 3mb to like 600kb.
+ * 
+ * Downside is it breaks type safety.
+ * 
+ * Maybe there's a better way to do this statically, not sure.
+ */
+const minimalGigs = gigs.map((gig) => {
+	const minimalArtists = gig.extra.artists.map((artist) => {
+		// @ts-expect-error
+		delete artist.entry.collection
+		delete artist.entry.data.date
+		delete artist.entry.data.description
+		delete artist.entry.data.died
+		delete artist.extra.lastGig
+		delete artist.extra.cover
+		delete artist.extra.images
+		delete artist.extra.metaDescription
+		return artist
+	})
+	delete gig.extra.images
+	delete gig.extra.cover
+	delete gig.extra.metaDescription
+	delete gig.next
+	delete gig.prev
+	// @ts-expect-error
+	delete gig.entry.collection
+	delete gig.entry.data.description
+	delete gig.entry.data.intro
+	delete gig.extra.venue.data.date
+	delete gig.extra.venue.data.description
+	delete gig.extra.venue.data.links
+	// @ts-expect-error
+	delete gig.extra.venue.collection
+	// @ts-expect-error
+	delete gig.extra.venue.data.lat
+	// @ts-expect-error
+	delete gig.extra.venue.data.lng
+	const minimalGig = {
+		entry: gig.entry,
+		extra: {...gig.extra, artistImages: [], artists: minimalArtists }
+	}
+	return minimalGig
+})
+
+const gigsJSON = JSON.stringify(minimalGigs)
+
+const path = 'public/gigs.json'
+fs.writeFileSync(path, gigsJSON)
 ---
 
 <SubheadersLayout hideFooter={true} poo={{ title: 'Gig Jukebox' }}>
@@ -21,5 +76,5 @@ const gigs = await loadAndFormatCollection('gig')
 			</div>
 		</div>
 	</ShuffleFilters>
-	<GigsShuffle gigs={gigs} client:load />
+	<GigsShuffle client:load />
 </SubheadersLayout>

@@ -21,6 +21,7 @@ import {
 	BannerTitle,
 	BannerContent,
 	bannerHeight,
+	bannerHeightMobile,
 	marginBottom,
 	marginBottomMobile
 } from './Banner.css'
@@ -31,6 +32,7 @@ interface Props {
 	id?: string
 	title?: string
 	height?: string
+	heightMobile?: string
 	bottomMargin?: string
 	bottomMarginMobile?: string
 	responsiveImageSizes?: keyof ResponsiveImageSizes
@@ -42,6 +44,7 @@ const {
 	title,
 	id = '',
 	height,
+	heightMobile,
 	responsiveImageSizes = "full",
 	bottomMargin,
 	bottomMarginMobile,
@@ -55,6 +58,7 @@ const {
 	id={id}
 	style={assignInlineVars({
 		[bannerHeight]: height,
+		[bannerHeightMobile]: heightMobile,
 		[marginBottom]: bottomMargin,
 		[marginBottomMobile]: bottomMarginMobile
 	})}

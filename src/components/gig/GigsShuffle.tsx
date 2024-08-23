@@ -9,9 +9,6 @@ import WaveSurfer from "wavesurfer.js"
 import LiteYoutube from 'src/components/LiteYoutube'
 import { GigsPlayerWrapper, GigsShuffleBottom, GigsShuffleWrapper, GigsTitlebar } from "./GigsShuffle.css"
 
-interface Props {
-	gigs: any[]
-}
 
 /**
  * A shufflable jukebox for playing random gigs.
@@ -21,7 +18,8 @@ interface Props {
  * @param
  * @returns 
  */
-const GigsJukebox: FunctionalComponent<Props> = ({ gigs }) => {
+const GigsJukebox: FunctionalComponent = () => {
+	const [gigs, setGigs] = useState([])
 	const [mode, setMode] = useState('video')
 	const [shuffleIndex, setShuffleIndex] = useState(0)
 
@@ -33,10 +31,20 @@ const GigsJukebox: FunctionalComponent<Props> = ({ gigs }) => {
 
 	const [wavesurfer, setWaveSurfer] = useState<WaveSurfer | undefined>(undefined)
 
+	useEffect(() => {
+		const doTheThing = async () => {
+			const gigs = await fetch('/gigs.json')
+			setGigs(await gigs.json())
+		}
+		doTheThing()
+	}, [])
+
 	// Shuffled gigs
 	const shuffledGigs: any[] = useMemo(() => shuffler([...gigs]), [gigs])
 
 	useEffect(() => {
+		if (!shuffledGigs || !shuffledGigs.length) return
+
 		const currentGig = shuffledGigs[shuffleIndex]
 
 		// Filter to only the artists who have videos
@@ -54,7 +62,7 @@ const GigsJukebox: FunctionalComponent<Props> = ({ gigs }) => {
 		const gigArtist = artistsWithVids[randomArtistIndex]
 
 		// The artist entry
-		const currentArtist = currentGig.extra.artists.find((artist: any) => artist.id === gigArtist.id.id)
+		const currentArtist = currentGig.extra.artists.find((artist: any) => artist.entry.id === gigArtist.id.id)
 
 		const currentVideo = gigArtist.vid && gigArtist.vid[0].link
 
@@ -66,14 +74,14 @@ const GigsJukebox: FunctionalComponent<Props> = ({ gigs }) => {
 		setCurrentVideo(currentVideo)
 
 		setCurrentGig(shuffledGigs[shuffleIndex])
-	}, [shuffleIndex])
+	}, [shuffleIndex, shuffledGigs])
 
 	return (
 		<div className={`${GigsShuffleWrapper}`}>
 			<div className={`${GigsPlayerWrapper}`}>
 				<div className={`${PlayerWrapper} player`}>
 					<div className={`${GigsTitlebar}`}></div>
-					<div style={{ margin: '5px', border: '3px groove #585662' }}>
+					<div style={{ margin: '5px', border: '3px groove #585662', aspectRatio: "16/9" }}>
 						{mode === 'video' && currentGig && currentVideo && <LiteYoutube autoload={true} loadAPI={true} videoid={currentVideo} />}
 						{mode === 'audio' && currentGig && currentAudio && (
 							<Player artistAudio={[currentAudio]} barebones={true} playOnLoad={true} setWaveSurferCallback={(wavesurfer) => setWaveSurfer(wavesurfer)} />
@@ -97,26 +105,27 @@ const GigsJukebox: FunctionalComponent<Props> = ({ gigs }) => {
 					{currentGig && (
 						<ul className={`${TracklistWrapper}`}>
 							<li className={`${TracklistTrack} noHover`}>
-								Gig: {currentGig.entry.data.title}{' '}
-								<a href={currentGig.extra.absolutePath} title="Gig page" target="_blank">
-									(Go to gig)
+								Gig: {currentGig.entry.data.title}
+								<a href={currentGig.extra.absolutePath} title="Gig page" target="_blank" style={{ marginLeft: "10px", color: "blue" }}>
+									(Go to gig page)
 								</a>
 							</li>
-							<li className={`${TracklistTrack} noHover`}>Date: {currentGig.entry.data.date.toLocaleDateString()}</li>
+							<li className={`${TracklistTrack} noHover`}>Date: {new Date(currentGig.entry.data.date).toLocaleDateString()}</li>
 							{currentArtist && <li className={`${TracklistTrack} noHover`}>
-								Artist: {currentArtist.data.title || 'Unknown'}{' '}
-								<a target="_blank" href={`/artists/${currentArtist.id}`}>
-									(Go to artist)
+								Artist: {currentArtist.entry.data.title || 'Unknown'}
+								<a target="_blank" title={currentArtist.entry.data.title} href={`${currentArtist.extra.absolutePath}`} style={{ marginLeft: "10px", color: "blue" }}>
+									{currentArtist.extra.gigCount > 1 ? `(See ${currentArtist.extra.gigCount - 1} other gigs from this artist)` : '(Go to artist page)'}
 								</a>
 							</li>}
 							<li className={`${TracklistTrack} noHover`}>
 								Venue: {currentGig.extra.venue.data.title || 'Unknown'}
-								<a href={`/venues/${currentGig.extra.venue.id}`} title={currentGig.extra.venue.data.title} target="_blank">
-									(Go to venue)
+								<a href={`/venues/${currentGig.extra.venue.id}`} title={currentGig.extra.venue.data.title} target="_blank" style={{ marginLeft: "10px", color: "blue" }}>
+									(Go to venue page)
 								</a>
 							</li>
 						</ul>
 					)}
+					{!currentGig && <div className="spinner" />}
 				</div>
 			</div>
 			<CloudBackground></CloudBackground>

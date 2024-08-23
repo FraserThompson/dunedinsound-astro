@@ -101,6 +101,7 @@ const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, 
 						<a
 							className={`${dropdownLink} menu-title`}
 							onClick={(e: any) => item.hash && select(e, item.hash)}
+							title={item.title}
 							href={`${item.href ? item.href : item.hash ? ('#' + item.hash) : ''}`}
 							style={assignInlineVars({
 								[color]: textColor
@@ -110,7 +111,7 @@ const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, 
 						</a>
 						{item.additionalLinks && <div class="flex">
 							{item.additionalLinks?.map((link) =>
-								<a class={additionalLink} href={link.href}>
+								<a class={additionalLink} title={link.title} href={link.href}>
 									<small>
 										{!link.image && link.title}
 										{link.image && <img style={{ height: "25px" }} src={link.image} />}

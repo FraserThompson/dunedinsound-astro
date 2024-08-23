@@ -67,7 +67,7 @@ for (const artist of artists) {
 					responsiveImage={artist.extra.cover}
 					responsiveImageSizes={'smallGrid'}
 					title={artist.entry.data.title + (artist.entry.data.origin ? ` (${artist.entry.data.origin})` : '')}
-					label={`${artist.extra.gigCount} gigs`}
+					label={`${artist.extra.gigCount} gig${artist.extra.gigCount > 1 ? 's' : ''}`}
 					containerHeight={'15vh'}
 					backgroundStyle="full"
 					dataAttributes={{

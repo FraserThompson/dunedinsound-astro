@@ -75,7 +75,9 @@ const { selected } = Astro.props
 <!-- 
 	This is a bit of an ugly workaround.
 	On the gigs page we shuffle the tiles and listen on the menu.
-	On individual gig pages there are no tiles, so we shuffle this hidden list instead.
+	On individual gig pages there are no tiles to shuffle, but ShuffleJS doesn't 
+	work with nested menu items. So we shuffle this hidden list instead.
+	Downside is extra DOM items, but it is what it is.
 -->
 {
 	selected && (

@@ -19,6 +19,7 @@
 		"@iconify-json/bx": "^1.1.11",
 		"@svgr/core": "^8.1.0",
 		"@svgr/plugin-jsx": "^8.1.0",
+		"@types/fs-extra": "^11.0.4",
 		"@types/html-to-text": "^9.0.4",
 		"@types/markdown-it": "^14.1.2",
 		"@vanilla-extract/vite-plugin": "3.9.5",

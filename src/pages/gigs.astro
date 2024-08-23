@@ -51,13 +51,11 @@ const gigs = await loadAndFormatCollection('gig')
 	const callback = (entries: IntersectionObserverEntry[]) => {
 		entries.forEach((entry) => {
 			const sidebarItem = sidebar?.querySelector(`[href="#${entry.target.id}"]`)
-			const monthGroup = sidebarItem?.parentElement?.parentElement
-
+		
 			if (entry.isIntersecting) {
 				sidebarItem?.classList.add('active')
 				if (sidebar && sidebarItem && !elementIsVisibleInViewport(sidebarItem)) {
-					// @ts-ignore
-					//sidebar.scrollTop = monthGroup?.offsetTop
+					sidebarItem.scrollIntoView()
 				}
 			} else {
 				sidebarItem?.classList.remove('active')

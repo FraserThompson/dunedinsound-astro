@@ -2,12 +2,13 @@ import { style, createVar, fallbackVar } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 export const bannerHeight = createVar()
+export const bannerHeightMobile = createVar()
 export const marginBottom = createVar()
 export const marginBottomMobile = createVar()
 
 export const BannerWrapper = style({
 	background: 'radial-gradient(circle, black 0%, rgba(12, 24, 33, 1) 70%)',
-	height: 'auto',
+	height: fallbackVar(bannerHeightMobile, 'auto'),
 	overflow: 'hidden',
 	position: 'relative',
 	display: 'flex',
