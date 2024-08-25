@@ -18,9 +18,8 @@ const gigs = await loadAndFormatCollection('gig')
  * 
  * Maybe there's a better way to do this statically, not sure.
  */
-const minimalGigs = gigs.map((gig) => {
-	const minimalArtists = gig.extra.artists.map((artist) => {
-		// @ts-expect-error
+const minimalGigs = JSON.parse(JSON.stringify(gigs)).map((gig: any) => {
+	const minimalArtists = gig.extra.artists.map((artist: any) => {
 		delete artist.entry.collection
 		delete artist.entry.data.date
 		delete artist.entry.data.description
@@ -36,18 +35,14 @@ const minimalGigs = gigs.map((gig) => {
 	delete gig.extra.metaDescription
 	delete gig.next
 	delete gig.prev
-	// @ts-expect-error
 	delete gig.entry.collection
 	delete gig.entry.data.description
 	delete gig.entry.data.intro
 	delete gig.extra.venue.data.date
 	delete gig.extra.venue.data.description
 	delete gig.extra.venue.data.links
-	// @ts-expect-error
 	delete gig.extra.venue.collection
-	// @ts-expect-error
 	delete gig.extra.venue.data.lat
-	// @ts-expect-error
 	delete gig.extra.venue.data.lng
 	const minimalGig = {
 		entry: gig.entry,

@@ -86,7 +86,7 @@ const tasks = media.map((inputPath) => {
 		await fs.mkdir(basePath, { recursive: true })
 
 		// Create proxies from input images
-		if (parsedPath.ext.toLowerCase() === '.jpg') {
+		if (parsedPath.ext.toLowerCase() === '.jpg' || parsedPath.ext.toLowerCase() === '.png') {
 			const inputStats = await fs.stat(inputPath)
 
 			// We use this for cache busting and determining when the file has changed

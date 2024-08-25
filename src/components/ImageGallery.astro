@@ -20,7 +20,10 @@ const { images, noLightbox } = Astro.props
 ---
 
 <div class={gridWrapper['autoflow']}>
-	{images.map((responsiveImage) => <LightboxImage responsiveImage={responsiveImage} />)}
+	{images.map((responsiveImage) => 
+	<div style={{aspectRatio: "3/2" }}>
+		<LightboxImage responsiveImage={responsiveImage} />
+	</div>)}
 </div>
 
 {!noLightbox && <ImageGalleryLightbox />}

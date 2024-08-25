@@ -1,7 +1,6 @@
 import { style } from '@vanilla-extract/css'
 
 export const ImageWrapper = style({
-	aspectRatio: '3/2',
 	position: 'relative',
 	overflow: 'hidden',
 	verticalAlign: 'top',

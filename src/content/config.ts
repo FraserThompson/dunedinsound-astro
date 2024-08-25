@@ -22,6 +22,7 @@ const Gig = defineCollection({
 	type: 'data',
 	schema: z.object({
 		title: z.string(),
+		hidden: z.boolean().optional(),
 		date: z.date(),
 		venue: reference('venue'),
 		artists: z.array(gigArtistMedia),
@@ -87,6 +88,7 @@ const Blog = defineCollection({
 		author: z.string(),
 		tags: z.array(z.string()),
 		gallery: z.boolean().optional(),
+		hidden: z.boolean().optional(),
 		hideCaptions: z.boolean().optional(),
 		relatedGigs: z.array(reference('gig')).optional(),
 		relatedArtists: z.array(reference('artist')).optional(),
