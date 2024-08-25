@@ -12,21 +12,23 @@ import Image from "src/components/LightboxImage.astro"
 
 If you come here often you might have noticed some changes.
 
-If you're on a desktop, maybe you noticed everything is smaller. If you're on mobile, the changes are less major, but hopefully you'll notice the easier navigation.
+If you're on desktop, maybe you noticed things are smaller? If you're on mobile the changes are less major, but hopefully you noticed the easier navigation?
 
-And no matter what device you're on you should notice everything is a lot faster.
+And no matter what device you're on you should have noticed everything is a lot faster.
 
-This is the result of two months laboring in the code mines to move my website from Gatsby to Astro. I believe I encountered and solved some fairly unique problems since there aren't really many (or any?) other Gatsby/Astro sites with hundreds of gigabytes of images.
+This is the result of two months laboring in the code mines to move my website from Gatsby to Astro.
+
+I encountered some fairly unique problems since there aren't really many (or any?) other Gatsby/Astro sites with hundreds of gigabytes of images and audio like mine.
 
 So I'm going to describe how the process went, as well as some thoughts that occurred to me along the way. Hopefully my experiences will be useful if you're in a similar position, or if you're just curious about how this sort of site comes to be.
 
 ## Why
 
-If you've spent any amount of time in web dev you'll know about the churn: The tech everyone loves one month is hated the next month, and not necessarily because of anything inherent to the tech. As they say in web dev, one day you're in, and the next day you're out. 
+If you've spent any amount of time in web dev you'll know about the churn: The tech everyone loves one month is hated the next month, and not *necessarily* because of anything inherent to the tech. As they say in web dev, one day you're in, and the next day you're out. 
 
 My old site was written for Gatsby. I chose Gatsby because at the time it was the static site generator everyone liked. And I liked it too, the GraphQL stuff was useful for a site as data-driven as mine, almost like having a real database but only in the build process.
 
-I also had high hopes for the image processing system, a major feature of Gatsby. My site has over 20,000 photos, and I wanted to process and serve these at optimal resolutions for all devices, to help speed up the client experience, and also save hosting costs. 
+I also had high hopes for the image processing system, a major feature of Gatsby. My site has over 20,000 photos, and I wanted to process and serve these at optimal resolutions for all devices, to help speed up the user experience, and also save hosting costs. 
 
 Before Gatsby, I was using custom scripts to process images separately from the site. At the time this felt clumsy. Gatsby in contrast would handle everything without any fuss, I would be able to just say “give me all the images associated with this gig” and I'd get nice responsive image components. That was the dream anyway.
 
@@ -34,11 +36,11 @@ Before Gatsby, I was using custom scripts to process images separately from the 
 
 But then, over time, two things happened.
 
-First it became clear my site (with over 20,000 images, many 100mb+ MP3 files, and over 1,000 pages) was too much for Gatsby, at least in the way they intended it to be used. Over the years, my build times became longer and longer, reaching multiple hours. But thanks to Gatsby being open source, I was able to identify the cause and contribute a fix, which was then [rolled into version 5.5](https://www.gatsbyjs.com/docs/reference/release-notes/v5.5/) and drastically sped up my build times.
+First it became clear my site (with over 20,000 images, many 100mb+ MP3 files, and over 1,000 pages) was too much for Gatsby, at least in the way they intended it to be used. Over the years, my build times became longer and longer, reaching multiple hours. Thanks to Gatsby being open source, I was able to identify why this was and contribute a fix, which was then [rolled into version 5.5](https://www.gatsbyjs.com/docs/reference/release-notes/v5.5/) and drastically sped up my build times.
 
-This was basically the ideal open source experience actually. Identifying a problem, working with the maintainers to fix it, then having it rolled into a release, all within a few weeks. It really endeared me to Gatsby, and is one of the reasons why I stuck with it despite the issues I encountered. Even though my site was clearly an outlier (most Gatsby sites don't have thousands of photos) the maintainers still identified my fix as useful and chose to merge it in.
+(This was basically the ideal open source experience actually. Identifying a problem, working with the maintainers to fix it, then having it rolled into a release, all within a few weeks. It really endeared me to Gatsby, and is one of the reasons why I stuck with it despite the issues I encountered. Even though my site was clearly an outlier (most Gatsby sites don't have thousands of photos) the maintainers still identified my fix as useful and chose to merge it in.)
 
-But as of earlier this year my build time was back to like four hours. Which was pretty annoying and really hurt my dev workflow.
+But as of earlier this year my build time was back to four hours or more. Which was pretty annoying and really hurt my dev workflow.
 
 <Image size="blog" responsiveImage={frontmatter.responsiveImages['gatsby-sad']} alt="An hour to bring up a dev server..."/>
 
@@ -58,7 +60,7 @@ Since I was going to be making substantial changes anyway, there was a bunch of 
 
 ## The process
 
-Astro has [documentation on migrating Gatsby to Astro](https://docs.astro.build/en/guides/migrate-to-astro/from-gatsby/) to help all the people who, like me, want to move away from a dead platform. Initially I followed this documentation, but it soon became clear that the process was a lot less simple than the docs suggested, and I ended up basically just rewriting everything.
+Astro has [documentation on migrating Gatsby to Astro](https://docs.astro.build/en/guides/migrate-to-astro/from-gatsby/) to help all the people who, like me, are embarking on that journey. Initially I followed this documentation, but it soon became clear that the process was a lot less simple than the docs suggested, and I ended up basically just rewriting everything.
 
 I approached it methodically, focusing on one section of the site at a time, and making reusable components as I went.
 
