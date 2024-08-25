@@ -80,7 +80,7 @@ Of course I was also moving to TypeScript, so there was work involved in making 
 
 All up it took about two months of working in evenings and when I had time to spare on weekends to get something I deemed production ready.
 
-### Components
+### Porting components
 
 An Astro component is basically one file which bundles the vanilla HTML, JavaScript (or TypeScript), and CSS for that component, as well as frontmatter which runs at build time.
 
@@ -90,9 +90,9 @@ So to get the most out of astro, you need to think about which parts of the page
 
 In fact contrary to everything I thought I knew, a lot of the time React was making things harder, not easier. 
 
-An example of this was my Artists page component, which basically just wrapped a JS library ([ShuffleJS](https://vestride.github.io/Shuffle/)) in React. I replaced this with a custom web component which wraps that same library but in a tidier way without all the React cruft.
+An example of this was my Artists page component, which basically just wrapped a vanilla JS library ([ShuffleJS](https://vestride.github.io/Shuffle/)) in React via useRef hooks. I replaced this with a web component which wraps that same library but in a tidier way without all the React cruft.
 
-Similarly the maps component used on the Venue page was just a React MapboxGL component, so tearing out React made a lot of sense there.
+Similarly, the maps component used on the Venue page was just a React MapboxGL component, so tearing out React made a lot of sense there.
 
 Coming from 53 React components on Gatsby, I ended up with 39 Astro components and just 6 React components. The only components I chose to keep on React were ones which required a higher level of interactivity, but honestly I could probably move those to Web Components fairly easily too.
 
@@ -132,11 +132,11 @@ Getting the new [custom media queries](https://www.w3.org/TR/mediaqueries-5/#at-
 
 Something interesting I noticed is that the cascading aspect of cascading style sheets seems to have fallen out of favor. Everyone wants to write scoped styles now, so Astro's style tags can't be used to style child components, and Vanilla Extract makes you explicitly use a different function for writing styles that aren't scoped. I get why this is, but in some cases it made things a bit more cumbersome than I thought it should… But as I got used to it, it became natural and probably prevented some bad practices.
 
-### Media
+### Images and audio files
 
-The lesson I learnt from Gatsby is that static site generators are not intended to handle this many large files. Build directories are meant to be ephemeral and deletable without a big hassle, and having to re-generate tens of thousands of images is a big hassle. Also build systems sometimes to hash files to determine if they've changed, and if you have 100mb+ MP3s this can cause problems.
+The lesson I learnt from Gatsby is that static site generators are not intended to handle this many large files. Build directories are meant to be ephemeral and deletable without a big hassle, and having to re-generate tens of thousands of images is a big hassle. Also build systems sometimes like to hash files to determine if they've changed, and if you have 100mb+ MP3s this can cause problems.
 
-So I decided it would be better to run a secondary task to process all my images, and put the processed versions in a directory which Astro doesn't know about. This feels like added complexity, but I'm not sure if that's true.
+So I decided it would be better to run a secondary task to process all my images, and put the processed versions in the public directory which Astro just copies as is. This feels like added complexity because there are more parts to maintain, but I don't think it is.
 
 Confusing simplicity and minimalism is a common human foible in my experience. We see it in modern car design where, for aesthetic minimalism, all buttons and knobs are removed in favor of one central screen. 
 
@@ -158,19 +158,19 @@ Then I just wrote a simple script which uses Sharp to generate webp proxies in v
 
 <Image size="blog" responsiveImage={frontmatter.responsiveImages['cache-busting']} alt="The code which determines if files have changed"/>
 
-I tested this on a subset of media and found it to be very fast, much faster than Gatsby which tended to linger on “processing images” and doing *something*. Even on a mechanical disk it took minutes to check existing files for changes, and not much longer to generate proxies.
+I tested this on a subset of media and found it to be very fast, much faster than Gatsby which tended to linger on “processing images” while it was doing *something*. Even on a mechanical disk it took minutes to check existing files for changes, and not much longer to generate proxies.
 
 Once everything was tested, I did the big conversion from the old media to the new media. It needed to generate five aggregates for each of my 23,000+ photos, and was doing about one photo every two seconds, so it took a while.
 
-It's nice to know I have full control of this pipeline and can optimize it for my circumstances as opposed to Gatsby where I was at the whims of the open source community. It's already significantly faster at processing images.
+It's nice to know I have full control of this pipeline and can optimize it for my circumstances as opposed to Gatsby where I was at the whims of the open source community who wouldn't necessarily cater to my niche usecase.
 
 ### Redesign philosophy
 
 Honestly going in I didn't intend to do a redesign, but since I was building everything from scratch I ended up rethinking a lot of stuff and arriving upon a new philosophy.
 
-When I first designed the website, I was more motivated by what other sites did and what was "standard" web design. So I went for the usual mobile first web UX where everything is big, and most effort is put into the mobile experience. And this makes sense because mobile users are the majority. 
+When I first designed the website, I was more motivated by what other sites did and what was "standard" web design. So I went for the usual mobile first web UX where everything is big, and most effort is put into the mobile experience. And this made sense because mobile users are the majority. However, I've since realised it's overly simplistic to just look at minority/majority.
 
-However, different types of users are in different contexts eg. sitting at a computer vs on the couch with a device which can go in/out of your pocket, and apps which are begging for your attention. So desktop users probably have more time, are more likely to be more focused, and so I should provide them with tools which fit that context, even if they're a minority.
+Different types of users are in different contexts eg. sitting at a desk vs on the couch with a device which can easily go in and out of your pocket, and apps which are begging for your attention. So my theory is desktop users probably have more time, are more likely to be more focused, and so I should provide them with tools which fit that context, even if they're a minority.
 
 In a business you probably couldn't do this. You would look at a feature used by a low percentage of users and say "why do we have this feature? nobody is using it". Me on the other hand would say “wow those users must be epic, I better make that feature extra good for them”. I'm not driven by profit and bottom lines so I can afford to do that. 
 
@@ -202,7 +202,7 @@ Once I fixed the errors preventing build from happening, the build finished in 8
 
 It turned out that while Astro wasn't processing my images, it was still copying them from the `public` directory into the `dist` directory, and they were still exposed to Vite which I think was doing some sort of file hashing. 
 
-Removing the large files from my public directory so neither Astro or Vite knew about them at all reduced the build down to 15 minutes. So it became clear that my original plan of storing my files in the public directory wasn't going to work.
+Removing the large files from my public directory so neither Astro or Vite knew about them reduced the build down to 15 minutes. So it became clear that my original plan of storing my files in the public directory wasn't going to work.
 
 I ended up on a system where they're in `dist_media` which is symlinked into the `dist` directory on deploy, so there's only one copy of the files and neither Astro nor Vite need to care about them. I also had to remember to add this directory to the exclude list in all the configs to stop typescript and vite from looking at them or my dev server got very slow.
 
@@ -222,15 +222,15 @@ The [docs for deploying to S3](https://docs.astro.build/en/guides/deploy/aws/) a
 
 Since I'm just using the S3 CLI I can adjust the concurrency and consume more of my pipe... A data deploy with no new media is like 10 seconds, and a deploy with new images is much quicker than before.
 
-My new dist directory is ~100gb, compared to Gatsby's ~260gb (some of this will also be because the full resolution JPGs are now compressed with MozJPEG) which will save a bit of money.
+My new dist directory is ~100gb, compared to Gatsby's ~260gb (some of this will also be because the full resolution JPGs are now compressed with MozJPEG) which will also save a bit of money in hosting costs.
 
 <Image size="blog" responsiveImage={frontmatter.responsiveImages['deleted']} alt="Deleting my old S3 bucket"/>
 
 ## The result
 
-The resulting site is, I believe, easier to use, significantly faster, and will be much easier to dev on.
+The product of all this work is, I believe, easier to use, significantly faster, and will be much easier to dev on.
 
-I meant to measure the difference in payload size too but I forgot. But what's cool is how some pages require no JavaScript, or very little. The homepage for example contains no React components so it only sends 5kb of JavaScript. In contrast, every page on my Gatsby site shipped a JavaScript bundle which included React.
+I meant to measure the difference in payload size but I forgot. But what's cool is how some pages require no JavaScript, or very little. The homepage for example contains no React components so it only sends 5kb of JavaScript. In contrast, every page on my Gatsby site shipped a JavaScript bundle which included React.
 
 <Image size="blog" responsiveImage={frontmatter.responsiveImages['pagespeed_desktop']} alt="Pagespeed performance score on desktop"/>
 
@@ -238,11 +238,11 @@ I meant to measure the difference in payload size too but I forgot. But what's c
 
 I also feel far more confident that this version of the site will remain maintainable for a longer term than Gatsby. I hopefully shouldn't have to delve into Astro's source code to solve niche problems.
 
-Compared to Gatsby Astro is lower level, more flexible, and does less “magic” stuff for you. This suits me perfectly, it takes away a lot of guesswork, but it also means it gives you less out of the box and requires more code (although my total line count still ended up slightly less than the Gatsby version). 
+Compared to Gatsby Astro is lower level, more flexible, and does less “magic” stuff for you. This suits me perfectly, it takes away a lot of guesswork, but it also means it gives you less out of the box and requires more code (although my total line count still ended up slightly less than the Gatsby version).
 
 It feels like Astro maintainers are really trying to reduce dependencies and encourage the use of web standards rather than relying on something which inevitably stops being maintained. I can really see a future where Web Components takeover from frameworks.
 
-Basically I really like Astro. It feels just thin enough to be useful instead of cumbersome, it doesn't get in the way when it shouldn't, and it provides a platform to use evolving web standards as opposed to some persons library which they will get bored of and stop maintaining in a few years. I just hope the "thinness" is a deliberate design decision rather than because it's new and immature.
+Basically I really like Astro. It feels just thin enough to be useful instead of cumbersome, it doesn't get in the way when it shouldn't, and it provides a platform to use evolving web standards as opposed to some persons library which they will get bored of and stop maintaining in a few years. I just hope the "thinness" is a deliberate design decision rather than just because it's new and immature. Only time will tell.
 
 I also hope it doesn't go the way of Gatsby and get eaten by worms.
 
