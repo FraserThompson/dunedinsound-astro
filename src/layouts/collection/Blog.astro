@@ -13,6 +13,7 @@ import { backButton } from 'src/components/gig/GigsMenu.css'
 import ImageGalleryLightbox from 'src/components/ImageGalleryLightbox.astro'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import ShareButton from 'src/components/ShareButton.astro'
+import { BlogTextContainer, BlogPageContainer } from './Blog.css'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>
@@ -24,27 +25,27 @@ const { Content, headings } = await entry.entry.render()
 const entryData = entry.entry.data
 const entryExtra = entry.extra
 
-console.log(headings)
 ---
-
-{entryExtra.cover && <Banner backgroundImage={entryExtra.cover} title={entryData.title}>
-		<ShareButton
-			style={{ position: 'absolute', left: '50%', transform: 'translate(-50%)' }}
-			shareData={{
-				title: 'ARTICLE: ' + entryData.title,
-				url: 'https://dunedinsound.com' + entryExtra.slug,
-				text: `${entryData.description}.`
-			}}/>
+{entryExtra.cover && <Banner backgroundImage={entryExtra.cover} backgroundImageVertical={entryExtra.coverVertical} title={entryData.title}>
+<ShareButton
+	style={{ position: 'absolute', left: '50%', transform: 'translate(-50%)' }}
+	shareData={{
+		title: 'ARTICLE: ' + entryData.title,
+		url: 'https://dunedinsound.com' + entryExtra.slug,
+		text: `${entryData.description}.`
+	}}/>
 </Banner>}
-<div style={{ display: 'flex', maxWidth: '1600px', margin: '0 auto' }}>
-	<BlogSidebar className="hideMobile" entry={entry} />
-	<TextContainer>
-		<Content components={{ Player, Image }} />
-	</TextContainer>
+<div class={BlogPageContainer} id="overview">
+	<BlogSidebar className="hideMobile" entry={entry} headings={headings}/>
+	<div class={BlogTextContainer}>
+		<TextContainer>
+			<Content components={{ Player, Image }} />
+		</TextContainer>
+	</div>
 </div>
 <div class="showMobile">
 	<SidebarNav customButton={true}>
-		<BlogSidebar slot="sidebarMenu" entry={entry} />
+		<BlogSidebar slot="sidebarMenu" entry={entry} headings={headings} />
 		<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href="/blog">
 			<ChevronLeftIcon /> Go to articles home
 		</a>
@@ -54,7 +55,7 @@ console.log(headings)
 <div class="padding">
 	<hr />
 	<ul>
-		{
+	{
 			entry.prev && (
 				<li>
 					<a href={getEntryPath(entry.prev.data.title, 'blog')} rel="prev">

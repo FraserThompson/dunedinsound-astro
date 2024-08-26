@@ -68,7 +68,6 @@ export const MenuLi = styleVariants({
 })
 
 const MenuLinkWrapperBase = style({
-	position: 'relative',
 	boxSizing: 'border-box',
 	color: theme.color.text,
 	width: '100%',
@@ -106,6 +105,7 @@ export const MenuLinkWrapper = styleVariants({
 		{
 			display: 'inline-flex',
 			justifyContent: 'center',
+			position: 'relative',
 			alignItems: 'center',
 			borderBottom: 'none',
 			borderTop: 'none',
@@ -137,6 +137,7 @@ export const MenuLinkWrapper = styleVariants({
 		MenuLinkWrapperBase,
 		{
 			boxSizing: 'content-box',
+			position: 'relative',
 			writingMode: 'vertical-rl',
 			textOrientation: 'mixed',
 			textAlign: 'center',

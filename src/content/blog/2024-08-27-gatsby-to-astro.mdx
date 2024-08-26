@@ -1,9 +1,8 @@
 ---
 title: How I rewrote my HUGE Gatsby site in Astro and learned to love it in the process
-date: 2024-08-24T07:00:00.000Z
+date: 2024-08-27T07:00:00.000Z
 author: Fraser Thompson
-description: yeah
-hidden: true
+description: Gatsby is dead, so I spent two months rewriting my 100gb+ site in Astro.
 tags:
   - Tech
   - WebDev
@@ -12,23 +11,23 @@ import Image from "src/components/LightboxImage.astro"
 
 If you come here often you might have noticed some changes.
 
-If you're on desktop, maybe you noticed things are smaller? If you're on mobile the changes are less major, but hopefully you noticed the easier navigation?
+On desktop everything is smaller... On mobile it's easier to navigate... Images are higher quality...
 
-And no matter what device you're on you should have noticed everything is a lot faster.
+Everything is faster. Happier. More productive. 
 
 This is the result of two months laboring in the code mines to move my website from Gatsby to Astro.
 
-I encountered some fairly unique problems since there aren't really many (or any?) other Gatsby/Astro sites with hundreds of gigabytes of images and audio like mine.
+There aren't really many (or any?) other Gatsby/Astro sites with hundreds of gigabytes of images and audio like mine, so I encountered some interesting problems during the migration.
 
-So I'm going to describe how the process went, as well as some thoughts that occurred to me along the way. Hopefully my experiences will be useful if you're in a similar position, or if you're just curious about how this sort of site comes to be.
+I'm going to summarize how that process went, as well as thoughts that occurred to me along the way. Hopefully my experiences will be useful if you're in a similar position, or if you're just curious about how this sort of site comes to be.
 
-## Why
+## Why leave gatsby?
 
 If you've spent any amount of time in web dev you'll know about the churn: The tech everyone loves one month is hated the next month, and not *necessarily* because of anything inherent to the tech. As they say in web dev, one day you're in, and the next day you're out. 
 
-My old site was written for Gatsby. I chose Gatsby because at the time it was the static site generator everyone liked. And I liked it too, the GraphQL stuff was useful for a site as data-driven as mine, almost like having a real database but only in the build process.
+My old site was written for [Gatsby](https://www.gatsbyjs.com/). I chose Gatsby because at the time it was the static site generator everyone liked. And I liked it too, the GraphQL stuff was useful for a site as data-driven as mine, almost like having a real database but only in the build process.
 
-I also had high hopes for the image processing system, a major feature of Gatsby. My site has over 20,000 photos, and I wanted to process and serve these at optimal resolutions for all devices, to help speed up the user experience, and also save hosting costs. 
+I also had high hopes for the image processing and rendering system, a major feature of Gatsby. My site has over 20,000 photos, and I wanted to process and serve these at optimal resolutions for all devices, to help speed up the user experience, and also save hosting costs. 
 
 Before Gatsby, I was using custom scripts to process images separately from the site. At the time this felt clumsy. Gatsby in contrast would handle everything without any fuss, I would be able to just say “give me all the images associated with this gig” and I'd get nice responsive image components. That was the dream anyway.
 
@@ -98,9 +97,11 @@ Coming from 53 React components on Gatsby, I ended up with 39 Astro components a
 
 Web Components API on its own is neat, but Astro provides a really nice framework around it. It feels like a natural fit for architecting an application with web components.
 
-### Collections
+### Making ollections
 
 Instead of defining a GraphQL schema like in Gatsby (or allowing it to be inferred), we have this concept of [“content collections”](https://docs.astro.build/en/guides/content-collections/) in Astro. These can automatically generate types for typescript (very nice), and allow you to generate a page dynamically from a slug for each “entry” in the collection.
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['collection-schema']} alt="Schema for a gig"/>
 
 Out of the box they're fairly simple, only offering access to frontmatter fields, which probably works for most users. But, in classic Astro style, you can roll your own methods for doing just about anything to these guys.
 
@@ -110,21 +111,21 @@ For my purposes I defined an interface for adding “extra” fields to the buil
 
 For example, all entries would get an absolutePath, and a cover image. Gig entries would have their related entities (Artists and Venues) queried and attached, to save having to query this information multiple times in multiple places. And this also made it possible to bypass Astro's built in image system and use my own.
 
-I initially felt like Astro should have a built-in mechanism for adding fields to entries (like Gatsby does in `gatsby-node.js`), but at the same time, why write a system for something which is already possible?
+I initially felt like Astro should have a built-in mechanism for adding fields to entries (like Gatsby does in `gatsby-node.js`), but why write a system for something which is already possible?
 
-### Styles
+### Porting styles
 
-I was using styled components, and [styled components aren't *really* compatible with the way Astro does things](https://github.com/withastro/astro/issues/4432), so I had to pick a new approach. 
+I was using styled components in Gatsby, and [styled components aren't *really* compatible with the way Astro does things](https://github.com/withastro/astro/issues/4432), so I had to pick a new approach. 
 
-Astro encourages you to just put styles in style tags, which it then processes underneath to make sure they're scoped, but there were a few issues with this from my perspective.
+Astro encourages you to just put styles in style tags, which it then processes underneath via postCSS to scope them and whatever else, but there were a few issues with this from my perspective.
 
-The major one was that passing variables into these style tags made the style inline. I use variables sitewide for things like themes, and components which set dynamic styles based on props, and I don't want all my styles to be inline.
+The major one was that passing variables into these style tags made the style inline. I have components which set dynamic styles based on props, and I don't want all these styles to be inline.
 
 Also I needed a solution for my React components anyway.
 
 So I went with [Vanilla Extract](https://vanilla-extract.style/) instead. I enjoyed the API, it let me write dynamic styles in TypeScript which are then compiled down to CSS for the browser (however later Vanilla Extract started causing me problems, so I'm not sure if this was the right decision).
 
-I also ripped out Rhythm and Scale, which I thought was a cool idea but it's dead with Gatsby. I just set base sizes with variables and use CSS calc. I kept [Polished](https://polished.js.org/) though, I think it's neat. And instead of Emotion's global theme provider, I used Vanilla Extract's theme provider which basically just sets CSS variables.
+I also ripped out Rhythm and Scale, which I thought was a cool idea but it's dead with Gatsby. I just set base sizes with variables and use CSS calc instead. I kept [Polished](https://polished.js.org/) though, I think it's neat. And instead of Emotion's global theme provider, I used Vanilla Extract's theme provider which basically just sets CSS variables.
 
 The result means all my CSS is now actually CSS, and not CSS in JS as with styled components, which *should* result in a performance improvement.
 
@@ -134,15 +135,15 @@ Something interesting I noticed is that the cascading aspect of cascading style 
 
 ### Images and audio files
 
-The lesson I learnt from Gatsby is that static site generators are not intended to handle this many large files. Build directories are meant to be ephemeral and deletable without a big hassle, and having to re-generate tens of thousands of images is a big hassle. Also build systems sometimes like to hash files to determine if they've changed, and if you have 100mb+ MP3s this can cause problems.
+The lesson I learnt from Gatsby is that static site generators are not intended to handle this many large files. Build directories are meant to be ephemeral and deletable without a big hassle, and having to re-generate tens of thousands of images is a big hassle. Also build systems sometimes like to hash files to determine if they've changed, and if you have 100mb+ MP3s this can be very slow.
 
-So I decided it would be better to run a secondary task to process all my images, and put the processed versions in the public directory which Astro just copies as is. This feels like added complexity because there are more parts to maintain, but I don't think it is.
+So I decided it would be better to run a secondary task to process all my images, and put the processed versions in the public directory which Astro just copies as is. This feels like added complexity because there are more parts to maintain, but I think paradoxically it's actually less complex.
 
-Confusing simplicity and minimalism is a common human foible in my experience. We see it in modern car design where, for aesthetic minimalism, all buttons and knobs are removed in favor of one central screen. 
+Confusing simplicity and minimalism is a common human foible. We see it in modern car design where, for aesthetic minimalism, all buttons and knobs are removed in favor of one central screen. 
 
-But, contrary to what your brain might think on first impression, navigating through three layers of menu to adjust the temperature is less simple than sliding a slider, even if having multiple sliders for the temperature seems more “complex”. 
+But, contrary to what your brain might think on first impression, navigating through three layers of menu to adjust the temperature is less *simple* than sliding a slider, even if having multiple sliders for the temperature seems more *complex*. 
 
-Similarly, running one command to build your site and relying entirely on third-party dependencies to know what to do might seem more simple, but because you're essentially dealing with multiple nested blackboxes, like me you might run into problems which will add complexity.
+Similarly, running one command to build your site and relying entirely on third-party dependencies to know how to do it might seem more simple, but because you're essentially dealing with multiple nested blackboxes, like me you might run into problems which will add complexity.
 
 #### How I did this
 
@@ -150,25 +151,25 @@ Without GraphQL I had to find a way to dynamically grab files related to each co
 
 Then it was just a matter of coming up with a convention for storing media, and writing a script for processing it and moving it around.
 
-The convention I settled on was `filename/[contentdigest].[width].webp`. Then I made a ResponsiveImage class which absorbs a directory of these images and parses them into srcsets and sizes to use with an image tag.
+The convention I settled on was `filename/[contentdigest].[width].webp`. Then I made a [ResponsiveImage class](https://github.com/FraserThompson/dunedinsound-astro/blob/main/src/util/ResponsiveImage.ts) which absorbs a directory of these images and parses them into srcsets and sizes to use with an image tag.
 
 <Image size="blog" responsiveImage={frontmatter.responsiveImages['media-dirs']} alt="An example of image proxies"/>
 
-Then I just wrote a simple script which uses Sharp to generate webp proxies in various sizes and spits them out following my convention. It generates a digest of each file which it can compare to input file metadata to know if it's changed and needs to generate a new one (the same method I used for the fastHash option in Gatsby).
+Then I just wrote a [simple script](https://github.com/FraserThompson/dunedinsound-astro/blob/main/scripts/generateMedia.mjs) which uses Sharp to generate WEBP proxies in various sizes and spits them out following my convention. It generates a content digest of each file which it can compare to input file metadata to know if it's changed and needs to generate a new one (the same method I used for the `fastHash` option in Gatsby).
 
 <Image size="blog" responsiveImage={frontmatter.responsiveImages['cache-busting']} alt="The code which determines if files have changed"/>
 
 I tested this on a subset of media and found it to be very fast, much faster than Gatsby which tended to linger on “processing images” while it was doing *something*. Even on a mechanical disk it took minutes to check existing files for changes, and not much longer to generate proxies.
 
-Once everything was tested, I did the big conversion from the old media to the new media. It needed to generate five aggregates for each of my 23,000+ photos, and was doing about one photo every two seconds, so it took a while.
+Once everything was tested, I did the big conversion from the old media to the new media. It needed to generate five aggregates for each of my photos, and was doing about one photo every two seconds, so it took a while.
 
-It's nice to know I have full control of this pipeline and can optimize it for my circumstances as opposed to Gatsby where I was at the whims of the open source community who wouldn't necessarily cater to my niche usecase.
+While there's undoubtedly more code to maintain, it feels good to know I have full control of this pipeline and can optimize it for my circumstances as opposed to Gatsby where I was at the whims of the open source community who wouldn't necessarily cater to my niche usecase (understandably).
 
-### Redesign philosophy
+## Redesign philosophy
 
-Honestly going in I didn't intend to do a redesign, but since I was building everything from scratch I ended up rethinking a lot of stuff and arriving upon a new philosophy.
+Going in I didn't intend to do a redesign, but since I was building everything from scratch I ended up rethinking a lot of stuff.
 
-When I first designed the website, I was more motivated by what other sites did and what was "standard" web design. So I went for the usual mobile first web UX where everything is big, and most effort is put into the mobile experience. And this made sense because mobile users are the majority. However, I've since realised it's overly simplistic to just look at minority/majority.
+When I first designed the website, I was more motivated by what other sites did and what was "standard" web design. So I did the usual mobile first web UX where everything is big, and most effort is put into the mobile experience. This makes sense because mobile users are the majority. However, I've since realised it's overly simplistic to just look at minority/majority.
 
 Different types of users are in different contexts eg. sitting at a desk vs on the couch with a device which can easily go in and out of your pocket, and apps which are begging for your attention. So my theory is desktop users probably have more time, are more likely to be more focused, and so I should provide them with tools which fit that context, even if they're a minority.
 
@@ -176,7 +177,7 @@ In a business you probably couldn't do this. You would look at a feature used by
 
 And this is the attitude the internet was founded on, before the rise of the monolithic platforms. It was just a bunch of weirdos in basements coding up stuff they thought other people might like. It wasn't about appealing to anyone with fingers, it was about appealing to the people you wanted to appeal to.
 
-So my goal was mobile first but desktop enhanced. Mobile functional, desktop flourishing, moisturized, in its lane.
+So my goal was mobile first but desktop enhanced. Mobile functional, desktop flourishing. Moisturized. In its lane.
 
 An example of this philosophy is the fixed side nav on desktop. Desktop monitors are wide, so it's ok to sacrifice some horizontal real estate to a fixed navigation element if it makes users lives easier. And with so much content, ease of navigation is especially important. The point of the site isn't just one gig/artist/venue, it's the mise en scene. Then on mobile this navigation can just collapse down into a menu.
 
@@ -186,17 +187,17 @@ Also on desktop we don't have to make click targets big enough for people's fing
 
 More stuff on screen where there's space should make it easier to navigate the library, but at the expense of visual impact, and at the risk of scaring people with visual clutter. But I don't care about visual impact as much as usability. I prefer simplicity over minimalism.
 
-### The first build
+## The first build
 
 I sort of expected this to be where errors show up due to the sheer size of it all, and I wasn't wrong.
 
-#### Vanilla extract
+### Vanilla extract
 
 I first ran into errors with vanilla-extract (“The server is being restarted or closed. Request is outdated”).
 
 Downgrading the Vite plugin to 3.9.5 seemed to fix it (second time I've had to downgrade it...) but then this broke a bunch of stuff in the style composition and I had to add some \!importants. In general the Vanilla Extract Vite integration seems quite buggy, so bear that in mind.
 
-#### File copying woes
+### File copying woes
 
 Once I fixed the errors preventing build from happening, the build finished in 81 minutes, which is a lot longer than I expected. It seemed to be idle for much of the build too. So I went searching for answers.
 
@@ -216,7 +217,7 @@ By doing this I was able to get the entire build process down to under a minute.
 
 <Image size="blog" responsiveImage={frontmatter.responsiveImages['build-done']} alt="Fast build"/>
 
-### Deploy
+## Deploying it
 
 The [docs for deploying to S3](https://docs.astro.build/en/guides/deploy/aws/) are basically like "you want to deploy to s3? ok, use the AWS CLI" which is pretty funny, but I think it's better than writing a complex integration which requires lots of maintenance and basically does what the CLI does except worse (aka Gatsby's approach).
 
@@ -226,7 +227,7 @@ My new dist directory is ~100gb, compared to Gatsby's ~260gb (some of this will 
 
 <Image size="blog" responsiveImage={frontmatter.responsiveImages['deleted']} alt="Deleting my old S3 bucket"/>
 
-## The result
+## Final thoughts
 
 The product of all this work is, I believe, easier to use, significantly faster, and will be much easier to dev on.
 
@@ -248,10 +249,10 @@ I also hope it doesn't go the way of Gatsby and get eaten by worms.
 
 <hr/>
 
-As a sidenote, I've noticed this "the internet is dead" sentiment growing recently and it bothers me.
+As a sidenote, I've noticed "the internet is dead" growing recently as a sentiment and it bothers me.
 
 I get why, there's been progressively more rot introduced to the internet as it has matured, but it's still a massively awesome place and that hasn't really changed since its inception. There's just more trash to sift through. 
 
 It can be whatever you want it to be. If it's not catering to you then make something. You literally have the capacity to connect with billions of other people.
 
-Bring back Y2K cyberutopian thinking.
+Bring back Y2K cyberutopian thinking imo.

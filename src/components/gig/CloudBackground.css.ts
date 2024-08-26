@@ -3,7 +3,7 @@ import { keyframes, style } from '@vanilla-extract/css'
 export const CloudsWrapper = style({ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%' })
 
 const animateCloud = keyframes({
-	'0%': { marginLeft: '-1000px' },
+	'0%': { marginLeft: '-2000px' },
 	'100%': { transform: '100%' }
 })
 

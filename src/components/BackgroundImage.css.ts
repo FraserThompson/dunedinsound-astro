@@ -13,6 +13,28 @@ export const backgroundImageWrapper = style({
 	}
 })
 
+globalStyle(`${backgroundImageWrapper}.hasVertical .backgroundImageVertical`, {
+	'@media': {
+		'screen and (orientation: landscape)': {
+			display: 'none'
+		},
+		'screen and (orientation: portrait)': {
+			display: 'block'
+		}
+	}
+})
+
+globalStyle(`${backgroundImageWrapper}.hasVertical .backgroundImage`, {
+	'@media': {
+		'screen and (orientation: landscape)': {
+			display: 'block'
+		},
+		'screen and (orientation: portrait)': {
+			display: 'none'
+		}
+	}
+})
+
 globalStyle(`${backgroundImageWrapper} img`, {
 	width: '100%',
 	zIndex: '0'

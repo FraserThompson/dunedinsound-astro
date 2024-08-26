@@ -8,6 +8,8 @@ import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import GridContainer from 'src/components/GridContainer.astro'
 import { gridChild } from 'src/components/GridChild.css'
 import GridChild from 'src/components/GridChild.astro'
+import { tagLink } from 'src/components/blog/BlogTags.css'
+import BlogTile from 'src/components/blog/BlogTile.astro'
 
 const gigs = await loadAndFormatCollection('gig')
 const blogs = await loadAndFormatCollection('blog')
@@ -37,13 +39,7 @@ combinedPosts.splice(latestGigIndex, 1)
 						post.entry.collection === 'gig' ? (
 							<GigTile gig={post as ProcessedEntry<'gig'>} responsiveImageSizes={'largeGrid'} backgroundStyle="full" />
 						) : (
-							<Tile
-								title={post.entry.data.title}
-								href={post.extra.absolutePath}
-								responsiveImage={post.extra.cover}
-								responsiveImageSizes={'largeGrid'}
-								backgroundStyle="full"
-							/>
+							<BlogTile blog={post as ProcessedEntry<'blog'>} responsiveImageSizes={'largeGrid'} backgroundStyle="full" />
 						)
 					)
 			}
@@ -63,16 +59,7 @@ combinedPosts.splice(latestGigIndex, 1)
 										backgroundStyle="full"
 									/>
 								) : (
-									<Tile
-										className={gridChild}
-										title={post.entry.data.title}
-										subtitle={post.entry.data.date.toLocaleDateString()}
-										label="ARTICLE"
-										href={post.extra.absolutePath}
-										responsiveImage={post.extra.cover}
-										responsiveImageSizes={'largeGrid'}
-										backgroundStyle="full"
-									/>
+									<BlogTile blog={post as ProcessedEntry<'blog'>} responsiveImageSizes={'largeGrid'} backgroundStyle="full" />
 								)}
 							</GridChild>
 						))
@@ -82,14 +69,14 @@ combinedPosts.splice(latestGigIndex, 1)
 	</GridContainer>
 	<FlexGridContainer grid={{ xs: 6 }}>
 		<Tile
-			containerHeight={theme.dimensions.headerHeightWithSubheader}
+			containerHeight={'50px'}
 			href="/gigs"
 			backgroundColor={theme.color.foreground}
 		>
 			<h3 class="center">More Gigs</h3>
 		</Tile>
 		<Tile
-			containerHeight={theme.dimensions.headerHeightWithSubheader}
+			containerHeight={'50px'}
 			href="/blog"
 			backgroundColor={theme.color.secondary}
 		>

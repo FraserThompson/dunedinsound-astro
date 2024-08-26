@@ -104,13 +104,13 @@ const GigsJukebox: FunctionalComponent = () => {
 					</div>
 					{currentGig && (
 						<ul className={`${TracklistWrapper}`}>
+							<li className={`${TracklistTrack} noHover`}>Date: {new Date(currentGig.entry.data.date).toLocaleDateString()}</li>
 							<li className={`${TracklistTrack} noHover`}>
 								Gig: {currentGig.entry.data.title}
 								<a href={currentGig.extra.absolutePath} title="Gig page" target="_blank" style={{ marginLeft: "10px", color: "blue" }}>
 									(Go to gig page)
 								</a>
 							</li>
-							<li className={`${TracklistTrack} noHover`}>Date: {new Date(currentGig.entry.data.date).toLocaleDateString()}</li>
 							{currentArtist && <li className={`${TracklistTrack} noHover`}>
 								Artist: {currentArtist.entry.data.title || 'Unknown'}
 								<a target="_blank" title={currentArtist.entry.data.title} href={`${currentArtist.extra.absolutePath}`} style={{ marginLeft: "10px", color: "blue" }}>

@@ -15,6 +15,7 @@ type EntryExtraCommon = {
 	absolutePath: string
 	metaDescription?: string
 	cover?: ResponsiveImage
+	coverVertical?: ResponsiveImage
 	images?: { [id: string]: ResponsiveImage }
 }
 
@@ -202,13 +203,14 @@ async function getCommonExtra<C extends CollectionKey>(entry: CollectionEntry<C>
 	const postSlug = getEntrySlug(title, entry.collection)
 
 	const images = await getResponsiveImagesByDir(`${DIST_MEDIA_DIR}/${entry.collection}/${getEntryId(entry)}`, title)
-	images && delete images['cover']
+	images && delete images['cover'] && delete images['cover_vertical']
 
 	return {
 		slug: postSlug,
 		metaDescription,
 		absolutePath: getEntryPath(postSlug, entry.collection),
 		cover: await getCover(entry),
+		coverVertical: await getCover(entry, 'cover_vertical'),
 		images: images
 	}
 }
@@ -438,11 +440,15 @@ export async function getVenueExtra(
 /**
  * Gets the cover image srcset for an entry.
  * @param entry
+ * @param name the name of the file (defualts to cover)
  * @returns ResponsiveImage object for cover image.
  */
-export async function getCover(entry: CollectionEntry<CollectionKey>): Promise<ResponsiveImage | undefined> {
+export async function getCover(
+	entry: CollectionEntry<CollectionKey>,
+	name: string = 'cover'
+): Promise<ResponsiveImage | undefined> {
 	const type = entry.collection
-	const dir = `${DIST_MEDIA_DIR}/${type}/${getEntryId(entry)}/cover`
+	const dir = `${DIST_MEDIA_DIR}/${type}/${getEntryId(entry)}/${name}`
 	const image = await getResponsiveImage(dir)
 	if (image) image.alt = `Cover image for ${entry.data.title}`
 	return image

@@ -6,33 +6,48 @@
  *
  * Props:
  *  - entry: The current entry for the page.
+ *  - headings: All headings in the article.
+ *  - className (optional): A class added to the wrapper.
  */
 import { type ProcessedEntry } from 'src/util/collection'
-import { blogSidebarWrapper, featuredLinks } from './BlogSidebar.css'
+import { blogSidebarWrapper, sidebarBox } from './BlogSidebar.css'
 import { theme } from 'src/Theme.css'
 import { socialLinksToMenuItems } from 'src/util/helpers'
+import type { MarkdownHeading } from 'astro'
+import generateToc from 'src/util/toc'
+import TableOfContentsHeading from './TableOfContentsHeading.astro'
+import { tagLink } from 'src/components/blog/BlogTags.css'
+import { toMachineName } from 'scripts/scriptHelpers.mjs'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>
+	headings: MarkdownHeading[]
 	className?: string
 }
 
-const { entry, className = '' } = Astro.props
+const { entry, headings, className = '' } = Astro.props
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
----
 
+const toc = generateToc(headings)
+---
 <div class={`${blogSidebarWrapper} ${className}`}>
 	<div>
-		<small style={{ color: theme.color.dullText }}>Published {entryData.date.toLocaleDateString()}</small>
+		<small style={{ color: theme.color.dullText }}>
+			Published {entryData.date.toLocaleDateString()}
+			{entryData.tags.map((tag) => 
+				<a class={`${tagLink}`} title={tag} href={`/blog/tags/${toMachineName(tag)}/`}>
+					{tag}
+				</a>
+			)}
+		</small>
 	</div>
 	{
 		!!entryExtra.relatedArtists.length && (
-			<div class={featuredLinks}>
+			<div class={sidebarBox}>
 				<h3>Artists featured in this article</h3>
 				{entryExtra.relatedArtists.map((artist) => (
-					<div>
 						<h4>
 							<a href={`/artists/${artist.id}`}>{artist.data.title}</a>
 						</h4>
@@ -45,39 +60,78 @@ const entryExtra = entry.extra
 								</li>
 							))}
 							<li>
-								<a href={artist.id}>GIGS</a>
+								<a href={`/artists/${artist.id}`}>GIGS</a>
 							</li>
 						</ul>
-					</div>
 				))}
 			</div>
 		)
 	}
 	{
 		!!entryExtra.relatedVenues.length && (
-			<div class={featuredLinks}>
+			<div class={sidebarBox}>
 				<h3>Venues featured in this article</h3>
 				{entryExtra.relatedVenues.map((venue) => (
-					<div>
-						<h4>
-							<a href={`/venues/${venue.id}`}>{venue.data.title}</a>
-						</h4>
-						<ul>
-							{socialLinksToMenuItems(venue.data.links).map((item) => (
-								<li>
-									<a href={item.href} style={{ marginRight: theme.dimensions.basePadding }}>
-										{item.title}
-									</a>
-								</li>
-							))}
+					<h4>
+						<a href={`/venues/${venue.id}`}>{venue.data.title}</a>
+					</h4>
+					<ul>
+						{socialLinksToMenuItems(venue.data.links).map((item) => (
 							<li>
-								<a href={venue.id}>GIGS</a>
+								<a href={item.href} style={{ marginRight: theme.dimensions.basePadding }}>
+									{item.title}
+								</a>
 							</li>
-						</ul>
-					</div>
+						))}
+						<li>
+							<a href={`/venues/${venue.id}`}>GIGS</a>
+						</li>
+					</ul>
 				))}
 			</div>
 		)
 	}
+	{toc.length > 1  && 
+		<nav class={`${sidebarBox} toc`} style={{ position: 'sticky', top: '0px' }}>
+			<ul>
+				{toc.map((heading) => <TableOfContentsHeading heading={heading}/>)}
+			</ul>
+		</nav>
+	}
 	<slot />
 </div>
+
+<script>
+
+	const sections = document.querySelectorAll('article section.heading')
+
+	const options = {
+		rootMargin: '0px 0px -97%'
+	}
+
+	/**
+	 * Highlights item in the content when its section is scrolled over
+	 */
+	const callback = (entries: IntersectionObserverEntry[]) => {
+		entries.forEach((entry) => {
+			const heading = entry.target.querySelector('h2, h3, h4, h5')
+      if (!heading) return
+
+      const id = heading.getAttribute('id')
+
+      // Get the link to this section's heading
+      const link = document.querySelector(`nav.toc li a[href="#${id}"]`)
+      if (!link) return
+
+			if (entry.isIntersecting) {
+				link.classList.add('active')
+			} else {
+				link.classList.remove('active')
+			}
+		})
+	}
+
+	const observer = new IntersectionObserver(callback, options)
+	sections.forEach((el) => observer.observe(el))
+
+</script>

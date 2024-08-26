@@ -1,0 +1,39 @@
+---
+/**
+ * A regular tile but pre-filled with blog metadata.
+ */
+ import type { ProcessedEntry } from 'src/util/collection'
+import Tile, { type BackgroundStyle } from '../Tile.astro'
+import type { ResponsiveImageSizes } from '../Image2.astro'
+import { tagLink } from './BlogTags.css'
+
+interface Props {
+	blog: ProcessedEntry<'blog'>
+	containerHeight?: string
+	containerHeightMobile?: string
+	responsiveImageSizes?: keyof ResponsiveImageSizes
+	backgroundStyle?: BackgroundStyle
+}
+
+const { blog, containerHeight, containerHeightMobile, backgroundStyle, responsiveImageSizes } = Astro.props
+
+const blogData = blog.entry.data
+const blogExtra = blog.extra
+---
+
+<Tile
+	title={`ARTICLE: ${blogData.title}`}
+	label={blogData.date.toLocaleDateString()}
+	href={blogExtra.absolutePath}
+	responsiveImage={blogExtra.cover}
+	responsiveImageSizes={responsiveImageSizes}
+	backgroundStyle={backgroundStyle}
+	containerHeight={containerHeight}
+	containerHeightMobile={containerHeightMobile}
+	>
+	{blogData.tags.map((tag) => 
+		<span class={`${tagLink}`} title={tag}>
+		{tag}
+		</span>
+	)}
+</Tile>

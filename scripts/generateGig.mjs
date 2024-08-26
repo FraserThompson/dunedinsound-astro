@@ -14,21 +14,12 @@
 
 import fs from 'fs-extra'
 import rl from 'readline'
+import { toMachineName, getCurrentDatePrefix } from './scriptHelpers.mjs'
 
-export const toMachineName = (string, space_character) => {
-	space_character = space_character || '_'
-	return string
-		.toLowerCase()
-		.replace(/[!,.':#()&?]/g, '')
-		.replace(/\s/g, space_character)
-		.replace(/[$]/g, 'z')
-}
-
-export const getCurrentDatePrefix = () => {
-	const d = new Date()
-	return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + (d.getDate() - 1)
-}
-
+/*
+    Creates a template artist YAML file.
+    Params: artist name
+*/
 const create_artist_page = (artist) => {
 	const artistTemplate = `title: ${artist}`
 
@@ -42,6 +33,10 @@ const create_artist_page = (artist) => {
 	}
 }
 
+/*
+    Creates a template venue YAML file.
+    Params: venue name
+*/
 const create_venue_page = (venue) => {
 	const venueTemplate = `title: ${venue}`
 
@@ -55,7 +50,7 @@ const create_venue_page = (venue) => {
 }
 
 /*
-    Creates a template YAML file populated with all the artists and venue.
+    Creates a template gig YAML file populated with all the artists and venue.
     Params: Date, Gig title, venue name, array of artists
 */
 const create_gig_yaml = (date, gig, venue, artists) => {
@@ -93,31 +88,27 @@ artists:
 	create_venue_page(venue)
 }
 
-const main = () => {
-	var prompts = rl.createInterface(process.stdin, process.stdout)
-	const default_date = getCurrentDatePrefix()
+var prompts = rl.createInterface(process.stdin, process.stdout)
+const default_date = getCurrentDatePrefix()
 
-	console.log('Hello Fraser! Let me help you with that.')
-	console.log('------------- GIG METADATA -------------')
+console.log('Hello Fraser! Let me help you with that.')
+console.log('------------- GIG METADATA -------------')
 
-	prompts.question('Date (default: ' + default_date + '):', (date) => {
-		if (!date) date = default_date
+prompts.question('Date (default: ' + default_date + '):', (date) => {
+	if (!date) date = default_date
 
-		prompts.question('Title: ', (gig) => {
-			if (!gig) console.log("You didn't enter anything...")
+	prompts.question('Title: ', (gig) => {
+		if (!gig) console.log("You didn't enter anything...")
 
-			prompts.question('Venue: ', (venue) => {
-				if (!venue) console.log("You didn't enter anything...")
+		prompts.question('Venue: ', (venue) => {
+			if (!venue) console.log("You didn't enter anything...")
 
-				prompts.question('Artists (comma separated): ', (artists) => {
-					artists = artists.split(',')
-					const trimmed_artists = artists.map((s) => s.trim())
-					create_gig_yaml(date, gig, venue, trimmed_artists)
-					process.exit()
-				})
+			prompts.question('Artists (comma separated): ', (artists) => {
+				artists = artists.split(',')
+				const trimmed_artists = artists.map((s) => s.trim())
+				create_gig_yaml(date, gig, venue, trimmed_artists)
+				process.exit()
 			})
 		})
 	})
-}
-
-main()
+})

@@ -21,7 +21,7 @@ interface Props {
 const { verticalImage, responsiveImage, responsiveImageSizes = 'full', loading = 'lazy' } = Astro.props
 ---
 
-<div class={backgroundImageWrapper}>
-	<Image2 size={responsiveImageSizes} responsiveImage={responsiveImage} loading={loading} />
-	{verticalImage && <Image2 size={responsiveImageSizes} responsiveImage={verticalImage} loading={loading} />}
+<div class={`${backgroundImageWrapper} ${verticalImage ? 'hasVertical' : ''}`}>
+	<Image2 size={responsiveImageSizes} responsiveImage={responsiveImage} loading={loading} className="backgroundImage"/>
+	{verticalImage && <Image2 size={responsiveImageSizes} responsiveImage={verticalImage} loading={loading} className='backgroundImageVertical'/>}
 </div>

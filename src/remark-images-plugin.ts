@@ -22,6 +22,7 @@ export function remarkImagesPlugin() {
 
 		// We get this in collection.ts instead
 		responsiveImages && delete responsiveImages['cover']
+		responsiveImages && delete responsiveImages['cover_vertical']
 
 		file.data.astro.frontmatter.responsiveImages = responsiveImages
 	}

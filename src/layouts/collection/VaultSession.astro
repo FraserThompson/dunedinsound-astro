@@ -17,7 +17,7 @@ const entryExtra = entry.extra
 ---
 
 <Room>
-	<LiteYoutube videoid={entryData.full_video} autoload={true} loadAPI={true} slot="back" />
+	<LiteYoutube videoid={entryData.full_video} autoload={true} loadAPI={true} freeAspect={true} slot="back" />
 	<div class="title" slot="top">
 		<h2 class="monospace">{entryData.title}</h2>
 		<h4 class="monospace">Recorded on {entryData.date}</h4>

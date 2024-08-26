@@ -7,14 +7,20 @@
  *  - videoid: the Id of the video
  *  - loadAPI (optional): If true the API will be loaded
  *  - autoload (optional): If true the video will be loaded on page load
+ *  - freeAspect (optional): By default it's constrained to 16:9, this removes that constraint.
  */
 interface Props {
 	videoid: string
 	loadAPI?: boolean
 	autoload?: boolean
+	freeAspect?: boolean
 }
 
-const { videoid, loadAPI, autoload } = Astro.props
+const { videoid, loadAPI, autoload, freeAspect } = Astro.props
+
+const cssVars = {
+	aspectRatio : freeAspect ? 'auto' : '16/9'
+}
 ---
 
 <lite-youtube-toucher data-videoid={videoid} data-loadapi={loadAPI ? 'true' : undefined}>
@@ -26,9 +32,16 @@ const { videoid, loadAPI, autoload } = Astro.props
 		params="enablejsapi=1&rel=0"></lite-youtube>
 </lite-youtube-toucher>
 
-<style is:global>
+<style is:global define:vars={cssVars}>
 	lite-youtube-toucher {
-		aspect-ratio: 16/9;
+		aspect-ratio: var(--aspectRatio);
+		height: 100%;
+		width: 100%;
+	}
+	lite-youtube {
+		height: 100%;
+		width: 100%;
+		padding-bottom: 0;
 	}
 </style>
 
@@ -69,7 +82,7 @@ const { videoid, loadAPI, autoload } = Astro.props
 				  position: absolute;
 					left: 10px; 
 					top: 0px;
-					margin-top: 10px; 
+					margin-top: 10px;
 				}
 				:host { 
 					display: block;
@@ -96,6 +109,11 @@ const { videoid, loadAPI, autoload } = Astro.props
 					onReady: (e: any) => {
 						e.target.setPlaybackQuality('hd720')
 						e.target.playVideo()
+					},
+					onPlayerStateChange: (e: any) => {
+						if (this.titleEl && e.data >= 0) {
+							this.titleEl.style.display = "none"
+						}
 					}
 				}
 			})

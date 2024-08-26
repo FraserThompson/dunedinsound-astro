@@ -62,7 +62,7 @@ const images = entryExtra.images
 
 let tabs = [{ title: `Gigs (${gigs.length})`, id: 'gigs' }]
 blogs.length > 0 && tabs.push({ title: `Articles (${blogs.length})`, id: 'blogs' })
-images && tabs.push({ title: `Images (${Object.keys(images).length})`, id: 'images' })
+images && Object.keys(images).length > 0 && tabs.push({ title: `Images (${Object.keys(images).length})`, id: 'images' })
 vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessions' })
 
 const hasBanner = Astro.slots.has('banner')
