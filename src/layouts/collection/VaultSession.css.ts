@@ -1,4 +1,4 @@
-import { globalStyle, style } from '@vanilla-extract/css'
+import { style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 export const ArtistMetadata = style({

@@ -21,6 +21,7 @@ const entryExtra = entry.extra
 <BaseLayout
 	poo={{
 		title: entryData.title,
+		collection: entry.entry.collection,
 		description: entryExtra.metaDescription,
 		date: entryData.date?.toISOString(),
 		image: entryExtra.cover?.src

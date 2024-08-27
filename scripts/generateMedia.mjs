@@ -106,7 +106,7 @@ const tasks = media.map((inputPath) => {
 
 			// Delete full image if there already
 			if (existingPath) {
-				await fs.unlink(existingPath)
+				fs.unlink(existingPath)
 			}
 
 			const inputBuffer = await fs.readFile(inputPath)
@@ -131,7 +131,7 @@ const tasks = media.map((inputPath) => {
 
 				// Delete if already there
 				if (existingPath) {
-					await fs.unlink(existingPath)
+					fs.unlink(existingPath)
 				}
 
 				// Resize and compress the image

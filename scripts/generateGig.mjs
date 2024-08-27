@@ -61,7 +61,7 @@ date: ${yamlDate}
 venue: ${toMachineName(venue)}
 artists:
   ${artists
-		.map((artist, i) =>
+		.map((artist) =>
 			`
   - id: ${toMachineName(artist)}
     vid:

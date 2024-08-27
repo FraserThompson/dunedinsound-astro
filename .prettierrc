@@ -4,5 +4,15 @@
   "trailingComma": "none",
   "semi": false,
   "printWidth": 120,
-  "pluginSearchDirs": false
+  "tabWidth": 2,
+  "pluginSearchDirs": false,
+  "plugins": ["prettier-plugin-astro"],
+  "overrides": [
+    {
+      "files": "*.astro",
+      "options": {
+        "parser": "astro"
+      }
+    }
+  ]
 }

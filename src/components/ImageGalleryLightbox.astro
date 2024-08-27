@@ -31,7 +31,7 @@ import 'lightgallery/css/lg-zoom.css'
 		let lightboxClosedByBack = false
 
 		// Open gallery to hash if we came at it from the URL
-		if (hash.includes('image')) {
+		if (hash.includes('image=')) {
 			const imageIndex = hash.split('=')[1]
 			lightbox.openGallery(parseInt(imageIndex))
 		}

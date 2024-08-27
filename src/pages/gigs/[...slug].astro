@@ -26,6 +26,7 @@ const entryExtra = entry.extra
 <SidebarLayout
 	poo={{
 		title: entryData.title,
+		collection: entry.entry.collection,
 		description: entryExtra.metaDescription,
 		image: entryExtra.cover?.src,
 		date: entryData.date.toISOString()

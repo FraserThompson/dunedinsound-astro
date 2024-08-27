@@ -1,8 +1,10 @@
 ---
+import type { CollectionKey } from 'astro:content'
 import { defaultMetaDescription, siteTitle } from 'src/util/seo'
 
 export interface Poo {
 	title: string
+	collection?: CollectionKey
 	description?: string
 	image?: string
 	date?: string
@@ -17,6 +19,19 @@ const { poo } = Astro.props
 const description = poo.description || defaultMetaDescription
 const title = `${poo.title} | ${siteTitle}`
 const currentPath = Astro.url.pathname
+
+const schemaTypeMap: { [key: string]: string } = {
+	blog: 'BlogPosting'
+}
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': poo.collection && schemaTypeMap[poo.collection] ? schemaTypeMap[poo.collection] : 'WebPage',
+	headline: poo.title,
+	image: [poo.image],
+	datePublished: poo.date,
+	dateModified: poo.date
+}
 ---
 
 <title>{title}</title>
@@ -29,3 +44,5 @@ const currentPath = Astro.url.pathname
 <meta property="og:type" content={'article'} />
 <meta itemprop="datePublished" content={poo.date} />
 <meta property="og:image" content={poo.image} />
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

@@ -1,0 +1,89 @@
+---
+import type { MarkdownHeading } from 'astro'
+import generateToc from 'src/util/toc'
+import { sidebarBox } from './BlogSidebar.css'
+import TableOfContentsHeading from './TableOfContentsHeading.astro'
+
+interface Props {
+	headings: MarkdownHeading[]
+}
+
+const { headings } = Astro.props
+
+const toc = generateToc(headings)
+---
+
+{
+	toc.length > 1 && (
+		<nav is="table-of-contents" class={`${sidebarBox}`} style={{ position: 'sticky', top: '0px' }}>
+			<ul>
+				{toc.map((heading) => (
+					<TableOfContentsHeading heading={heading} />
+				))}
+			</ul>
+		</nav>
+	)
+}
+
+<script>
+	class TableOfContents extends HTMLElement {
+
+		sections: NodeListOf<HTMLElement> | null
+		links: NodeListOf<HTMLElement> | null
+		sidebar: HTMLElement | null
+
+		constructor() {
+			super()
+			this.sections = document.querySelectorAll<HTMLElement>('article section.heading')
+			this.links = this.querySelectorAll(`li a`)
+			this.sidebar = document.querySelector<HTMLElement>('sidebar-wrapper')
+		}
+
+		/**
+		 * Close the sidebar (if any) on click
+		 */
+		onLinkClick() {
+			// @ts-ignore
+			this.sidebar?.toggleSidebar()
+		}
+
+		connectedCallback() {
+			/**
+			 * Make sure sidebar closes on mobile when a link is clicked.
+			 */
+			this.links?.forEach((link) => link.addEventListener('click', () => this.onLinkClick()))
+
+			/**
+			 * Highlights item in the content when its section is scrolled over
+			 */
+			const callback = (entries: IntersectionObserverEntry[]) => {
+				entries.forEach((entry) => {
+					const heading = entry.target.querySelector('h2, h3, h4, h5')
+					if (!heading) return
+
+					const id = heading.getAttribute('id')
+
+					// Get the link to this sections heading
+					const link = this.querySelector(`li a[href="#${id}"]`)
+					if (!link) return
+
+					if (entry.isIntersecting) {
+						link.classList.add('active')
+					} else {
+						link.classList.remove('active')
+					}
+				})
+			}
+			const options = {
+				rootMargin: '0px 0px -97%'
+			}
+
+			const observer = new IntersectionObserver(callback, options)
+			this.sections?.forEach((el) => observer.observe(el))
+		}
+
+		disconnectedCallback() {}
+	}
+
+	customElements.define('table-of-contents', TableOfContents, { extends: 'nav' })
+</script>

@@ -14,10 +14,9 @@ import { blogSidebarWrapper, sidebarBox } from './BlogSidebar.css'
 import { theme } from 'src/Theme.css'
 import { socialLinksToMenuItems } from 'src/util/helpers'
 import type { MarkdownHeading } from 'astro'
-import generateToc from 'src/util/toc'
-import TableOfContentsHeading from './TableOfContentsHeading.astro'
 import { tagLink } from 'src/components/blog/BlogTags.css'
 import { toMachineName } from 'scripts/scriptHelpers.mjs'
+import TableOfContents from './TableOfContents.astro'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>
@@ -30,7 +29,6 @@ const { entry, headings, className = '' } = Astro.props
 const entryData = entry.entry.data
 const entryExtra = entry.extra
 
-const toc = generateToc(headings)
 ---
 <div class={`${blogSidebarWrapper} ${className}`}>
 	<div>
@@ -91,47 +89,7 @@ const toc = generateToc(headings)
 			</div>
 		)
 	}
-	{toc.length > 1  && 
-		<nav class={`${sidebarBox} toc`} style={{ position: 'sticky', top: '0px' }}>
-			<ul>
-				{toc.map((heading) => <TableOfContentsHeading heading={heading}/>)}
-			</ul>
-		</nav>
-	}
+	<TableOfContents headings={headings} />
 	<slot />
 </div>
 
-<script>
-
-	const sections = document.querySelectorAll('article section.heading')
-
-	const options = {
-		rootMargin: '0px 0px -97%'
-	}
-
-	/**
-	 * Highlights item in the content when its section is scrolled over
-	 */
-	const callback = (entries: IntersectionObserverEntry[]) => {
-		entries.forEach((entry) => {
-			const heading = entry.target.querySelector('h2, h3, h4, h5')
-      if (!heading) return
-
-      const id = heading.getAttribute('id')
-
-      // Get the link to this section's heading
-      const link = document.querySelector(`nav.toc li a[href="#${id}"]`)
-      if (!link) return
-
-			if (entry.isIntersecting) {
-				link.classList.add('active')
-			} else {
-				link.classList.remove('active')
-			}
-		})
-	}
-
-	const observer = new IntersectionObserver(callback, options)
-	sections.forEach((el) => observer.observe(el))
-
-</script>

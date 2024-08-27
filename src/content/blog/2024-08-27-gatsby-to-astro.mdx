@@ -57,7 +57,7 @@ There's an emphasis on shipping as little JavaScript to the browser as possible,
 
 Since I was going to be making substantial changes anyway, there was a bunch of other stuff I wanted to do. Even though Astro can do image processing like Gatsby, I wanted to go back to processing large files separately due to aforementioned issues. I also wanted to move to TypeScript, make schema improvements, and shed technical debt.
 
-## The process
+## The migration process
 
 Astro has [documentation on migrating Gatsby to Astro](https://docs.astro.build/en/guides/migrate-to-astro/from-gatsby/) to help all the people who, like me, are embarking on that journey. Initially I followed this documentation, but it soon became clear that the process was a lot less simple than the docs suggested, and I ended up basically just rewriting everything.
 
@@ -79,7 +79,7 @@ Of course I was also moving to TypeScript, so there was work involved in making 
 
 All up it took about two months of working in evenings and when I had time to spare on weekends to get something I deemed production ready.
 
-### Porting components
+### Porting React components to Astro
 
 An Astro component is basically one file which bundles the vanilla HTML, JavaScript (or TypeScript), and CSS for that component, as well as frontmatter which runs at build time.
 
@@ -97,7 +97,7 @@ Coming from 53 React components on Gatsby, I ended up with 39 Astro components a
 
 Web Components API on its own is neat, but Astro provides a really nice framework around it. It feels like a natural fit for architecting an application with web components.
 
-### Making ollections
+### Making collections
 
 Instead of defining a GraphQL schema like in Gatsby (or allowing it to be inferred), we have this concept of [“content collections”](https://docs.astro.build/en/guides/content-collections/) in Astro. These can automatically generate types for typescript (very nice), and allow you to generate a page dynamically from a slug for each “entry” in the collection.
 
@@ -113,7 +113,7 @@ For example, all entries would get an absolutePath, and a cover image. Gig entri
 
 I initially felt like Astro should have a built-in mechanism for adding fields to entries (like Gatsby does in `gatsby-node.js`), but why write a system for something which is already possible?
 
-### Porting styles
+### Moved my Styled Components to Vanilla Extract
 
 I was using styled components in Gatsby, and [styled components aren't *really* compatible with the way Astro does things](https://github.com/withastro/astro/issues/4432), so I had to pick a new approach. 
 
@@ -133,7 +133,7 @@ Getting the new [custom media queries](https://www.w3.org/TR/mediaqueries-5/#at-
 
 Something interesting I noticed is that the cascading aspect of cascading style sheets seems to have fallen out of favor. Everyone wants to write scoped styles now, so Astro's style tags can't be used to style child components, and Vanilla Extract makes you explicitly use a different function for writing styles that aren't scoped. I get why this is, but in some cases it made things a bit more cumbersome than I thought it should… But as I got used to it, it became natural and probably prevented some bad practices.
 
-### Images and audio files
+### Handling large images and audio files
 
 The lesson I learnt from Gatsby is that static site generators are not intended to handle this many large files. Build directories are meant to be ephemeral and deletable without a big hassle, and having to re-generate tens of thousands of images is a big hassle. Also build systems sometimes like to hash files to determine if they've changed, and if you have 100mb+ MP3s this can be very slow.
 
@@ -145,9 +145,7 @@ But, contrary to what your brain might think on first impression, navigating thr
 
 Similarly, running one command to build your site and relying entirely on third-party dependencies to know how to do it might seem more simple, but because you're essentially dealing with multiple nested blackboxes, like me you might run into problems which will add complexity.
 
-#### How I did this
-
-Without GraphQL I had to find a way to dynamically grab files related to each content entity. There's no built-in way to do this in Astro, but since it's just JavaScript, I had access to any number of NPM globbing libraries. I went with [fdir](https://www.npmjs.com/package/fdir) since it claimed to be the fastest. 
+Without GraphQL I had to find a way to dynamically grab files related to each content entity. Astro has a built in [Astro.glob()](https://docs.astro.build/en/reference/api-reference/#astroglob) function, but it doesn't support dynamic paths, which I need so I can glob for files related to an entity ID. But since it's just JavaScript, I had access to any number of NPM globbing libraries. I went with [fdir](https://www.npmjs.com/package/fdir) since it claimed to be the fastest. 
 
 Then it was just a matter of coming up with a convention for storing media, and writing a script for processing it and moving it around.
 
@@ -169,7 +167,7 @@ While there's undoubtedly more code to maintain, it feels good to know I have fu
 
 Going in I didn't intend to do a redesign, but since I was building everything from scratch I ended up rethinking a lot of stuff.
 
-When I first designed the website, I was more motivated by what other sites did and what was "standard" web design. So I did the usual mobile first web UX where everything is big, and most effort is put into the mobile experience. This makes sense because mobile users are the majority. However, I've since realised it's overly simplistic to just look at minority/majority.
+When I first designed the website, I was more motivated by what other sites did and what was "standard" web design. So I did the usual mobile first web UX where everything is big, and most effort is put into the mobile experience. This makes sense because mobile users are the majority. However, I've since realised there's more to it than simply where the most users are.
 
 Different types of users are in different contexts eg. sitting at a desk vs on the couch with a device which can easily go in and out of your pocket, and apps which are begging for your attention. So my theory is desktop users probably have more time, are more likely to be more focused, and so I should provide them with tools which fit that context, even if they're a minority.
 
@@ -191,7 +189,7 @@ More stuff on screen where there's space should make it easier to navigate the l
 
 I sort of expected this to be where errors show up due to the sheer size of it all, and I wasn't wrong.
 
-### Vanilla extract
+### Vanilla extract woes
 
 I first ran into errors with vanilla-extract (“The server is being restarted or closed. Request is outdated”).
 
@@ -206,6 +204,8 @@ It turned out that while Astro wasn't processing my images, it was still copying
 Removing the large files from my public directory so neither Astro or Vite knew about them reduced the build down to 15 minutes. So it became clear that my original plan of storing my files in the public directory wasn't going to work.
 
 I ended up on a system where they're in `dist_media` which is symlinked into the `dist` directory on deploy, so there's only one copy of the files and neither Astro nor Vite need to care about them. I also had to remember to add this directory to the exclude list in all the configs to stop typescript and vite from looking at them or my dev server got very slow.
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['dist']} alt="Contents of the dist folder"/>
 
 I also bought an SSD to see if that improved things (they've gotten so cheap) and formatted it with the new [Windows 11 dev drive](https://learn.microsoft.com/en-us/windows/dev-drive/) (it uses ReFS which supposedly improves performance for a bunch of devvy stuff).
 
