@@ -4,7 +4,8 @@
  */
 import type { ProcessedEntry } from 'src/util/collection'
 import Tile, { type BackgroundStyle } from '../Tile.astro'
-import { artistsToString, makeHash } from 'src/util/helpers'
+import { artistsToString } from 'src/util/helpers'
+import { makeHash } from 'src/util/names'
 import type { ResponsiveImageSizes } from '../Image2.astro'
 
 interface Props {
@@ -16,7 +17,14 @@ interface Props {
 	backgroundStyle?: BackgroundStyle
 }
 
-const { gig, containerHeight, containerHeightMobile, className = '', backgroundStyle, responsiveImageSizes } = Astro.props
+const {
+	gig,
+	containerHeight,
+	containerHeightMobile,
+	className = '',
+	backgroundStyle,
+	responsiveImageSizes
+} = Astro.props
 
 const gigData = gig.entry.data
 const gigExtra = gig.extra

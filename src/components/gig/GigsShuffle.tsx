@@ -107,21 +107,27 @@ const GigsJukebox: FunctionalComponent = () => {
 							<li className={`${TracklistTrack} noHover`}>Date: {new Date(currentGig.entry.data.date).toLocaleDateString()}</li>
 							<li className={`${TracklistTrack} noHover`}>
 								Gig: {currentGig.entry.data.title}
-								<a href={currentGig.extra.absolutePath} title="Gig page" target="_blank" style={{ marginLeft: "10px", color: "blue" }}>
-									(Go to gig page)
-								</a>
+								<div>
+									<a href={currentGig.extra.absolutePath} title="Gig page" target="_blank" style={{ marginLeft: "10px", color: "blue" }}>
+										(Go to gig page)
+									</a>
+								</div>
 							</li>
 							{currentArtist && <li className={`${TracklistTrack} noHover`}>
 								Artist: {currentArtist.entry.data.title || 'Unknown'}
-								<a target="_blank" title={currentArtist.entry.data.title} href={`${currentArtist.extra.absolutePath}`} style={{ marginLeft: "10px", color: "blue" }}>
-									{currentArtist.extra.gigCount > 1 ? `(See ${currentArtist.extra.gigCount - 1} other gigs from this artist)` : '(Go to artist page)'}
-								</a>
+								<div>
+									<a target="_blank" title={currentArtist.entry.data.title} href={`${currentArtist.extra.absolutePath}`} style={{ marginLeft: "10px", color: "blue" }}>
+										{currentArtist.extra.gigCount > 1 ? `(See ${currentArtist.extra.gigCount - 1} other gigs from this artist)` : '(Go to artist page)'}
+									</a>
+								</div>
 							</li>}
 							<li className={`${TracklistTrack} noHover`}>
 								Venue: {currentGig.extra.venue.data.title || 'Unknown'}
-								<a href={`/venues/${currentGig.extra.venue.id}`} title={currentGig.extra.venue.data.title} target="_blank" style={{ marginLeft: "10px", color: "blue" }}>
-									(Go to venue page)
-								</a>
+								<div>
+									<a href={`/venues/${currentGig.extra.venue.id}`} title={currentGig.extra.venue.data.title} target="_blank" style={{ marginLeft: "10px", color: "blue" }}>
+										(Go to venue page)
+									</a>
+								</div>
 							</li>
 						</ul>
 					)}

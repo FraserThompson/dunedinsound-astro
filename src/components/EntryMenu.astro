@@ -13,6 +13,7 @@ import { backButton } from 'src/components/gig/GigsMenu.css'
 import ActiveIndicator from 'src/components/ActiveIndicator.astro'
 import type { CollectionKey } from 'astro:content'
 import ChevronLeftIcon from '~icons/bx/chevron-left'
+import { theme } from 'src/Theme.css'
 
 interface Props {
 	collection: CollectionKey
@@ -45,10 +46,15 @@ const entries = await loadAndFormatCollection(collection)
 					data-markerindex={i}
 					href={selected ? entry.extra.absolutePath : undefined}
 				>
-					{entry.entry.data.title}
-					<div style={{ position: 'absolute', right: '5px', top: '0px' }}>
+					<span>
 						<ActiveIndicator died={'died' in entry.entry.data ? entry.entry.data.died : undefined} hideText={true} />
-					</div>
+					</span>
+					{entry.entry.data.title}
+					{'gigCount' in entry.extra && (
+						<small style={{ color: theme.color.dullText, width: '1.2em', display: 'inline-block', float: "right", textAlign: "right" }}>
+							{entry.extra.gigCount}
+						</small>
+					)}
 				</a>
 			</li>
 		))

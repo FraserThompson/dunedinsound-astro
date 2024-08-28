@@ -3,11 +3,11 @@ import { keyframes, style } from '@vanilla-extract/css'
 export const CloudsWrapper = style({ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%' })
 
 const animateCloud = keyframes({
-	'0%': { marginLeft: '-2000px' },
-	'100%': { transform: '100%' }
+	'0%': { left: '-100px' },
+	'100%': { transform: 'translate(100vw)' }
 })
 
-export const cloudBase = style({
+const cloudBase = style({
 	background: 'linear-gradient(to top, #fff 5%, #f1f1f1 100%)',
 	filter: "progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff', endColorstr='#f1f1f1',GradientType=0 )",
 	borderRadius: '100px',
@@ -39,27 +39,42 @@ export const cloudBase = style({
 	}
 })
 
-export const cloud1 = style({
-	animation: `${animateCloud} 35s linear infinite`,
-	transform: 'scale(0.65)'
-})
+export const cloud1 = style([
+	cloudBase,
+	{
+		animation: `${animateCloud} 35s linear infinite`,
+		transform: 'scale(0.65)'
+	}
+])
 
-export const cloud2 = style({
-	animation: `${animateCloud} 20s linear infinite`,
-	transform: 'scale(0.3)'
-})
+export const cloud2 = style([
+	cloudBase,
+	{
+		animation: `${animateCloud} 20s linear infinite`,
+		transform: 'scale(0.3)'
+	}
+])
 
-export const cloud3 = style({
-	animation: `${animateCloud} 30s linear infinite`,
-	transform: 'scale(0.5)'
-})
+export const cloud3 = style([
+	cloudBase,
+	{
+		animation: `${animateCloud} 30s linear infinite`,
+		transform: 'scale(0.5)'
+	}
+])
 
-export const cloud4 = style({
-	animation: `${animateCloud} 18s linear infinite`,
-	transform: 'scale(0.4)'
-})
+export const cloud4 = style([
+	cloudBase,
+	{
+		animation: `${animateCloud} 18s linear infinite`,
+		transform: 'scale(0.4)'
+	}
+])
 
-export const cloud5 = style({
-	animation: `${animateCloud} 25s linear infinite`,
-	transform: 'scale(0.55)'
-})
+export const cloud5 = style([
+	cloudBase,
+	{
+		animation: `${animateCloud} 25s linear infinite`,
+		transform: 'scale(0.55)'
+	}
+])

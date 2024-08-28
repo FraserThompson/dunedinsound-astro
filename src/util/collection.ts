@@ -6,7 +6,7 @@ import { getEntry } from 'astro:content'
 import * as path from 'node:path'
 import { getResponsiveImage, getResponsiveImagesByDir } from './image'
 import type { ResponsiveImage } from './ResponsiveImage'
-import { monthMap } from './helpers'
+import { monthMap } from './constants'
 import { getCollectionMetaDescription } from './seo'
 import { DIST_MEDIA_DIR } from './constants'
 

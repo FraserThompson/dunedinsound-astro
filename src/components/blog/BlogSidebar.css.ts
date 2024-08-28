@@ -4,7 +4,13 @@ import { textContainer } from '../TextContainer.css'
 
 export const blogSidebarWrapper = style({
 	padding: theme.dimensions.basePadding,
-	minWidth: '320px'
+	minWidth: '320px',
+	maxWidth: 'auto',
+	'@media': {
+		'screen and (--md)': {
+			maxWidth: '320px'
+		}
+	}
 })
 
 export const sidebarBox = style([

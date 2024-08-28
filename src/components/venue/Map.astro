@@ -62,11 +62,13 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 <script>
 	import mapboxgl from 'mapbox-gl'
 	import type Shuffle from 'shufflejs'
+	import { elementIsVisibleInViewport } from 'src/util/helpers'
+	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
 
 	class MapWrapper extends HTMLElement {
 		map: mapboxgl.Map
 		markers: mapboxgl.Marker[]
-		sidebar: Element | null
+		sidebar: SidebarWrapper | null
 		sidebarLinks: NodeListOf<HTMLAnchorElement> | undefined
 		selectedMarker: mapboxgl.Marker | undefined
 		selectedSidebar: HTMLElement | undefined
@@ -91,7 +93,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			})
 
 			this.markers = []
-			this.sidebar = document.querySelector('sidebar-wrapper')
+			this.sidebar = document.querySelector<SidebarWrapper>('sidebar-wrapper')
 			this.sidebarLinks = this.sidebar?.querySelectorAll('[data-markerindex]')
 
 			const markers = JSON.parse(this.getAttribute('data-markers') || '') as any
@@ -119,7 +121,9 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			this.selectedSidebar?.classList.remove('active')
 			this.selectedSidebar = this.sidebarLinks[i]
 			this.selectedSidebar?.classList.add('active')
-			this.selectedSidebar?.scrollIntoView({ behavior: 'smooth' })
+			if (!elementIsVisibleInViewport(this.selectedSidebar, this.sidebar?.menu)) {
+				this.selectedSidebar?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+			}
 		}
 
 		sidebarClick(e: MouseEvent) {
@@ -152,7 +156,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			// Close sidebar on mobile
 			// See: SidebarNav.astro
 			// @ts-ignore
-			this.sidebar.toggleSidebar()
+			this.sidebar?.toggleSidebar()
 		}
 
 		connectedCallback() {

@@ -112,7 +112,7 @@ createGlobalTheme(':root', theme, {
 	borders: {
 		primary: `1px solid ${darken(0.025, primaryColor)}`,
 		secondary: `1px solid ${secondaryColor}`,
-		contrast: `1px solid ${contrastColor}`,
+		contrast: `2px solid ${contrastColor}`,
 		contrast2: `1px solid ${contrastColor2}`,
 		background: `1px solid ${backgroundColor}`,
 		groove: '3px groove #585662',

@@ -121,34 +121,22 @@ export const socialLinksToMenuItems = (links?: z.infer<typeof webLinks>): MenuLi
 	return menuItems
 }
 
-export const monthMap: { [i: number]: string } = {
-	0: 'January',
-	1: 'February',
-	2: 'March',
-	3: 'April',
-	4: 'May',
-	5: 'June',
-	6: 'July',
-	7: 'August',
-	8: 'September',
-	9: 'October',
-	10: 'November',
-	11: 'December'
-}
-
 /**
  * Returns true if an element is visible in the viewport.
- * @param el
- * @param partiallyVisible
+ * @param el The element to check for
+ * @param container The container (whole page by default)
  * @returns
  */
-export const elementIsVisibleInViewport = (el: Element, partiallyVisible = false) => {
+export const elementIsVisibleInViewport = (el: HTMLElement, container?: HTMLElement | Element | null) => {
 	const { top, left, bottom, right } = el.getBoundingClientRect()
-	const { innerHeight, innerWidth } = window
-	return partiallyVisible
-		? ((top > 0 && top < innerHeight) || (bottom > 0 && bottom < innerHeight)) &&
-				((left > 0 && left < innerWidth) || (right > 0 && right < innerWidth))
-		: top >= 0 && left >= 0 && bottom <= innerHeight && right <= innerWidth
+	const html = document.querySelector<HTMLElement>('html') as HTMLElement
+	const containerRect = container ? container.getBoundingClientRect() : html.getBoundingClientRect()
+	return (
+		top >= containerRect.top &&
+		left >= containerRect.left &&
+		bottom <= containerRect.bottom &&
+		right <= containerRect.right
+	)
 }
 
 /**
@@ -162,13 +150,6 @@ export const artistsToString = (artistList: ProcessedEntry<'artist'>[]) => {
 		return acc
 	}, '')
 }
-
-/**
- * Takes a string and encodes it into a hash.
- * @param string
- * @returns
- */
-export const makeHash = (string: string) => 'h' + encodeURIComponent(toMachineName(string))
 
 /**
  * Generate a short excerpt from markdown.
@@ -238,6 +219,8 @@ interface StoredScrollPosition {
 
 /**
  * Maintains the scroll position of the sidebar during page transitions.
+ *
+ * Uses events from the Astro Transitionms API.
  *
  * @param collection name of the collection the sidebar appears on
  */

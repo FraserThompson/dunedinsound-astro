@@ -77,13 +77,15 @@ const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile'
 </div>
 
 <script>
-	class SidebarWrapper extends HTMLElement {
+	export class SidebarWrapper extends HTMLElement {
 		sidebar
+		menu
 		button
 
 		constructor() {
 			super()
 			this.sidebar = this.querySelector('#sidebar')
+			this.menu = this.querySelector('#sidebar-menu')
 			this.button = document.querySelector('#sidebar-button')
 		}
 

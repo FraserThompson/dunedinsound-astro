@@ -186,12 +186,8 @@ export const TracklistTrack = style({
 	fontFamily: 'monospace',
 	color: '#28da1d',
 	display: 'flex',
-	flexDirection: 'column',
-	'@media': {
-		'screen and (--xs)': {
-			flexDirection: 'row'
-		}
-	},
+	flexWrap: 'wrap',
+	flexDirection: 'row',
 	selectors: {
 		'&.active': {
 			backgroundColor: '#0818c4'

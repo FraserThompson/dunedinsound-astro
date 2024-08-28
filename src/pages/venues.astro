@@ -8,6 +8,7 @@ import EntryMenu from 'src/components/EntryMenu.astro'
 import Image2 from 'src/components/Image2.astro'
 import SearchBox from 'src/components/SearchBox.astro'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
+import { theme } from 'src/Theme.css'
 
 const venues = await loadAndFormatCollection('venue')
 
@@ -45,7 +46,11 @@ const markers = venues.map((venue) => ({
 						</p>
 						<SocialLinks links={venue.entry.data.links} />
 						{venue.extra.cover && (
-							<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
+							<a
+								title={venue.entry.data.title}
+								href={venue.extra.absolutePath}
+								style={{ display: 'block', border: theme.borders.contrast, borderRadius: '5px' }}
+							>
 								<Image2 responsiveImage={venue.extra.cover} />
 							</a>
 						)}

@@ -29,3 +29,10 @@ export const stringNormalize = (string?: string | null) => {
 				.replace(/\p{Diacritic}/gu, '')
 		: ''
 }
+
+/**
+ * Takes a string and encodes it into a hash.
+ * @param string
+ * @returns
+ */
+export const makeHash = (string: string) => 'h' + encodeURIComponent(toMachineName(string))

@@ -35,10 +35,9 @@ const gigs = await loadAndFormatCollection('gig')
 </SidebarLayout>
 
 <script>
-import { elementIsVisibleInViewport } from 'src/util/helpers.ts'
+	import { elementIsVisibleInViewport } from 'src/util/helpers.ts'
 
 	const gigs = document.querySelectorAll('.tile')
-
 	const sidebar = document.querySelector('#sidebar-menu')
 
 	const options = {
@@ -50,11 +49,11 @@ import { elementIsVisibleInViewport } from 'src/util/helpers.ts'
 	 */
 	const callback = (entries: IntersectionObserverEntry[]) => {
 		entries.forEach((entry) => {
-			const sidebarItem = sidebar?.querySelector(`[href="#${entry.target.id}"]`)
-		
+			const sidebarItem = sidebar?.querySelector<HTMLElement>(`[href="#${entry.target.id}"]`)
+
 			if (entry.isIntersecting) {
 				sidebarItem?.classList.add('active')
-				if (sidebar && sidebarItem && !elementIsVisibleInViewport(sidebarItem)) {
+				if (sidebar && sidebarItem && !elementIsVisibleInViewport(sidebarItem, sidebar)) {
 					sidebarItem?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 				}
 			} else {
