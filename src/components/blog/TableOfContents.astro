@@ -26,24 +26,25 @@ const toc = generateToc(headings)
 }
 
 <script>
+import type { SidebarWrapper } from "../SidebarNav.astro.0.mts"
+
 	class TableOfContents extends HTMLElement {
 
 		sections: NodeListOf<HTMLElement> | null
 		links: NodeListOf<HTMLElement> | null
-		sidebar: HTMLElement | null
+		sidebar: SidebarWrapper | null
 
 		constructor() {
 			super()
 			this.sections = document.querySelectorAll<HTMLElement>('article section.heading')
 			this.links = this.querySelectorAll(`li a`)
-			this.sidebar = document.querySelector<HTMLElement>('sidebar-wrapper')
+			this.sidebar = document.querySelector<SidebarWrapper>('sidebar-wrapper')
 		}
 
 		/**
 		 * Close the sidebar (if any) on click
 		 */
 		onLinkClick() {
-			// @ts-ignore
 			this.sidebar?.toggleSidebar()
 		}
 

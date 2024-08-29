@@ -26,14 +26,11 @@ export const sidebarWrapper = style({
 	transform: `translateY(calc(100vh - ${fallbackVar(offsetTopMobile, '0px')} - ${
 		theme.dimensions.headerHeightMobile
 	}))`,
-	transitionProperty: 'opacity, transform',
-	transitionDuration: '0.2s',
-	transitionTimingFunction: 'ease-in',
+	transition: 'transform 0.3s ease-in',
 	willChange: 'transform',
 	selectors: {
 		'&.open': {
 			visibility: 'visible',
-			opacity: 1,
 			transform: `translateY(0)`,
 			pointerEvents: 'auto'
 		}
@@ -46,7 +43,6 @@ export const sidebarWrapper = style({
 			top: fallbackVar(offsetTop, '0px'),
 			bottom: fallbackVar(offsetBottom, '0px'),
 			left: theme.dimensions.headerHeight,
-			opacity: 1,
 			transform: `translateX(0)`,
 			pointerEvents: 'auto'
 		}
@@ -105,14 +101,17 @@ const sidebarButtonBase = style({
 			boxShadow: `inset 0px 0px 3px 2px ${theme.color.darkSecondary}`
 		},
 		'&::after': {
+			transform: 'rotate(0deg)',
+			transformOrigin: '12px 14px',
+			transition: 'transform 0.3s ease-in',
+			willChange: 'transform',
 			height: '24px',
+			width: '24px',
 			content:
 				"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24px' height='24px' class='up-icon'%3E%3Cpath fill='white' d='m6.293 13.293l1.414 1.414L12 10.414l4.293 4.293l1.414-1.414L12 7.586z'%3E%3C/path%3E%3C/svg%3E\")"
 		},
 		'&.open::after': {
-			height: '24px',
-			content:
-				"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24px' height='24px' class='down-icon hidden'%3E%3Cpath fill='white' d='M16.293 9.293L12 13.586L7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z'%3E%3C/path%3E%3C/svg%3E\")"
+			transform: 'rotate(180deg)'
 		},
 		'&:active, &:focus': {
 			backgroundColor: theme.color.darkSecondary

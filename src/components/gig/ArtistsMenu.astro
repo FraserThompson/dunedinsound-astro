@@ -33,6 +33,7 @@ const { artists } = Astro.props
 <script>
 	import { scrollTo } from 'src/util/helpers'
 	import { replaceEventName } from 'src/util/history'
+import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
 
 	/**
 	 * Artists menu which sits under a gig if its selected.
@@ -43,14 +44,14 @@ const { artists } = Astro.props
 	class ArtistsMenu extends HTMLUListElement {
 		unlisten: any
 
-		sidebar: HTMLElement | null
+		sidebar: SidebarWrapper | null
 
 		selectedArtist: Element | undefined
 		links: NodeListOf<HTMLElement> | null
 
 		constructor() {
 			super()
-			this.sidebar = document.querySelector<HTMLElement>('sidebar-wrapper')
+			this.sidebar = document.querySelector<SidebarWrapper>('sidebar-wrapper')
 			this.links = this.querySelectorAll('a')
 		}
 
@@ -81,14 +82,13 @@ const { artists } = Astro.props
 		}
 
 		/**
-		 * Scroll to an artist and hide the sidebar if it's open.
+		 * Scroll to an artist smoothly and hide the sidebar if it's open.
 		 */
 		itemClick(e: MouseEvent) {
 			scrollTo(e)
 			// Close sidebar on mobile
 			// See: SidebarNav.astro
-			// @ts-ignore
-			this.sidebar.toggleSidebar()
+			this.sidebar?.toggleSidebar()
 		}
 
 		/**

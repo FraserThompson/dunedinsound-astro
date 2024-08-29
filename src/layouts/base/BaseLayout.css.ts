@@ -321,3 +321,12 @@ globalStyle('.trippy:hover', {
 	textDecoration: 'none',
 	transform: 'scaleY(10) scaleX(5) rotateX(360deg) translateX(20px) translateY(-5px)'
 })
+
+/**
+ * Styles for third party libraries.
+ */
+
+// Hide scrollbars when lightbox open.
+globalStyle('html.lg-on', {
+	overflow: 'hidden'
+})

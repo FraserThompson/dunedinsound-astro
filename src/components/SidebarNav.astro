@@ -90,7 +90,6 @@ const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile'
 		}
 
 		toggleSidebar() {
-			document.querySelector('html')?.classList.toggle('noScroll')
 			this.sidebar?.classList.toggle('open')
 			this.button?.classList.toggle('open')
 		}

@@ -98,8 +98,8 @@ const { selected } = Astro.props
 
 <script>
 	import type Shuffle from 'shufflejs'
-	import { scrollTo } from 'src/util/helpers'
 	import { maintainSidebarScrollPosition } from 'src/util/helpers'
+import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
 
 	maintainSidebarScrollPosition('gig')
 
@@ -112,25 +112,23 @@ const { selected } = Astro.props
 	 * instead we respond to shuffle events from another list.
 	 */
 	class GigsMenu extends HTMLUListElement {
-		sidebar: HTMLElement | null
+		sidebar: SidebarWrapper | null
 		gigLinks: NodeListOf<HTMLElement> | null
 		artistsMenu: HTMLElement | null
 		selected: string | null
 
 		constructor() {
 			super()
-			this.sidebar = document.querySelector('sidebar-wrapper')
+			this.sidebar = document.querySelector<SidebarWrapper>('sidebar-wrapper')
 			this.gigLinks = this.querySelectorAll('[data-gig]')
 			this.artistsMenu = this.querySelector('artists-menu')
 			this.selected = this.getAttribute('data-selected')
 		}
 
 		itemClick(e: MouseEvent) {
-			scrollTo(e)
 			// Close sidebar on mobile
 			// See: SidebarNav.astro
-			// @ts-ignore
-			this.sidebar.toggleSidebar()
+			this.sidebar?.toggleSidebar()
 		}
 
 		/**

@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
-import { MenuLinkWrapper, MenuWrapper } from '../Menu.css'
+import { MenuLi, MenuLinkWrapper, MenuWrapper } from '../Menu.css'
 
 // The !importants are due to a bug in 3.9.5 of the vanilla extract
 // vite integration which means we can't override base style properties.
@@ -51,6 +51,8 @@ export const monthLink = style([
 	MenuLinkWrapper['vertical'],
 	{
 		color: `black !important`,
+		height: `${theme.dimensions.subheaderHeight} !important`,
+		lineHeight: `${theme.dimensions.subheaderHeight} !important`,
 		cursor: 'default',
 		backgroundColor: `${theme.color.contrast} !important`,
 		boxShadow: theme.borders.shadowLight,

@@ -3,8 +3,10 @@
 * An audio player for playing media from one or more artists.
 * Parameters:
 *  - artistAudio: Media to be displayed. An array of artistMedia objects.
-	 - barebones: If true it will just render the waveform without tracklist/transport.
-	 - playOnLoad: If true it will play the track once it loads.
+	 - barebones (optional): If true it will just render the waveform without tracklist/transport.
+	 - hideNextPrevOnMobile (optional): If true next/prev buttons hidden on mobile.
+	 - playOnLoad (optional): If true it will play the track once it loads.
+	 - setWaveSurferCallback (optional): Used to access the Wavesurfer object from outside.
 */
 
 import { useRef, useState, useEffect, useCallback } from "preact/hooks"
@@ -21,10 +23,11 @@ interface Props {
 	artistAudio: ArtistAudio[]
 	barebones?: boolean
 	playOnLoad?: boolean
+	hideNextPrevOnMobile?: boolean
 	setWaveSurferCallback?: (wavesurfer: WaveSurfer | undefined) => any
 }
 
-const Player: FunctionalComponent<Props> = ({ artistAudio, barebones = false, playOnLoad = false, setWaveSurferCallback = null }) => {
+const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad, hideNextPrevOnMobile, setWaveSurferCallback }) => {
 	const waveformRef = useRef(null)
 
 	const [playing, setPlaying] = useState(false)
@@ -218,7 +221,7 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones = false, pl
 				{!barebones && (
 					<div>
 						<button
-							className={`${TransportButton} left`}
+							className={`${TransportButton} left ${hideNextPrevOnMobile ? 'hideMobile' : ''}`}
 							disabled={!ready}
 							id="prev"
 							onClick={() => previous()}
@@ -231,7 +234,7 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones = false, pl
 							aria-label="Play/Pause">
 						</button>
 						<button
-							className={`${TransportButton} right`}
+							className={`${TransportButton} right ${hideNextPrevOnMobile ? 'hideMobile' : ''}`}
 							disabled={!ready}
 							id="next"
 							onClick={() => next()}
