@@ -35,33 +35,36 @@ const gigs = await loadAndFormatCollection('gig')
 </SidebarLayout>
 
 <script>
-	import { elementIsVisibleInViewport } from 'src/util/helpers.ts'
+	// Polyfilled because some mobile browsers seem to implement
+	// the spec differently.
+	import { scrollIntoView } from "seamless-scroll-polyfill"
 
-	const gigs = document.querySelectorAll('.tile')
-	const sidebar = document.querySelector('#sidebar-menu')
+	document.addEventListener('astro:page-load', () => {
+		const gigs = document.querySelectorAll('#gigs .tile')
 
-	const options = {
-		rootMargin: '-80px 0px -99%'
-	}
+		// See SidebarNav.astro
+		const sidebar = document.querySelector('sidebar-wrapper')
 
-	/**
-	 * Highlights gig in the sidebar when its scrolled over on the main page.
-	 */
-	const callback = (entries: IntersectionObserverEntry[]) => {
-		entries.forEach((entry) => {
-			const sidebarItem = sidebar?.querySelector<HTMLElement>(`[href="#${entry.target.id}"]`)
+		const options = {
+			rootMargin: '-40px 0px -95% 0px'
+		}
 
-			if (entry.isIntersecting) {
-				sidebarItem?.classList.add('active')
-				if (sidebar && sidebarItem && !elementIsVisibleInViewport(sidebarItem, sidebar)) {
-					sidebarItem?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+		/**
+		 * Highlights gig in the sidebar when its scrolled over on the main page.
+		 */
+		const callback = (entries: IntersectionObserverEntry[]) => {
+			entries.forEach((entry) => {
+				const sidebarItem = sidebar?.querySelector<HTMLElement>(`[href="#${entry.target.id}"]`)
+				if (entry.isIntersecting && sidebarItem) {
+					sidebarItem?.classList.add('active')
+					scrollIntoView(sidebarItem, { behavior: 'smooth', block: 'center' })
+				} else {
+					sidebarItem?.classList.remove('active')
 				}
-			} else {
-				sidebarItem?.classList.remove('active')
-			}
-		})
-	}
+			})
+		}
 
-	const observer = new IntersectionObserver(callback, options)
-	gigs.forEach((el) => observer.observe(el))
+		const observer = new IntersectionObserver(callback, options)
+		gigs?.forEach((el) => observer.observe(el))
+	})
 </script>

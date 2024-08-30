@@ -3,11 +3,11 @@ import bcIcon from 'src/assets/bc-icon.png'
 import instaIcon from 'src/assets/instagram-icon.png'
 import type { z } from 'astro/zod'
 import type { webLinks } from 'src/content/config'
-import { toMachineName } from './names'
 import MarkdownIt from 'markdown-it'
 import { convert } from 'html-to-text'
 import type { MenuLink } from 'src/components/DropdownMenu'
 import type { ProcessedEntry } from './collection'
+import { scrollIntoView } from "seamless-scroll-polyfill"
 
 /**
  * Turns a 00:00 timestring into total seconds.
@@ -91,7 +91,7 @@ export const scrollToElement = (
 	behavior: ScrollBehavior = 'smooth'
 ) => {
 	if (!headerOffset) {
-		element.scrollIntoView({ behavior: behavior })
+		scrollIntoView(element, { behavior })
 	} else {
 		const y = element.getBoundingClientRect().top + parent.scrollTop
 		parent.scrollTo(0, y - headerOffset)

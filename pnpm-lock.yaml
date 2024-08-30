@@ -71,6 +71,9 @@ importers:
       prismjs:
         specifier: ^1.29.0
         version: 1.29.0
+      seamless-scroll-polyfill:
+        specifier: ^2.3.4
+        version: 2.3.4
       shufflejs:
         specifier: ^6.1.1
         version: 6.1.1
@@ -2902,6 +2905,9 @@ packages:
 
   sass-formatter@0.7.9:
     resolution: {integrity: sha512-CWZ8XiSim+fJVG0cFLStwDvft1VI7uvXdCNJYXhDvowiv+DsbD1nXLiQ4zrE5UBvj5DWZJ93cwN0NX5PMsr1Pw==}
+
+  seamless-scroll-polyfill@2.3.4:
+    resolution: {integrity: sha512-Biobd4LDoeFODX1bfiru84GveSajzFELFB3ejMZsRR2TpD73W46uEZYAEqSx5RtKpN2umhGWaoSRivs0ZcHp9g==}
 
   section-matter@1.0.0:
     resolution: {integrity: sha512-vfD3pmTzGpufjScBh50YHKzEu2lxBWhVEHsNGoEXmCmn2hKGfeNLYMzCJpe8cD7gqX7TJluOVpBkAequ6dgMmA==}
@@ -6824,6 +6830,8 @@ snapshots:
   sass-formatter@0.7.9:
     dependencies:
       suf-log: 2.5.3
+
+  seamless-scroll-polyfill@2.3.4: {}
 
   section-matter@1.0.0:
     dependencies:

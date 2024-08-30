@@ -64,6 +64,9 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 	import type Shuffle from 'shufflejs'
 	import { elementIsVisibleInViewport } from 'src/util/helpers'
 	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
+	// Polyfilled because some mobile browsers seem to implement
+	// the spec differently.
+	import { scrollIntoView } from 'seamless-scroll-polyfill'
 
 	class MapWrapper extends HTMLElement {
 		map: mapboxgl.Map
@@ -122,7 +125,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			this.selectedSidebar = this.sidebarLinks[i]
 			this.selectedSidebar?.classList.add('active')
 			if (!elementIsVisibleInViewport(this.selectedSidebar, this.sidebar?.menu)) {
-				this.selectedSidebar?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				scrollIntoView(this.selectedSidebar, { behavior: 'smooth', block: 'center' })
 			}
 		}
 

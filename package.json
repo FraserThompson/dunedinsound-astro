@@ -56,6 +56,7 @@
 		"postcss-nesting": "^12.1.5",
 		"preact": "^10.23.2",
 		"prismjs": "^1.29.0",
+		"seamless-scroll-polyfill": "^2.3.4",
 		"shufflejs": "^6.1.1",
 		"throttle-debounce": "^5.0.2",
 		"typescript": "^5.5.4",
