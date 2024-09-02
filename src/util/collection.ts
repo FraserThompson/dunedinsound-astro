@@ -109,7 +109,7 @@ export async function loadAndFormatCollection<C extends CollectionKey>(
  * @param entry
  * @returns
  */
-export async function loadAndFormatEntry<C extends keyof DataEntryMap>(collection: C, id: string) {
+export async function loadAndFormatEntry<C extends keyof DataEntryMap>(collection: C, id: string): Promise<ProcessedEntry<C>> {
 	// Try find a cached one if we've already gotten it
 	if (cachedResults[collection]) {
 		//@ts-expect-error
@@ -228,7 +228,7 @@ export async function getGigExtra(
 	extra: EntryExtraCommon
 ): Promise<EntryExtraMap['gig']> {
 	const artists = await Promise.all(
-		entry.data.artists.map(async (artist: any) => await loadAndFormatEntry('artist', artist.id.id))
+		entry.data.artists.map(async (artist) => await loadAndFormatEntry('artist', artist.id.id))
 	)
 
 	// This is used for sorting media into the correct order

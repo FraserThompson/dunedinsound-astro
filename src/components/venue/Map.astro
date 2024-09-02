@@ -11,8 +11,7 @@
  * Sidebar (optional):
  *  For a sidebar with menu links that select markers on the map, add a sidebar to the page.
  *  Each menu item should have
- *   data-markerindex: The index of the corresponding map marker.
- *  The menu must have the same items as the map has markers.
+ *   data-markerkey: The toString'd LatLng in this format - LngLat(lng, lat)
  *
  * This will also respond to a shuffle-filter on the page and remove markers based on index.
  */
@@ -74,7 +73,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 		sidebar: SidebarWrapper | null
 		sidebarLinks: NodeListOf<HTMLAnchorElement> | undefined
 		selectedMarker: mapboxgl.Marker | undefined
-		selectedSidebar: HTMLElement | undefined
+		selectedSidebar: HTMLElement | null | undefined
 
 		constructor() {
 			super()
@@ -97,16 +96,15 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 
 			this.markers = []
 			this.sidebar = document.querySelector<SidebarWrapper>('sidebar-wrapper')
-			this.sidebarLinks = this.sidebar?.querySelectorAll('[data-markerindex]')
+			this.sidebarLinks = this.sidebar?.querySelectorAll('[data-markerkey]')
 
 			const markers = JSON.parse(this.getAttribute('data-markers') || '') as any
 			const popups = this.querySelectorAll('.popup')
 
 			for (const [i, markerInfo] of markers.entries()) {
-				const popup = popups && popups[i] && new mapboxgl.Popup().setHTML(popups[i].innerHTML).setMaxWidth('300px')
+				const popup = popups && popups[i] && new mapboxgl.Popup().setHTML(popups[i].innerHTML).setMaxWidth('380px')
 
-				// @ts-ignore
-				popup?.on('open', (e: any) => this.markerClick(e, i))
+				popup?.on('open', (e) => this.markerClick(e))
 
 				let el = undefined
 				if (markerInfo.class) {
@@ -119,28 +117,37 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			}
 		}
 
-		markerClick(e: any, i: number) {
+		/**
+		 * Highlight in sidebar when a marker is clicked.
+		 * @param e
+		 */
+		markerClick(e: any) {
 			if (!this.sidebarLinks) return
+			const popup = e.target as mapboxgl.Popup
+			const markerLatLng = popup.getLngLat()
 			this.selectedSidebar?.classList.remove('active')
-			this.selectedSidebar = this.sidebarLinks[i]
+			this.selectedSidebar = this.sidebar?.querySelector(`[data-markerkey='${markerLatLng.toString()}']`)
 			this.selectedSidebar?.classList.add('active')
-			if (!elementIsVisibleInViewport(this.selectedSidebar, this.sidebar?.menu)) {
+			if (this.selectedSidebar && !elementIsVisibleInViewport(this.selectedSidebar, this.sidebar?.menu)) {
 				scrollIntoView(this.selectedSidebar, { behavior: 'smooth', block: 'center' })
 			}
 		}
 
+		/**
+		 * Popup marker when sidebar item is clicked.
+		 */
 		sidebarClick(e: MouseEvent) {
 			if (!(e.target instanceof HTMLElement)) return
 
-			const index = e.target?.getAttribute('data-markerIndex')
+			const key = e.target?.getAttribute('data-markerkey')
 
-			if (!index) return
+			if (!key) return
 
-			const indexInt = parseInt(index)
+			const marker = this.markers.find((marker) => marker.getLngLat().toString() === key)
 
-			if (!this.markers[indexInt]) return
+			if (!marker) return
 
-			this.map.panTo(this.markers[indexInt].getLngLat())
+			this.map.panTo(marker.getLngLat())
 
 			// Unselect old sidebar item
 			this.selectedSidebar?.classList.remove('active')
@@ -153,7 +160,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			this.selectedMarker?.togglePopup()
 
 			// Open new popup
-			this.selectedMarker = this.markers[indexInt]
+			this.selectedMarker = marker
 			this.selectedMarker.togglePopup()
 
 			// Close sidebar on mobile
@@ -169,15 +176,14 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 				'shuffle-filter',
 				(e: any) => {
 					const shuffle = e.detail as Shuffle
-
-					// Only hide markers if we have identical number of shuffle items
-					if (shuffle.items.length !== this.markers.length) return
-
 					shuffle.items.forEach((item, i) => {
+						const el = item.element.querySelector('a')
+						const key = el?.dataset.markerkey
+						const marker = this.markers.findIndex((marker) => marker.getLngLat().toString() === key)
 						if (!item.isVisible) {
-							this.markers[i].remove()
+							this.markers[marker].remove()
 						} else {
-							this.markers[i].addTo(this.map)
+							this.markers[marker].addTo(this.map)
 						}
 					})
 				},
@@ -197,5 +203,8 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 	}
 	.mapboxgl-popup-content {
 		background: black;
+		gap: 15px;
+		display: flex;
+		align-items: flex-end;
 	}
 </style>

@@ -1,5 +1,5 @@
 ---
-import { loadAndFormatCollection } from 'src/util/collection'
+import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
 import Map from 'src/components/venue/Map.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import ActiveIndicator from 'src/components/ActiveIndicator.astro'
@@ -12,9 +12,25 @@ import { theme } from 'src/Theme.css'
 
 const venues = await loadAndFormatCollection('venue')
 
-const markers = venues.map((venue) => ({
-	coords: [venue.entry.data.lng, venue.entry.data.lat],
-	class: venue.entry.data.died === undefined ? undefined : 'dead-marker'
+// Group venues which exist in the same spot
+const groupedVenues = Object.values(
+	venues.reduce(
+		(acc, venue) => {
+			const index = `${venue.entry.data.lng}${venue.entry.data.lat}`
+			if (!acc[index]) {
+				acc[index] = []
+			}
+			acc[index].push(venue)
+			return acc
+		},
+		{} as { [key: string]: ProcessedEntry<'venue'>[] }
+	)
+)
+
+// Markers use the first venue in the group (will be the latest)
+const markers = groupedVenues.map((venueList) => ({
+	coords: [venueList[0].entry.data.lng, venueList[0].entry.data.lat],
+	class: venueList[0].entry.data.died === undefined ? undefined : 'dead-marker'
 }))
 ---
 
@@ -32,33 +48,37 @@ const markers = venues.map((venue) => ({
 			</label>
 		</div>
 	</ShuffleFilters>
-	<EntryMenu collection="venue" slot="sidebarMenu" transition:persist />
+	<EntryMenu collectionEntries={venues} slot="sidebarMenu" transition:persist />
 	<Map markers={markers} slot="content">
 		<div slot="popups">
 			{
-				venues.map((venue) => (
+				groupedVenues.map((venueList) => (
 					<div class="popup">
-						<h3 class="center" style={{ marginBottom: '0' }}>
-							{venue.entry.data.title}
-						</h3>
-						<p class="center" style={{ marginTop: '0', marginBottom: '10px' }}>
-							<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} inactiveText={'Defunct'} />
-						</p>
-						<SocialLinks links={venue.entry.data.links} />
-						{venue.extra.cover && (
-							<a
-								title={venue.entry.data.title}
-								href={venue.extra.absolutePath}
-								style={{ display: 'block', border: theme.borders.contrast, borderRadius: '5px' }}
-							>
-								<Image2 responsiveImage={venue.extra.cover} />
-							</a>
-						)}
-						<p class="center">
-							<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
-								See <strong>{venue.extra.gigCount}</strong> gigs at this venue
-							</a>
-						</p>
+						{venueList.map((venue) => (
+							<span>
+								<h3 class="center" style={{ marginBottom: '0' }}>
+									{venue.entry.data.title}
+								</h3>
+								<div class="center" style={{ marginTop: '0', marginBottom: '10px' }}>
+									<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} inactiveText={'Defunct'} />
+								</div>
+								<SocialLinks links={venue.entry.data.links} />
+								{venue.extra.cover && (
+									<a
+										title={venue.entry.data.title}
+										href={venue.extra.absolutePath}
+										style={{ display: 'block', border: theme.borders.contrast, borderRadius: '5px' }}
+									>
+										<Image2 responsiveImage={venue.extra.cover} />
+									</a>
+								)}
+								<p class="center">
+									<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
+										See <strong>{venue.extra.gigCount}</strong> gigs at this venue
+									</a>
+								</p>
+							</span>
+						))}
 					</div>
 				))
 			}

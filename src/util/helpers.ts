@@ -7,7 +7,7 @@ import MarkdownIt from 'markdown-it'
 import { convert } from 'html-to-text'
 import type { MenuLink } from 'src/components/DropdownMenu'
 import type { ProcessedEntry } from './collection'
-import { scrollIntoView } from "seamless-scroll-polyfill"
+import { scrollIntoView } from 'seamless-scroll-polyfill'
 
 /**
  * Turns a 00:00 timestring into total seconds.
@@ -232,7 +232,7 @@ export function maintainSidebarScrollPosition(collection: string) {
 			const sidebarMenu = document.querySelector('#sidebar-menu')
 			const activeElement = sidebarMenu?.querySelector('.active')
 			if (activeElement) {
-				activeElement.scrollIntoView({ behavior: 'instant', block: 'center' })
+				scrollIntoView(activeElement, { behavior: 'instant', block: 'center' })
 			}
 			// Probably not there but remove it anyway
 			sessionStorage.removeItem(`scrollPosition`)
@@ -255,20 +255,26 @@ export function maintainSidebarScrollPosition(collection: string) {
 		const storedScroll: StoredScrollPosition = scrollPosition ? JSON.parse(scrollPosition) : null
 
 		const depth = window.location.pathname.split('/').length
+		const sidebarMenu = document.querySelector<HTMLElement>('#sidebar-menu')
+		const activeElement = sidebarMenu?.querySelector<HTMLElement>('.active')
 
 		// Only remember scroll positions for collection entries, not the parent page
 		// Also forget it when changing collections
 		if (storedScroll && storedScroll.collection === collection && depth > 2) {
-			document.querySelector('#sidebar-menu')?.scrollTo({
+			sidebarMenu?.scrollTo({
 				top: parseInt(storedScroll.position, 10),
 				behavior: 'instant'
 			})
-		} else {
-			const sidebarMenu = document.querySelector('#sidebar-menu')
-			const activeElement = sidebarMenu?.querySelector('.active')
-			if (activeElement) {
-				activeElement.scrollIntoView({ behavior: 'instant', block: 'center' })
+
+			// It's possible for someone on mobile to scroll really fast so that the 
+			// stored scrollbar position is wrong because it hasn't finished scrolling.
+			// We do this to ensure the active element is always visible in these cases.
+			if (activeElement && !elementIsVisibleInViewport(activeElement, sidebarMenu)) {
+				scrollIntoView(activeElement, { behavior: 'instant', block: 'center' })
 			}
+
+		} else if (activeElement) {
+			scrollIntoView(activeElement, { behavior: 'instant', block: 'center' })
 		}
 		sessionStorage.removeItem(`scrollPosition`)
 	})

@@ -9,7 +9,7 @@
  *  - banner: Content to put in the banner instead of the cover image.
  */
 import FlexGridContainer from 'src/components/FlexGridContainer.astro'
-import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
+import { loadAndFormatCollection, loadAndFormatEntry, type ProcessedEntry } from 'src/util/collection'
 import Tile from 'src/components/Tile.astro'
 import DropdownMenu from 'src/components/DropdownMenu'
 import Divider from 'src/components/Divider.astro'
@@ -65,6 +65,18 @@ blogs.length > 0 && tabs.push({ title: `Articles (${blogs.length})`, id: 'blogs'
 images && Object.keys(images).length > 0 && tabs.push({ title: `Images (${Object.keys(images).length})`, id: 'images' })
 vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessions' })
 
+// Find other entries which reference this one as an alias (it was once them)
+const previouslyKnownAs = await loadAndFormatCollection(entry.entry.collection, (thing) =>
+	thing.entry.data.aliases?.find((alias) => alias.id === entry.entry.id)
+)
+
+// Load this entries aliases (it will become them)
+const willBeKnownAs =
+	entryData.aliases &&
+	(await Promise.all(
+		entryData.aliases.map(async (thing) => await loadAndFormatEntry(entry.entry.collection, thing.id))
+	))
+
 const hasBanner = Astro.slots.has('banner')
 ---
 
@@ -79,6 +91,26 @@ const hasBanner = Astro.slots.has('banner')
 		died={entryData.died}
 		inactiveText={entry.entry.collection === 'artist' ? 'Inactive' : 'Defunct'}
 	/>
+	{
+		willBeKnownAs && (
+			<h4 style={{ marginTop: 0 }}>
+				Became:
+				{willBeKnownAs.map((thing) => (
+					<a href={thing.extra.absolutePath}>{thing.entry.data.title}</a>
+				))}
+			</h4>
+		)
+	}
+	{
+		!!previouslyKnownAs.length && (
+			<h4 style={{ marginTop: 0 }}>
+				Was:
+				{previouslyKnownAs.map((thing) => (
+					<a href={thing.extra.absolutePath}>{thing.entry.data.title}</a>
+				))}
+			</h4>
+		)
+	}
 	{entryData.links && <SocialLinks links={entryData.links} />}
 	{
 		entryData.description && (
@@ -116,6 +148,17 @@ const hasBanner = Astro.slots.has('banner')
 			client:load
 		/>
 		{
+			willBeKnownAs &&
+				willBeKnownAs.map((thing) => (
+					<Tile responsiveImage={thing.extra.cover} href={thing.extra.absolutePath}>
+						<h4 class="center" style={{ marginBottom: 0 }}>
+							At this location from {entryData.died?.getFullYear()}
+						</h4>
+						<h3 class="center">{thing.entry.data.title}</h3>
+					</Tile>
+				))
+		}
+		{
 			Object.entries(gigsByYear)
 				.reverse()
 				.map(([year, gigs]) => (
@@ -135,6 +178,17 @@ const hasBanner = Astro.slots.has('banner')
 							))}
 						</FlexGridContainer>
 					</div>
+				))
+		}
+		{
+			!!previouslyKnownAs.length &&
+				previouslyKnownAs.map((thing) => (
+					<Tile responsiveImage={thing.extra.cover} href={thing.extra.absolutePath}>
+						<h4 class="center" style={{ marginBottom: 0 }}>
+							At this location {thing.entry.data.date?.getFullYear() || 'up'} to {thing.entry.data.died?.getFullYear()}
+						</h4>
+						<h3 class="center">{thing.entry.data.title}</h3>
+					</Tile>
 				))
 		}
 	</div>

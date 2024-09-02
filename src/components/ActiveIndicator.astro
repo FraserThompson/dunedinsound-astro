@@ -17,7 +17,12 @@ const { died, born, hideText, inactiveText } = Astro.props
 {
 	died === undefined && (
 		<span class={activeIcon} title="Active">
-			⬤ {!hideText && (!born ? 'Active' : `Active since ${born.getFullYear()}`)}
+			⬤{' '}
+			{!hideText && (
+				<h4 style={{ display: 'inline-block', marginBottom: 0 }}>
+					{!born ? 'Active' : `Active since ${born.getFullYear()}`}
+				</h4>
+			)}
 		</span>
 	)
 }
@@ -25,12 +30,15 @@ const { died, born, hideText, inactiveText } = Astro.props
 	died !== undefined && (
 		<span class={defunctIcon} title="Defunct">
 			⬤{' '}
-			{!hideText &&
-				(died.getFullYear() !== 1600
-					? !born
-						? `${inactiveText} since ${died.getFullYear()}`
-						: `Active ${born.getFullYear()} to ${died.getFullYear()}`
-					: inactiveText)}
+			{!hideText && (
+				<h4 style={{ display: 'inline-block', marginBottom: 0 }}>
+					{died.getFullYear() !== 1600
+						? !born
+							? `${inactiveText} since ${died.getFullYear()}`
+							: `Active ${born.getFullYear()} to ${died.getFullYear()}`
+						: inactiveText}
+				</h4>
+			)}
 		</span>
 	)
 }

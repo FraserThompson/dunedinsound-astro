@@ -1,8 +1,7 @@
 title: Purple Rain
-lat: -45.880352
-lng: 170.5004546
-description: Became <a href="/venues/dees_cafe_and_venue">Dee's Place</a>.
+lat: -45.88037053016235
+lng: 170.5003850828206
 date: 2012-01-01T00:00:00.000Z
 died: 2016-06-01T00:00:00.000Z
-links:
-  facebook: https://www.facebook.com/PurplerainDunedin/
+aliases:
+  - dees_cafe_and_venue
