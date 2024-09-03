@@ -150,11 +150,15 @@ const hasBanner = Astro.slots.has('banner')
 		{
 			willBeKnownAs &&
 				willBeKnownAs.map((thing) => (
-					<Tile responsiveImage={thing.extra.cover} href={thing.extra.absolutePath}>
+					<Tile responsiveImage={thing.extra.cover} href={thing.extra.absolutePath} containerHeight="30vh">
 						<h4 class="center" style={{ marginBottom: 0 }}>
 							At this location from {entryData.died?.getFullYear()}
+							{thing.entry.data.died ? ` to ${thing.entry.data.died?.getFullYear()}` : ''}
 						</h4>
-						<h3 class="center">{thing.entry.data.title}</h3>
+						<h3 class="center" style={{ marginBottom: 0 }}>
+							{thing.entry.data.title}
+						</h3>
+						<h4 class="center">{thing.extra.gigCount} gigs</h4>
 					</Tile>
 				))
 		}
@@ -183,11 +187,14 @@ const hasBanner = Astro.slots.has('banner')
 		{
 			!!previouslyKnownAs.length &&
 				previouslyKnownAs.map((thing) => (
-					<Tile responsiveImage={thing.extra.cover} href={thing.extra.absolutePath}>
+					<Tile responsiveImage={thing.extra.cover} href={thing.extra.absolutePath} containerHeight="30vh">
 						<h4 class="center" style={{ marginBottom: 0 }}>
 							At this location {thing.entry.data.date?.getFullYear() || 'up'} to {thing.entry.data.died?.getFullYear()}
 						</h4>
-						<h3 class="center">{thing.entry.data.title}</h3>
+						<h3 class="center" style={{ marginBottom: 0 }}>
+							{thing.entry.data.title}
+						</h3>
+						<h4 class="center">{thing.extra.gigCount} gigs</h4>
 					</Tile>
 				))
 		}

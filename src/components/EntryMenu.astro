@@ -46,8 +46,11 @@ const entries = collection ? await loadAndFormatCollection(collection) : collect
 				<a
 					class={MenuLinkWrapper['vertical']}
 					data-markerkey={
-						'lng' in entry.entry.data && 'lat' in entry.entry.data && `LngLat(${entry.entry.data.lng}, ${entry.entry.data.lat})`
+						'lng' in entry.entry.data &&
+						'lat' in entry.entry.data &&
+						`LngLat(${entry.entry.data.lng}, ${entry.entry.data.lat})`
 					}
+					data-date={'date' in entry.entry.data ? entry.entry.data.date?.getTime() : undefined}
 					href={selected ? entry.extra.absolutePath : undefined}
 				>
 					<span>

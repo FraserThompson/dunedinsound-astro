@@ -21,6 +21,7 @@ const groupedVenues = Object.values(
 				acc[index] = []
 			}
 			acc[index].push(venue)
+			acc[index].sort((a, b) => (b.entry.data.date?.getTime() || 0) - (a.entry.data.date?.getTime() || 0))
 			return acc
 		},
 		{} as { [key: string]: ProcessedEntry<'venue'>[] }
@@ -62,12 +63,19 @@ const markers = groupedVenues.map((venueList) => ({
 								<div class="center" style={{ marginTop: '0', marginBottom: '10px' }}>
 									<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} inactiveText={'Defunct'} />
 								</div>
-								<SocialLinks links={venue.entry.data.links} />
+								<div style={{ height: '35px' }}>
+									<SocialLinks links={venue.entry.data.links} />
+								</div>
 								{venue.extra.cover && (
 									<a
 										title={venue.entry.data.title}
 										href={venue.extra.absolutePath}
-										style={{ display: 'block', border: theme.borders.contrast, borderRadius: '5px' }}
+										style={{
+											display: 'block',
+											border: theme.borders.contrast,
+											borderRadius: '5px',
+											aspectRatio: '3/2'
+										}}
 									>
 										<Image2 responsiveImage={venue.extra.cover} />
 									</a>

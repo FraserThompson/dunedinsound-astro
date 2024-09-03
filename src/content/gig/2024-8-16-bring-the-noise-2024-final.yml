@@ -1,11 +1,23 @@
-title: "Bring the Noise 2024 Final"
+title: 'Bring the Noise 2024 Final'
 date: 2024-8-16 08:30:00 Z
 venue: u-bar
-description: Audio/video to come
+feature_vid: BjZNTqALoVk
 artists:
   - id: emma_papworth
+    vid:
+      - link: cnOgADQIh4o
   - id: achtung
+    vid:
+      - link: 9Gf7xalX7sg
   - id: king_mary
+    vid:
+      - link: GKkpNOw06LI
   - id: purple_dog
+    vid:
+      - link: hsCGx5d8nBo
   - id: the_daze
+    vid:
+      - link: y4qxn8OcolY
   - id: no_danger
+    vid:
+      - link: 09itFxlGPms

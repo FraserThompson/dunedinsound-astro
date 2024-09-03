@@ -52,7 +52,6 @@ import { Subheader } from './UtilClasses.css'
 		set scrolled(isScrolled: boolean) {
 			if (isScrolled) {
 				this._internals.states.add('scrolled')
-				console.log('added scroll state')
 			} else {
 				this._internals.states.delete('scrolled')
 			}

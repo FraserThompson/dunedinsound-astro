@@ -284,7 +284,7 @@ export async function getGigExtra(
 			audio.push({
 				title: artistId,
 				files: audioFiles,
-				tracklist: entry.data.artists.find((artist: any) => artist.id.id === artistDir)?.tracklist
+				tracklist: entry.data.artists.find((artist) => artist.id.id === artistId)?.tracklist
 			})
 		}
 	}

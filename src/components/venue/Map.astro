@@ -102,7 +102,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			const popups = this.querySelectorAll('.popup')
 
 			for (const [i, markerInfo] of markers.entries()) {
-				const popup = popups && popups[i] && new mapboxgl.Popup().setHTML(popups[i].innerHTML).setMaxWidth('380px')
+				const popup = popups && popups[i] && new mapboxgl.Popup().setHTML(popups[i].innerHTML).setMaxWidth('400px')
 
 				popup?.on('open', (e) => this.markerClick(e))
 
@@ -123,13 +123,23 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 		 */
 		markerClick(e: any) {
 			if (!this.sidebarLinks) return
+
 			const popup = e.target as mapboxgl.Popup
 			const markerLatLng = popup.getLngLat()
+
 			this.selectedSidebar?.classList.remove('active')
-			this.selectedSidebar = this.sidebar?.querySelector(`[data-markerkey='${markerLatLng.toString()}']`)
-			this.selectedSidebar?.classList.add('active')
-			if (this.selectedSidebar && !elementIsVisibleInViewport(this.selectedSidebar, this.sidebar?.menu)) {
-				scrollIntoView(this.selectedSidebar, { behavior: 'smooth', block: 'center' })
+
+			const matchingSidebarItems = this.sidebar?.querySelectorAll<HTMLElement>(
+				`[data-markerkey='${markerLatLng.toString()}']`
+			)
+
+			if (matchingSidebarItems) {
+				const sorted = [...matchingSidebarItems].sort((a, b) => parseInt(b.dataset.date || '0') - parseInt(a.dataset.date || '0'))
+				this.selectedSidebar = sorted[0]
+				this.selectedSidebar?.classList.add('active')
+				if (this.selectedSidebar && !elementIsVisibleInViewport(this.selectedSidebar, this.sidebar?.menu)) {
+					scrollIntoView(this.selectedSidebar, { behavior: 'smooth', block: 'center' })
+				}
 			}
 		}
 

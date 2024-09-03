@@ -116,7 +116,7 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 				start: timeToSeconds(track.time),
 				drag: false,
 				resize: false,
-				color: "#0818c4"
+				color: "#28da1d"
 			}
 			regionsPlugin.addRegion(region)
 		})
@@ -257,21 +257,23 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 				<ul className={TracklistWrapper}>
 					{artistAudio.map((item, index) => (
 						<li key={item.title} className={selectedArtist == index ? TracklistTrack + ' active' : TracklistTrack}>
-							<a role="button" onClick={() => selectArtist(index)} style={{ cursor: "pointer", flexGrow: 1 }}>
-								{index + 1}. {item.title}
-							</a>
-							{item.tracklist && (
-								<ul className="tracklist">
-									{item.tracklist.map((item) => (
-										<li key={item.title}>
-											<a onClick={() => seekToTime(item.time, index, true)} style={{ cursor: "pointer" }} role="button">
-												{item.title} ({item.time})
-											</a>
-										</li>
-									)
-									)}
-								</ul>
-							)}
+							<span style={{ flexGrow: 1 }}>
+								<a role="button" onClick={() => selectArtist(index)} style={{ cursor: "pointer", display: 'block' }}>
+									{index + 1}. {item.title}
+								</a>
+								{item.tracklist && (
+									<ul className="tracklist">
+										{item.tracklist.map((item) => (
+											<li key={item.title}>
+												<a onClick={() => seekToTime(item.time, index, true)} style={{ cursor: "pointer" }} role="button">
+													{item.title} ({item.time})
+												</a>
+											</li>
+										)
+										)}
+									</ul>
+								)}
+							</span>
 							<span style={{ marginLeft: "auto" }}>
 								<a title={'Download MP3: ' + item.title} href={item.files[0]} target="_blank">
 									<DownloadIcon />
