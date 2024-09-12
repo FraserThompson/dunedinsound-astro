@@ -135,7 +135,7 @@ const { selected } = Astro.props
 		 * Respond to shuffle events and hide gigs/years/months.
 		 * @param e
 		 */
-		onShuffle(e: any) {
+		onShuffle = (e: any) => {
 			const shuffle = e.detail as Shuffle
 
 			// Hide the artists menu if we're shuffling
@@ -185,12 +185,12 @@ const { selected } = Astro.props
 		}
 
 		connectedCallback() {
-			document.addEventListener('shuffle-filter', (e) => this.onShuffle(e), false)
+			document.addEventListener('shuffle-filter', this.onShuffle, false)
 			!this.selected && this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e) => this.itemClick(e)))
 		}
 
 		disconnectedCallback() {
-			document.removeEventListener('shuffle-filter', (e) => this.onShuffle(e))
+			document.removeEventListener('shuffle-filter', this.onShuffle, false)
 			!this.selected &&
 				this.gigLinks?.forEach((gigLink) => gigLink.removeEventListener('click', (e) => this.itemClick(e)))
 		}

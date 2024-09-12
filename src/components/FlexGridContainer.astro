@@ -8,17 +8,9 @@
  *  - fixedWidth (optional): if provided grid children will have a fixed width rather than auto.
  *  - id (optional)
  *  - classname (optional)
+ *  - style (optional)
  */
-import {
-	FlexGridWrapper,
-	flexXs,
-	widthXs,
-	flexMd,
-	widthMd,
-	flexLg,
-	widthLg,
-	maxWidth2
-} from './FlexGridContainer.css'
+import { FlexGridWrapper, flexXs, widthXs, flexMd, widthMd, flexLg, widthLg, maxWidth2 } from './FlexGridContainer.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import type { Grid } from './GridChild.astro'
 
@@ -28,11 +20,12 @@ interface Props {
 	fixedWidth?: boolean
 	id?: string
 	className?: string
+	style?: any
 }
 
 const cols = 12
 
-const { grid, maxWidth, fixedWidth, id, className = '' } = Astro.props
+const { grid, maxWidth, fixedWidth, id, style, className = '' } = Astro.props
 
 const processedGrid = {
 	xs: grid?.xs || 6,
@@ -44,15 +37,18 @@ const processedGrid = {
 <div
 	class={`${FlexGridWrapper} ${className}`}
 	id={id}
-	style={assignInlineVars({
-		[flexXs]: `1 1 ${100 * (processedGrid.xs / cols)}%`,
-		[widthXs]: fixedWidth ? `${100 * (processedGrid.xs / cols)}%` : undefined,
-		[flexMd]: `1 1 ${100 * (processedGrid.md / cols)}%`,
-		[widthMd]: fixedWidth ? `${100 * (processedGrid.md / cols)}%` : undefined,
-		[flexLg]: `1 1 ${100 * (processedGrid.lg / cols)}%`,
-		[widthLg]: fixedWidth ? `${100 * (processedGrid.lg / cols)}%` : undefined,
-		[maxWidth2]: maxWidth
-	})}
+	style={{
+		...assignInlineVars({
+			[flexXs]: `1 1 ${100 * (processedGrid.xs / cols)}%`,
+			[widthXs]: fixedWidth ? `${100 * (processedGrid.xs / cols)}%` : undefined,
+			[flexMd]: `1 1 ${100 * (processedGrid.md / cols)}%`,
+			[widthMd]: fixedWidth ? `${100 * (processedGrid.md / cols)}%` : undefined,
+			[flexLg]: `1 1 ${100 * (processedGrid.lg / cols)}%`,
+			[widthLg]: fixedWidth ? `${100 * (processedGrid.lg / cols)}%` : undefined,
+			[maxWidth2]: maxWidth
+		}),
+		...style
+	}}
 >
 	<slot />
 </div>

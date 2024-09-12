@@ -46,10 +46,16 @@ const { itemselector, boardselector, className = '' } = Astro.props
 	class ShuffleFilters extends HTMLElement {
 		shuffleInstance: Shuffle | null
 
+		// Buttons which sort the items.
 		sortButtons: NodeListOf<HTMLElement> | null
+
+		// Elements which filter the items (eg. search)
 		filterElements: NodeListOf<HTMLInputElement> | null
 
+		// Active sort mode.
 		activeSort: HTMLElement | null
+
+		// List of active filters.
 		activeFilters: Set<HTMLInputElement> | null
 
 		constructor() {
@@ -172,9 +178,8 @@ const { itemselector, boardselector, className = '' } = Astro.props
 				const sidebar = document.querySelector('#sidebar-menu')
 				if (sidebar) {
 					sidebar.scroll(0, 0)
-				} else {
-					window.scroll(0, 0)
 				}
+				window.scroll(0, 0)
 			}
 
 			// Let other components know what's up

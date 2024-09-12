@@ -33,7 +33,7 @@ const { artists } = Astro.props
 <script>
 	import { scrollTo } from 'src/util/helpers'
 	import { replaceEventName } from 'src/util/history'
-import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
+	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
 
 	/**
 	 * Artists menu which sits under a gig if its selected.
@@ -62,7 +62,9 @@ import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
 		 *
 		 * @param location
 		 */
-		handleArtistChange(url: URL) {
+		handleArtistChange = (e: any) => {
+			const url: URL = e.detail
+
 			if (url.hash) {
 				const selectedItem = this.querySelector(`[href="${url.hash}"]`)
 
@@ -95,13 +97,14 @@ import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
 		 * Adds event listeners.
 		 */
 		connectedCallback() {
-			document.addEventListener(replaceEventName, (e: any) => this.handleArtistChange(e.detail))
+			document.addEventListener(replaceEventName, this.handleArtistChange)
 			this.links?.forEach((link) => {
 				link.addEventListener('click', (e) => this.itemClick(e))
 			})
 		}
 
 		disconnectedCallback() {
+			document.removeEventListener(replaceEventName, this.handleArtistChange)
 			this.unlisten && this.unlisten()
 		}
 	}

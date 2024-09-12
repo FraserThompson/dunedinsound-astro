@@ -142,7 +142,7 @@ const entryExtra = entry.extra
 			this.player = e.target
 		}
 
-		setIframe(e: any) {
+		setIframe = (e: any) => {
 			// @ts-ignore
 			new YT.Player(e.target.shadowRoot.querySelector('iframe'), {
 				events: {
@@ -154,10 +154,11 @@ const entryExtra = entry.extra
 		connectedCallback() {
 			this.interval = setInterval(() => this.tick(), 1000)
 			this.trackLinks.forEach((link) => link.addEventListener('mousedown', (e) => this.trackClickHandler(e)))
-			document.addEventListener('liteYoutubeIframeLoaded', (e) => this.setIframe(e))
+			document.addEventListener('liteYoutubeIframeLoaded', this.setIframe)
 		}
 
 		disconnectedCallback() {
+			document.removeEventListener('liteYoutubeIframeLoaded', this.setIframe)
 			clearInterval(this.interval)
 		}
 	}

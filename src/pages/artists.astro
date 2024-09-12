@@ -59,7 +59,7 @@ for (const artist of artists) {
 			</div>
 		</div>
 	</ShuffleFilters>
-	<FlexGridContainer grid={{ xs: 6, md: 3, lg: 2 }} id="artist-grid" fixedWidth={true}>
+	<FlexGridContainer grid={{ xs: 6, md: 3, lg: 2 }} id="artist-grid" fixedWidth={true} style={{minHeight: "80vh"}}>
 		{
 			artists.map((artist) => (
 				<Tile

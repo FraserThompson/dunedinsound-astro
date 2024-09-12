@@ -4,6 +4,7 @@ export const backgroundImageWrapper = style({
 	position: 'static',
 	width: '100%',
 	height: 'auto',
+	aspectRatio: '3/2',
 	zIndex: '0',
 	'@media': {
 		'screen and (--md)': {

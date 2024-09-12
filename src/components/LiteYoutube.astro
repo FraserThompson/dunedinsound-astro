@@ -123,7 +123,7 @@ const cssVars = {
 		 * Since it can take a sec for the iframe to load in, we attempt autoplay multiple times.
 		 * @param e
 		 */
-		trySetupAutoplay(e: any) {
+		trySetupAutoplay = (e: any) => {
 			// So elements dont respond to other elements events
 			if (e.target !== this.liteYoutube) {
 				return
@@ -177,10 +177,12 @@ const cssVars = {
 				}
 			}
 
-			document.addEventListener('liteYoutubeIframeLoaded', (e: any) => this.trySetupAutoplay(e))
+			document.addEventListener('liteYoutubeIframeLoaded', this.trySetupAutoplay)
 		}
 
-		disconnectedCallback() {}
+		disconnectedCallback() {
+			document.removeEventListener('liteYoutubeIframeLoaded', this.trySetupAutoplay)
+		}
 	}
 
 	customElements.define('lite-youtube-toucher', LiteYoutubeToucher)

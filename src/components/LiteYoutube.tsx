@@ -56,7 +56,7 @@ const LiteYoutube: FunctionalComponent<Props> = ({ videoid, loadAPI, autoload })
 	useEffect(() => {
 		// This is because web components have issues with SSR rendering
 		import("@justinribeiro/lite-youtube")
-		document.addEventListener('liteYoutubeIframeLoaded', (e: any) => trySetupAutoplay(e))
+		document.addEventListener('liteYoutubeIframeLoaded', trySetupAutoplay)
 	}
 		, [])
 

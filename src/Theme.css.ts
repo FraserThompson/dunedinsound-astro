@@ -132,7 +132,7 @@ createGlobalTheme(':root', theme, {
 		subheaderHeight: subheaderHeight,
 		subheaderHeightNegative: `-${subheaderHeight}`,
 		sidebarWidth: '320px',
-		viewportHeight: `calc(100vh - ${headerHeight})`,
+		viewportHeight: `calc(100% - ${headerHeight})`,
 		footerHeight: '280px',
 		contentContainerWidth: '740px',
 		defaultBannerHeight: '60vh'

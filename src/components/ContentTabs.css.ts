@@ -20,6 +20,7 @@ export const tabButton = style({
 	borderRadius: '6px 6px 0 0',
 	borderTop: 'transparent',
 	height: '100%',
+	fontSize: theme.font.baseSize,
 	textOverflow: 'clip',
 	overflow: 'hidden',
 	backgroundColor: theme.color.text,

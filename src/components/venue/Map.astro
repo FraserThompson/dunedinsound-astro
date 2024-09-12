@@ -134,7 +134,9 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			)
 
 			if (matchingSidebarItems) {
-				const sorted = [...matchingSidebarItems].sort((a, b) => parseInt(b.dataset.date || '0') - parseInt(a.dataset.date || '0'))
+				const sorted = [...matchingSidebarItems].sort(
+					(a, b) => parseInt(b.dataset.date || '0') - parseInt(a.dataset.date || '0')
+				)
 				this.selectedSidebar = sorted[0]
 				this.selectedSidebar?.classList.add('active')
 				if (this.selectedSidebar && !elementIsVisibleInViewport(this.selectedSidebar, this.sidebar?.menu)) {
@@ -178,30 +180,30 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			this.sidebar?.toggleSidebar()
 		}
 
+		onShuffle = (e: any) => {
+			const shuffle = e.detail as Shuffle
+			shuffle.items.forEach((item, i) => {
+				const el = item.element.querySelector('a')
+				const key = el?.dataset.markerkey
+				const marker = this.markers.findIndex((marker) => marker.getLngLat().toString() === key)
+				if (!item.isVisible) {
+					this.markers[marker].remove()
+				} else {
+					this.markers[marker].addTo(this.map)
+				}
+			})
+		}
+
 		connectedCallback() {
 			this.sidebarLinks?.forEach((link) => link.addEventListener('mousedown', (e) => this.sidebarClick(e)))
 
 			// Support for hiding markers on shuffle filter
-			document.addEventListener(
-				'shuffle-filter',
-				(e: any) => {
-					const shuffle = e.detail as Shuffle
-					shuffle.items.forEach((item, i) => {
-						const el = item.element.querySelector('a')
-						const key = el?.dataset.markerkey
-						const marker = this.markers.findIndex((marker) => marker.getLngLat().toString() === key)
-						if (!item.isVisible) {
-							this.markers[marker].remove()
-						} else {
-							this.markers[marker].addTo(this.map)
-						}
-					})
-				},
-				false
-			)
+			document.addEventListener('shuffle-filter', this.onShuffle, false)
 		}
 
-		disconnectedCallback() {}
+		disconnectedCallback() {
+			document.removeEventListener('shuffle-filter', this.onShuffle, false)
+		}
 	}
 
 	customElements.define('map-wrapper', MapWrapper)
