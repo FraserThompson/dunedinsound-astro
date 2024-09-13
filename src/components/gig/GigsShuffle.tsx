@@ -6,8 +6,8 @@ import { getRandom } from 'src/util/helpers'
 import Player from 'src/components/gig/Player'
 import { shuffler } from 'src/util/shuffling.ts'
 import WaveSurfer from "wavesurfer.js"
-import LiteYoutube from 'src/components/LiteYoutube'
 import { GigsPlayerWrapper, GigsShuffleBottom, GigsShuffleWrapper, GigsTitlebar } from "./GigsShuffle.css"
+import HeavyYoutube from "../HeavyYoutube"
 
 
 /**
@@ -82,7 +82,7 @@ const GigsJukebox: FunctionalComponent = () => {
 				<div className={`${PlayerWrapper} player`}>
 					<div className={`${GigsTitlebar}`}></div>
 					<div style={{ margin: '5px', border: '3px groove #585662', aspectRatio: "16/9" }}>
-						{mode === 'video' && currentGig && currentVideo && <LiteYoutube autoload={true} loadAPI={true} videoid={currentVideo} />}
+						{mode === 'video' && currentGig && currentVideo && <HeavyYoutube videoid={currentVideo} />}
 						{mode === 'audio' && currentGig && currentAudio && (
 							<Player artistAudio={[currentAudio]} barebones={true} playOnLoad={true} setWaveSurferCallback={(wavesurfer) => setWaveSurfer(wavesurfer)} />
 						)}

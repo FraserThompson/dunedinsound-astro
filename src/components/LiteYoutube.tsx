@@ -19,46 +19,91 @@ interface Props {
 
 const LiteYoutube: FunctionalComponent<Props> = ({ videoid, loadAPI, autoload }) => {
 
+	const ytPlayer: MutableRef<any> = useRef()
 	const timeout: MutableRef<any> = useRef()
 	const attempts: MutableRef<number> = useRef(0)
+	
+	/**
+	 * Use the YouTube API to autoplay when the iframe loads.
+	 */
+	const autoPlay = useCallback((e: any) => {
+		// If we've already done it, get out
+		if (ytPlayer.current) return
 
-	const setupAutoPlay = useCallback((e: any) => {
-		const youtubeIframe = e.target.shadowRoot.querySelector('iframe')
-		// @ts-ignore
-		new YT.Player(youtubeIframe, {
-			events: {
-				onReady: (e: any) => {
-					e.target.setPlaybackQuality('hd720')
-					e.target.playVideo()
+		// Get the actual iframe so we can initialize the API
+		const youtubeIframe = e.target?.shadowRoot.querySelector('iframe')
+		if (!youtubeIframe) return
+
+		try {
+			// @ts-ignore
+			const player = new YT.Player(youtubeIframe, {
+				events: {
+					onReady: (e) => playVideo(e)
 				}
-			}
-		})
+			})
+			if (player) ytPlayer.current = player
+		} catch (e) {
+			return
+		}
 	}, [])
 
+	/**
+	 * Plays the video via the YouTube API.
+	 */
+	const playVideo = useCallback((e) => {
+		if (!ytPlayer.current) return
+		// @ts-ignore
+		ytPlayer.current?.setPlaybackQuality('hd720')
+		// @ts-ignore
+		ytPlayer.current?.playVideo()
+	}, [])
+
+	/**
+	 * Since it can take a sec for the iframe to load in, we attempt autoplay multiple times.
+	 * @param e
+	 */
 	const trySetupAutoplay = useCallback((e: any) => {
-		// So elements dont respond to other elements events
-		// Consider failed after 20 attempts
-		if (attempts.current > 20) {
+
+		// If the videoId has changed then our previous iframe is invalid
+		if (e.detail.videoId !== videoid) {
+			delete ytPlayer.current
+		}
+
+		// Consider failed
+		if (attempts.current > 10) {
 			timeout.current && clearTimeout(timeout.current)
+			attempts.current = 0
 			return
 		}
 
 		attempts.current = attempts.current + 1
 
-		try {
-			setupAutoPlay(e)
+		// If there's an iframe and it's not playing, then try to play again.
+		// It should have already played via onReady but maybe it didnt.
+		// @ts-ignore
+		if (ytPlayer.current && ytPlayer.current.getPlayerState() <= 0) {
+			playVideo()
+		} else if (ytPlayer.current) {
 			timeout.current && clearTimeout(timeout.current)
-		} catch (error) {
+			return
+		}
+
+		// Try to autoplay.
+		autoPlay(e)
+
+		// If it fails setup a timeout so it tries again
+		if (!ytPlayer.current) {
 			timeout.current = setTimeout(() => trySetupAutoplay(e), 100)
 		}
-	}, [setupAutoPlay])
+
+	}, [autoPlay])
 
 	useEffect(() => {
 		// This is because web components have issues with SSR rendering
 		import("@justinribeiro/lite-youtube")
 		document.addEventListener('liteYoutubeIframeLoaded', trySetupAutoplay)
-	}
-		, [])
+		return () => document.removeEventListener('liteYoutubeIframeLoaded', trySetupAutoplay)
+	}, [])
 
 	return (
 		<>

@@ -19,7 +19,7 @@ interface Props {
 const { videoid, loadAPI, autoload, freeAspect } = Astro.props
 
 const cssVars = {
-	aspectRatio : freeAspect ? 'auto' : '16/9'
+	aspectRatio: freeAspect ? 'auto' : '16/9'
 }
 ---
 
@@ -55,8 +55,14 @@ const cssVars = {
 	class LiteYoutubeToucher extends HTMLElement {
 		APIKey = 'AIzaSyBUlBQysAAKfuSmm4Z92VBMAE9lli3zL58'
 		liteYoutube: LiteYTEmbed | null
+		ytPlayer: any | undefined
+
+		// The setTimout which is trying to autoplay.
 		autoplaySetteruperrer: any | undefined
+
+		// How many times it's tried to autoplay.
 		autoplayTries = 0
+
 		titleEl: HTMLElement | undefined
 		videoid
 
@@ -101,22 +107,42 @@ const cssVars = {
 		/**
 		 * Use the YouTube API to autoplay when the iframe loads.
 		 */
-		setupAutoplay() {
+		autoPlay = () => {
+			// If we've already done it, get out
+			if (this.ytPlayer) return
+
+			// Get the actual iframe so we can initialize the API
 			const youtubeIframe = this.liteYoutube?.shadowRoot.querySelector('iframe')
-			// @ts-ignore
-			new YT.Player(youtubeIframe, {
-				events: {
-					onReady: (e: any) => {
-						e.target.setPlaybackQuality('hd720')
-						e.target.playVideo()
-					},
-					onPlayerStateChange: (e: any) => {
-						if (this.titleEl && e.data >= 0) {
-							this.titleEl.style.display = "none"
+			if (!youtubeIframe) return
+
+			try {
+				// @ts-ignore
+				const player = new YT.Player(youtubeIframe, {
+					events: {
+						onReady: () => this.playVideo(),
+						onPlayerStateChange: (e: any) => {
+							if (this.titleEl && e.data >= 0) {
+								this.titleEl.style.display = 'none'
+							}
 						}
 					}
-				}
-			})
+				})
+				if (player) this.ytPlayer = player
+			} catch (e) {
+				return
+			}
+		}
+
+		/**
+		 * Plays the video via the YouTube API.
+		 */
+		playVideo = () => {
+			// We can't do it if we haven't init'd the API
+			if (!this.ytPlayer) return
+			// @ts-ignore
+			this.ytPlayer?.setPlaybackQuality('hd720')
+			// @ts-ignore
+			this.ytPlayer?.playVideo()
 		}
 
 		/**
@@ -129,32 +155,50 @@ const cssVars = {
 				return
 			}
 
-			// Consider failed after 20 attempts
-			if (this.autoplayTries > 20) {
+			// If the videoId has changed then our previous iframe is invalid
+			if (e.target.videoId !== this.videoid) {
+				this.ytPlayer = null
+			}
+
+			// Consider failed
+			if (this.autoplayTries > 10) {
 				this.autoplaySetteruperrer && clearTimeout(this.autoplaySetteruperrer)
+				this.autoplayTries = 0
 				return
 			}
 
 			this.autoplayTries = this.autoplayTries + 1
 
-			try {
-				this.setupAutoplay()
+			// If there's an iframe and it's not playing, then try to play again.
+			// It should have already played via onReady but maybe it didnt.
+			// @ts-ignore
+			if (this.ytPlayer && this.ytPlayer.getPlayerState() < 0) {
+				this.playVideo()
+			} else if (this.ytPlayer) {
 				this.autoplaySetteruperrer && clearTimeout(this.autoplaySetteruperrer)
-			} catch (error) {
+				return
+			}
+
+			// Try to autoplay.
+			this.autoPlay()
+
+			// If it fails setup a timeout so it tries again
+			if (!this.ytPlayer) {
 				this.autoplaySetteruperrer = setTimeout(() => this.trySetupAutoplay(e), 100)
 			}
 		}
 
 		/**
-		 * Get the thumbnail and title via the YouTube API.
+		 * Get the thumbnail and title via the YouTube API if possible.
 		 */
-		async connectedCallback() {
+		async setThumbnailFromAPI() {
 			let response
 			try {
 				response = await fetch(
 					`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${this.videoid}&key=${this.APIKey}`
 				)
 			} catch (e) {
+				// If it fails just leave and we'll use the default thumbnail.
 				return
 			}
 
@@ -176,8 +220,11 @@ const cssVars = {
 					fallbackPlaceholder.src = thumbnail
 				}
 			}
+		}
 
+		connectedCallback() {
 			document.addEventListener('liteYoutubeIframeLoaded', this.trySetupAutoplay)
+			this.setThumbnailFromAPI()
 		}
 
 		disconnectedCallback() {

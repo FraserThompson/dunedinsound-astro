@@ -9,13 +9,13 @@ const gigs = await loadAndFormatCollection('gig')
 
 /**
  * This is somewhat insane.
- * 
+ *
  * Basically since we're serving this up as a big blob to the client,
  * we want to remove all fields we don't need.
  * This brings it down from like 3mb to like 600kb.
- * 
+ *
  * Downside is it breaks type safety.
- * 
+ *
  * Maybe there's a better way to do this statically, not sure.
  */
 const minimalGigs = JSON.parse(JSON.stringify(gigs)).map((gig: any) => {
@@ -46,7 +46,7 @@ const minimalGigs = JSON.parse(JSON.stringify(gigs)).map((gig: any) => {
 	delete gig.extra.venue.data.lng
 	const minimalGig = {
 		entry: gig.entry,
-		extra: {...gig.extra, artistImages: [], artists: minimalArtists }
+		extra: { ...gig.extra, artistImages: [], artists: minimalArtists }
 	}
 	return minimalGig
 })
@@ -73,3 +73,25 @@ fs.writeFileSync(path, gigsJSON)
 	</ShuffleFilters>
 	<GigsShuffle client:load />
 </SubheadersLayout>
+
+<script>
+	document.addEventListener('astro:page-load', (ev) => {
+		// We use the vanilla YouTube API in this section coz its quicker
+		function onPlayerReady(event: any) {
+			event.target.playVideo()
+		}
+
+		// @ts-ignore
+		window.player = null
+
+		// @ts-ignore
+		window.onYouTubeIframeAPIReady = () => {
+			// @ts-ignore
+			window.player = new YT.Player('player', {
+				events: {
+					onReady: onPlayerReady
+				}
+			})
+		}
+	})
+</script>

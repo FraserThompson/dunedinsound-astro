@@ -104,10 +104,16 @@ globalStyle('button', {
 	height: `calc(${theme.dimensions.subheaderHeight} - 2px)`,
 	paddingTop: '0px',
 	paddingBottom: '0px',
-	paddingRight: theme.dimensions.basePadding,
-	paddingLeft: theme.dimensions.basePadding,
+	paddingRight: theme.dimensions.basePaddingMobile,
+	paddingLeft: theme.dimensions.basePaddingMobile,
 	color: theme.color.lightText,
-	backgroundColor: theme.color.primary
+	backgroundColor: theme.color.primary,
+	'@media': {
+		'screen and (--md)': {
+			paddingRight: theme.dimensions.basePadding,
+			paddingLeft: theme.dimensions.basePadding
+		}
+	}
 })
 
 globalStyle('button:hover', {
@@ -290,7 +296,7 @@ globalStyle('.headerButton', {
 	'@media': {
 		'screen and (--md)': {
 			width: `${theme.dimensions.headerHeight} !important`,
-			height: `${theme.dimensions.headerHeight} !important`,
+			height: `${theme.dimensions.headerHeight} !important`
 		}
 	}
 })
