@@ -115,10 +115,16 @@ const tasks = media.map((inputPath) => {
 			const fullImagePath = `${outputPath}/${parsedPath.name}.${mtime}.jpg`
 
 			// Copy and compress the full image using mozjpeg to save a few bucks
-			const pipeline = sharp(inputBuffer)
-			pipeline.jpeg({ mozjpeg: true, quality: 90 })
-			const outputBuffer = await pipeline.toBuffer()
-			await fs.outputFile(fullImagePath, outputBuffer)
+			try {
+				const pipeline = sharp(inputBuffer)
+				pipeline.jpeg({ mozjpeg: true, quality: 90 })
+				const outputBuffer = await pipeline.toBuffer()
+				await fs.outputFile(fullImagePath, outputBuffer)
+			} catch (e) {
+				console.log(`ERROR ON: ${inputPath}`)
+				console.log(e)
+				return
+			}
 
 			console.log(fullImagePath)
 

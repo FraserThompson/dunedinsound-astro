@@ -70,6 +70,8 @@ export const yearLink = style([
 	{
 		position: 'sticky',
 		color: `black !important`,
+		height: `${theme.dimensions.subheaderHeight} !important`,
+		lineHeight: `${theme.dimensions.subheaderHeight} !important`,
 		top: '0px',
 		backgroundColor: `${theme.color.foreground} !important`,
 		padding: 0,
