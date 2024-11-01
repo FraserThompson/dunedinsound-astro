@@ -388,6 +388,7 @@ export async function getVaultSessionExtra(
  * Extends extra fields for artists:
  * - cover: override the default cover with the latest gig cover.
  * - gigCount: number of gigs featuring this artist.
+ * - absolutePath: override path to latest gig if there's only 1.
  * @param entry: The artist entry.
  * @returns extras with artist fields.
  */
@@ -413,6 +414,7 @@ export async function getArtistExtra(
 
 	return {
 		...extra,
+		absolutePath: artistGigs.length <= 1 && latestGig ? getEntryPath(latestGig.data.title, 'gig') : extra.absolutePath,
 		gigCount: artistGigs.length,
 		lastGig: latestGig?.data.date.getTime(),
 		cover

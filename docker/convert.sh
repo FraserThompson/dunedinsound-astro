@@ -1,6 +1,7 @@
 #!/bin/bash
 shopt -s nullglob
 ls /root/audio
+
 for file in /root/audio/*.{wav,mp3}
 do
     cd "$(dirname "$file")"
@@ -40,4 +41,14 @@ do
         # Remove wav file
         rm temp.wav
     fi
+done
+
+# For converting 32bit float to 24bit
+for file in /root/audio/32bit/*.WAV
+do
+    cd "$(dirname "$file")"
+    filename=$(basename "$file" .$extension)
+    echo "Working on $filename"
+		echo "Converting to 24bit WAV..."
+		ffmpeg -y -i "$file" -af "dynaudnorm=f=500:g=5,highpass=f=20" -c:a pcm_s24le $filename.24.wav
 done

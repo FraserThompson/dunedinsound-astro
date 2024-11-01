@@ -15,6 +15,7 @@ import ActiveIndicator from 'src/components/ActiveIndicator.astro'
 import type { CollectionKey } from 'astro:content'
 import ChevronLeftIcon from '~icons/bx/chevron-left'
 import { theme } from 'src/Theme.css'
+import AllAgesIndicator from './AllAgesIndicator.astro'
 
 interface Props {
 	collection?: CollectionKey
@@ -41,6 +42,7 @@ const entries = collection ? await loadAndFormatCollection(collection) : collect
 			<li
 				data-title={entry.entry.data.title}
 				data-active={'died' in entry.entry.data && entry.entry.data.died !== undefined ? 'false' : 'true'}
+				data-allages={'allAges' in entry.entry.data && entry.entry.data.allAges ? 'true' : 'false'}
 				class={`sidebar-item ${MenuLi['vertical']} ${entry.entry.id === selected ? 'active' : ''}`}
 			>
 				<a
@@ -57,8 +59,10 @@ const entries = collection ? await loadAndFormatCollection(collection) : collect
 						<ActiveIndicator died={'died' in entry.entry.data ? entry.entry.data.died : undefined} hideText={true} />
 					</span>
 					{entry.entry.data.title}
+					{'allAges' in entry.entry.data && <AllAgesIndicator hideText={true} />}
 					{'gigCount' in entry.extra && (
 						<small
+							title="Gig Count"
 							style={{
 								color: theme.color.dullText,
 								width: '1.2em',

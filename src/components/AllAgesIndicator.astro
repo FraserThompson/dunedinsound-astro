@@ -1,0 +1,44 @@
+---
+/**
+ * Indicator used site-wide to indicate all-agedness of a venue.
+ */
+import UniversalAccessIcon from '~icons/bx/universal-access'
+import { theme } from 'src/Theme.css'
+
+interface Props {
+	hideText?: Boolean
+}
+
+const { hideText } = Astro.props
+---
+
+<span
+	title="All Ages"
+	style={{
+		color: theme.color.lightSecondary
+	}}
+>
+	<UniversalAccessIcon />
+	{
+		!hideText && (
+			<h4
+				style={{
+					color: theme.color.lightSecondary
+				}}
+			>
+				All ages
+			</h4>
+		)
+	}
+</span>
+
+<style>
+	span {
+		display: inline-flex;
+		align-items: center;
+		gap: 3px;
+	}
+	h4 {
+		margin-bottom: 0;
+	}
+</style>

@@ -9,6 +9,7 @@ import Image2 from 'src/components/Image2.astro'
 import SearchBox from 'src/components/SearchBox.astro'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 import { theme } from 'src/Theme.css'
+import AllAgesIndicator from 'src/components/AllAgesIndicator.astro'
 
 const venues = await loadAndFormatCollection('venue')
 
@@ -37,8 +38,12 @@ const markers = groupedVenues.map((venueList) => ({
 
 <SidebarLayout hideFooter={true} poo={{ title: 'Venues' }}>
 	<ShuffleFilters slot="subheaderTop" itemselector=".sidebar-item" boardselector="#shuffle-menu">
-		<SearchBox className="hideMobile" placeholder="Search venues" />
+		<SearchBox className="hideMobile" placeholder="Filter venues by name" />
 		<div class="filterGroup">
+			<label>
+				<input name="hideNotAllAges" type="checkbox" data-filter="allages=true" />
+				All ages only
+			</label>
 			<label>
 				<input name="hideInactive" type="checkbox" data-filter="active=true" />
 				Hide dead
@@ -60,8 +65,12 @@ const markers = groupedVenues.map((venueList) => ({
 								<h3 class="center" style={{ marginBottom: '0' }}>
 									{venue.entry.data.title}
 								</h3>
-								<div class="center" style={{ marginTop: '0', marginBottom: '10px' }}>
+								<div
+									class="center"
+									style={{ marginTop: '0', marginBottom: '10px', display: 'flex', justifyContent: 'center', gap: "10px" }}
+								>
 									<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} inactiveText={'Defunct'} />
+									{venue.entry.data.allAges && <AllAgesIndicator />}
 								</div>
 								<div style={{ height: '35px' }}>
 									<SocialLinks links={venue.entry.data.links} />
@@ -98,7 +107,7 @@ const markers = groupedVenues.map((venueList) => ({
 		itemselector=".sidebar-item"
 		boardselector="#shuffle-menu"
 	>
-		<SearchBox placeholder=`Search venues` />
+		<SearchBox placeholder=`Filter venues by name` />
 	</ShuffleFilters>
 </SidebarLayout>
 

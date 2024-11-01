@@ -3,14 +3,19 @@
  * If hashes are present it will scroll to them smoothly, but won't update the URL.
  * It also highlights menu items based on the URL hash.
  * 
+ * If a list of DropdownItems is provided it will render that.
+ * Otherwise for more complex needs you can just pass child <li> elements.
+ * 
+ * TODO: Refactor this into an Astro component?
+ * 
  * @param param0 
  * @returns 
  */
 
-import { useState, useEffect, useCallback } from "preact/hooks"
+import { useState, useEffect, useCallback, useRef, type MutableRef } from "preact/hooks"
 import type { FunctionalComponent } from "preact"
 import MenuIcon from '~icons/bx/menu'
-import { background, dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownTopMobile, dropdownWrapper, menuWidth, color, additionalLink, dropdownHeight, dropdownHeightMobile } from './DropdownMenu.css'
+import { background, dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownTopMobile, dropdownWrapper, menuWidth, color, dropdownHeight, dropdownHeightMobile } from './DropdownMenu.css'
 import { scrollTo } from 'src/util/helpers'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import { replaceEventName } from "src/util/history"
@@ -29,11 +34,10 @@ interface DropdownItem {
 	image?: string
 	id?: string
 	hash?: string
-	additionalLinks?: MenuLink[]
 }
 
 interface Props {
-	list: DropdownItem[]
+	list?: DropdownItem[]
 	menuTitle?: string
 	direction: "up" | "down"
 	top?: string
@@ -42,23 +46,32 @@ interface Props {
 	height?: string
 	heightMobile?: string
 	backgroundColor?: string
-	textColor?: string
+	textColor?: string,
+	children?: any
 }
 
-const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, top, topMobile, width, height, heightMobile, backgroundColor, textColor }) => {
+const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, top, topMobile, width, height, heightMobile, backgroundColor, textColor, children }) => {
 	const [open, setOpen] = useState(false)
-	const [selectedItem, setSelectedItem] = useState(null as string | null)
-
+	const dropdownRef: MutableRef<any> = useRef()
 
 	useEffect(() => {
 		document.addEventListener(replaceEventName, (e: any) => handleURLChange(e.detail))
+		// We do this instead of onclick so we can handle custom menu children
+		dropdownRef.current?.querySelectorAll('.menuLink')
+			.forEach((el: HTMLAnchorElement) => el.addEventListener('click', (e: MouseEvent) => select(e)))
 		return () => document.removeEventListener(replaceEventName, (e: any) => handleURLChange(e.detail))
 	}, [])
 
 	const handleURLChange = (url: URL) => {
 		if (url.hash) {
-			const newSelectedId = location.hash.substring(1)
-			setSelectedItem(newSelectedId)
+			// This is kinda mid.
+			// Remove all active links so we can add the new one.
+			dropdownRef.current?.querySelectorAll(`.menuLink`)
+				.forEach((el: HTMLAnchorElement) => el.parentElement?.classList.remove('active'))
+			const menuLink = dropdownRef.current?.querySelector(`.menuLink[href="${url.hash}"]`)
+			if (menuLink) {
+				menuLink.parentElement?.classList.add('active');
+			}
 		}
 	}
 
@@ -71,13 +84,16 @@ const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, 
 		[open]
 	)
 
-	const select = useCallback((e: any, hash: string) => {
-		scrollTo(e, '#' + hash)
-		setOpen(false)
+	const select = useCallback((e: MouseEvent) => {
+		const target = e.target as HTMLAnchorElement
+		if (target?.hash) {
+			scrollTo(e, target.hash)
+			setOpen(false)
+		}
 	}, [])
 
 	return (
-		<div className={`${dropdownWrapper}`} style={assignInlineVars({
+		<div ref={dropdownRef} className={`${dropdownWrapper}`} style={assignInlineVars({
 			[dropdownTop]: top,
 			[dropdownTopMobile]: topMobile,
 			[dropdownHeight]: height,
@@ -96,11 +112,10 @@ const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, 
 				</div>
 			</a>
 			<ul className={`${dropdownMenu} ${open ? 'open' : ''} ${direction}`}>
-				{list.map((item) =>
-					<li className={`${dropdownLi} ${(item.hash && selectedItem === item.hash) ? 'active' : ''}`}>
+				{list && list.map((item) =>
+					<li className={`${dropdownLi}`}>
 						<a
-							className={`${dropdownLink} menu-title`}
-							onClick={(e: any) => item.hash && select(e, item.hash)}
+							className={`${dropdownLink} menuLink menu-title`}
 							title={item.title}
 							href={`${item.href ? item.href : item.hash ? ('#' + item.hash) : ''}`}
 							style={assignInlineVars({
@@ -109,18 +124,9 @@ const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, 
 						>
 							{item.title}
 						</a>
-						{item.additionalLinks && <div class="flex">
-							{item.additionalLinks?.map((link) =>
-								<a class={additionalLink} title={link.title} href={link.href}>
-									<small>
-										{!link.image && link.title}
-										{link.image && <img style={{ height: "25px" }} src={link.image} />}
-									</small>
-								</a>
-							)}
-						</div>}
 					</li>
 				)}
+				{children}
 			</ul>
 		</div >
 	)

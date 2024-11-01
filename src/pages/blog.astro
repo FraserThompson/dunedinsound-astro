@@ -20,7 +20,7 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 
 <SidebarLayout poo={{ title: 'Blog' }}>
 	<ShuffleFilters slot="subheaderTopDesktop" itemselector=".blogItem" boardselector="#shuffle-menu">
-		<SearchBox placeholder=`Search articles by title` />
+		<SearchBox placeholder=`Filter articles by title` />
 	</ShuffleFilters>
 	<div slot="sidebarMenu">
 		<BlogTags selected={selectedTag} />
@@ -56,7 +56,7 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 		</div>
 	</TextContainer>
 	<ShuffleFilters slot="subheaderBottomMobile" itemselector=".blogItem" boardselector="#shuffle-menu">
-		<SearchBox placeholder="Search articles by title" />
+		<SearchBox placeholder="Filter articles by title" />
 	</ShuffleFilters>
 </SidebarLayout>
 

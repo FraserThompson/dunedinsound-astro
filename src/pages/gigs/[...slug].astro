@@ -33,7 +33,7 @@ const entryExtra = entry.extra
 	}}
 >
 	<ShuffleFilters slot="subheaderTopDesktop" itemselector=".hiddenItem" boardselector="#shuffle-menu">
-		<SearchBox placeholder=`Search gigs by title, artist, venue` />
+		<SearchBox placeholder=`Filter gigs by title, artist, venue` />
 	</ShuffleFilters>
 	<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href="/gigs">
 		<ChevronLeftIcon /> Go to gigs home
@@ -45,7 +45,7 @@ const entryExtra = entry.extra
 		itemselector=".hiddenItem"
 		boardselector="#shuffle-menu"
 	>
-		<SearchBox placeholder=`Search gigs by title, artist, venue` />
+		<SearchBox placeholder=`Filter gigs by title, artist, venue` />
 	</ShuffleFilters>
 	<Gig entry={entry} slot="content" />
 </SidebarLayout>

@@ -100,18 +100,3 @@ export const dropdownLink = style([
 		}
 	}
 ])
-
-export const additionalLink = style([
-	MenuLinkWrapper['vertical'],
-	{
-		color: theme.color.contrast2,
-		width: 'auto !important',
-		minWidth: '30px !important',
-		selectors: {
-			'&:hover': {
-				color: theme.color.lightContrast2,
-				backgroundColor: theme.color.darkText
-			}
-		}
-	}
-])

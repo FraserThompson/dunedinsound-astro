@@ -23,7 +23,11 @@ const { links, className = '' } = Astro.props
 				title={item.title}
 				style={{ marginRight: theme.dimensions.basePaddingMobile, marginLeft: theme.dimensions.basePaddingMobile }}
 			>
-				{item.image ? <img height="30" width="30" src={item.image} alt={item.title} /> : item.title}
+				{item.image ? (
+					<img height="30" width="30" src={item.image} alt={item.title} style={{ background: 'black' }} />
+				) : (
+					item.title
+				)}
 			</a>
 		))
 	}

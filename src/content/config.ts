@@ -61,6 +61,7 @@ const Venue = defineCollection({
 		died: z.date().optional(),
 		date: z.date().optional(),
 		hidden: z.boolean().optional(),
+		allAges: z.boolean().optional(),
 		aliases: z.array(reference('venue')).optional()
 	})
 })

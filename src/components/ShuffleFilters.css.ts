@@ -2,8 +2,6 @@ import { globalStyle, style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 export const shuffleFilter = style({
-	paddingLeft: 0,
-	paddingRight: 0,
 	display: 'flex',
 	alignItems: 'center',
 	flexWrap: 'wrap',
@@ -20,7 +18,8 @@ export const shuffleFilter = style({
 globalStyle(`${shuffleFilter} .filterGroup`, {
 	display: 'flex',
 	alignItems: 'center',
-	marginLeft: 'auto',
+	paddingLeft: theme.dimensions.basePaddingMobile,
+	paddingRight: theme.dimensions.basePaddingMobile,
 	gap: theme.dimensions.basePaddingMobile,
 	'@media': {
 		'screen and (--md)': {

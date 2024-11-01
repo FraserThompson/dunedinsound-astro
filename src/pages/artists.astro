@@ -28,7 +28,7 @@ for (const artist of artists) {
 
 <SubheadersLayout poo={{ title: 'Artists' }}>
 	<ShuffleFilters slot="subheaderTop" itemselector=".tile" boardselector="#artist-grid">
-		<SearchBox className="hideMobile" placeholder="Search artists" />
+		<SearchBox className="hideMobile" placeholder="Filter artists by name" />
 		<div class="filterGroup">
 			<div>
 				<label><SortIcon /></label>
@@ -83,6 +83,6 @@ for (const artist of artists) {
 		}
 	</FlexGridContainer>
 	<ShuffleFilters slot="subheaderBottomMobile" itemselector=".tile" boardselector="#artist-grid">
-		<SearchBox placeholder="Search artists" />
+		<SearchBox placeholder="Filter artists by name" />
 	</ShuffleFilters>
 </SubheadersLayout>

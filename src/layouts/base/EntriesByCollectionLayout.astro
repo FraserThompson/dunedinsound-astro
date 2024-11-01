@@ -43,7 +43,7 @@ const hasBanner = Astro.slots.has('banner')
 	}}
 >
 	<ShuffleFilters slot="subheaderTopDesktop" itemselector=".sidebar-item" boardselector="#shuffle-menu">
-		<SearchBox placeholder=`Search ${collection}` />
+		<SearchBox placeholder=`Filter ${collection}` />
 	</ShuffleFilters>
 	<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href=`/${collection}s`>
 		<ChevronLeftIcon /> Go to ${collection}s home
@@ -58,6 +58,6 @@ const hasBanner = Astro.slots.has('banner')
 		itemselector=".sidebar-item"
 		boardselector="#shuffle-menu"
 	>
-		<SearchBox placeholder=`Search ${collection}s` />
+		<SearchBox placeholder=`Filter ${collection}s` />
 	</ShuffleFilters>
 </SidebarLayout>

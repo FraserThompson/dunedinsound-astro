@@ -20,6 +20,7 @@ import { theme } from 'src/Theme.css'
 import SocialLinks from 'src/components/SocialLinks.astro'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
+import AllAgesIndicator from './AllAgesIndicator.astro'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
@@ -86,11 +87,14 @@ const hasBanner = Astro.slots.has('banner')
 	backgroundImage={entryExtra.cover}
 	bottomMargin={`calc(${theme.dimensions.subheaderHeightNegative} * 2)`}
 >
-	<ActiveIndicator
-		born={entryData.date}
-		died={entryData.died}
-		inactiveText={entry.entry.collection === 'artist' ? 'Inactive' : 'Defunct'}
-	/>
+	<div style={{ display: 'flex', justifyContent: 'center', gap: '5px' }}>
+		<ActiveIndicator
+			born={entryData.date}
+			died={entryData.died}
+			inactiveText={entry.entry.collection === 'artist' ? 'Inactive' : 'Defunct'}
+		/>
+		{'allAges' in entryData && entryData.allAges && <AllAgesIndicator />}
+	</div>
 	{
 		willBeKnownAs && (
 			<h4 style={{ marginTop: 0 }}>

@@ -47,7 +47,15 @@ const { selected } = Astro.props
 			.reverse()
 			.map(([year, months]) => (
 				<li class={MenuLi['vertical']} id={makeHash(year)}>
-					<a class={yearLink}>{year}</a>
+					<a class={yearLink}>
+						{year}
+						{'(' +
+							Object.values(months).reduce((acc, month) => {
+								acc += month.length
+								return acc
+							}, 0) +
+							')'}
+					</a>
 					<ul class={`${MenuWrapper['vertical']} monthList`}>
 						{Object.entries(months).map(([month, gigs]) => (
 							<li class={`${MenuLi['vertical']} monthItem`}>

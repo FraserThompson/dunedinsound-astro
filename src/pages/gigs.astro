@@ -12,7 +12,7 @@ const gigs = await loadAndFormatCollection('gig')
 
 <SidebarLayout poo={{ title: 'Gigs', image: gigs[0].extra.cover?.src }}>
 	<ShuffleFilters slot="subheaderTop" itemselector=".tile" boardselector="#gigs">
-		<SearchBox className="hideMobile" placeholder="Search gigs by title, artist, venue" />
+		<SearchBox className="hideMobile" placeholder="Filter gigs by title, artist, venue" />
 		<div class="filterGroup">
 			<label>Mode: </label>
 			<div class="buttonGroup">
@@ -30,7 +30,7 @@ const gigs = await loadAndFormatCollection('gig')
 		{gigs.map((gig) => <GigTile gig={gig} responsiveImageSizes="full" />)}
 	</FlexGridContainer>
 	<ShuffleFilters slot="subheaderBottomMobile" itemselector=".tile" boardselector="#gigs">
-		<SearchBox placeholder="Search gigs by title, artist, venue" />
+		<SearchBox placeholder="Filter gigs by title, artist, venue" />
 	</ShuffleFilters>
 </SidebarLayout>
 
