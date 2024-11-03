@@ -142,7 +142,9 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 					fetch(json.replace('#', '%23'))
 						.then((response) => response.json())
 						.then((data) => {
-							(window as any).cached_json[json] = data
+							// Support new JSON waveforms and old ones
+							const theData = "data" in data ? data.data : data;
+							(window as any).cached_json[json] = theData
 							wavesurfer.load(mp3, (window as any).cached_json[json])
 						})
 						.catch((err) => {

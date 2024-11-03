@@ -289,6 +289,10 @@ export async function getGigExtra(
 		}
 	}
 
+	if (audio.length) {
+		audio.sort((a, b) => artistIds.indexOf(a.title) - artistIds.indexOf(b.title))
+	}
+
 	return {
 		...extra,
 		artistImages,

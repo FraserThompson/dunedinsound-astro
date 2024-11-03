@@ -8,7 +8,12 @@ export const artistDropdownLink = style([
 		color: 'inherit !important',
 		paddingLeft: '0 !important',
 		width: 'auto !important',
-		flexGrow: '1 !important'
+		flexGrow: '1 !important',
+		selectors: {
+			'&:hover': {
+				color: `white !important`
+			}
+		}
 	}
 ])
 
@@ -32,12 +37,8 @@ export const artistDropdownLi = style([
 				color: `black !important`
 			},
 			'&:hover': {
-				backgroundColor: theme.color.lightPrimary,
-				color: `white !important`
+				backgroundColor: theme.color.lightPrimary
 			},
-			'&.active:hover': {
-				color: `black !important`
-			}
 		}
 	}
 ])

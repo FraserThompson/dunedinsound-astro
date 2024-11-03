@@ -3,11 +3,15 @@ import fs from 'fs-extra'
 
 const getAudioFiles = () => {
 	const source = './audio'
-	return fs.readdirSync(source, { withFileTypes: true }).map((dirent) => dirent.name)
+	return fs.readdirSync(source, { withFileTypes: true })
 }
 
 const audioFiles = getAudioFiles()
-audioFiles.forEach((filename) => {
+audioFiles.forEach((dirent) => {
+	if (dirent.isDirectory()) {
+		return
+	}
+	const filename = dirent.name
 	const splitted = filename.split(' - ')
 	const src = `${process.cwd()}\\audio\\${filename}`
 	const destination = `${process.cwd()}\\media\\gig\\${getCurrentDatePrefix()}-${toMachineName(
