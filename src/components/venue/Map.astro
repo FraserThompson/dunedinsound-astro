@@ -106,7 +106,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 
 				popup?.on('open', (e) => this.markerClick(e))
 
-				let el = undefined
+				let el
 				if (markerInfo.class) {
 					el = document.createElement('div')
 					el.className = markerInfo.class

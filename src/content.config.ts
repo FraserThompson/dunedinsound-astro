@@ -1,4 +1,5 @@
 import { z, defineCollection, reference } from 'astro:content'
+import { glob } from 'astro/loaders'
 
 // Gig
 const gigVid = z.object({
@@ -19,7 +20,7 @@ const gigArtistMedia = z.object({
 })
 
 const Gig = defineCollection({
-	type: 'data',
+	loader: glob({ pattern: '*.yml', base: "./src/content/gig/" }),
 	schema: z.object({
 		title: z.string(),
 		hidden: z.boolean().optional(),
@@ -51,7 +52,7 @@ export const webLinks = z.object({
 })
 
 const Venue = defineCollection({
-	type: 'data',
+	loader: glob({ pattern: '*.yml', base: "./src/content/venue/" }),
 	schema: z.object({
 		title: z.string(),
 		lat: z.number(),
@@ -68,7 +69,7 @@ const Venue = defineCollection({
 
 // Artist
 const Artist = defineCollection({
-	type: 'data',
+	loader: glob({ pattern: '*.yml', base: "./src/content/artist/" }),
 	schema: z.object({
 		title: z.string(),
 		description: z.string().optional(),
@@ -83,7 +84,7 @@ const Artist = defineCollection({
 
 // Blog
 const Blog = defineCollection({
-	type: 'content',
+	loader: glob({ pattern: '*.mdx', base: "./src/content/blog/" }),
 	schema: z.object({
 		title: z.string(),
 		description: z.string().optional(),
@@ -101,7 +102,7 @@ const Blog = defineCollection({
 
 // Vault Session
 const VaultSession = defineCollection({
-	type: 'data',
+	loader: glob({ pattern: '*.yml', base: "./src/content/vaultsession/" }),
 	schema: z.object({
 		date: z.date(),
 		title: z.string(),
@@ -114,7 +115,7 @@ const VaultSession = defineCollection({
 
 // Page
 const Page = defineCollection({
-	type: 'content',
+	loader: glob({ pattern: '*.mdx', base: "./src/content/page/" }),
 	schema: z.object({
 		title: z.string(),
 		fullWidth: z.boolean().optional()

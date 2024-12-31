@@ -38,13 +38,13 @@ const gigExtra = gig.extra
 	responsiveImageSizes={responsiveImageSizes}
 	backgroundStyle={backgroundStyle}
 	id={makeHash(gig.entry.id)}
-	subtitle={gigExtra.venue.data.title}
+	subtitle={gigExtra.venue?.data.title}
 	label={gigData.date.toLocaleDateString()}
 	title={gigData.title}
 	containerHeight={containerHeight}
 	containerHeightMobile={containerHeightMobile}
 	dataAttributes={{
-		'data-title': `${gigData.title} ${gigExtra.venue.data.title} ${artistsToString(gigExtra.artists)}`
+		'data-title': `${gigData.title} ${gigExtra.venue?.data.title} ${artistsToString(gigExtra.artists)}`
 	}}
 >
 	<h5 style={{ marginBottom: '0px' }}>

@@ -14,3 +14,12 @@ export const BlogTextContainer = style({
 		}
 	}
 })
+
+export const VideoCover = style({
+	maxHeight: '40vh',
+	'@media': {
+		'screen and (--md)': {
+			maxHeight: '80vh'
+		}
+	}
+})

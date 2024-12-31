@@ -17,7 +17,7 @@ import '../../Theme.css.ts'
 import './BaseLayout.css.ts'
 import 'lightgallery/css/lightgallery.css'
 import { Content, SiteContainer } from 'src/components/UtilClasses.css'
-import { ViewTransitions } from 'astro:transitions'
+import { ClientRouter } from 'astro:transitions'
 import siteIcon from 'src/assets/site-icon.jpg'
 
 interface Props {
@@ -37,7 +37,7 @@ const { hideFooter, className = '', poo } = Astro.props
 		<meta name="theme-color" content="#08090C" />
 		<meta name="generator" content={Astro.generator} />
 		<SEO poo={poo} />
-		<ViewTransitions />
+		<ClientRouter />
 		<script type="application/javascript" is:inline>
 			var global = window
 		</script>

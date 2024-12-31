@@ -95,7 +95,7 @@ const { selected } = Astro.props
 				<li
 					id={makeHash(gig.entry.id)}
 					class="hiddenItem"
-					data-title={`${gig.entry.data.title} ${gig.extra.venue.data.title} ${artistsToString(gig.extra.artists)}`}
+					data-title={`${gig.entry.data.title} ${gig.extra.venue?.data.title} ${artistsToString(gig.extra.artists)}`}
 				/>
 			))}
 		</ul>

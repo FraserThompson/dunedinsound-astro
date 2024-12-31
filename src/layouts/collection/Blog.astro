@@ -13,20 +13,21 @@ import { backButton } from 'src/components/gig/GigsMenu.css'
 import ImageGalleryLightbox from 'src/components/ImageGalleryLightbox.astro'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import ShareButton from 'src/components/ShareButton.astro'
-import { BlogTextContainer, BlogPageContainer } from './Blog.css'
+import { BlogTextContainer, BlogPageContainer, VideoCover } from './Blog.css'
+import { render } from 'astro:content'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>
 }
 const { entry } = Astro.props
 
-const { Content, headings } = await entry.entry.render()
+const { Content, headings } = await render(entry.entry)
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
 
 ---
-{entryExtra.cover && <Banner backgroundImage={entryExtra.cover} backgroundImageVertical={entryExtra.coverVertical} title={entryData.title}>
+{entryExtra.cover && !entryExtra.coverVid && <Banner backgroundImage={entryExtra.cover} backgroundImageVertical={entryExtra.coverVertical} title={entryData.title}>
 <ShareButton
 	style={{ position: 'absolute', left: '50%', transform: 'translate(-50%)' }}
 	shareData={{
@@ -35,6 +36,18 @@ const entryExtra = entry.extra
 		text: `${entryData.description}.`
 	}}/>
 </Banner>}
+{entryExtra.coverVid && <Banner title={entryData.title}>
+	<div slot="customContent">
+		<video src={entryExtra.coverVid} autoplay={true} loop={true} muted={true} class={VideoCover}/>
+	</div>
+	<ShareButton
+		style={{ position: 'absolute', left: '50%', transform: 'translate(-50%)' }}
+		shareData={{
+			title: 'ARTICLE: ' + entryData.title,
+			url: 'https://dunedinsound.com' + entryExtra.slug,
+			text: `${entryData.description}.`
+		}}/>
+	</Banner>}
 <div class={BlogPageContainer} id="overview">
 	<BlogSidebar className="hideMobile" entry={entry} headings={headings}/>
 	<div class={BlogTextContainer}>

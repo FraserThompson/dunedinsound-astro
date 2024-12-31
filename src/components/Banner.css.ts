@@ -39,7 +39,8 @@ export const BackgroundContent = style({
 export const CustomContent = style({
 	width: '100%',
 	height: '100%',
-	display: 'flex'
+	display: 'flex',
+	justifyContent: 'center'
 })
 
 export const BannerContent = style({

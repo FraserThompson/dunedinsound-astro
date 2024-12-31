@@ -5,7 +5,7 @@
 import { socialLinksToMenuItems } from 'src/util/helpers'
 import { theme } from 'src/Theme.css'
 import type { z } from 'astro:content'
-import type { webLinks } from 'src/content/config'
+import type { webLinks } from 'src/content.config'
 
 interface Props {
 	links?: z.infer<typeof webLinks>

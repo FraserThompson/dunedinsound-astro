@@ -50,7 +50,7 @@ const entryExtra = entry.extra
 	<div class={ArtistMetadata} slot="right">
 		<h3 class="monospace">More from this artist</h3>
 		{
-			socialLinksToMenuItems(entryExtra.artist.data.links).map((item) => (
+			entryExtra.artist && socialLinksToMenuItems(entryExtra.artist.data.links).map((item) => (
 				<li>
 					<a href={item.href}>{item.title}</a>
 				</li>

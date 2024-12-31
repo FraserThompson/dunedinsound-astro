@@ -30,8 +30,5 @@ export default defineConfig({
 				ignored: ignoredDirs
 			}
 		}
-	},
-	experimental: {
-		contentCollectionCache: true
 	}
 })

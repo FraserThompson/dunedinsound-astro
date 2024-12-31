@@ -44,7 +44,7 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 							</a>
 						)}
 						<p>
-							{generateExcerpt(blog.entry.body)}
+							{blog.entry.body && generateExcerpt(blog.entry.body)}
 							<small>
 								<a href={blog.extra.absolutePath}>More</a>
 							</small>

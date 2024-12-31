@@ -9,6 +9,7 @@ import type { ResponsiveImage } from './ResponsiveImage'
 import { monthMap } from './constants'
 import { getCollectionMetaDescription } from './seo'
 import { DIST_MEDIA_DIR } from './constants'
+import { existsSync } from 'node:fs'
 
 type EntryExtraCommon = {
 	slug: string
@@ -35,7 +36,7 @@ export type EntryExtraMap = {
 		artistImages: { [id: string]: ResponsiveImage[] }
 		audio: ArtistAudio[]
 		artists: ProcessedEntry<'artist'>[]
-		venue: CollectionEntry<'venue'>
+		venue?: CollectionEntry<'venue'>
 	}
 	artist: EntryExtraCommon & {
 		gigCount: number
@@ -45,10 +46,11 @@ export type EntryExtraMap = {
 		gigCount: number
 	}
 	vaultsession: EntryExtraCommon & {
-		artist: CollectionEntry<'artist'>
+		artist?: CollectionEntry<'artist'>
 		audio: ArtistAudio
 	}
 	blog: EntryExtraCommon & {
+		coverVid?: string
 		relatedGigs: ProcessedEntry<'gig'>[]
 		relatedArtists: CollectionEntry<'artist'>[]
 		relatedVenues: CollectionEntry<'venue'>[]
@@ -315,11 +317,11 @@ export async function getBlogExtra(
 	extra: EntryExtraCommon
 ): Promise<EntryExtraMap['blog']> {
 	const relatedArtists = entry.data.relatedArtists
-		? await Promise.all(entry.data.relatedArtists.map(async (artist: any) => await getEntry('artist', artist.id)))
+		? (await Promise.all(entry.data.relatedArtists.map(async (artist: any) => await getEntry('artist', artist.id)))).filter((thing) => thing !== undefined)
 		: []
 
 	const relatedVenues = entry.data.relatedVenues
-		? await Promise.all(entry.data.relatedVenues.map(async (venue: any) => await getEntry('venue', venue.id)))
+		? (await Promise.all(entry.data.relatedVenues.map(async (venue: any) => await getEntry('venue', venue.id)))).filter((thing) => thing !== undefined)
 		: []
 
 	// Find gigs which mention related artists
@@ -341,8 +343,18 @@ export async function getBlogExtra(
 	// Total related gigs
 	const relatedGigs = [...relatedGigsByArtist, ...processedRelatedSpecifiedGigs.filter((gig) => gig !== undefined)]
 
+	// Get video cover (if any)
+	const type = entry.collection
+	const dir = `${DIST_MEDIA_DIR}/${type}/${getEntryId(entry)}/cover.mp4`
+
+	let coverVid: string | undefined = undefined;
+	if (existsSync(dir)) {
+		coverVid = `/${dir}`;
+	}
+
 	return {
 		...extra,
+		coverVid,
 		relatedGigs,
 		relatedArtists,
 		relatedVenues
