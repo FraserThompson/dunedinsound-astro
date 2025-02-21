@@ -4,7 +4,8 @@
  */
 import ChevronDownIcon from '~icons/bx/chevron-down'
 import ChevronUpIcon from '~icons/bx/chevron-up'
-import { playerWrapper, openButtonWrapper, openButton, player } from './PlayerContainer.css'
+import PlayIcon from '~icons/bx/smile'
+import { playerWrapper, openButtonWrapper, openButton, icon, player } from './PlayerContainer.css'
 
 interface Props {
 	minimizedAlways?: boolean
@@ -14,14 +15,17 @@ const { minimizedAlways } = Astro.props
 ---
 
 <player-wrapper class={playerWrapper} data-minimizedalways={minimizedAlways ? 'true' : undefined}>
-	<div class={openButtonWrapper} id="open-button-wrapper" title="Audio Player">
+	<div class={openButtonWrapper} title="Audio Player">
 		<button class={openButton} id="open-button" aria-label="Open audio player">
 			<span>AUDIO</span>
-			<span class="up-icon" aria-role="presentation">
+			<span class={`${icon} up`} aria-role="presentation">
 				<ChevronUpIcon />
 			</span>
-			<span class="down-icon hidden" aria-role="presentation">
+			<span class={`${icon} down hidden`} aria-role="presentation">
 				<ChevronDownIcon />
+			</span>
+			<span class={`${icon} play hidden`} aria-role="presentation">
+				<PlayIcon />
 			</span>
 		</button>
 	</div>
@@ -41,9 +45,6 @@ const { minimizedAlways } = Astro.props
 		minimizedAlways: boolean
 		player: HTMLElement | null
 		openButton: HTMLElement | null
-		openButtonWrapper: HTMLElement | null
-		upIcon: HTMLElement | null
-		downIcon: HTMLElement | null
 
 		constructor() {
 			super()
@@ -52,10 +53,6 @@ const { minimizedAlways } = Astro.props
 			this.minimizedAlways = !!this.dataset.minimizedalways
 
 			this.openButton = this.querySelector<HTMLElement>('button#open-button')
-			this.openButtonWrapper = this.querySelector<HTMLElement>('#open-button-wrapper')
-			this.upIcon = this.querySelector<HTMLElement>('.up-icon')
-			this.downIcon = this.querySelector<HTMLElement>('.down-icon')
-			this.player = this.querySelector<HTMLElement>('#player')
 
 			this.sidebarExists = !!document.querySelector<HTMLElement>('#sidebar')
 			this.playerInBanner = this.closest<HTMLElement>('.banner')
@@ -67,17 +64,9 @@ const { minimizedAlways } = Astro.props
 
 		set open(flag) {
 			if (flag) {
-				this.upIcon?.classList.add('hidden')
-				this.downIcon?.classList.remove('hidden')
 				this._internals.states.add('open')
-				this.player?.classList.add('open')
-				this.openButtonWrapper?.classList.add('open')
 			} else {
-				this.upIcon?.classList.remove('hidden')
-				this.downIcon?.classList.add('hidden')
 				this._internals.states.delete('open')
-				this.player?.classList.remove('open')
-				this.openButtonWrapper?.classList.remove('open')
 			}
 		}
 
@@ -88,12 +77,20 @@ const { minimizedAlways } = Astro.props
 		set minimized(flag) {
 			if (flag) {
 				this._internals.states.add('minimized')
-				this.openButtonWrapper?.classList.add('minimized')
-				this.player?.classList.add('minimized')
 			} else {
 				this._internals.states.delete('minimized')
-				this.openButtonWrapper?.classList.remove('minimized')
-				this.player?.classList.remove('minimized')
+			}
+		}
+
+		get playing() {
+			return this._internals.states.has('playing')
+		}
+
+		set playing(flag) {
+			if (flag) {
+				this._internals.states.add('playing')
+			} else {
+				this._internals.states.delete('playing')
 			}
 		}
 
@@ -122,6 +119,20 @@ const { minimizedAlways } = Astro.props
 			}
 		}
 
+		/**
+		 * Fires when the Wavesurfer instance in the Player component is played.
+		 */
+		onWavesurferPlay = () => {
+			this.playing = true
+		}
+
+		/**
+		 * Fires when the Wavesurfer instance in the Player component is stopped.
+		 */
+		onWavesurferStop = () => {
+			this.playing = false
+		}
+
 		connectedCallback() {
 			this.openButton &&
 				this.openButton.addEventListener('click', () => {
@@ -135,10 +146,11 @@ const { minimizedAlways } = Astro.props
 
 			if (this.sidebarExists) {
 				this.classList.add('sidebarExists')
-				this.openButtonWrapper?.classList.add('sidebarExists')
 			}
 
 			window.addEventListener('wavesurfer_ready', () => this.onWavesurferReady())
+			window.addEventListener('wavesurfer_play', () => this.onWavesurferPlay())
+			window.addEventListener('wavesurfer_stop', () => this.onWavesurferStop())
 			window.addEventListener('scroll', this.onScroll, { passive: true })
 		}
 

@@ -4,6 +4,11 @@
  * Props:
  *  - title (optional): Title displayed over background
  *  - height (optional): height of the banner
+ *  - heightMobile (optional): height of banner on mobile
+ *  - bottomMargin (optional): margin from bottom
+ *  - bottomMarginMobile (optional): margin from bottom on mobile
+ *  - hideBackgroundMobile (optional): if true the background image is hidden on mobile
+ *  - responsiveImageSizes (optional): responsive image sizes
  *  - backgroundImage (optional): image behind everything
  *  - backgroundImageVertical (optional): image behind everything
  *
@@ -35,6 +40,7 @@ interface Props {
 	heightMobile?: string
 	bottomMargin?: string
 	bottomMarginMobile?: string
+	hideBackgroundMobile?: boolean
 	responsiveImageSizes?: keyof ResponsiveImageSizes
 	backgroundImage?: ResponsiveImage
 	backgroundImageVertical?: ResponsiveImage
@@ -48,6 +54,7 @@ const {
 	responsiveImageSizes = "full",
 	bottomMargin,
 	bottomMarginMobile,
+	hideBackgroundMobile,
 	backgroundImage,
 	backgroundImageVertical
 } = Astro.props
@@ -73,7 +80,7 @@ const {
 		}
 		<div class="titleContent"><slot /></div>
 	</div>
-	<div class={BackgroundContent}>
+	<div class={`${BackgroundContent} ${hideBackgroundMobile ? 'hideMobile' : ''}`}>
 		<slot name="background">
 			{
 				backgroundImage && (

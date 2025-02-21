@@ -33,6 +33,8 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	backgroundImage={entryExtra.cover}
 	bottomMargin={theme.dimensions.headerHeightNegative}
 	bottomMarginMobile={theme.dimensions.headerHeightMobileNegative}
+	hideBackgroundMobile={!!entryData.feature_vid}
+	heightMobile="auto"
 	height="80vh"
 >
 	<div>

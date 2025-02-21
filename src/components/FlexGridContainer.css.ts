@@ -17,7 +17,7 @@ export const FlexGridWrapper = style({
 	justifyContent: 'center'
 })
 
-globalStyle(`${FlexGridWrapper} > *`, {
+globalStyle(`${FlexGridWrapper} > *:not(script)`, {
 	maxWidth: maxWidth2,
 	flex: flexXs,
 	width: widthXs,

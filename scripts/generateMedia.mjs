@@ -85,7 +85,7 @@ const tasks = media.map((inputPath) => {
 		// Ensure output directory exists
 		await fs.mkdir(basePath, { recursive: true })
 
-		// Create proxies from input images
+		/** Create proxies from input images **/
 		if (parsedPath.ext.toLowerCase() === '.jpg' || parsedPath.ext.toLowerCase() === '.png') {
 			const inputStats = await fs.stat(inputPath)
 
@@ -101,12 +101,27 @@ const tasks = media.map((inputPath) => {
 			// Find existing full size image if it exists
 			const [existingPath, changed] = hasImageProxyChanged(`${outputPath}/${parsedPath.name}.*.jpg`, mtime)
 
-			// If it hasn't changed we don't need to do anything
-			if (existingPath && !changed) return
-
-			// Delete full image if there already
-			if (existingPath) {
-				fs.unlink(existingPath)
+			if (existingPath && changed) {
+				// Input image has changed
+				console.log(`INPUT CHANGED: ${inputPath}`)
+				// Delete all existing image proxies so they can be regenerated
+				for (const imagePath of directoryContents) {
+					fs.unlink(imagePath)
+				}
+			} else {
+				// Input image hasn't changed
+				// Make sure we have the expected number of images
+				const directoryContents = globSync(`${outputPath}/*`)
+				if (directoryContents.length === widths.length + 1) {
+					// All width proxies + the original. We're good, let's move on.
+					return
+				} else if (directoryContents.length > 0){
+					console.log(`UNEXPECTED IMAGES, WILL REGENERATE: ${inputPath}`)
+					// Delete all existing image proxies so they can be regenerated
+					for (const imagePath of directoryContents) {
+						fs.unlink(imagePath)
+					}
+				}
 			}
 
 			const inputBuffer = await fs.readFile(inputPath)

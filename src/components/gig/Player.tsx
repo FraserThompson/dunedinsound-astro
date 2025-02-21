@@ -122,6 +122,16 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 		})
 	}, [ready])
 
+	useEffect(() => {
+		if (playing) {
+			const event = new Event('wavesurfer_play')
+			window && window.dispatchEvent(event)
+		} else {
+			const event = new Event('wavesurfer_stop')
+			window && window.dispatchEvent(event)
+		}
+	}, [playing])
+
 	// Load media if selected artist changes
 	useEffect(() => {
 		wavesurfer && load(artistAudio[selectedArtist].files[0], artistAudio[selectedArtist].files[1])
