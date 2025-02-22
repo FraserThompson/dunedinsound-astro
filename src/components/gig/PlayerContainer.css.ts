@@ -64,6 +64,7 @@ export const icon = style({
 		'&.play': {
 			position: 'absolute',
 			left: '0px',
+			alignItems: 'center',
 			animation: "spinner 1s linear infinite"
 		}
 	}
@@ -141,5 +142,5 @@ globalStyle(`${playerWrapper}:state(minimized):not(:state(open)) #player`, {
 
 // Player playing styles
 globalStyle(`${playerWrapper}:state(playing) ${icon}.play`, {
-	display: 'inline-block !important'
+	display: 'inline-flex !important'
 })

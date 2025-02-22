@@ -328,6 +328,10 @@ globalStyle('.trippy:hover', {
 	transform: 'scaleY(10) scaleX(5) rotateX(360deg) translateX(20px) translateY(-5px)'
 })
 
+globalStyle('.whiteBorder', {
+	border: '4px solid white'
+})
+
 /**
  * Styles for third party libraries.
  */

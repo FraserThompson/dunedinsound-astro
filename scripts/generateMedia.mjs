@@ -101,6 +101,8 @@ const tasks = media.map((inputPath) => {
 			// Find existing full size image if it exists
 			const [existingPath, changed] = hasImageProxyChanged(`${outputPath}/${parsedPath.name}.*.jpg`, mtime)
 
+			const directoryContents = globSync(`${outputPath}/*`)
+
 			if (existingPath && changed) {
 				// Input image has changed
 				console.log(`INPUT CHANGED: ${inputPath}`)
@@ -111,7 +113,6 @@ const tasks = media.map((inputPath) => {
 			} else {
 				// Input image hasn't changed
 				// Make sure we have the expected number of images
-				const directoryContents = globSync(`${outputPath}/*`)
 				if (directoryContents.length === widths.length + 1) {
 					// All width proxies + the original. We're good, let's move on.
 					return

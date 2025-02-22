@@ -2,6 +2,7 @@
 import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
 import { ResponsiveImage } from 'src/util/ResponsiveImage'
+import omIcon from 'src/assets/otepotimusic.png'
 import Tile from 'src/components/Tile.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import SearchBox from 'src/components/SearchBox.astro'
@@ -60,6 +61,19 @@ for (const artist of artists) {
 		</div>
 	</ShuffleFilters>
 	<FlexGridContainer grid={{ xs: 6, md: 3, lg: 2 }} id="artist-grid" fixedWidth={true} style={{minHeight: "80vh"}}>
+		<Tile
+			href="http://otepotimusic.com"
+			image={omIcon.src}
+			label={'Discover more music from local artists'}
+			containerHeight={'15vh'}
+			className='whiteBorder'
+			dataAttributes={{
+				'data-title': '((._',
+				'data-numbergigs': 1000,
+				'data-active': 'true',
+				'data-origin': 'Dunedin'
+			}}
+		/>
 		{
 			artists.map((artist) => (
 				<Tile

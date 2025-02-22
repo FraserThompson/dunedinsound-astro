@@ -4,7 +4,8 @@
  *
  * Props:
  *  - href: the link
- *  - responsiveImage (optional): the background image
+ *  - image (optional): the background image
+ *  - responsiveImage (optional): the background image (responsive)
  *  - backgroundStyle (optional): by default the background image is centered.
  *    Pass full to make it span the entire tile.
  *  - title (optional): displayed at the top
@@ -43,6 +44,7 @@ export type BackgroundStyle = 'full' | 'center'
 
 interface Props {
 	href: string
+	image?: string
 	responsiveImage?: ResponsiveImage
 	backgroundStyle?: BackgroundStyle
 	title?: string
@@ -62,6 +64,7 @@ const {
 	href,
 	className = '',
 	id = '',
+	image,
 	responsiveImage,
 	title,
 	subtitle,
@@ -81,7 +84,7 @@ const {
 	class={`${tileWrapper[containerWidth ? 'fixedWidth' : 'noWidth']} ${className} tile`}
 	style={assignInlineVars({
 		[height]: containerHeight,
-		[heightMobile]: containerHeightMobile,
+		[heightMobile]: containerHeightMobile
 	})}
 	id={id}
 >
@@ -104,6 +107,13 @@ const {
 				responsiveImage && backgroundStyle == 'center' && (
 					<div class={centerImageWrapper}>
 						<Image2 size={responsiveImageSizes} responsiveImage={responsiveImage} />
+					</div>
+				)
+			}
+			{
+				image && (
+					<div class={centerImageWrapper} style={{maxWidth: "100px"}}>
+						<Image2 image={image} />
 					</div>
 				)
 			}
