@@ -35,15 +35,15 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	bottomMarginMobile={theme.dimensions.headerHeightMobileNegative}
 	hideBackgroundMobile={!!entryData.feature_vid}
 	heightMobile="auto"
-	height="80vh"
+	height="70vh"
 >
 	<div>
 		{
 			entryExtra.venue && (
 				<h3 style={{ marginBottom: '2px' }}>
 					{!entryExtra.venue.data.hidden && (
-						<a href={`/venues/${entryExtra.venue.id}`} class="highlighted">
-							<MapIcon style={{ marginBottom: '-2px' }} />
+						<a href={`/venues/${entryExtra.venue.id}`} style={{ position: 'relative' }} class="highlighted">
+							<MapIcon style={{ marginBottom: '-2px', position: 'absolute', left: '-20px' }} />
 							{entryExtra.venue.data.title}
 						</a>
 					)}

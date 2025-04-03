@@ -83,6 +83,7 @@ export const yearLink = style([
 
 export const backButton = style({
 	height: theme.dimensions.subheaderHeight,
+	boxShadow: theme.borders.shadow,
 	display: 'flex',
 	alignItems: 'center',
 	top: 0,

@@ -7,6 +7,7 @@
  * Popups (optional):
  *  For popups add elements of class "popup" to the "popups" slot.
  *  There must be one popup for each marker.
+ *  Adding dataset-open will make it default to open and be unclosable.
  *
  * Sidebar (optional):
  *  For a sidebar with menu links that select markers on the map, add a sidebar to the page.
@@ -99,21 +100,44 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			this.sidebarLinks = this.sidebar?.querySelectorAll('[data-markerkey]')
 
 			const markers = JSON.parse(this.getAttribute('data-markers') || '') as any
-			const popups = this.querySelectorAll('.popup')
+			const popups: NodeListOf<HTMLElement> = this.querySelectorAll('.popup')
 
 			for (const [i, markerInfo] of markers.entries()) {
-				const popup = popups && popups[i] && new mapboxgl.Popup().setHTML(popups[i].innerHTML).setMaxWidth('400px')
-
-				popup?.on('open', (e) => this.markerClick(e))
-
 				let el
 				if (markerInfo.class) {
 					el = document.createElement('div')
 					el.className = markerInfo.class
 				}
 
-				const marker = new mapboxgl.Marker(el).setLngLat(markerInfo.coords).setPopup(popup).addTo(this.map)
+				const marker = new mapboxgl.Marker(el).setLngLat(markerInfo.coords)
+
+				const popupEl = popups && popups[i]
+
+				// If we've passed in a popup via the popup slot
+				if (popupEl) {
+					let popupOptions: mapboxgl.PopupOptions = {}
+
+					// data-open means it will be unclosable
+					if (popupEl?.dataset.open) {
+						popupOptions.closeButton = false
+						popupOptions.closeOnClick = false
+					}
+
+					const popup = new mapboxgl.Popup(popupOptions)
+
+					popup.setHTML(popupEl.innerHTML).setMaxWidth('400px')
+					popup.on('open', (e) => this.markerClick(e))
+
+					marker.setPopup(popup)
+				}
+
+				marker.addTo(this.map)
 				this.markers?.push(marker)
+
+				// data-open means the popup starts open
+				if (popupEl?.dataset.open) {
+					marker?.togglePopup()
+				}
 			}
 		}
 
@@ -218,5 +242,21 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 		gap: 15px;
 		display: flex;
 		align-items: flex-end;
+	}
+	.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+	.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+	.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+		border-top-color: black;
+	}
+	.mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+	.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+	.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+		border-bottom-color: black;
+	}
+	.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+		border-right-color: black;
+	}
+	.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+		border-left-color: black;
 	}
 </style>

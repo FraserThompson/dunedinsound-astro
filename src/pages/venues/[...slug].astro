@@ -2,6 +2,7 @@
 import { loadAndFormatCollection } from 'src/util/collection.ts'
 import Map from 'src/components/venue/Map.astro'
 import EntriesByCollectionLayout from 'src/layouts/base/EntriesByCollectionLayout.astro'
+import MapIcon from '~icons/bx/map-alt'
 
 export async function getStaticPaths() {
 	const artistEntries = await loadAndFormatCollection('venue')
@@ -19,10 +20,22 @@ const { entry } = Astro.props
 <EntriesByCollectionLayout entry={entry}>
 	<Map
 		slot="banner"
-		heightMobile={"40vh"}
+		heightMobile={'40vh'}
 		markers={[{ coords: [entry.entry.data.lng, entry.entry.data.lat] }]}
 		center={[entry.entry.data.lng, entry.entry.data.lat]}
 		zoom="16"
 		nointeract={true}
-	/>
+	>
+		<div slot="popups">
+			<div class="popup" data-open={true}>
+				<a
+					target="_blank"
+					class="button"
+					href={`https://www.google.com/maps/@?api=1&map_action=map&center=${entry.entry.data.lat}%2C${entry.entry.data.lng}&zoom=21`}
+				>
+					Open in Maps
+				</a>
+			</div>
+		</div>
+	</Map>
 </EntriesByCollectionLayout>

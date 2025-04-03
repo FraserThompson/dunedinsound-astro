@@ -3,7 +3,7 @@ import type { CollectionEntry, CollectionKey } from 'astro:content'
 export const siteTitle = 'dunedinsound.com'
 
 export const defaultMetaDescription =
-	'A permanent and non-commercial archive for gigs happening right now in Ōtepoti, Aotearoa.'
+	'A permanent and non-commercial media archive for gigs happening right now in Ōtepoti, Aotearoa.'
 
 export function getCollectionMetaDescription<C extends CollectionKey>(entry: CollectionEntry<C>): any {
 	const descriptions = {

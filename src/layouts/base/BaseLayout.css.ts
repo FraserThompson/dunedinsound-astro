@@ -1,4 +1,5 @@
 import { globalStyle } from '@vanilla-extract/css'
+import { borderWidth } from 'polished'
 import { theme } from 'src/Theme.css'
 
 /**
@@ -128,11 +129,20 @@ globalStyle('button.active,button:active', {
 })
 
 globalStyle('a', {
-	color: theme.color.contrast2,
+	color: theme.color.secondary,
 	transition: 'color 0.1s ease-in-out',
 	textDecoration: 'none',
 	overflow: 'hidden',
 	backgroundColor: 'transparent'
+})
+
+globalStyle('a.button', {
+	borderRadius: '3px',
+	borderWidth: '2px',
+	borderStyle: 'solid',
+	backgroundColor: theme.color.background,
+	padding: '5px',
+	fontWeight: 'bold'
 })
 
 globalStyle('a:hover', {

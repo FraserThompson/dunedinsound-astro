@@ -15,7 +15,7 @@ interface Props {
 const { links, className = '' } = Astro.props
 ---
 
-<div style={{ marginTop: theme.dimensions.basePadding }} class={className}>
+<div style={{ marginTop: theme.dimensions.basePadding, marginBottom: theme.dimensions.basePadding }} class={className}>
 	{
 		socialLinksToMenuItems(links).map((item) => (
 			<a

@@ -1,6 +1,9 @@
 import fbIcon from 'src/assets/fb-icon.png'
 import bcIcon from 'src/assets/bc-icon.png'
 import instaIcon from 'src/assets/instagram-icon.png'
+import youtubeIcon from 'src/assets/youtube-icon.png'
+import spotifyIcon from 'src/assets/spotify-icon.png'
+import websiteIcon from 'src/assets/web-icon.png'
 import type { z } from 'astro/zod'
 import type { webLinks } from 'src/content.config'
 import MarkdownIt from 'markdown-it'
@@ -109,7 +112,10 @@ export const socialLinksToMenuItems = (links?: z.infer<typeof webLinks>): MenuLi
 	const iconMap: { [key: string]: string } = {
 		bandcamp: bcIcon.src,
 		instagram: instaIcon.src,
-		facebook: fbIcon.src
+		facebook: fbIcon.src,
+		youtube: youtubeIcon.src,
+		website: websiteIcon.src,
+		spotify: spotifyIcon.src,
 	}
 
 	const menuItems = Object.entries(links).map(([type, artistLink]) => ({

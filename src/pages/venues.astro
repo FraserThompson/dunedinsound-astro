@@ -61,20 +61,24 @@ const markers = groupedVenues.map((venueList) => ({
 				groupedVenues.map((venueList) => (
 					<div class="popup">
 						{venueList.map((venue) => (
-							<span>
+							<div>
 								<h3 class="center" style={{ marginBottom: '0' }}>
 									{venue.entry.data.title}
 								</h3>
 								<div
 									class="center"
-									style={{ marginTop: '0', marginBottom: '10px', display: 'flex', justifyContent: 'center', gap: "10px" }}
+									style={{
+										marginTop: '0',
+										marginBottom: '10px',
+										display: 'flex',
+										justifyContent: 'center',
+										gap: '10px'
+									}}
 								>
 									<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} inactiveText={'Defunct'} />
 									{venue.entry.data.allAges && <AllAgesIndicator />}
 								</div>
-								<div style={{ height: '35px' }}>
-									<SocialLinks links={venue.entry.data.links} />
-								</div>
+								<SocialLinks links={venue.entry.data.links} />
 								{venue.extra.cover && (
 									<a
 										title={venue.entry.data.title}
@@ -89,12 +93,12 @@ const markers = groupedVenues.map((venueList) => ({
 										<Image2 responsiveImage={venue.extra.cover} />
 									</a>
 								)}
-								<p class="center">
-									<a title={venue.entry.data.title} href={venue.extra.absolutePath}>
-										See <strong>{venue.extra.gigCount}</strong> gigs at this venue
+								<div class="center" style="padding-top: 5px;">
+									<a class="button" title={venue.entry.data.title} href={venue.extra.absolutePath}>
+										See <strong>{venue.extra.gigCount}</strong> gig{venue.extra.gigCount > 1 ? 's' : ''} at this venue
 									</a>
-								</p>
-							</span>
+								</div>
+							</div>
 						))}
 					</div>
 				))
