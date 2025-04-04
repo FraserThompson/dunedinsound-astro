@@ -13,7 +13,8 @@
  *  - backgroundImageVertical (optional): image behind everything
  *
  * Slots:
- *  - default: content displayed in titlebox
+ *  - default: content displayed over the banner
+ *  - subtitle: content displayed under title
  *  - background: content displayed behind everything
  *  - customContent: arbitrary content displayed anywhere
  */
@@ -25,6 +26,8 @@ import {
 	CustomContent,
 	BannerTitle,
 	BannerContent,
+	BannerContentOverlay,
+	BannerSubtitle,
 	bannerHeight,
 	bannerHeightMobile,
 	marginBottom,
@@ -78,7 +81,8 @@ const {
 				</div>
 			)
 		}
-		<div class="titleContent"><slot /></div>
+		<div class={BannerSubtitle}><slot name="subtitle"/></div>
+		<div class={BannerContentOverlay}><slot /></div>
 	</div>
 	<div class={`${BackgroundContent} ${hideBackgroundMobile ? 'hideMobile' : ''}`}>
 		<slot name="background">
@@ -98,10 +102,3 @@ const {
 		<slot name="customContent" />
 	</div>
 </div>
-
-<style>
-	.titleContent:not(:empty) {
-		border: 2px inset;
-		background-color: black;
-	}
-</style>

@@ -3,9 +3,9 @@
  * List of links from an entries links field.
  */
 import { socialLinksToMenuItems } from 'src/util/helpers'
-import { theme } from 'src/Theme.css'
 import type { z } from 'astro:content'
 import type { webLinks } from 'src/content.config'
+import { SocialLinkWrapper, SocialLinkImage } from './SocialLinks.css'
 
 interface Props {
 	links?: z.infer<typeof webLinks>
@@ -15,19 +15,11 @@ interface Props {
 const { links, className = '' } = Astro.props
 ---
 
-<div style={{ marginTop: theme.dimensions.basePadding, marginBottom: theme.dimensions.basePadding }} class={className}>
+<div style={{ marginTop: '3px', marginBottom: '3px' }} class={className}>
 	{
 		socialLinksToMenuItems(links).map((item) => (
-			<a
-				href={item.href}
-				title={item.title}
-				style={{ marginRight: theme.dimensions.basePaddingMobile, marginLeft: theme.dimensions.basePaddingMobile }}
-			>
-				{item.image ? (
-					<img height="30" width="30" src={item.image} alt={item.title} style={{ background: 'black' }} />
-				) : (
-					item.title
-				)}
+			<a href={item.href} title={item.title} class={SocialLinkWrapper}>
+				{item.image ? <img src={item.image} alt={item.title} class={SocialLinkImage} /> : item.title}
 			</a>
 		))
 	}

@@ -5,14 +5,13 @@ import ImageGallery from 'src/components/ImageGallery.astro'
 import Player from 'src/components/gig/Player'
 import PlayerContainer from 'src/components/gig/PlayerContainer.astro'
 import MapIcon from '~icons/bx/map'
-import ShareButton from 'src/components/ShareButton.astro'
 import CornerLabel from 'src/components/gig/CornerLabel.astro'
 import BigIntro from 'src/components/gig/BigIntro.astro'
 import ArtistMedia from 'src/components/gig/ArtistMedia.astro'
 import LiteYoutube from 'src/components/LiteYoutube.astro'
 import Divider from 'src/components/Divider.astro'
 import { theme } from 'src/Theme.css'
-import { GigBannerPlayer } from './Gig.css'
+import { GigBannerPlayer, GigFeatureVid } from './Gig.css'
 import ArtistDropdown from 'src/components/gig/ArtistDropdown.astro'
 
 interface Props {
@@ -37,7 +36,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	heightMobile="auto"
 	height="70vh"
 >
-	<div>
+	<div slot="subtitle">
 		{
 			entryExtra.venue && (
 				<h3 style={{ marginBottom: '2px' }}>
@@ -54,6 +53,8 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 		<h4 style={{ marginBottom: '2px' }}>
 			{entryData.date.toLocaleDateString()}
 		</h4>
+	</div>
+	<div>
 		{
 			entryData.description && (
 				<p>
@@ -61,23 +62,21 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 				</p>
 			)
 		}
-		{entryData.feature_vid && <LiteYoutube videoid={entryData.feature_vid} loadAPI={true} />}
-		<ShareButton
-			style={{ position: 'absolute', left: '50%', transform: 'translate(-50%)' }}
-			shareData={{
-				title: 'GIG MEDIA: ' + entryData.title,
-				url: 'https://dunedinsound.com' + entryExtra.slug,
-				text: `Photos, audio and video from ${entryData.title}.`
-			}}
-		/>
 	</div>
 	{!entry.next && <CornerLabel slot="customContent">LATEST GIG</CornerLabel>}
 	{
-		!!entryExtra.audio?.length && (
-			<div class={GigBannerPlayer} slot="customContent">
-				<PlayerContainer>
-					<Player artistAudio={entryExtra.audio} hideNextPrevOnMobile={true} client:load />
-				</PlayerContainer>
+		(!!entryExtra.audio?.length || entryData.feature_vid) && (
+			<div slot="customContent">
+				{entryData.feature_vid && (
+					<div class={GigFeatureVid}>
+						<LiteYoutube videoid={entryData.feature_vid} loadAPI={true} />
+					</div>
+				)}
+				<div class={GigBannerPlayer}>
+					<PlayerContainer>
+						<Player artistAudio={entryExtra.audio} hideNextPrevOnMobile={true} client:load />
+					</PlayerContainer>
+				</div>
 			</div>
 		)
 	}

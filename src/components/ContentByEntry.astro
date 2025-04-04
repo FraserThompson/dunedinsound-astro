@@ -87,7 +87,7 @@ const hasBanner = Astro.slots.has('banner')
 	backgroundImage={entryExtra.cover}
 	bottomMargin={`calc(${theme.dimensions.subheaderHeightNegative} * 2)`}
 >
-	<div style={{ display: 'flex', justifyContent: 'center', gap: '5px' }}>
+	<div slot="subtitle" style={{ display: 'flex', justifyContent: 'center', gap: '5px' }}>
 		<ActiveIndicator
 			born={entryData.date}
 			died={entryData.died}
@@ -118,7 +118,7 @@ const hasBanner = Astro.slots.has('banner')
 	{entryData.links && <SocialLinks links={entryData.links} />}
 	{
 		entryData.description && (
-			<p>
+			<p style="margin-top: 0px;">
 				<Fragment set:html={entryData.description} />
 			</p>
 		)

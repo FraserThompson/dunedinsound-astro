@@ -1,4 +1,4 @@
-import { style, createVar, fallbackVar } from '@vanilla-extract/css'
+import { style, createVar, fallbackVar, globalStyle } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 export const bannerHeight = createVar()
@@ -43,13 +43,18 @@ export const CustomContent = style({
 	justifyContent: 'center'
 })
 
-export const BannerContent = style({
-	zIndex: '8',
-	flexGrow: '1',
-	padding: 0,
-	paddingTop: 0,
+globalStyle(`${CustomContent} > *`, {
+	width: '100%',
+	height: '100%',
 	display: 'flex',
 	flexDirection: 'column',
+	justifyContent: 'center'
+})
+
+export const BannerContent = style({
+	zIndex: '8',
+	padding: 0,
+	paddingTop: 0,
 	margin: '0 auto',
 	textAlign: 'center',
 	height: '100%',
@@ -57,18 +62,46 @@ export const BannerContent = style({
 	'@media': {
 		'screen and (--md)': {
 			position: 'absolute',
-			padding: theme.dimensions.basePadding,
-			paddingTop: '1.5em',
-			width: theme.dimensions.contentContainerWidth,
 			height: 'auto'
+		}
+	}
+})
+
+export const BannerContentOverlay = style({
+	flexGrow: '1',
+	display: 'flex',
+	flexDirection: 'column',
+	margin: '0 auto',
+	textAlign: 'center',
+	selectors: {
+		'&:not(:empty)': {
+			background: 'rgba(8,9,12,0.7)',
+			boxShadow: theme.borders.shadowLight
+		}
+	}
+})
+
+export const BannerSubtitle = style({
+	margin: '0 auto',
+	textAlign: 'center',
+	width: '100%',
+	paddingTop: '5px',
+	paddingBottom: '5px',
+	position: 'relative',
+	zIndex: '1',
+	selectors: {
+		'&:not(:empty)': {
+			background: 'linear-gradient(90deg, rgba(0, 0, 0, 0.9), rgba(75, 0, 77, 0.8))',
+			boxShadow: theme.borders.shadowLight
 		}
 	}
 })
 
 export const BannerTitle = style({
 	filter: 'drop-shadow(2px 2px 10px black)',
-	backdropFilter: 'hue-rotate(240deg)',
-	background: 'linear-gradient(90deg, rgba(0, 0, 0, 0.8), rgba(63, 146, 247, 0.2))',
-	border: '2px inset',
-	padding: '5px'
+	background: 'linear-gradient(90deg, rgba(0, 0, 0, 0.9), rgba(63, 146, 247, 0.6))',
+	boxShadow: theme.borders.shadowLight,
+	padding: '5px',
+	position: 'relative',
+	zIndex: '2'
 })
