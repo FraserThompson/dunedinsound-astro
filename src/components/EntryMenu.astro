@@ -47,6 +47,9 @@ const entries = collection ? await loadAndFormatCollection(collection) : collect
 			>
 				<a
 					class={MenuLinkWrapper['vertical']}
+					style={{
+						color: 'died' in entry.entry.data && entry.entry.data.died !== undefined ? 'rgb(150, 150, 150)' : ''
+					}}
 					data-markerkey={
 						'lng' in entry.entry.data &&
 						'lat' in entry.entry.data &&
@@ -55,9 +58,6 @@ const entries = collection ? await loadAndFormatCollection(collection) : collect
 					data-date={'date' in entry.entry.data ? entry.entry.data.date?.getTime() : undefined}
 					href={selected ? entry.extra.absolutePath : undefined}
 				>
-					<span>
-						<ActiveIndicator died={'died' in entry.entry.data ? entry.entry.data.died : undefined} hideText={true} />
-					</span>
 					{entry.entry.data.title}
 					{'allAges' in entry.entry.data && <AllAgesIndicator hideText={true} />}
 					{'gigCount' in entry.extra && (

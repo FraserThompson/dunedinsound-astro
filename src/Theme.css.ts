@@ -9,7 +9,6 @@ export const theme = createThemeContract({
 		secondary: '',
 		contrast: '',
 		contrast2: '',
-		contrast3: '',
 		text: '',
 		lightText: '',
 		dullText: '',
@@ -68,13 +67,12 @@ const headerHeightMobile = '40px'
 const subheaderHeight = '30px'
 const basePadding = '0.86558rem'
 
-const backgroundColor = '#08090C' // dark navy
-const primaryColor = '#0F0E0E' // smoky black
-const foregroundColor = '#3f92f7' // lightblue
-const secondaryColor = '#049f9d' // teal
-const contrastColor = '#FAF9F9' // ice white
-const contrastColor2 = '#96ff7d' // lime green
-const contrastColor3 = '#4b004d' // purple
+const backgroundColor = 'rgb(8, 9, 12)'
+const primaryColor = 'rgb(15, 14, 14)'
+const foregroundColor = 'rgb(75, 0, 77)'
+const secondaryColor = 'rgb(27, 69, 120)'
+const contrastColor = 'rgb(250, 249, 249)'
+const contrastColor2 = 'rgb(150, 255, 125)'
 const textColor = '#ccc'
 
 createGlobalTheme(':root', theme, {
@@ -85,7 +83,6 @@ createGlobalTheme(':root', theme, {
 		secondary: secondaryColor,
 		contrast: contrastColor,
 		contrast2: contrastColor2,
-		contrast3: contrastColor3,
 		text: textColor,
 		lightText: lighten(0.5, textColor),
 		dullText: darken(0.2, textColor),
@@ -94,7 +91,7 @@ createGlobalTheme(':root', theme, {
 		lightSecondary: lighten(0.5, secondaryColor),
 		darkSecondary: darken(0.2, secondaryColor),
 		lightContrast2: lighten(0.2, contrastColor2),
-		lightForeground: lighten(0.2, foregroundColor)
+		lightForeground: lighten(0.6, foregroundColor)
 	},
 	font: {
 		baseSize: '16px',

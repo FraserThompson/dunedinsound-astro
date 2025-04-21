@@ -7,34 +7,29 @@ import { activeIcon, defunctIcon } from './ActiveIndicator.css'
 interface Props {
 	died?: Date
 	born?: Date
-	hideText?: Boolean
-	inactiveText?: String
+	collection?: string
+	hideIfActive?: boolean
 }
 
-const { died, born, hideText, inactiveText } = Astro.props
+const { died, born, collection, hideIfActive } = Astro.props
 ---
 
-{
-	died === undefined && (
-		<span class={activeIcon} title="Active">
-			⬤ {!hideText && <h4>{!born ? 'Active' : `Active since ${born.getFullYear()}`}</h4>}
-		</span>
+<!-- we only want to show "active" status on venues -->{
+	died === undefined && born && collection !== 'artist' && !hideIfActive && (
+		<h4 class={activeIcon} title="Active">
+			Active since {born.getFullYear()}
+		</h4>
 	)
 }
 {
 	died !== undefined && (
-		<span class={defunctIcon} title="Defunct">
-			⬤{' '}
-			{!hideText && (
-				<h4>
-					{died.getFullYear() !== 1600
-						? !born
-							? `${inactiveText} since ${died.getFullYear()}`
-							: `Active ${born.getFullYear()} to ${died.getFullYear()}`
-						: inactiveText}
-				</h4>
-			)}
-		</span>
+		<h4 class={defunctIcon} title="Defunct">
+			{died.getFullYear() !== 1600
+				? !born
+					? `Defunct since ${died.getFullYear()}`
+					: `Active ${born.getFullYear()} to ${died.getFullYear()}`
+				: 'Defunct'}
+		</h4>
 	)
 }
 
@@ -42,6 +37,5 @@ const { died, born, hideText, inactiveText } = Astro.props
 	h4 {
 		display: inline-block;
 		margin-bottom: 0;
-		color: inherit !important;
 	}
 </style>

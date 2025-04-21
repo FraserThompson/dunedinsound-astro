@@ -52,6 +52,16 @@ globalStyle('h1', {
 	lineHeight: '1.1'
 })
 
+globalStyle('h1.smaller', {
+	fontSize: `calc(${theme.font.baseSize} * 1.2)`,
+	lineHeight: '1.1',
+	'@media': {
+		'screen and (--md)': {
+			fontSize: `calc(${theme.font.baseSize} * 1.6)`
+		}
+	}
+})
+
 globalStyle('h2', {
 	fontSize: `calc(${theme.font.baseSize} * 1.6)`,
 	lineHeight: '1.1'
@@ -129,7 +139,7 @@ globalStyle('button.active,button:active', {
 })
 
 globalStyle('a', {
-	color: theme.color.secondary,
+	color: theme.color.contrast2,
 	transition: 'color 0.1s ease-in-out',
 	textDecoration: 'none',
 	overflow: 'hidden',
@@ -146,7 +156,7 @@ globalStyle('a.button', {
 })
 
 globalStyle('a:hover', {
-	color: theme.color.lightSecondary
+	color: theme.color.lightContrast2
 })
 
 globalStyle('input[type="text"]', {

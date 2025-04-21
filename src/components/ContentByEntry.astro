@@ -21,6 +21,8 @@ import SocialLinks from 'src/components/SocialLinks.astro'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
 import AllAgesIndicator from './AllAgesIndicator.astro'
+import { contentByEntryTitle, socialLinksWrapper } from './ContentByEntry.css'
+import CornerLabel from './gig/CornerLabel.astro'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
@@ -79,6 +81,7 @@ const willBeKnownAs =
 	))
 
 const hasBanner = Astro.slots.has('banner')
+const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 ---
 
 <Banner
@@ -87,49 +90,46 @@ const hasBanner = Astro.slots.has('banner')
 	backgroundImage={entryExtra.cover}
 	bottomMargin={`calc(${theme.dimensions.subheaderHeightNegative} * 2)`}
 >
-	<div slot="subtitle" style={{ display: 'flex', justifyContent: 'center', gap: '5px' }}>
+	<!-- all ages and active indicator -->
+	<div slot="title" class={contentByEntryTitle}>
 		<ActiveIndicator
 			born={entryData.date}
 			died={entryData.died}
-			inactiveText={entry.entry.collection === 'artist' ? 'Inactive' : 'Defunct'}
+			collection={entry.entry.collection}
+			hideIfActive={true}
 		/>
-		{'allAges' in entryData && entryData.allAges && <AllAgesIndicator />}
 	</div>
-	{
-		willBeKnownAs && (
-			<h4 style={{ marginTop: 0 }}>
-				Became:
-				{willBeKnownAs.map((thing) => (
-					<a href={thing.extra.absolutePath}>{thing.entry.data.title}</a>
-				))}
-			</h4>
-		)
-	}
-	{
-		!!previouslyKnownAs.length && (
-			<h4 style={{ marginTop: 0 }}>
-				Was:
-				{previouslyKnownAs.map((thing) => (
-					<a href={thing.extra.absolutePath}>{thing.entry.data.title}</a>
-				))}
-			</h4>
-		)
-	}
-	{entryData.links && <SocialLinks links={entryData.links} />}
-	{
-		entryData.description && (
-			<p style="margin-top: 0px;">
-				<Fragment set:html={entryData.description} />
-			</p>
-		)
-	}
-	{
-		entryData.links && 'audioculture' in entryData.links && (
-			<blockquote cite={entryData.links['audioculture']?.link}>
-				"{entryData.links['audioculture']?.snippet}" - <span>Audioculture</span>
-			</blockquote>
-		)
-	}
+	<!-- social links -->
+	<CornerLabel slot="customContent">
+		{entryData.links && <SocialLinks links={entryData.links} />}
+	</CornerLabel>
+	<!-- description/audioculture quote and was link -->
+	<Fragment slot={entryData.description || hasAudioculture || !!previouslyKnownAs.length ? 'subtitle' : ''}>
+		{
+			!!previouslyKnownAs.length && (
+				<h4 style={{ margin: 0 }}>
+					Previously known as
+					{previouslyKnownAs.map((thing) => (
+						<a href={thing.extra.absolutePath}>{thing.entry.data.title}</a>
+					))}
+				</h4>
+			)
+		}
+		{
+			entryData.description && (
+				<p style="background-color: black; margin: 20px;">
+					<Fragment set:html={entryData.description} />
+				</p>
+			)
+		}
+		{
+			hasAudioculture && (
+				<blockquote cite={entryData.links?.audioculture?.link}>
+					"{entryData.links?.audioculture?.snippet}" - <span>Audioculture</span>
+				</blockquote>
+			)
+		}
+	</Fragment>
 	<slot name="banner" slot={hasBanner ? 'background' : ''} />
 </Banner>
 <Divider
@@ -152,32 +152,25 @@ const hasBanner = Astro.slots.has('banner')
 			client:load
 		/>
 		{
-			willBeKnownAs &&
-				willBeKnownAs.map((thing) => (
-					<Tile responsiveImage={thing.extra.cover} href={thing.extra.absolutePath} containerHeight="30vh">
-						<h4 class="center" style={{ marginBottom: 0 }}>
-							At this location from {entryData.died?.getFullYear()}
-							{thing.entry.data.died ? ` to ${thing.entry.data.died?.getFullYear()}` : ''}
-						</h4>
-						<h3 class="center" style={{ marginBottom: 0 }}>
-							{thing.entry.data.title}
-						</h3>
-						<h4 class="center">{thing.extra.gigCount} gigs</h4>
-					</Tile>
-				))
+			willBeKnownAs?.map((thing) => (
+				<Tile responsiveImage={thing.extra.cover} href={thing.extra.absolutePath} containerHeight="30vh">
+					<h4 class="center" style={{ marginBottom: 0, color: 'white' }}>
+						At this location from {entryData.died?.getFullYear()}
+						{thing.entry.data.died ? ` to ${thing.entry.data.died?.getFullYear()}` : ' to present'}
+					</h4>
+					<h3 class="center" style={{ marginBottom: 0 }}>
+						{thing.entry.data.title}
+					</h3>
+					<h4 class="center">{thing.extra.gigCount} gigs</h4>
+				</Tile>
+			))
 		}
 		{
 			Object.entries(gigsByYear)
 				.reverse()
 				.map(([year, gigs]) => (
 					<div id={`y${year}`}>
-						<Divider
-							backgroundColor={theme.color.foreground}
-							href={`#y${year}`}
-							sticky={true}
-							top={theme.dimensions.subheaderHeight}
-							smoothScroll={true}
-						>
+						<Divider href={`#y${year}`} sticky={true} top={theme.dimensions.subheaderHeight} smoothScroll={true}>
 							{year} ({gigs?.length})
 						</Divider>
 						<FlexGridContainer grid={gigs && gigs.length <= 4 ? { xs: 12, md: 6 } : undefined}>
@@ -192,7 +185,7 @@ const hasBanner = Astro.slots.has('banner')
 			!!previouslyKnownAs.length &&
 				previouslyKnownAs.map((thing) => (
 					<Tile responsiveImage={thing.extra.cover} href={thing.extra.absolutePath} containerHeight="30vh">
-						<h4 class="center" style={{ marginBottom: 0 }}>
+						<h4 class="center" style={{ marginBottom: 0, color: 'white' }}>
 							At this location {thing.entry.data.date?.getFullYear() || 'up'} to {thing.entry.data.died?.getFullYear()}
 						</h4>
 						<h3 class="center" style={{ marginBottom: 0 }}>

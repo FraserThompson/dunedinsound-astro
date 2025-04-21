@@ -15,7 +15,7 @@ interface Props {
 const { links, className = '' } = Astro.props
 ---
 
-<div style={{ marginTop: '3px', marginBottom: '3px' }} class={className}>
+<div class={className}>
 	{
 		socialLinksToMenuItems(links).map((item) => (
 			<a href={item.href} title={item.title} class={SocialLinkWrapper}>

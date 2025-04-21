@@ -12,33 +12,28 @@ interface Props {
 const { hideText } = Astro.props
 ---
 
-<span
+<h4
 	title="All Ages"
+	class={hideText ? "hiddenText" : ""}
 	style={{
-		color: theme.color.secondary
+		color: theme.color.lightForeground
 	}}
 >
 	<UniversalAccessIcon />
-	{
-		!hideText && (
-			<h4
-				style={{
-					color: theme.color.secondary
-				}}
-			>
-				All ages
-			</h4>
-		)
-	}
-</span>
+	{!hideText && 'All ages'}
+</h4>
+
+
 
 <style>
-	span {
-		display: inline-flex;
-		align-items: center;
-		gap: 3px;
+	h4.hiddenText svg {
+		position: relative;
+		top: 4px;
 	}
 	h4 {
 		margin-bottom: 0;
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
 	}
 </style>

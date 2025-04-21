@@ -70,12 +70,10 @@ const markers = groupedVenues.map((venueList) => ({
 									style={{
 										marginTop: '0',
 										marginBottom: '10px',
-										display: 'flex',
-										justifyContent: 'center',
 										gap: '10px'
 									}}
 								>
-									<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} inactiveText={'Defunct'} />
+									<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} />
 									{venue.entry.data.allAges && <AllAgesIndicator />}
 								</div>
 								<SocialLinks links={venue.entry.data.links} />

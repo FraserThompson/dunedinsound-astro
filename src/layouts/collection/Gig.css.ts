@@ -2,9 +2,15 @@ import { style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 export const GigBannerPlayer = style({
-	padding: 0,
+	padding: '0px',
+	width: '100%',
+	boxSizing: 'border-box',
 	marginTop: 'auto',
-	width: '100%'
+	'@media': {
+		'screen and (--md)': {
+			padding: theme.dimensions.basePadding
+		}
+	}
 })
 
 export const GigFeatureVid = style({

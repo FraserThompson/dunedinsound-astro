@@ -1,4 +1,5 @@
 import { style } from '@vanilla-extract/css'
+import { theme } from 'src/Theme.css'
 
 export const SocialLinkWrapper = style({
 	marginRight: '3px',
@@ -7,14 +8,10 @@ export const SocialLinkWrapper = style({
 
 export const SocialLinkImage = style({
 	background: 'black',
+	border: '1px solid black',
+	borderRadius: '6px',
 	top: '2px',
 	position: 'relative',
-	height: '30px',
-	width: '30px',
-	'@media': {
-		'screen and (--md)': {
-			height: '18px',
-			width: '18px'
-		}
-	}
+	height: theme.dimensions.subheaderHeight,
+	width: theme.dimensions.subheaderHeight
 })

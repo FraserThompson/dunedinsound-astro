@@ -25,70 +25,38 @@ export const BannerWrapper = style({
 })
 
 export const BackgroundContent = style({
-	position: 'static',
+	position: 'relative',
 	zIndex: '0',
 	width: '100%',
-	height: '100%',
+	height: 'auto',
 	'@media': {
 		'screen and (--md)': {
-			position: 'absolute'
+			position: 'absolute',
+			height: '100%'
 		}
 	}
 })
 
 export const CustomContent = style({
-	width: '100%',
-	height: '100%',
-	display: 'flex',
-	justifyContent: 'center'
-})
-
-globalStyle(`${CustomContent} > *`, {
-	width: '100%',
-	height: '100%',
-	display: 'flex',
-	flexDirection: 'column',
-	justifyContent: 'center'
-})
-
-export const BannerContent = style({
-	zIndex: '8',
-	padding: 0,
-	paddingTop: 0,
-	margin: '0 auto',
-	textAlign: 'center',
-	height: '100%',
-	width: '100%',
-	'@media': {
-		'screen and (--md)': {
-			position: 'absolute',
-			height: 'auto'
-		}
-	}
-})
-
-export const BannerContentOverlay = style({
-	flexGrow: '1',
-	display: 'flex',
-	flexDirection: 'column',
-	margin: '0 auto',
-	textAlign: 'center',
-	selectors: {
-		'&:not(:empty)': {
-			background: 'rgba(8,9,12,0.7)',
-			boxShadow: theme.borders.shadowLight
-		}
-	}
+	width: '100%'
 })
 
 export const BannerSubtitle = style({
 	margin: '0 auto',
 	textAlign: 'center',
 	width: '100%',
-	paddingTop: '5px',
-	paddingBottom: '5px',
+	maxWidth: '450px',
+	paddingTop: theme.dimensions.headerHeightMobile,
+	marginBottom: 0,
 	position: 'relative',
 	zIndex: '1',
+	'@media': {
+		'screen and (--md)': {
+			marginBottom: theme.dimensions.headerHeight,
+			marginTop: 'auto',
+			paddingTop: 0
+		}
+	},
 	selectors: {
 		'&:not(:empty)': {
 			background: 'linear-gradient(90deg, rgba(0, 0, 0, 0.9), rgba(75, 0, 77, 0.8))',
@@ -98,10 +66,23 @@ export const BannerSubtitle = style({
 })
 
 export const BannerTitle = style({
+	height: theme.dimensions.headerHeightMobile,
+	width: '100%',
 	filter: 'drop-shadow(2px 2px 10px black)',
-	background: 'linear-gradient(90deg, rgba(0, 0, 0, 0.9), rgba(63, 146, 247, 0.6))',
+	display: 'flex',
+	alignItems: 'center',
+	background: 'linear-gradient(90deg, rgba(63, 146, 247, 0.6), rgba(0, 0, 0, 0.9))',
 	boxShadow: theme.borders.shadowLight,
-	padding: '5px',
+	paddingLeft: theme.dimensions.basePaddingMobile,
+	paddingRight: theme.dimensions.basePaddingMobile,
+	boxSizing: 'border-box',
 	position: 'relative',
-	zIndex: '2'
+	zIndex: '2',
+	'@media': {
+		'screen and (--md)': {
+			height: theme.dimensions.headerHeight,
+			paddingLeft: theme.dimensions.basePadding,
+			paddingRight: theme.dimensions.basePadding
+		}
+	}
 })

@@ -106,7 +106,7 @@ export const centerImageWrapper = style({
 })
 
 export const tileLabel = style({
-	fontWeight: 600,
+	fontWeight: 700,
 	position: 'absolute',
 	top: 0,
 	left: 0,

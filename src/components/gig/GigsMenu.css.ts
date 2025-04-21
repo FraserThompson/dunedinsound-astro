@@ -8,7 +8,7 @@ import { MenuLi, MenuLinkWrapper, MenuWrapper } from '../Menu.css'
 export const yearsMenuWrapper = style([
 	MenuWrapper['vertical'],
 	{
-		borderLeft: `6px solid ${theme.color.foreground} !important`
+		borderLeft: `6px solid white !important`
 	}
 ])
 
@@ -16,8 +16,7 @@ export const artistsMenuWrapper = style([
 	MenuWrapper['vertical'],
 	{
 		borderLeft: `6px solid ${theme.color.secondary} !important`,
-		borderBottom: `6px solid ${theme.color.secondary} !important`,
-		borderRight: `6px solid ${theme.color.secondary} !important`
+		borderBottom: `6px solid ${theme.color.secondary} !important`
 	}
 ])
 
@@ -57,6 +56,7 @@ export const monthLink = style([
 		backgroundColor: `${theme.color.contrast} !important`,
 		boxShadow: theme.borders.shadowLight,
 		position: 'relative',
+		paddingLeft: '0px !important',
 		selectors: {
 			'&:hover': {
 				color: `black !important`
@@ -73,8 +73,8 @@ export const yearLink = style([
 		height: `${theme.dimensions.subheaderHeight} !important`,
 		lineHeight: `${theme.dimensions.subheaderHeight} !important`,
 		top: '0px',
-		backgroundColor: `${theme.color.foreground} !important`,
-		padding: 0,
+		backgroundColor: `white !important`,
+		paddingLeft: '0px !important',
 		margin: 0,
 		zIndex: 7,
 		fontWeight: 'bold'

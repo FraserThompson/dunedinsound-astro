@@ -36,37 +36,43 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	heightMobile="auto"
 	height="70vh"
 >
-	<div slot="subtitle">
+	<div slot="title" style={{ marginLeft: 'auto', display: 'flex', gap: '10px' }}>
 		{
 			entryExtra.venue && (
-				<h3 style={{ marginBottom: '2px' }}>
+				<h4 style={{ margin: 0 }}>
 					{!entryExtra.venue.data.hidden && (
-						<a href={`/venues/${entryExtra.venue.id}`} style={{ position: 'relative' }} class="highlighted">
-							<MapIcon style={{ marginBottom: '-2px', position: 'absolute', left: '-20px' }} />
-							{entryExtra.venue.data.title}
+						<a
+							href={`/venues/${entryExtra.venue.id}`}
+							style={{ display: 'flex', alignItems: 'center' }}
+							class="highlighted"
+						>
+							<MapIcon />
+							<span>{entryExtra.venue.data.title}</span>
 						</a>
 					)}
 					{entryExtra.venue.data.hidden ? entryExtra.venue.data.title : ''}
-				</h3>
-			)
-		}
-		<h4 style={{ marginBottom: '2px' }}>
-			{entryData.date.toLocaleDateString()}
-		</h4>
-	</div>
-	<div>
-		{
-			entryData.description && (
-				<p>
-					<Fragment set:html={entryData.description} />
-				</p>
+				</h4>
 			)
 		}
 	</div>
-	{!entry.next && <CornerLabel slot="customContent">LATEST GIG</CornerLabel>}
+	<div slot={entryData.description ? 'subtitle' : ''}>
+		<p>
+			<Fragment set:html={entryData.description} />
+		</p>
+	</div>
+	{
+		!entry.next && (
+			<CornerLabel position="right" slot="customContent">
+				LATEST GIG
+			</CornerLabel>
+		)
+	}
+	<CornerLabel position="left" slot="customContent">
+		{entryData.date.toLocaleDateString()}
+	</CornerLabel>
 	{
 		(!!entryExtra.audio?.length || entryData.feature_vid) && (
-			<div slot="customContent">
+			<Fragment slot="customContent">
 				{entryData.feature_vid && (
 					<div class={GigFeatureVid}>
 						<LiteYoutube videoid={entryData.feature_vid} loadAPI={true} />
@@ -77,7 +83,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 						<Player artistAudio={entryExtra.audio} hideNextPrevOnMobile={true} client:load />
 					</PlayerContainer>
 				</div>
-			</div>
+			</Fragment>
 		)
 	}
 </Banner>
