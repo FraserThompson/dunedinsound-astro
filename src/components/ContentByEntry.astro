@@ -125,7 +125,14 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 		{
 			hasAudioculture && (
 				<blockquote cite={entryData.links?.audioculture?.link}>
-					"{entryData.links?.audioculture?.snippet}" - <span>Audioculture</span>
+					"{entryData.links?.audioculture?.snippet}" -{' '}
+					<a
+						href={entryData.links?.audioculture?.link}
+						title={`Read about ${entryData.title} at Audioculture`}
+						target="_blank"
+					>
+						Audioculture
+					</a>
 				</blockquote>
 			)
 		}

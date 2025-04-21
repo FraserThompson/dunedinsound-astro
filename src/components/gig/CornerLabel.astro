@@ -7,11 +7,12 @@ import { cornerLabelWrapper } from './CornerLabel.css'
 
 interface Props {
 	position?: 'left' | 'right'
+	top?: string
 }
 
-const { position } = Astro.props
+const { position, top } = Astro.props
 ---
 
-<div class={cornerLabelWrapper[position || 'left']}>
+<div class={cornerLabelWrapper[position || 'left']} style={{ top: top }}>
 	<slot />
 </div>

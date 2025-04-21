@@ -12,6 +12,12 @@ export const artistDropdownLink = style([
 		selectors: {
 			'&:hover': {
 				color: `white !important`
+			},
+			'&.seeOther': {
+				color: `${theme.color.dullText} !important`
+			},
+			'&.seeOther:hover': {
+				color: `white !important`
 			}
 		}
 	}
@@ -24,11 +30,11 @@ export const artistDropdownLi = style([
 		flexWrap: 'wrap',
 		width: 'auto !important',
 		paddingLeft: theme.dimensions.basePaddingMobile,
-		paddingRight: theme.dimensions.basePaddingMobile,
+		paddingRight: '2px',
 		'@media': {
 			'screen and (--md)': {
 				paddingLeft: theme.dimensions.basePadding,
-				paddingRight: theme.dimensions.basePadding
+				paddingRight: '2px'
 			}
 		},
 		selectors: {
@@ -39,6 +45,9 @@ export const artistDropdownLi = style([
 			'&:hover': {
 				backgroundColor: theme.color.lightPrimary
 			},
+			'&:not(:last-child)': {
+				borderBottom: `1px solid ${theme.color.dullText}`
+			}
 		}
 	}
 ])

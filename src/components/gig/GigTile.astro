@@ -50,5 +50,11 @@ const gigExtra = gig.extra
 	<h5 style={{ marginBottom: '0px' }}>
 		{artistsToString(gigExtra.artists)}
 	</h5>
-	{!gig.next && <CornerLabel>LATEST GIG</CornerLabel>}
+	{
+		!gig.next && (
+			<CornerLabel top="0px" position="right">
+				LATEST GIG
+			</CornerLabel>
+		)
+	}
 </Tile>

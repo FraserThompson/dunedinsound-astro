@@ -4,6 +4,7 @@ import DropdownMenu from '../DropdownMenu'
 import { socialLinksToMenuItems } from 'src/util/helpers'
 import { artistDropdownLink, artistDropdownLi } from './ArtistDropdown.css'
 import { theme } from 'src/Theme.css'
+import { SocialLinkImage } from '../SocialLinks.css'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -31,15 +32,17 @@ const entryExtra = entry.extra
 						<a title={link.title} href={link.href}>
 							<small>
 								{!link.image && link.title}
-								{link.image && <img style={{ height: '25px', background: 'black' }} src={link.image} />}
+								{link.image && (
+									<img style={{ height: '25px', width: '25px' }} class={SocialLinkImage} src={link.image} />
+								)}
 							</small>
 						</a>
 					))}
 				</span>
 				{artist.extra.gigCount - 1 > 0 && (
-					<ul style={{ width: '100%', listStyle: 'none', paddingLeft: '1em' }}>
+					<ul style={{ width: '100%', listStyle: 'none', paddingLeft: '0' }}>
 						<li>
-							<a class={`${artistDropdownLink}`} href={`/artists/${artist.entry.id}`}>
+							<a class={`${artistDropdownLink} seeOther`} href={`/artists/${artist.entry.id}`}>
 								<small>SEE {artist.extra.gigCount - 1} OTHER GIGS FROM THIS ARTIST</small>
 							</a>
 						</li>
