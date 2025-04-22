@@ -36,7 +36,11 @@ export type EntryExtraMap = {
 		artistImages: { [id: string]: ResponsiveImage[] }
 		audio: ArtistAudio[]
 		artists: ProcessedEntry<'artist'>[]
+		series?: ProcessedEntry<'series'>
 		venue?: CollectionEntry<'venue'>
+	}
+	series: EntryExtraCommon & {
+		gigCount: number
 	}
 	artist: EntryExtraCommon & {
 		gigCount: number
@@ -111,7 +115,10 @@ export async function loadAndFormatCollection<C extends CollectionKey>(
  * @param entry
  * @returns
  */
-export async function loadAndFormatEntry<C extends keyof DataEntryMap>(collection: C, id: string): Promise<ProcessedEntry<C>> {
+export async function loadAndFormatEntry<C extends keyof DataEntryMap>(
+	collection: C,
+	id: string
+): Promise<ProcessedEntry<C>> {
 	// Try find a cached one if we've already gotten it
 	if (cachedResults[collection]) {
 		//@ts-expect-error
@@ -151,6 +158,13 @@ export async function processEntry<C extends CollectionKey>(
 				prev,
 				next,
 				extra: (await getGigExtra(entry, extraCommon)) as EntryExtraMap[C]
+			}
+		case 'series':
+			return {
+				entry,
+				prev,
+				next,
+				extra: (await getSeriesExtra(entry, extraCommon)) as EntryExtraMap[C]
 			}
 		case 'blog':
 			return {
@@ -239,6 +253,9 @@ export async function getGigExtra(
 	// Get associated venue entry
 	const venue = await getEntry('venue', entry.data.venue.id)
 
+	// Get associated series entry
+	const series = entry.data.series && (await loadAndFormatEntry('series', entry.data.series.id))
+
 	// Find artist subdirectories in this gig's dir
 	const artistDirs = await new fdir({
 		pathSeparator: '/',
@@ -300,7 +317,25 @@ export async function getGigExtra(
 		artistImages,
 		audio,
 		artists,
-		venue
+		venue,
+		series
+	}
+}
+
+/**
+ * Extends extra fields for series
+ * - gigCount: number of gigs in this series.
+ * @param entry: The series entry.
+ * @returns extras with series fields.
+ */
+export async function getSeriesExtra(
+	entry: CollectionEntry<'series'>,
+	extra: EntryExtraCommon
+): Promise<EntryExtraMap['series']> {
+	const seriesGigs = await getCollection('gig', (gig) => gig.data.series && gig.data.series.id === entry.id)
+	return {
+		...extra,
+		gigCount: seriesGigs.length
 	}
 }
 
@@ -317,11 +352,15 @@ export async function getBlogExtra(
 	extra: EntryExtraCommon
 ): Promise<EntryExtraMap['blog']> {
 	const relatedArtists = entry.data.relatedArtists
-		? (await Promise.all(entry.data.relatedArtists.map(async (artist: any) => await getEntry('artist', artist.id)))).filter((thing) => thing !== undefined)
+		? (
+				await Promise.all(entry.data.relatedArtists.map(async (artist: any) => await getEntry('artist', artist.id)))
+			).filter((thing) => thing !== undefined)
 		: []
 
 	const relatedVenues = entry.data.relatedVenues
-		? (await Promise.all(entry.data.relatedVenues.map(async (venue: any) => await getEntry('venue', venue.id)))).filter((thing) => thing !== undefined)
+		? (await Promise.all(entry.data.relatedVenues.map(async (venue: any) => await getEntry('venue', venue.id)))).filter(
+				(thing) => thing !== undefined
+			)
 		: []
 
 	// Find gigs which mention related artists
@@ -347,9 +386,9 @@ export async function getBlogExtra(
 	const type = entry.collection
 	const dir = `${DIST_MEDIA_DIR}/${type}/${getEntryId(entry)}/cover.mp4`
 
-	let coverVid: string | undefined = undefined;
+	let coverVid: string | undefined = undefined
 	if (existsSync(dir)) {
-		coverVid = `/${dir}`;
+		coverVid = `/${dir}`
 	}
 
 	return {
@@ -490,7 +529,7 @@ function getEntrySlug(title: string, collection?: string): string {
  */
 export function getEntryPath(title: string, collection: CollectionKey): string {
 	const slug = getEntrySlug(title, collection)
-	const slugType = collection !== 'blog' ? collection + 's' : collection
+	const slugType = collection !== 'blog' &&  collection !== 'series'? collection + 's' : collection
 	return '/' + slugType + '/' + slug
 }
 

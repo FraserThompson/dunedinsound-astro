@@ -49,7 +49,7 @@ export const artistLink = style([
 export const monthLink = style([
 	MenuLinkWrapper['vertical'],
 	{
-		color: `black !important`,
+		color: `${theme.color.darkText} !important`,
 		height: `${theme.dimensions.subheaderHeight} !important`,
 		lineHeight: `${theme.dimensions.subheaderHeight} !important`,
 		cursor: 'default',

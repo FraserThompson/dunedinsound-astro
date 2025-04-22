@@ -102,25 +102,7 @@ export const tileTextContent = style({
 })
 
 export const centerImageWrapper = style({
-	padding: 0,
-})
-
-export const tileLabel = style({
-	fontWeight: 700,
-	position: 'absolute',
-	top: 0,
-	left: 0,
-	paddingLeft: theme.dimensions.basePaddingMobile,
-	paddingRight: theme.dimensions.basePaddingMobile,
-	borderBottomRightRadius: '6px',
-	backgroundColor: 'white',
-	color: theme.color.darkText,
-	'@media': {
-		'screen and (--xs)': {
-			paddingLeft: theme.dimensions.basePadding,
-			paddingRight: theme.dimensions.basePadding
-		}
-	}
+	padding: 0
 })
 
 globalStyle(`${tileTextContent} > div`, {

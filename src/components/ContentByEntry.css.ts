@@ -24,3 +24,16 @@ export const socialLinksWrapper = style({
 		}
 	}
 })
+
+export const descriptionWrapper = style({
+	backgroundColor: 'black',
+	margin: theme.dimensions.basePaddingMobile,
+	marginBottom: `calc(${theme.dimensions.subheaderHeight} + ${theme.dimensions.basePaddingMobile})`,
+	textAlign: 'left',
+	'@media': {
+		'screen and (--md)': {
+			margin: theme.dimensions.basePadding,
+			marginBottom: theme.dimensions.basePadding
+		}
+	}
+})

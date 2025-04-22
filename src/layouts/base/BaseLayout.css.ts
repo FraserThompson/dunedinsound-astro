@@ -159,7 +159,7 @@ globalStyle('a:hover', {
 	color: theme.color.lightContrast2
 })
 
-globalStyle('input[type="text"]', {
+globalStyle('input[type="text"], input[type="search"]', {
 	backgroundImage: 'none',
 	border: '1px solid #000',
 	minWidth: '0px',
@@ -199,7 +199,7 @@ globalStyle('select', {
 	}
 })
 
-globalStyle('input[type="text"]:focus', {
+globalStyle('input[type="text"]:focus, input[type="search"]:focus', {
 	border: theme.borders.secondary,
 	boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6)',
 	outline: 0
@@ -340,6 +340,23 @@ globalStyle('.trippy', {
 	WebkitBackgroundClip: 'text',
 	backgroundClip: 'text',
 	WebkitTextFillColor: 'transparent'
+})
+
+globalStyle('.trippy2', {
+	zIndex: '1000',
+	display: 'inline-block',
+	color: 'white',
+	transition: 'all 0.2s ease-in-out',
+	transform: 'skew(-10deg) scale(1, 1.5)',
+	background: 'linear-gradient(to right,rgb(13, 255, 0),rgb(255, 0, 119),rgb(96, 64, 224))',
+	WebkitBackgroundClip: 'text',
+	backgroundClip: 'text',
+	WebkitTextFillColor: 'transparent'
+})
+
+globalStyle('.trippy2:hover', {
+	textDecoration: 'none',
+	transform: 'scaleY(1.2) scaleX(1.1) rotateX(20deg)'
 })
 
 globalStyle('.trippy:hover', {

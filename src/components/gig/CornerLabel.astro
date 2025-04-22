@@ -1,5 +1,6 @@
 ---
-import { cornerLabelWrapper } from './CornerLabel.css'
+import { cornerLabelWrapper, topOffset, backgroundColor } from './CornerLabel.css'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 /**
  * Label in the corner of the latest gig.
@@ -8,11 +9,15 @@ import { cornerLabelWrapper } from './CornerLabel.css'
 interface Props {
 	position?: 'left' | 'right'
 	top?: string
+	background?: string
 }
 
-const { position, top } = Astro.props
+const { position, top, background } = Astro.props
 ---
 
-<div class={cornerLabelWrapper[position || 'left']} style={{ top: top }}>
+<div class={cornerLabelWrapper[position || 'left']} style={assignInlineVars({
+	[topOffset]: top,
+	[backgroundColor]: background,
+})}>
 	<slot />
 </div>

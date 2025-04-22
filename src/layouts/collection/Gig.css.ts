@@ -14,11 +14,13 @@ export const GigBannerPlayer = style({
 })
 
 export const GigFeatureVid = style({
-	height: '100%',
+	height: 'auto',
 	width: '100%',
 	aspectRatio: '16/9',
+	padding: 0,
 	'@media': {
 		'screen and (--md)': {
+			padding: theme.dimensions.basePadding,
 			height: '100%',
 			margin: '0 auto',
 			width: 'auto'

@@ -1,14 +1,17 @@
-import { style, styleVariants } from '@vanilla-extract/css'
+import { style, styleVariants, createVar, fallbackVar } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
+
+export const backgroundColor = createVar()
+export const topOffset = createVar()
 
 const cornerLabelWrapperBase = style({
 	position: 'absolute',
-	fontWeight: 'bold',
-	backgroundColor: 'white',
-	color: 'black',
+	backdropFilter: 'blur(5px)',
+	background: fallbackVar(backgroundColor, 'rgba(255,255,255, 1)'),
+	color: theme.color.darkText,
 	paddingLeft: theme.dimensions.basePaddingMobile,
 	paddingRight: theme.dimensions.basePaddingMobile,
-	top: `calc(${theme.dimensions.headerHeightMobile} + 1px)`,
+	top: fallbackVar(topOffset, `calc(${theme.dimensions.headerHeightMobile} + 1px)`),
 	boxShadow: theme.borders.shadowLight,
 	width: 'fit-content',
 	textAlign: 'center',
@@ -18,7 +21,7 @@ const cornerLabelWrapperBase = style({
 		'screen and (--md)': {
 			paddingLeft: theme.dimensions.basePadding,
 			paddingRight: theme.dimensions.basePadding,
-			top: `calc(${theme.dimensions.headerHeight} + 1px)`
+			top: fallbackVar(topOffset, `calc(${theme.dimensions.headerHeight} + 1px)`)
 		}
 	}
 })

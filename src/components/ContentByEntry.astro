@@ -20,12 +20,11 @@ import { theme } from 'src/Theme.css'
 import SocialLinks from 'src/components/SocialLinks.astro'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
-import AllAgesIndicator from './AllAgesIndicator.astro'
-import { contentByEntryTitle, socialLinksWrapper } from './ContentByEntry.css'
+import { contentByEntryTitle, descriptionWrapper } from './ContentByEntry.css'
 import CornerLabel from './gig/CornerLabel.astro'
 
 interface Props {
-	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
+	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'> | ProcessedEntry<'series'>
 }
 
 const { entry } = Astro.props
@@ -33,7 +32,8 @@ const { entry } = Astro.props
 const gigs = await loadAndFormatCollection('gig', (thing) => {
 	const matchByArtist = thing.entry.data.artists?.find((artist) => artist.id.id === entry.entry.id)
 	const matchByVenue = thing.entry.data.venue.id === entry.entry.id
-	return matchByArtist || matchByVenue
+	const matchBySeries = thing.entry.data.series?.id === entry.entry.id
+	return matchByArtist || matchByVenue || matchBySeries
 })
 
 const gigsByYear = Object.groupBy(gigs, (gig) => gig.entry.data.date.getFullYear())
@@ -69,12 +69,14 @@ images && Object.keys(images).length > 0 && tabs.push({ title: `Images (${Object
 vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessions' })
 
 // Find other entries which reference this one as an alias (it was once them)
-const previouslyKnownAs = await loadAndFormatCollection(entry.entry.collection, (thing) =>
-	thing.entry.data.aliases?.find((alias) => alias.id === entry.entry.id)
+const previouslyKnownAs = await loadAndFormatCollection(
+	entry.entry.collection,
+	(thing) => 'aliases' in thing.entry.data && thing.entry.data.aliases?.find((alias) => alias.id === entry.entry.id)
 )
 
 // Load this entries aliases (it will become them)
 const willBeKnownAs =
+	'aliases' in entryData &&
 	entryData.aliases &&
 	(await Promise.all(
 		entryData.aliases.map(async (thing) => await loadAndFormatEntry(entry.entry.collection, thing.id))
@@ -92,12 +94,16 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 >
 	<!-- all ages and active indicator -->
 	<div slot="title" class={contentByEntryTitle}>
-		<ActiveIndicator
-			born={entryData.date}
-			died={entryData.died}
-			collection={entry.entry.collection}
-			hideIfActive={true}
-		/>
+		{
+			('date' in entryData || 'died' in entryData) && (
+				<ActiveIndicator
+					born={entryData.date}
+					died={entryData.died}
+					collection={entry.entry.collection}
+					hideIfActive={true}
+				/>
+			)
+		}
 	</div>
 	<!-- social links -->
 	<CornerLabel slot="customContent">
@@ -117,7 +123,7 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 		}
 		{
 			entryData.description && (
-				<p style="background-color: black; margin: 20px;">
+				<p class={descriptionWrapper}>
 					<Fragment set:html={entryData.description} />
 				</p>
 			)
@@ -159,18 +165,21 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 			client:load
 		/>
 		{
-			willBeKnownAs?.map((thing) => (
-				<Tile responsiveImage={thing.extra.cover} href={thing.extra.absolutePath} containerHeight="30vh">
-					<h4 class="center" style={{ marginBottom: 0, color: 'white' }}>
-						At this location from {entryData.died?.getFullYear()}
-						{thing.entry.data.died ? ` to ${thing.entry.data.died?.getFullYear()}` : ' to present'}
-					</h4>
-					<h3 class="center" style={{ marginBottom: 0 }}>
-						{thing.entry.data.title}
-					</h3>
-					<h4 class="center">{thing.extra.gigCount} gigs</h4>
-				</Tile>
-			))
+			willBeKnownAs &&
+				willBeKnownAs.map((thing) => (
+					<Tile responsiveImage={thing.extra.cover} href={thing.extra.absolutePath} containerHeight="30vh">
+						{'died' in thing.entry.data && (
+							<h4 class="center" style={{ marginBottom: 0, color: 'white' }}>
+								At this location from {entryData.died?.getFullYear()}
+								{thing.entry.data.died ? ` to ${thing.entry.data.died?.getFullYear()}` : ' to present'}
+							</h4>
+						)}
+						<h3 class="center" style={{ marginBottom: 0 }}>
+							{thing.entry.data.title}
+						</h3>
+						<h4 class="center">{thing.extra.gigCount} gigs</h4>
+					</Tile>
+				))
 		}
 		{
 			Object.entries(gigsByYear)
@@ -192,9 +201,12 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 			!!previouslyKnownAs.length &&
 				previouslyKnownAs.map((thing) => (
 					<Tile responsiveImage={thing.extra.cover} href={thing.extra.absolutePath} containerHeight="30vh">
-						<h4 class="center" style={{ marginBottom: 0, color: 'white' }}>
-							At this location {thing.entry.data.date?.getFullYear() || 'up'} to {thing.entry.data.died?.getFullYear()}
-						</h4>
+						{'date' in thing.entry.data && (
+							<h4 class="center" style={{ marginBottom: 0, color: 'white' }}>
+								At this location {thing.entry.data.date?.getFullYear() || 'up'} to{' '}
+								{thing.entry.data.died?.getFullYear()}
+							</h4>
+						)}
 						<h3 class="center" style={{ marginBottom: 0 }}>
 							{thing.entry.data.title}
 						</h3>

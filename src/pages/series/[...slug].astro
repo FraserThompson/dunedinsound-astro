@@ -1,0 +1,18 @@
+---
+import { loadAndFormatCollection } from 'src/util/collection.ts'
+import EntriesByCollectionLayout from 'src/layouts/base/EntriesByCollectionLayout.astro'
+
+export async function getStaticPaths() {
+	const entries = await loadAndFormatCollection('series')
+	return entries.map((entry) => ({
+		params: { slug: entry.extra.slug },
+		props: {
+			entry
+		}
+	}))
+}
+
+const { entry } = Astro.props
+---
+
+<EntriesByCollectionLayout entry={entry} />

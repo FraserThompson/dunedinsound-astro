@@ -37,10 +37,6 @@ export const BackgroundContent = style({
 	}
 })
 
-export const CustomContent = style({
-	width: '100%'
-})
-
 export const BannerSubtitle = style({
 	margin: '0 auto',
 	textAlign: 'center',
@@ -67,6 +63,7 @@ export const BannerSubtitle = style({
 
 export const BannerTitle = style({
 	height: theme.dimensions.headerHeightMobile,
+	backdropFilter: 'blur(5px)',
 	width: '100%',
 	filter: 'drop-shadow(2px 2px 10px black)',
 	display: 'flex',

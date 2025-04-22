@@ -11,7 +11,6 @@
 import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
 import { MenuLi, MenuLinkWrapper, MenuWrapper } from 'src/components/Menu.css'
 import { backButton } from 'src/components/gig/GigsMenu.css'
-import ActiveIndicator from 'src/components/ActiveIndicator.astro'
 import type { CollectionKey } from 'astro:content'
 import ChevronLeftIcon from '~icons/bx/chevron-left'
 import { theme } from 'src/Theme.css'
@@ -38,45 +37,47 @@ const entries = collection ? await loadAndFormatCollection(collection) : collect
 
 <ul id="shuffle-menu" class={MenuWrapper['vertical']}>
 	{
-		entries?.map((entry, i) => (
-			<li
-				data-title={entry.entry.data.title}
-				data-active={'died' in entry.entry.data && entry.entry.data.died !== undefined ? 'false' : 'true'}
-				data-allages={'allAges' in entry.entry.data && entry.entry.data.allAges ? 'true' : 'false'}
-				class={`sidebar-item ${MenuLi['vertical']} ${entry.entry.id === selected ? 'active' : ''}`}
-			>
-				<a
-					class={MenuLinkWrapper['vertical']}
-					style={{
-						color: 'died' in entry.entry.data && entry.entry.data.died !== undefined ? 'rgb(150, 150, 150)' : ''
-					}}
-					data-markerkey={
-						'lng' in entry.entry.data &&
-						'lat' in entry.entry.data &&
-						`LngLat(${entry.entry.data.lng}, ${entry.entry.data.lat})`
-					}
-					data-date={'date' in entry.entry.data ? entry.entry.data.date?.getTime() : undefined}
-					href={selected ? entry.extra.absolutePath : undefined}
+		entries
+			?.sort((a, b) => (a.entry.id < b.entry.id ? -1 : 1))
+			?.map((entry, i) => (
+				<li
+					data-title={entry.entry.data.title}
+					data-active={'died' in entry.entry.data && entry.entry.data.died !== undefined ? 'false' : 'true'}
+					data-allages={'allAges' in entry.entry.data && entry.entry.data.allAges ? 'true' : 'false'}
+					class={`sidebar-item ${MenuLi['vertical']} ${entry.entry.id === selected ? 'active' : ''}`}
 				>
-					{entry.entry.data.title}
-					{'allAges' in entry.entry.data && <AllAgesIndicator hideText={true} />}
-					{'gigCount' in entry.extra && (
-						<small
-							title="Gig Count"
-							style={{
-								color: theme.color.dullText,
-								width: '1.2em',
-								display: 'inline-block',
-								float: 'right',
-								textAlign: 'right'
-							}}
-						>
-							{entry.extra.gigCount}
-						</small>
-					)}
-				</a>
-			</li>
-		))
+					<a
+						class={MenuLinkWrapper['vertical']}
+						style={{
+							color: 'died' in entry.entry.data && entry.entry.data.died !== undefined ? 'rgb(150, 150, 150)' : ''
+						}}
+						data-markerkey={
+							'lng' in entry.entry.data &&
+							'lat' in entry.entry.data &&
+							`LngLat(${entry.entry.data.lng}, ${entry.entry.data.lat})`
+						}
+						data-date={'date' in entry.entry.data ? entry.entry.data.date?.getTime() : undefined}
+						href={selected ? entry.extra.absolutePath : undefined}
+					>
+						{entry.entry.data.title}
+						{'allAges' in entry.entry.data && <AllAgesIndicator hideText={true} />}
+						{'gigCount' in entry.extra && (
+							<small
+								title="Gig Count"
+								style={{
+									color: theme.color.dullText,
+									width: '1.2em',
+									display: 'inline-block',
+									float: 'right',
+									textAlign: 'right'
+								}}
+							>
+								{entry.extra.gigCount}
+							</small>
+						)}
+					</a>
+				</li>
+			))
 	}
 </ul>
 

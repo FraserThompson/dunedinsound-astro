@@ -1,6 +1,12 @@
-import { style } from '@vanilla-extract/css'
+import { globalStyle, style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 import { MenuLi, MenuLinkWrapper } from '../Menu.css'
+
+export const artistExtraWrapper = style({
+	width: '100%',
+	listStyle: 'none',
+	paddingLeft: '0'
+})
 
 export const artistDropdownLink = style([
 	MenuLinkWrapper['vertical'],
@@ -10,14 +16,11 @@ export const artistDropdownLink = style([
 		width: 'auto !important',
 		flexGrow: '1 !important',
 		selectors: {
-			'&:hover': {
-				color: `white !important`
-			},
 			'&.seeOther': {
 				color: `${theme.color.dullText} !important`
 			},
 			'&.seeOther:hover': {
-				color: `white !important`
+				color: `${theme.color.text} !important`
 			}
 		}
 	}
@@ -43,7 +46,11 @@ export const artistDropdownLi = style([
 				color: `black !important`
 			},
 			'&:hover': {
-				backgroundColor: theme.color.lightPrimary
+				backgroundColor: theme.color.lightPrimary,
+				color: `${theme.color.lightText} !important`
+			},
+			'&.active:hover': {
+				color: `black !important`
 			},
 			'&:not(:last-child)': {
 				borderBottom: `1px solid ${theme.color.dullText}`
@@ -51,3 +58,10 @@ export const artistDropdownLi = style([
 		}
 	}
 ])
+
+globalStyle(`${artistDropdownLi}.active ${artistExtraWrapper} a`, {
+	color: `${theme.color.darkContrast2} !important`
+})
+globalStyle(`${artistDropdownLi}.active ${artistExtraWrapper} a:hover`, {
+	color: `black !important`
+})

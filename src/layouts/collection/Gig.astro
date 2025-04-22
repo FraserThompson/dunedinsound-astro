@@ -13,6 +13,7 @@ import Divider from 'src/components/Divider.astro'
 import { theme } from 'src/Theme.css'
 import { GigBannerPlayer, GigFeatureVid } from './Gig.css'
 import ArtistDropdown from 'src/components/gig/ArtistDropdown.astro'
+import { descriptionWrapper } from 'src/components/ContentByEntry.css'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -56,7 +57,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 		}
 	</div>
 	<div slot={entryData.description ? 'subtitle' : ''}>
-		<p>
+		<p class={descriptionWrapper}>
 			<Fragment set:html={entryData.description} />
 		</p>
 	</div>
@@ -71,6 +72,18 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 		{entryData.date.toLocaleDateString()}
 	</CornerLabel>
 	{
+		entryExtra.series && (
+			<CornerLabel position="right" background={theme.color.transparentForeground} slot="customContent">
+				<small style={{ color: theme.color.dullText }}>Series</small>
+				<a href={entryExtra.series.extra.absolutePath} class="trippy2">
+					<strong>
+						{entryExtra.series.entry.data.title} ({entryExtra.series.extra.gigCount} gigs)
+					</strong>
+				</a>
+			</CornerLabel>
+		)
+	}
+	{
 		(!!entryExtra.audio?.length || entryData.feature_vid) && (
 			<Fragment slot="customContent">
 				{entryData.feature_vid && (
@@ -78,11 +91,13 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 						<LiteYoutube videoid={entryData.feature_vid} loadAPI={true} />
 					</div>
 				)}
-				<div class={GigBannerPlayer}>
-					<PlayerContainer>
-						<Player artistAudio={entryExtra.audio} hideNextPrevOnMobile={true} client:load />
-					</PlayerContainer>
-				</div>
+				{!!entryExtra.audio?.length && (
+					<div class={GigBannerPlayer}>
+						<PlayerContainer>
+							<Player artistAudio={entryExtra.audio} hideNextPrevOnMobile={true} client:load />
+						</PlayerContainer>
+					</div>
+				)}
 			</Fragment>
 		)
 	}

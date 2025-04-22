@@ -29,7 +29,6 @@ import {
 	titleWrapper,
 	tileContent,
 	tileTitle,
-	tileLabel,
 	background,
 	centerImageWrapper,
 	height,
@@ -39,6 +38,7 @@ import {
 } from './Tile.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import Image2 from 'src/components/Image2.astro'
+import CornerLabel from './gig/CornerLabel.astro'
 
 export type BackgroundStyle = 'full' | 'center'
 
@@ -112,14 +112,20 @@ const {
 			}
 			{
 				image && (
-					<div class={centerImageWrapper} style={{maxWidth: "100px"}}>
+					<div class={centerImageWrapper} style={{ maxWidth: '100px' }}>
 						<Image2 image={image} />
 					</div>
 				)
 			}
 			<div class={titleWrapper}>
 				<div class={tileContent}>
-					{label && <span class={tileLabel}>{label}</span>}
+					{
+						label && (
+							<CornerLabel position="left" top="0px">
+								{label}
+							</CornerLabel>
+						)
+					}
 					{title && <h4 class={tileTitle}>{title}</h4>}
 					{subtitle && <h5 class={tileSubtitle}>{subtitle}</h5>}
 					<div style={{ marginTop: 'auto' }}>

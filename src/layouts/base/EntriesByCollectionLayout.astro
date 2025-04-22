@@ -21,7 +21,7 @@ import ChevronLeftIcon from '~icons/bx/chevron-left'
 import { backButton } from 'src/components/gig/GigsMenu.css'
 
 interface Props {
-	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
+	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'> | ProcessedEntry<'series'>
 }
 
 const { entry } = Astro.props
@@ -39,7 +39,7 @@ const hasBanner = Astro.slots.has('banner')
 		collection: entry.entry.collection,
 		description: entryExtra.metaDescription,
 		image: entryExtra.cover?.src,
-		date: entryData.date?.toISOString()
+		date: 'date' in entryData ? entryData.date?.toISOString() : undefined
 	}}
 >
 	<ShuffleFilters slot="subheaderTopDesktop" itemselector=".sidebar-item" boardselector="#shuffle-menu">

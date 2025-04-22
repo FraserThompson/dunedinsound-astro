@@ -1,4 +1,4 @@
-import { darken, lighten, invert } from 'polished'
+import { darken, lighten, invert, transparentize } from 'polished'
 import { createThemeContract, createGlobalTheme } from '@vanilla-extract/css'
 
 export const theme = createThemeContract({
@@ -17,7 +17,9 @@ export const theme = createThemeContract({
 		lightSecondary: '',
 		darkSecondary: '',
 		lightContrast2: '',
-		lightForeground: ''
+		darkContrast2: '',
+		lightForeground: '',
+		transparentForeground: ''
 	},
 	font: {
 		baseSize: '',
@@ -69,7 +71,7 @@ const basePadding = '0.86558rem'
 
 const backgroundColor = 'rgb(8, 9, 12)'
 const primaryColor = 'rgb(15, 14, 14)'
-const foregroundColor = 'rgb(75, 0, 77)'
+const foregroundColor = 'rgb(0, 77, 68)'
 const secondaryColor = 'rgb(27, 69, 120)'
 const contrastColor = 'rgb(250, 249, 249)'
 const contrastColor2 = 'rgb(150, 255, 125)'
@@ -91,7 +93,9 @@ createGlobalTheme(':root', theme, {
 		lightSecondary: lighten(0.5, secondaryColor),
 		darkSecondary: darken(0.2, secondaryColor),
 		lightContrast2: lighten(0.2, contrastColor2),
-		lightForeground: lighten(0.6, foregroundColor)
+		darkContrast2: darken(0.5, contrastColor2),
+		lightForeground: lighten(0.6, foregroundColor),
+		transparentForeground: transparentize(0.4, foregroundColor)
 	},
 	font: {
 		baseSize: '16px',

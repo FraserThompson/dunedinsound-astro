@@ -1,4 +1,5 @@
 import { createVar, fallbackVar, globalStyle, style, styleVariants } from '@vanilla-extract/css'
+import { darken } from 'polished'
 import { theme } from 'src/Theme.css'
 
 export const dividerColor = createVar()
@@ -13,7 +14,7 @@ export const stickyTopMobile = createVar()
 
 const dividerBase = style({
 	height: fallbackVar(dividerHeightMobile, dividerHeight, theme.dimensions.subheaderHeight),
-	color: fallbackVar(dividerColor, 'black'),
+	color: fallbackVar(dividerColor, theme.color.darkText),
 	lineHeight: '2',
 	verticalAlign: 'middle',
 	display: 'flex',
@@ -36,7 +37,12 @@ const dividerBase = style({
 })
 
 globalStyle(`${dividerBase} a`, {
-	color: fallbackVar(dividerColor, 'black'),
+	color: fallbackVar(dividerColor, theme.color.darkText),
+	width: '100%'
+})
+
+globalStyle(`${dividerBase} a:hover`, {
+	color: 'black',
 	width: '100%'
 })
 

@@ -98,7 +98,7 @@ const { itemselector, boardselector, className = '' } = Astro.props
 
 				// Check the value of the filter element
 				if (val && val == 'value') {
-					if (filter.getAttribute('type') === 'text') {
+					if (filter.getAttribute('type') === 'search') {
 						const filterValue = stringNormalize(filter.value)
 						filterResult.push(stringNormalize(el.getAttribute(`data-${attr}`)).includes(filterValue))
 					} else {
@@ -195,7 +195,7 @@ const { itemselector, boardselector, className = '' } = Astro.props
 
 			// Filter element listeners
 			this.filterElements?.forEach((el) => {
-				const event = el.getAttribute('type') === 'text' ? 'keyup' : 'change'
+				const event = el.getAttribute('type') === 'search' ? 'keyup' : 'change'
 				el.addEventListener(event, (e: any) => this.filterElementHandler(e))
 			})
 		}
