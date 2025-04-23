@@ -109,20 +109,24 @@ export const scrollToElement = (
 export const socialLinksToMenuItems = (links?: z.infer<typeof webLinks>): MenuLink[] => {
 	if (!links) return []
 
+	// Links without icons will not be displayed.
+	// So add an icon here if there's a new type of link.
 	const iconMap: { [key: string]: string } = {
 		bandcamp: bcIcon.src,
 		instagram: instaIcon.src,
 		facebook: fbIcon.src,
 		youtube: youtubeIcon.src,
 		website: websiteIcon.src,
-		spotify: spotifyIcon.src,
+		spotify: spotifyIcon.src
 	}
 
-	const menuItems = Object.entries(links).map(([type, artistLink]) => ({
-		href: typeof artistLink !== 'string' ? artistLink.link : artistLink,
-		title: type.toUpperCase(),
-		image: iconMap[type] || undefined
-	}))
+	const menuItems = Object.entries(links)
+		.filter(([type]) => iconMap[type])
+		.map(([type, artistLink]) => ({
+			href: typeof artistLink !== 'string' ? artistLink.link : artistLink,
+			title: type.toUpperCase(),
+			image: iconMap[type] || undefined
+		}))
 
 	return menuItems
 }
@@ -272,13 +276,12 @@ export function maintainSidebarScrollPosition(collection: string) {
 				behavior: 'instant'
 			})
 
-			// It's possible for someone on mobile to scroll really fast so that the 
+			// It's possible for someone on mobile to scroll really fast so that the
 			// stored scrollbar position is wrong because it hasn't finished scrolling.
 			// We do this to ensure the active element is always visible in these cases.
 			if (activeElement && !elementIsVisibleInViewport(activeElement, sidebarMenu)) {
 				scrollIntoView(activeElement, { behavior: 'instant', block: 'center' })
 			}
-
 		} else if (activeElement) {
 			scrollIntoView(activeElement, { behavior: 'instant', block: 'center' })
 		}
