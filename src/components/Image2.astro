@@ -20,6 +20,7 @@
 
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import { ImageStyle, ImageWrapper } from './Image2.css'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 export type ResponsiveImageSizes = {
 	full: string
@@ -33,13 +34,22 @@ export interface Props {
 	responsiveImage?: ResponsiveImage
 	className?: string
 	image?: string
+	objectFit?: string
 	lightboxEnabled?: boolean
 	alt?: string
 	size?: keyof ResponsiveImageSizes
 	loading?: 'lazy' | 'eager'
 }
 
-const { responsiveImage, image, alt, className = '', size = 'grid', loading = 'lazy' } = Astro.props
+const {
+	responsiveImage,
+	image,
+	objectFit = 'cover',
+	alt,
+	className = '',
+	size = 'grid',
+	loading = 'lazy'
+} = Astro.props
 
 const sizes: ResponsiveImageSizes = {
 	full: '100vw',
@@ -55,10 +65,10 @@ const sizes: ResponsiveImageSizes = {
 					50vw
 					`,
 	smallGrid: `
-					(min-width: 1600px) 16vw,
+					(min-width: 1600px) 12vw,
 					(min-width: 992px) 16vw,
 					(min-width: 768px) 25vw, 
-					50vw
+					25vw
 					`,
 	largeGrid: `
 					(min-width: 1600px) 33vw,
@@ -80,6 +90,7 @@ const sizes: ResponsiveImageSizes = {
 			alt={responsiveImage?.alt || alt}
 			loading={loading}
 			decoding="async"
+			style={assignInlineVars({ objectFit })}
 		/>
 	</picture>
 </div>

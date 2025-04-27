@@ -10,9 +10,18 @@ export const shuffleFilter = style({
 	'@media': {
 		'screen and (--md)': {
 			flexWrap: 'nowrap',
-			minHeight: theme.dimensions.subheaderHeight,
+			minHeight: theme.dimensions.subheaderHeight
 		}
 	}
+})
+
+globalStyle('.filter-container', {
+	display: 'none',
+	overflow: 'hidden'
+})
+
+globalStyle('.filtr-item', {
+	willChange: 'opacity, transform'
 })
 
 globalStyle(`${shuffleFilter} .filterGroup`, {

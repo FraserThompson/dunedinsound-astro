@@ -44,17 +44,10 @@ const gigExtra = gig.extra
 	containerHeight={containerHeight}
 	containerHeightMobile={containerHeightMobile}
 	dataAttributes={{
-		'data-title': `${gigData.title} ${gigExtra.venue?.data.title} ${artistsToString(gigExtra.artists)}`
+		'data-category': 'all'
 	}}
 >
 	<h5 style={{ marginBottom: '0px' }}>
 		{artistsToString(gigExtra.artists)}
 	</h5>
-	{
-		!gig.next && (
-			<CornerLabel top="0px" position="right">
-				LATEST GIG
-			</CornerLabel>
-		)
-	}
 </Tile>

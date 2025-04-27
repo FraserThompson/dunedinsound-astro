@@ -61,7 +61,6 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 
 <script>
 	import mapboxgl from 'mapbox-gl'
-	import type Shuffle from 'shufflejs'
 	import { elementIsVisibleInViewport } from 'src/util/helpers'
 	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
 	// Polyfilled because some mobile browsers seem to implement
@@ -205,30 +204,36 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 		}
 
 		onShuffle = (e: any) => {
-			const shuffle = e.detail as Shuffle
-
+			const shuffleItems = e.detail.items as NodeListOf<HTMLElement> | null
+			const filteredItems = e.detail.filteredItems as NodeListOf<HTMLElement> | null
 			const bounds = new mapboxgl.LngLatBounds()
 
-			shuffle.items.forEach((item, i) => {
-				const el = item.element.querySelector('a')
+			shuffleItems?.forEach((item) => {
+				const el = item.querySelector('a')
 				const key = el?.dataset.markerkey
 
 				// The index of the marker matching the shuffle item
-				const marker = this.markers.findIndex((marker) => marker.getLngLat().toString() === key)
+				const marker = this.markers.findIndex((marker) => marker.getLngLat().toString() == key)
 
-				if (!item.isVisible) {
+				if (marker === undefined) {
+					console.error('No matching marker:')
+					console.error(el?.dataset.markerkey)
+					return
+				}
+
+				if (item.classList.contains('filteredOut')) {
 					this.markers[marker].remove()
 				} else {
 					this.markers[marker].addTo(this.map)
 
 					bounds.extend(this.markers[marker].getLngLat())
 
-					// If there's one result open the popup for ease of use
-					if (shuffle.visibleItems === 1) {
-						this.markers[marker].togglePopup()
-					} else {
-						if (this.markers[marker].getPopup()?.isOpen()) {
-							this.markers[marker].togglePopup()
+					// If there's one result open the popup for ease of use (ON DESKTOP)
+					if (window.innerWidth > 768) {
+						if (filteredItems?.length === 1) {
+							!this.markers[marker].getPopup()?.isOpen() && this.markers[marker].togglePopup()
+						} else {
+							this.markers[marker].getPopup()?.isOpen() && this.markers[marker].togglePopup()
 						}
 					}
 				}

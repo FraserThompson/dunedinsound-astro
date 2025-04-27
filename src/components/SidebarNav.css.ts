@@ -1,4 +1,4 @@
-import { createVar, style, fallbackVar, styleVariants } from '@vanilla-extract/css'
+import { createVar, style, fallbackVar, styleVariants, globalStyle } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 const defaultWidth = '100vw'
@@ -60,8 +60,8 @@ export const sidebarMenuWrapper = style({
 			height: `calc(100% - ${theme.dimensions.headerHeightMobile})`
 		},
 		'&.hasSubheaderTopMobile': {
-			marginTop: theme.dimensions.subheaderHeight,
-			height: `calc(100% - ${theme.dimensions.subheaderHeight})`
+			marginTop: theme.dimensions.headerHeightMobile,
+			height: `calc(100% - ${theme.dimensions.headerHeightMobile})`
 		},
 		'&.hasSubheaderTopMobile.hasSubheaderBottomMobile': {
 			height: `calc(100% - ${theme.dimensions.headerHeightMobile} -  ${theme.dimensions.subheaderHeight})`
@@ -161,4 +161,23 @@ export const sidebarButtonWrapper = styleVariants({
 			}
 		}
 	]
+})
+
+globalStyle('.openWithSidebar', {
+	bottom: '-100px !important',
+	transition: 'bottom 0.5s ease-in-out',
+	'@media': {
+		'screen and (--md)': {
+			zIndex: 'auto'
+		}
+	}
+})
+
+globalStyle('.openedWithSidebar', {
+	bottom: `${theme.dimensions.headerHeightMobile} !important`,
+	'@media': {
+		'screen and (--md)': {
+			bottom: 'auto'
+		}
+	}
 })

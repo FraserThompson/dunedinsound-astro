@@ -56,7 +56,7 @@ const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile'
 		<slot name="sidebarSubheaderTopMobile" />
 		<div
 			id="sidebar-menu"
-			class={`${sidebarMenuWrapper} ${hasSidebarSubheaderBottomMobile ? 'hasSubheaderBottomMobile' : ''} ${hasSidebarSubheaderTopMobile ? 'hasSubheaderTopMobile': ''}`}
+			class={`${sidebarMenuWrapper} ${hasSidebarSubheaderBottomMobile ? 'hasSubheaderBottomMobile' : ''} ${hasSidebarSubheaderTopMobile ? 'hasSubheaderTopMobile' : ''}`}
 		>
 			<slot name="sidebarMenu" />
 		</div>
@@ -90,6 +90,10 @@ const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile'
 		}
 
 		toggleSidebar() {
+			const openWithElements = document.querySelectorAll('.openWithSidebar')
+			openWithElements.forEach((el: HTMLElement) => {
+				el.classList.toggle('openedWithSidebar')
+			})
 			this.sidebar?.classList.toggle('open')
 			this.button?.classList.toggle('open')
 		}

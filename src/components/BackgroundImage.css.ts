@@ -5,7 +5,6 @@ export const backgroundImageWrapper = style({
 	width: '100%',
 	height: 'auto',
 	aspectRatio: '3/2',
-	zIndex: '0',
 	'@media': {
 		'screen and (--md)': {
 			height: '100%',
@@ -38,7 +37,6 @@ globalStyle(`${backgroundImageWrapper}.hasVertical .backgroundImage`, {
 
 globalStyle(`${backgroundImageWrapper} img`, {
 	width: '100%',
-	zIndex: '0'
 })
 
 globalStyle(`${backgroundImageWrapper} > div`, {

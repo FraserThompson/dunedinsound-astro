@@ -32,7 +32,8 @@ export const tabButton = style({
 		'&.active': {
 			borderLeft: theme.borders.secondary,
 			borderRight: theme.borders.secondary,
-			borderBottom: theme.borders.secondary
+			borderBottom: theme.borders.secondary,
+			background: `linear-gradient(90deg, ${theme.color.secondary}, rgb(0, 0, 0))`
 		},
 		'&:hover:not(.active)': {
 			color: 'black',

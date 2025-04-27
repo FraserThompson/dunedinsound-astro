@@ -6,7 +6,7 @@
  *  - href: the link
  *  - image (optional): the background image
  *  - responsiveImage (optional): the background image (responsive)
- *  - backgroundStyle (optional): by default the background image is centered.
+ *  - backgroundStyle (optional): Can be 'full', 'fulldesktop' (hidden on mobile), or 'center'.
  *    Pass full to make it span the entire tile.
  *  - title (optional): displayed at the top
  *  - label (optional): displayed at the bottom
@@ -26,21 +26,20 @@ import type { ResponsiveImageSizes } from 'src/components/Image2.astro'
 import {
 	tileWrapper,
 	tileInner,
-	titleWrapper,
 	tileContent,
 	tileTitle,
 	background,
-	centerImageWrapper,
 	height,
 	heightMobile,
 	width,
-	tileSubtitle
+	tileSubtitle,
+	tileBottomContent
 } from './Tile.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import Image2 from 'src/components/Image2.astro'
 import CornerLabel from './gig/CornerLabel.astro'
 
-export type BackgroundStyle = 'full' | 'center'
+export type BackgroundStyle = 'full' | 'center' | 'fulldesktop'
 
 interface Props {
 	href: string
@@ -74,21 +73,25 @@ const {
 	containerHeightMobile,
 	containerWidth,
 	dataAttributes,
-	backgroundStyle = 'center',
+	backgroundStyle = 'full',
 	responsiveImageSizes
 } = Astro.props
+
+const hasDefault = Astro.slots.has('default')
 ---
 
 <div
 	{...dataAttributes}
-	class={`${tileWrapper[containerWidth ? 'fixedWidth' : 'noWidth']} ${className} tile`}
+	class={`${tileWrapper[containerWidth ? 'fixedWidth' : 'noWidth']} ${className} tile filtr-item`}
 	style={assignInlineVars({
 		[height]: containerHeight,
 		[heightMobile]: containerHeightMobile
 	})}
 	id={id}
 >
-	<div
+	<a
+		href={href}
+		title={title}
 		class={tileInner}
 		style={assignInlineVars({
 			[background]: backgroundColor,
@@ -97,42 +100,34 @@ const {
 			[width]: containerWidth
 		})}
 	>
-		<a href={href} title={title}>
+		{
+			responsiveImage && (
+				<BackgroundImage
+					responsiveImageSizes={responsiveImageSizes}
+					responsiveImage={responsiveImage}
+					objectFit={backgroundStyle == 'center' ? 'contain' : 'cover'}
+					hideMobile={backgroundStyle == 'fulldesktop'}
+				/>
+			)
+		}
+		{image && <Image2 image={image} />}
+		<div class={tileContent}>
 			{
-				responsiveImage && backgroundStyle == 'full' && (
-					<BackgroundImage responsiveImageSizes={responsiveImageSizes} responsiveImage={responsiveImage} />
+				label && (
+					<CornerLabel position="right" top="0px">
+						{label}
+					</CornerLabel>
 				)
 			}
+			{title && <h4 class={tileTitle}>{title}</h4>}
+			{subtitle && <h5 class={tileSubtitle}>{subtitle}</h5>}
 			{
-				responsiveImage && backgroundStyle == 'center' && (
-					<div class={centerImageWrapper}>
-						<Image2 size={responsiveImageSizes} responsiveImage={responsiveImage} />
-					</div>
-				)
-			}
-			{
-				image && (
-					<div class={centerImageWrapper} style={{ maxWidth: '100px' }}>
-						<Image2 image={image} />
-					</div>
-				)
-			}
-			<div class={titleWrapper}>
-				<div class={tileContent}>
-					{
-						label && (
-							<CornerLabel position="left" top="0px">
-								{label}
-							</CornerLabel>
-						)
-					}
-					{title && <h4 class={tileTitle}>{title}</h4>}
-					{subtitle && <h5 class={tileSubtitle}>{subtitle}</h5>}
-					<div style={{ marginTop: 'auto' }}>
+				hasDefault && (
+					<div class={tileBottomContent}>
 						<slot />
 					</div>
-				</div>
-			</div>
-		</a>
-	</div>
+				)
+			}
+		</div>
+	</a>
 </div>

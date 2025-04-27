@@ -34,6 +34,7 @@ const hasBanner = Astro.slots.has('banner')
 ---
 
 <SidebarLayout
+	hasSidebarSubheaderBottomMobile={true}
 	poo={{
 		title: entryData.title,
 		collection: entry.entry.collection,
@@ -42,8 +43,8 @@ const hasBanner = Astro.slots.has('banner')
 		date: 'date' in entryData ? entryData.date?.toISOString() : undefined
 	}}
 >
-	<ShuffleFilters slot="subheaderTopDesktop" itemselector=".sidebar-item" boardselector="#shuffle-menu">
-		<SearchBox placeholder=`Filter ${collection}` />
+	<ShuffleFilters slot="subheaderTopDesktop">
+		<SearchBox placeholder=`Filter ${collection}s` className="fixedBottomMobile openWithSidebar" />
 	</ShuffleFilters>
 	<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href=`/${collection}s`>
 		<ChevronLeftIcon /> Go to ${collection}s home
@@ -52,12 +53,4 @@ const hasBanner = Astro.slots.has('banner')
 	<ContentByEntry entry={entry} slot="content">
 		<slot name="banner" slot={hasBanner ? 'banner' : ''} />
 	</ContentByEntry>
-	<ShuffleFilters
-		slot="sidebarSubheaderBottomMobile"
-		className="fullWidth"
-		itemselector=".sidebar-item"
-		boardselector="#shuffle-menu"
-	>
-		<SearchBox placeholder=`Filter ${collection}s` />
-	</ShuffleFilters>
 </SidebarLayout>

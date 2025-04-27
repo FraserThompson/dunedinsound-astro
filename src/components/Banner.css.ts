@@ -43,9 +43,11 @@ export const BannerSubtitle = style({
 	width: '100%',
 	maxWidth: '450px',
 	paddingTop: theme.dimensions.headerHeightMobile,
-	marginBottom: 0,
+	marginBottom: '-3px',
 	position: 'relative',
 	zIndex: '1',
+	borderBottomRightRadius: '6px',
+	borderBottomLeftRadius: '6px',
 	'@media': {
 		'screen and (--md)': {
 			marginBottom: theme.dimensions.headerHeight,

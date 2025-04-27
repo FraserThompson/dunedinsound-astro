@@ -1,4 +1,6 @@
-import { style } from '@vanilla-extract/css'
+import { createVar, style } from '@vanilla-extract/css'
+
+const objectFit = createVar()
 
 export const ImageWrapper = style({
 	position: 'relative',
@@ -6,7 +8,7 @@ export const ImageWrapper = style({
 	verticalAlign: 'top',
 	bottom: '0px',
 	left: '0px',
-	backgroundSize: 'cover',
+	backgroundSize: objectFit,
 	display: 'block',
 	height: '100%',
 	width: '100%'
@@ -22,7 +24,7 @@ export const ImageStyle = style({
 	margin: 0,
 	maxWidth: 'none',
 	padding: 0,
-	transform: 'translateZ(0)',
-	objectFit: 'cover',
-	transition: 'transform 0.3s ease-in-out'
+	objectFit: objectFit,
+	transition: 'transform 0.3s ease-in-out',
+	willChange: 'transform'
 })

@@ -74,11 +74,10 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	{
 		entryExtra.series && (
 			<CornerLabel position="right" background={theme.color.transparentForeground} slot="customContent">
-				<small style={{ color: theme.color.dullText }}>Series</small>
 				<a href={entryExtra.series.extra.absolutePath} class="trippy2">
-					<strong>
-						{entryExtra.series.entry.data.title} ({entryExtra.series.extra.gigCount} gigs)
-					</strong>
+					<small style={{ color: theme.color.dullText }}>Series</small>
+					{entryExtra.series.entry.data.title}
+					<small>({entryExtra.series.extra.gigCount} gigs)</small>
 				</a>
 			</CornerLabel>
 		)
@@ -114,7 +113,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	<h3 style={{ marginBottom: 0 }}>{entryData.title}</h3>
 </Divider>
 {entryData.intro && <BigIntro text={entryData.intro} />}
-{!!uncategorizedImages?.length && <ImageGallery images={uncategorizedImages} noLightbox={true} />}
+{!!uncategorizedImages?.length && <ImageGallery images={uncategorizedImages} />}
 {
 	!entryData.audioOnly && (
 		<div>

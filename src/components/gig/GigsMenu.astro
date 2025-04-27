@@ -90,22 +90,21 @@ const { selected } = Astro.props
 -->
 {
 	selected && (
-		<ul id="shuffle-menu" class="hidden">
-			{gigs.map((gig) => (
-				<li
-					id={makeHash(gig.entry.id)}
-					class="hiddenItem"
-					data-title={`${gig.entry.data.title} ${gig.extra.venue?.data.title} ${artistsToString(gig.extra.artists)}`}
-				/>
-			))}
-		</ul>
+		<div style="visibility: hidden; height: 0px; width: 0px; position: absolute;">
+			<ul class="filter-container">
+				{gigs.map((gig) => (
+					<li id={makeHash(gig.entry.id)} class="filtr-item" data-category="all">
+						{gig.entry.data.title}
+					</li>
+				))}
+			</ul>
+		</div>
 	)
 }
 
 <slot />
 
 <script>
-	import type Shuffle from 'shufflejs'
 	import { maintainSidebarScrollPosition } from 'src/util/helpers'
 	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
 
@@ -144,17 +143,20 @@ const { selected } = Astro.props
 		 * @param e
 		 */
 		onShuffle = (e: any) => {
-			const shuffle = e.detail as Shuffle
+			const shuffleItems = e.detail.items as NodeListOf<HTMLElement> | null
+			const filteredItems = e.detail.filteredItems as NodeListOf<HTMLElement> | null
+
+			console.log(filteredItems?.length)
 
 			// Hide the artists menu if we're shuffling
-			if (shuffle.visibleItems !== shuffle.items.length && this.selected) {
+			if (filteredItems?.length !== shuffleItems?.length && this.selected) {
 				this.artistsMenu?.classList.add('hidden')
 			} else {
 				this.artistsMenu?.classList.remove('hidden')
 			}
 
-			shuffle?.items?.forEach((item) => {
-				const gigId = item.element.id
+			shuffleItems?.forEach((item) => {
+				const gigId = item.id
 				const sidebarItem = this.querySelector(`[data-gig="${gigId}"]`)
 
 				const gigList = sidebarItem?.closest('.gigList')
@@ -164,7 +166,7 @@ const { selected } = Astro.props
 				if (!monthList) return
 
 				// Hide items filtered out by shuffle
-				if (!item.isVisible) {
+				if (item.classList.contains('filteredOut')) {
 					sidebarItem?.classList.add('hidden')
 				} else {
 					sidebarItem?.classList.remove('hidden')

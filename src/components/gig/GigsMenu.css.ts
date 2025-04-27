@@ -82,12 +82,13 @@ export const yearLink = style([
 ])
 
 export const backButton = style({
-	height: theme.dimensions.subheaderHeight,
+	height: theme.dimensions.headerHeightMobile,
 	boxShadow: theme.borders.shadow,
 	display: 'flex',
 	alignItems: 'center',
 	top: 0,
-	backgroundColor: theme.color.background,
+	color: theme.color.darkText,
+	backgroundColor: theme.color.lightText,
 	width: '100%',
 	zIndex: 10,
 	position: 'fixed'

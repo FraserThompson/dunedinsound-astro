@@ -11,10 +11,10 @@
  *  - sidebarMenu: See SidebarNav
  *  - sidebarFixed: See SidebarNav
  *  - content: See SidebarNav
+ *  - sidebarSubheaderTopMobile:  See SidebarNav
  *  - subheaderTop: See SubheadersLayout
  *  - subheaderTopMobile: See SubheadersLayout
  *  - subheaderTopDesktop: See SubheadersLayout
- *  - subheaderBottomMobile: See SubheadersLayout
  */
 import { theme } from 'src/Theme.css'
 import BaseLayout from '../base/BaseLayout.astro'
@@ -24,16 +24,16 @@ import { WithTopSubheader, WithBottomSubheaderMobile, Subheader } from 'src/comp
 
 interface Props {
 	hideFooter?: boolean
+	hasSubheaderBottomMobile?: boolean
+	hasSidebarSubheaderBottomMobile?: boolean
 	poo: Poo
 }
 
-const { hideFooter, poo } = Astro.props
+const { hideFooter, hasSubheaderBottomMobile, hasSidebarSubheaderBottomMobile, poo } = Astro.props
 
 const hasSubheaderTop = Astro.slots.has('subheaderTop')
 const hasSubheaderTopMobile = Astro.slots.has('subheaderTopMobile')
 const hasSubheaderTopDesktop = Astro.slots.has('subheaderTopDesktop')
-const hasSubheaderBottomMobile = Astro.slots.has('subheaderBottomMobile')
-const hasSidebarSubheaderBottomMobile = Astro.slots.has('sidebarSubheaderBottomMobile')
 const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile')
 ---
 
@@ -66,23 +66,13 @@ const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile'
 	<SidebarNav
 		top={hasSubheaderTopDesktop || hasSubheaderTop ? theme.dimensions.subheaderHeight : undefined}
 		topMobile={hasSubheaderTopMobile || hasSubheaderTop ? theme.dimensions.headerHeightMobile : undefined}
-		bottomMobile={hasSubheaderBottomMobile ? theme.dimensions.headerHeightMobile : undefined}
+		bottomMobile={hasSubheaderBottomMobile || hasSidebarSubheaderBottomMobile
+			? theme.dimensions.headerHeightMobile
+			: undefined}
 		customButton={true}
 	>
 		<slot name="sidebarMenu" slot="sidebarMenu" />
-		<slot
-			name="sidebarSubheaderBottomMobile"
-			slot={`${hasSidebarSubheaderBottomMobile && 'sidebarSubheaderBottomMobile'}`}
-		/>
 		<slot name="sidebarSubheaderTopMobile" slot={`${hasSidebarSubheaderTopMobile && 'sidebarSubheaderTopMobile'}`} />
 		<slot name="content" slot="content" />
 	</SidebarNav>
-
-	{
-		hasSubheaderBottomMobile && (
-			<div class={`${Subheader['bottomMobile']} showMobile`}>
-				<slot name="subheaderBottomMobile" />
-			</div>
-		)
-	}
 </BaseLayout>

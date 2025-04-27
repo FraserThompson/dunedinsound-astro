@@ -36,20 +36,20 @@ const markers = groupedVenues.map((venueList) => ({
 }))
 ---
 
-<SidebarLayout hideFooter={true} poo={{ title: 'Venues' }}>
-	<ShuffleFilters slot="subheaderTop" itemselector=".sidebar-item" boardselector="#shuffle-menu">
-		<SearchBox className="hideMobile" placeholder="Filter venues by name" />
+<SidebarLayout hideFooter={true} hasSubheaderBottomMobile={true} poo={{ title: 'Venues' }}>
+	<ShuffleFilters slot="subheaderTop">
+		<SearchBox placeholder="Filter venues by name" className="fixedBottomMobile" />
 		<div class="filterGroup">
 			<label>
-				<input name="hideNotAllAges" type="checkbox" data-filter="allages=true" />
+				<input name="hideNotAllAges" type="checkbox" data-multifilter="allages" />
 				All ages only
 			</label>
 			<label>
-				<input name="hideInactive" type="checkbox" data-filter="active=true" />
+				<input name="hideInactive" type="checkbox" data-multifilter="active" />
 				Hide dead
 			</label>
 			<label>
-				<input name="hideActive" type="checkbox" data-filter="active=false" />
+				<input name="hideActive" type="checkbox" data-multifilter="dead" />
 				Hide alive
 			</label>
 		</div>
@@ -103,14 +103,6 @@ const markers = groupedVenues.map((venueList) => ({
 			}
 		</div>
 	</Map>
-	<ShuffleFilters
-		slot="subheaderBottomMobile"
-		className="fullWidth"
-		itemselector=".sidebar-item"
-		boardselector="#shuffle-menu"
-	>
-		<SearchBox placeholder=`Filter venues by name` />
-	</ShuffleFilters>
 </SidebarLayout>
 
 <style is:global>

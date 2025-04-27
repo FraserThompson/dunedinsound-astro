@@ -19,18 +19,18 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 ---
 
 <SidebarLayout poo={{ title: 'Blog' }}>
-	<ShuffleFilters slot="subheaderTopDesktop" itemselector=".blogItem" boardselector="#shuffle-menu">
-		<SearchBox placeholder=`Filter articles by title` />
+	<ShuffleFilters slot="subheaderTopDesktop">
+		<SearchBox placeholder=`Filter articles by title` className="fixedBottomMobile"/>
 	</ShuffleFilters>
 	<div slot="sidebarMenu">
 		<BlogTags selected={selectedTag} />
 	</div>
 	<TextContainer slot="content">
 		{selectedTag && <h2>Articles tagged with "{selectedTag}"</h2>}
-		<div id="shuffle-menu">
+		<div class="filter-container">
 			{
 				blogs.map((blog) => (
-					<div class="blogItem" data-title={blog.entry.data.title}>
+					<div class="filtr-item" data-category="">
 						<h2>
 							<a href={blog.extra.absolutePath}>
 								{blog.entry.data.tags.includes('interview') && 'INTERVIEW: '}
@@ -40,7 +40,12 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 						<h4>{blog.entry.data.date.toLocaleDateString()}</h4>
 						{blog.extra.cover && (
 							<a href={blog.extra.absolutePath}>
-								<Banner height="20vh" heightMobile="20vh" responsiveImageSizes={'blog'} backgroundImage={blog.extra.cover} />
+								<Banner
+									height="20vh"
+									heightMobile="20vh"
+									responsiveImageSizes={'blog'}
+									backgroundImage={blog.extra.cover}
+								/>
 							</a>
 						)}
 						<p>
@@ -55,13 +60,10 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 			}
 		</div>
 	</TextContainer>
-	<ShuffleFilters slot="subheaderBottomMobile" itemselector=".blogItem" boardselector="#shuffle-menu">
-		<SearchBox placeholder="Filter articles by title" />
-	</ShuffleFilters>
 </SidebarLayout>
 
 <style>
-	#shuffle-menu {
+	.filter-container {
 		top: 40px;
 		margin: 10px;
 	}

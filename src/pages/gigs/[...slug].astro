@@ -24,6 +24,7 @@ const entryExtra = entry.extra
 ---
 
 <SidebarLayout
+	hasSidebarSubheaderBottomMobile={true}
 	poo={{
 		title: entryData.title,
 		collection: entry.entry.collection,
@@ -32,20 +33,12 @@ const entryExtra = entry.extra
 		date: entryData.date.toISOString()
 	}}
 >
-	<ShuffleFilters slot="subheaderTopDesktop" itemselector=".hiddenItem" boardselector="#shuffle-menu">
-		<SearchBox placeholder=`Filter gigs by title, artist, venue` />
+	<ShuffleFilters slot="subheaderTopDesktop" layout="vertical">
+		<SearchBox placeholder=`Filter gigs by title, artist, venue` className="fixedBottomMobile openWithSidebar" />
 	</ShuffleFilters>
 	<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href="/gigs">
 		<ChevronLeftIcon /> Go to gigs home
 	</a>
 	<GigsMenu slot="sidebarMenu" selected={entry.entry.id} transition:persist />
-	<ShuffleFilters
-		slot="sidebarSubheaderBottomMobile"
-		className="fullWidth"
-		itemselector=".hiddenItem"
-		boardselector="#shuffle-menu"
-	>
-		<SearchBox placeholder=`Filter gigs by title, artist, venue` />
-	</ShuffleFilters>
 	<Gig entry={entry} slot="content" />
 </SidebarLayout>

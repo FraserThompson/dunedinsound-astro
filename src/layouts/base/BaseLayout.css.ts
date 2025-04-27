@@ -268,6 +268,17 @@ globalStyle('.hideMobile.flex', {
 	}
 })
 
+// Fixes it above the bottom menu on mobile
+globalStyle('.fixedBottomMobile', {
+	position: 'fixed',
+	bottom: theme.dimensions.headerHeightMobile,
+	'@media': {
+		'screen and (--md)': {
+			position: 'static'
+		}
+	}
+})
+
 globalStyle('.flex', {
 	display: 'flex'
 })
@@ -345,6 +356,8 @@ globalStyle('.trippy', {
 globalStyle('.trippy2', {
 	zIndex: '1000',
 	display: 'inline-block',
+	fontSize: '14px',
+	fontWeight: '600',
 	color: 'white',
 	transition: 'all 0.2s ease-in-out',
 	transform: 'skew(-10deg) scale(1, 1.5)',
@@ -365,10 +378,6 @@ globalStyle('.trippy:hover', {
 	transform: 'scaleY(10) scaleX(5) rotateX(360deg) translateX(20px) translateY(-5px)'
 })
 
-globalStyle('.whiteBorder', {
-	border: '4px solid white'
-})
-
 /**
  * Styles for third party libraries.
  */
@@ -376,4 +385,15 @@ globalStyle('.whiteBorder', {
 // Hide scrollbars when lightbox open.
 globalStyle('html.lg-on', {
 	overflow: 'hidden'
+})
+
+// There's an issue with filtr where sometimes it doesn't compensate for the scrollbar...
+// Annoying, but this works around that.
+globalStyle('.filtr-workaround', {
+	paddingRight: 0,
+	'@media': {
+		'screen and (--md)': {
+			paddingRight: '15px'
+		}
+	}
 })

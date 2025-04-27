@@ -7,7 +7,7 @@ export const topOffset = createVar()
 const cornerLabelWrapperBase = style({
 	position: 'absolute',
 	backdropFilter: 'blur(5px)',
-	background: fallbackVar(backgroundColor, 'rgba(255,255,255, 1)'),
+	background: fallbackVar(backgroundColor, theme.color.lightText),
 	color: theme.color.darkText,
 	paddingLeft: theme.dimensions.basePaddingMobile,
 	paddingRight: theme.dimensions.basePaddingMobile,

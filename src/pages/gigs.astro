@@ -4,15 +4,15 @@ import { loadAndFormatCollection } from 'src/util/collection'
 import SearchBox from 'src/components/SearchBox.astro'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 import GigsMenu from 'src/components/gig/GigsMenu.astro'
-import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
+import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 
 const gigs = await loadAndFormatCollection('gig')
 ---
 
-<SidebarLayout poo={{ title: 'Gigs', image: gigs[0].extra.cover?.src }}>
-	<ShuffleFilters slot="subheaderTop" itemselector=".tile" boardselector="#gigs">
-		<SearchBox className="hideMobile" placeholder="Filter gigs by title, artist, venue" />
+<SidebarLayout hasSubheaderBottomMobile={true} poo={{ title: 'Gigs', image: gigs[0].extra.cover?.src }}>
+	<ShuffleFilters slot="subheaderTop" layout="vertical">
+		<SearchBox placeholder="Filter gigs by title, artist, venue" className="fixedBottomMobile" />
 		<div class="filterGroup">
 			<label>Mode: </label>
 			<div class="buttonGroup">
@@ -26,18 +26,15 @@ const gigs = await loadAndFormatCollection('gig')
 		</div>
 	</ShuffleFilters>
 	<GigsMenu slot="sidebarMenu" transition:persist />
-	<FlexGridContainer grid={{ xs: 12 }} id="gigs" slot="content" fixedWidth={true}>
-		{gigs.map((gig) => <GigTile gig={gig} responsiveImageSizes="full" />)}
+	<FlexGridContainer grid={{ xs: 12 }} id="gigs" className="filter-container" slot="content" fixedWidth={true}>
+		{gigs.map((gig) => <GigTile gig={gig} responsiveImageSizes="full" className="filtr-workaround" />)}
 	</FlexGridContainer>
-	<ShuffleFilters slot="subheaderBottomMobile" itemselector=".tile" boardselector="#gigs">
-		<SearchBox placeholder="Filter gigs by title, artist, venue" />
-	</ShuffleFilters>
 </SidebarLayout>
 
 <script>
 	// Polyfilled because some mobile browsers seem to implement
 	// the spec differently.
-	import { scrollIntoView } from "seamless-scroll-polyfill"
+	import { scrollIntoView } from 'seamless-scroll-polyfill'
 
 	document.addEventListener('astro:page-load', () => {
 		const gigs = document.querySelectorAll('#gigs .tile')

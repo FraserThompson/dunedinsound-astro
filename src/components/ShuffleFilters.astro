@@ -1,207 +1,154 @@
 ---
 /**
- * Encapsulates the filter and sort elements for Shuffle.js
+ * Encapsulates the filter and sort elements for Filtirz.
+ * Also initializes the Filtizr board.
  *
- * To use this component, create filter child elements inside it.
+ * Props:
+ *  - layout: The layout to use (check filtr docs) (default: sameSize)
+ *  - className: Optional classname to add
  *
- * This component's props:
- *  - data-boardselector: selector for the shuffle board (default: #shuffle)
- *  - data itemselector: selector for the board items (default: .tile)
+ * The filter board needs the filter-container class and the items need filtr-item.
  *
- * Sort elements need:
- *  - data-sortby: name of the data attribute it should sort by.
- *  - data-reversesort (optional): sort in reverse order
+ * Create filter child elements inside this component. Wrap your filters in .filterGroup.
  *
- * Filter elements need:
- *  - data-filter: the filter to filter by in the x=y format. Eg title=banana.
- *    If y is literally "value", it will instead check againsts the elements value.
- *  - Note: text filters do a partial text search
+ * Then follow filterizr docs to add search/filters/sorts.
  *
- * An event is emitted to document on filter. Listen for shuffle-filter.
+ * A 'shuffle-filter' event is emitted to document on filter.
+ * e.detail contains:
+ *  - items: The full list of items in the board
+ *  - filteredItems: The list of items after filtering.
  */
 
 import { shuffleFilter } from './ShuffleFilters.css'
+import type { Layout } from 'filterizr/dist/types'
 
 interface Props {
-	itemselector?: string
-	boardselector?: string
+	layout?: Layout
 	className?: string
 }
 
-const { itemselector, boardselector, className = '' } = Astro.props
+const { layout = 'sameSize', className = '' } = Astro.props
 ---
 
-<shuffle-filters
-	data-itemselector={itemselector}
-	data-boardselector={boardselector}
-	class={`${shuffleFilter} ${className}`}
->
+<shuffle-filters data-layout={layout} class={`${shuffleFilter} ${className}`}>
 	<slot />
 </shuffle-filters>
 
 <script>
-	import Shuffle from 'shufflejs'
-	import { stringNormalize } from 'src/util/names'
+	import Filterizr from 'filterizr'
+	import type { Layout } from 'filterizr/dist/types'
+	import { debounce } from 'throttle-debounce'
 
 	class ShuffleFilters extends HTMLElement {
-		shuffleInstance: Shuffle | null
+		filtrInstance: Filterizr
+		filtrElement: HTMLElement | null
 
-		// Buttons which sort the items.
-		sortButtons: NodeListOf<HTMLElement> | null
+		itemSelector: string
+		boardSelector: string
+		layout: Layout
 
-		// Elements which filter the items (eg. search)
-		filterElements: NodeListOf<HTMLInputElement> | null
-
-		// Active sort mode.
-		activeSort: HTMLElement | null
-
-		// List of active filters.
-		activeFilters: Set<HTMLInputElement> | null
+		oldValue: string
 
 		constructor() {
 			super()
 
-			this.sortButtons = this.querySelectorAll('[data-sortby]')
-			this.filterElements = this.querySelectorAll('[data-filter]')
+			this.itemSelector = '.filtr-item'
+			this.boardSelector = '.filter-container'
+			this.layout = this.getAttribute('data-layout') as Layout
 
-			this.activeSort = this.sortButtons[0]
-			this.activeSort?.classList.add('active')
-			this.activeFilters = new Set()
+			this.filtrElement = document.querySelector(this.boardSelector)
 
-			const itemSelector = this.getAttribute('data-itemselector') || '.tile'
-			const boardSelector = this.getAttribute('data-boardselector') || '#shuffle'
-			const shuffleBoard = document.querySelector<HTMLElement>(boardSelector)
-
-			this.shuffleInstance =
-				shuffleBoard &&
-				new Shuffle(shuffleBoard, {
-					itemSelector,
-					delimiter: ','
-				})
-		}
-
-		/**
-		 * Filters the shuffleboard based on currently active filters.
-		 * @param el
-		 */
-		private shuffleFilter(el: HTMLElement) {
-			// No active filters? Show everything
-			if (this.activeFilters?.size === 0) return true
-
-			const filterResult: boolean[] = []
-
-			this.activeFilters?.forEach((filter) => {
-				const filterBy = filter.getAttribute('data-filter')
-				if (!filterBy) return
-
-				const [attr, val] = filterBy.split('=')
-
-				// Check the value of the filter element
-				if (val && val == 'value') {
-					if (filter.getAttribute('type') === 'search') {
-						const filterValue = stringNormalize(filter.value)
-						filterResult.push(stringNormalize(el.getAttribute(`data-${attr}`)).includes(filterValue))
-					} else {
-						const filterValue = filter.value
-						filterResult.push(el.getAttribute(`data-${attr}`) == filterValue)
+			this.filtrInstance = new Filterizr(this.boardSelector, {
+				gridItemsSelector: this.itemSelector,
+				animationDuration: 0.1,
+				multifilterLogicalOperator: 'and',
+				layout: this.layout,
+				spinner: {
+					enabled: true,
+					fillColor: '#ccc',
+					styles: {
+						height: '100px',
+						margin: '0 auto',
+						width: '100px',
+						'z-index': 2
 					}
-				}
-				// Static conditional
-				else if (attr && val) {
-					filterResult.push(el.getAttribute(`data-${attr}`) == val)
-				}
-			})
-
-			// Test all active filters and if any are true, return true
-			return filterResult.every((result) => result === true)
-		}
-
-		/**
-		 * Handler for the sort buttons being clicked.
-		 */
-		public sortButtonHandler(e: MouseEvent) {
-			if (!(e.target instanceof HTMLButtonElement)) return
-
-			const activeSort = e.target
-			const reversesort = activeSort.getAttribute('data-reversesort')
-			const sortby = activeSort.getAttribute('data-sortby')
-
-			activeSort.classList.add('active')
-			this.activeSort?.classList.remove('active')
-			this.activeSort = activeSort
-
-			this.shuffleInstance?.sort({
-				reverse: reversesort ? true : false,
-				by: (el) => {
-					const param = el.getAttribute(`data-${sortby}`)?.toLowerCase()
-					const intParam = param && parseInt(param)
-					// @ts-ignore
-					return intParam && intParam !== '' ? intParam : param
+				},
+				callbacks: {
+					onInit: () => {
+						// Hide until it's initialized
+						if (this.filtrElement) this.filtrElement.style.display = 'flex'
+					},
+					onSortingEnd: this.onChange,
+					onShufflingEnd: this.onChange,
+					onFilteringEnd: this.onChange
 				}
 			})
 		}
 
-		/**
-		 * Handler for the filter elements changing.
-		 */
-		public filterElementHandler(e: any) {
-			const filter = e.target
-			const type = e.target.type
-
-			let isActive = false
-
-			// Whether the filter is active varies on the type
-			switch (type) {
-				case 'search':
-					// Text filters are active when there is text
-					isActive = filter.value.length !== 0
-					break
-				case 'select-one':
-					// Select filters are active when the value isnt default (all)
-					isActive = filter.value !== 'all'
-					break
-				default:
-					// Otherwise it acts as a toggle
-					isActive = !this.activeFilters?.has(filter)
-			}
-
-			if (isActive) {
-				this.activeFilters?.add(filter)
-			} else {
-				this.activeFilters?.delete(filter)
-			}
-
-			this.shuffleInstance?.filter((el) => this.shuffleFilter(el))
-
-			// Scroll to top so results aren't lost
-			if (type === 'search') {
-				const sidebar = document.querySelector('#sidebar-menu')
-				if (sidebar) {
-					sidebar.scroll(0, 0)
+		// Emits event when something changes.
+		onChange = () => {
+			const event = new CustomEvent('shuffle-filter', {
+				detail: {
+					items: this.filtrElement?.querySelectorAll(this.itemSelector),
+					filteredItems: this.filtrElement?.querySelectorAll(`${this.itemSelector}:not(.filteredOut)`)
 				}
-				window.scroll(0, 0)
-			}
-
-			// Let other components know what's up
-			const event = new CustomEvent('shuffle-filter', { detail: this.shuffleInstance })
+			})
 			document.dispatchEvent(event)
 		}
 
 		connectedCallback() {
-			// Sort button listeners
-			this.sortButtons?.forEach((button) => {
-				button.addEventListener('mousedown', (e: MouseEvent) => this.sortButtonHandler(e))
+			const selectFilters = this.querySelectorAll('select:not([data-sortOrder])')
+			const sorters = this.querySelectorAll('select[data-sortOrder]')
+			const search = this.querySelector('input[data-search]')
+
+			// Searches don't trigger the callbacks so we trigger a sort.
+			search?.addEventListener(
+				'input',
+				debounce(300, () => {
+					// If we're in a sidebar we should scroll that to the top.
+					// Else the window.
+					const sidebar = document.querySelector('#sidebar-menu')
+					if (sidebar && this.filtrElement?.closest('#sidebar-menu') && sidebar.scrollTop !== 0) {
+						sidebar.scrollTo(0, 0)
+					} else if (window.scrollY !== 0) {
+						window.scrollTo(0, 0)
+					}
+					this.filtrInstance.sort('index', 'asc')
+				})
+			)
+
+			// Input type search clear doesn't trigger refilter, so we do it.
+			search?.addEventListener('input', (e) => {
+				const target = e.target as HTMLInputElement | undefined
+				target?.value === '' && this.filtrInstance.search('')
 			})
 
-			// Filter element listeners
-			this.filterElements?.forEach((el) => {
-				const event = el.getAttribute('type') === 'search' ? 'input' : 'change'
-				el.addEventListener(event, (e: any) => this.filterElementHandler(e))
-			})
+			// So we can filter with select elements
+			selectFilters.forEach((el: HTMLSelectElement) =>
+				el.addEventListener('change', (e) => {
+					// Untoggle last filter
+					if (this.oldValue) {
+						this.filtrInstance.toggleFilter(this.oldValue)
+					}
+					const target = e.target as HTMLSelectElement
+					this.oldValue = target.value
+					this.filtrInstance.toggleFilter(target.value)
+				})
+			)
+
+			// So we can control sort order per sorting element with an attribute
+			sorters.forEach((el: HTMLSelectElement) =>
+				el.addEventListener('change', (e) => {
+					const target = e.target as HTMLSelectElement
+					const selectedOption = target.options[target.selectedIndex]
+					const sortOrder = selectedOption.dataset.order as 'asc' | 'desc' | undefined
+					this.filtrInstance.sort(target.value, sortOrder || 'asc')
+				})
+			)
 		}
 
 		disconnectedCallback() {
-			this.shuffleInstance?.destroy()
+			this.filtrInstance?.destroy()
 		}
 	}
 

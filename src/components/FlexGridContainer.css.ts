@@ -13,8 +13,7 @@ export const maxWidth2 = createVar()
 
 export const FlexGridWrapper = style({
 	display: 'flex',
-	flexWrap: 'wrap',
-	justifyContent: 'center'
+	flexWrap: 'wrap'
 })
 
 globalStyle(`${FlexGridWrapper} > *:not(script)`, {
@@ -24,7 +23,6 @@ globalStyle(`${FlexGridWrapper} > *:not(script)`, {
 	display: 'flex',
 	flexDirection: 'row',
 	flexWrap: 'wrap',
-	justifyContent: 'center',
 	'@media': {
 		'screen and (--xs)': {
 			flex: flexMd,

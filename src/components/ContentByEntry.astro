@@ -167,7 +167,12 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 		{
 			willBeKnownAs &&
 				willBeKnownAs.map((thing) => (
-					<Tile responsiveImage={thing.extra.cover} href={thing.extra.absolutePath} containerHeight="30vh">
+					<Tile
+						responsiveImage={thing.extra.cover}
+						backgroundStyle="center"
+						href={thing.extra.absolutePath}
+						containerHeight="30vh"
+					>
 						{'died' in thing.entry.data && (
 							<h4 class="center" style={{ marginBottom: 0, color: 'white' }}>
 								At this location from {entryData.died?.getFullYear()}
@@ -191,7 +196,7 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 						</Divider>
 						<FlexGridContainer grid={gigs && gigs.length <= 4 ? { xs: 12, md: 6 } : undefined}>
 							{gigs?.map((gig) => (
-								<GigTile gig={gig} responsiveImageSizes={gigs.length <= 4 ? 'full' : 'grid'} />
+								<GigTile gig={gig} backgroundStyle="center" responsiveImageSizes={gigs.length <= 4 ? 'full' : 'grid'} />
 							))}
 						</FlexGridContainer>
 					</div>
@@ -200,7 +205,12 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 		{
 			!!previouslyKnownAs.length &&
 				previouslyKnownAs.map((thing) => (
-					<Tile responsiveImage={thing.extra.cover} href={thing.extra.absolutePath} containerHeight="30vh">
+					<Tile
+						responsiveImage={thing.extra.cover}
+						backgroundStyle="center"
+						href={thing.extra.absolutePath}
+						containerHeight="30vh"
+					>
 						{'date' in thing.entry.data && (
 							<h4 class="center" style={{ marginBottom: 0, color: 'white' }}>
 								At this location {thing.entry.data.date?.getFullYear() || 'up'} to{' '}
@@ -225,6 +235,7 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 						label={blog.entry.data.date.toLocaleDateString()}
 						responsiveImage={blog.extra.cover}
 						responsiveImageSizes={'grid'}
+						backgroundStyle="center"
 					/>
 				))
 			}
@@ -247,6 +258,7 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 						label={vaultsession.entry.data.date.toLocaleDateString()}
 						responsiveImage={vaultsession.extra.cover}
 						responsiveImageSizes={'grid'}
+						backgroundStyle="center"
 					/>
 				))
 			}

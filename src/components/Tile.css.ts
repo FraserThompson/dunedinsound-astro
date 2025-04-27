@@ -1,5 +1,7 @@
 import { createVar, fallbackVar, globalStyle, style, styleVariants } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
+import { backgroundImageWrapper } from './BackgroundImage.css'
+import { ImageWrapper } from './Image2.css'
 
 export const background = createVar()
 export const height = createVar()
@@ -43,6 +45,7 @@ export const tileInner = style({
 	height: fallbackVar(heightMobile, height, '40vh'),
 	transition: 'height 100ms ease-in-out',
 	position: 'relative',
+	display: 'block',
 	selectors: {
 		'&:hover': {
 			color: theme.color.lightText,
@@ -63,33 +66,34 @@ globalStyle(`${tileInner} > a:hover`, {
 globalStyle(`${tileInner} > a`, {
 	display: 'flex',
 	alignItems: 'center',
-	justifyContent: 'center',
 	height: '100%',
 	color: theme.color.text
 })
 
-export const titleWrapper = style({
-	zIndex: '5',
-	position: 'absolute',
-	bottom: '0px',
-	background: 'radial-gradient(circle, rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 70%)',
-	height: '100%',
-	width: '100%',
-	display: 'flex'
-})
-
 export const tileContent = style({
-	width: '100%',
+	position: 'relative',
+	background: 'radial-gradient(circle, rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 70%)',
 	marginLeft: '0',
+	height: '100%',
 	display: 'flex',
 	flexDirection: 'column',
-	padding: theme.dimensions.basePaddingMobile,
-	paddingTop: theme.dimensions.basePadding,
+	color: theme.color.lightText,
+	paddingLeft: theme.dimensions.basePaddingMobile,
+	paddingRight: theme.dimensions.basePaddingMobile,
 	'@media': {
 		'screen and (--xs)': {
-			padding: theme.dimensions.basePadding
+			paddingLeft: theme.dimensions.basePadding,
+			paddingRight: theme.dimensions.basePadding
 		}
 	}
+})
+
+globalStyle(`${tileInner} > ${backgroundImageWrapper}, ${tileInner} > ${ImageWrapper}`, {
+	position: 'absolute',
+	width: '100%',
+	height: '100%',
+	top: 0,
+	left: 0
 })
 
 export const tileTextContent = style({
@@ -101,27 +105,32 @@ export const tileTextContent = style({
 	alignItems: 'center'
 })
 
-export const centerImageWrapper = style({
-	padding: 0
-})
-
 globalStyle(`${tileTextContent} > div`, {
 	maxWidth: theme.dimensions.contentContainerWidth
 })
 
 export const tileTitle = style({
+	color: theme.color.lightText,
 	marginLeft: '0',
 	marginBottom: '2px',
-	paddingTop: '10px',
-	color: 'inherit',
 	textShadow: '1px 1px 1px black',
+	fontWeight: '400',
+	maxWidth: '80%',
+	position: 'relative',
 	transition: 'color 100ms ease-in-out'
 })
 
 export const tileSubtitle = style({
+	position: 'relative',
 	transition: 'color 100ms ease-in-out'
 })
 
 globalStyle(`${tileInner}:hover img`, {
 	transform: 'scale(1.02, 1.02) !important'
+})
+
+export const tileBottomContent = style({
+	marginTop: 'auto',
+	position: 'relative',
+	marginBottom: '2px'
 })

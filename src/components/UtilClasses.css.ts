@@ -27,9 +27,11 @@ export const Subheader = styleVariants({
 	topDesktop: [
 		SubheaderBase,
 		{
-			display: 'none',
+			bottom: '-100px ',
+			zIndex: 9,
 			'@media': {
 				'screen and (--md)': {
+					zIndex: 6,
 					display: 'flex',
 					top: 0
 				}
@@ -78,7 +80,7 @@ export const WithTopSubheader = style({
 	marginTop: theme.dimensions.headerHeightMobile,
 	'@media': {
 		'screen and (--md)': {
-			marginTop: theme.dimensions.subheaderHeight,
+			marginTop: theme.dimensions.subheaderHeight
 		}
 	}
 })
