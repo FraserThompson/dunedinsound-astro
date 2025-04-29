@@ -2,13 +2,12 @@
 import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
 import { ResponsiveImage } from 'src/util/ResponsiveImage'
-import omIcon from 'src/assets/otepotimusic.png'
-import Tile from 'src/components/Tile.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import SearchBox from 'src/components/SearchBox.astro'
 import SubheadersLayout from 'src/layouts/base/SubheadersLayout.astro'
 import SortIcon from '~icons/bx/sort'
-import { theme } from 'src/Theme.css'
+import { artistListItem, artistTitle, artistGigCount, artistsWrapper } from './Artists.css'
+import ChevronRight from '~icons/bx/chevron-right'
 
 const artists = await loadAndFormatCollection('artist')
 
@@ -28,8 +27,8 @@ for (const artist of artists) {
 }
 ---
 
-<SubheadersLayout poo={{ title: 'Artists' }} hideFooter={true}>
-	<ShuffleFilters slot="subheaderTop" layout="sameWidth">
+<SubheadersLayout poo={{ title: 'Artists' }}>
+	<ShuffleFilters slot="subheaderTop" layout="sameHeight">
 		<SearchBox placeholder="Filter artists by name" className="fixedBottomMobile" />
 		<div class="filterGroup">
 			<div>
@@ -61,31 +60,28 @@ for (const artist of artists) {
 			</div>
 		</div>
 	</ShuffleFilters>
-	<FlexGridContainer
-		grid={{ xs: 12, md: 3, lg: 2 }}
-		className="filter-container"
-		fixedWidth={true}
-		style={{ minHeight: '100vh', marginBottom: '60px' }}
-	>
+	<FlexGridContainer grid={{ xs: 12, md: 4, lg: 2 }} className=`${artistsWrapper} filter-container` fixedWidth={true}>
+		<div class={`${artistListItem} showMobile flex`}>
+			<strong>Name</strong>
+			<strong style={{ marginLeft: 'auto' }}>Gigs</strong>
+		</div>
 		{
 			artists.map((artist) => (
-				<Tile
+				<a
 					href={artist.extra.absolutePath}
-					responsiveImage={artist.extra.cover}
-					responsiveImageSizes={'smallGrid'}
-					title={artist.entry.data.title + (artist.entry.data.origin ? ` (${artist.entry.data.origin})` : '')}
-					label={`${artist.extra.gigCount} gig${artist.extra.gigCount > 1 ? 's' : ''}`}
-					containerHeight={'15vh'}
-					containerHeightMobile={'2.5em'}
-					backgroundStyle="fulldesktop"
-					backgroundColor={theme.color.primary}
-					className="filtr-item"
-					dataAttributes={{
-						'data-lastgig': artist.extra.lastGig || 0,
-						'data-numbergigs': artist.extra.gigCount.toString().padStart(4),
-						'data-category': `${artist.entry.data.died === undefined ? 'active' : ''},${artist.entry.data.origin?.toLowerCase() || 'dunedin'}`
-					}}
-				/>
+					class="filtr-item"
+					data-lastgig={artist.extra.lastGig || 0}
+					data-numbergigs={artist.extra.gigCount.toString().padStart(4)}
+					data-category={`${artist.entry.data.died === undefined ? 'active' : ''},${artist.entry.data.origin?.toLowerCase() || 'dunedin'}`}
+				>
+					<div class={artistListItem}>
+						<span class={`${artistTitle} ${artist.entry.data.died !== undefined ? 'dead' : ''}`}>
+							{artist.entry.data.title}
+						</span>
+						<span class={artistGigCount}>{artist.extra.gigCount}</span>
+						<ChevronRight class="showMobile" />
+					</div>
+				</a>
 			))
 		}
 	</FlexGridContainer>

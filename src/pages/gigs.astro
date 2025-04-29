@@ -10,7 +10,11 @@ import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 const gigs = await loadAndFormatCollection('gig')
 ---
 
-<SidebarLayout hasSubheaderBottomMobile={true} poo={{ title: 'Gigs', image: gigs[0].extra.cover?.src }}>
+<SidebarLayout
+	hasSubheaderBottomMobile={true}
+	poo={{ title: 'Gigs', image: gigs[0].extra.cover?.src }}
+	hideFooter={true}
+>
 	<ShuffleFilters slot="subheaderTop" layout="vertical">
 		<SearchBox placeholder="Filter gigs by title, artist, venue" className="fixedBottomMobile" />
 		<div class="filterGroup">
@@ -26,9 +30,9 @@ const gigs = await loadAndFormatCollection('gig')
 		</div>
 	</ShuffleFilters>
 	<GigsMenu slot="sidebarMenu" transition:persist />
-	<FlexGridContainer grid={{ xs: 12 }} id="gigs" className="filter-container" slot="content" fixedWidth={true}>
+	<div id="gigs" class="filter-container" slot="content" style={{ width: '100%' }}>
 		{gigs.map((gig) => <GigTile gig={gig} responsiveImageSizes="full" className="filtr-workaround" />)}
-	</FlexGridContainer>
+	</div>
 </SidebarLayout>
 
 <script>

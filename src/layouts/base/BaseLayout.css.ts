@@ -304,7 +304,12 @@ globalStyle('.fullWidth', {
 })
 
 globalStyle('.padding', {
-	padding: theme.dimensions.basePadding
+	padding: theme.dimensions.basePaddingMobile,
+	'@media': {
+		'screen and (--md)': {
+			padding: theme.dimensions.basePadding
+		}
+	}
 })
 
 globalStyle('.noPadding', {

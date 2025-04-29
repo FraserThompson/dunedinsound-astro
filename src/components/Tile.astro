@@ -85,7 +85,8 @@ const hasDefault = Astro.slots.has('default')
 	class={`${tileWrapper[containerWidth ? 'fixedWidth' : 'noWidth']} ${className} tile filtr-item`}
 	style={assignInlineVars({
 		[height]: containerHeight,
-		[heightMobile]: containerHeightMobile
+		[heightMobile]: containerHeightMobile,
+		[width]: containerWidth
 	})}
 	id={id}
 >
@@ -96,8 +97,7 @@ const hasDefault = Astro.slots.has('default')
 		style={assignInlineVars({
 			[background]: backgroundColor,
 			[height]: containerHeight,
-			[heightMobile]: containerHeightMobile,
-			[width]: containerWidth
+			[heightMobile]: containerHeightMobile
 		})}
 	>
 		{
