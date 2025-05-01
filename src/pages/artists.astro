@@ -1,13 +1,9 @@
 ---
-import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
 import { ResponsiveImage } from 'src/util/ResponsiveImage'
-import ShuffleFilters from 'src/components/ShuffleFilters.astro'
-import SearchBox from 'src/components/SearchBox.astro'
 import SubheadersLayout from 'src/layouts/base/SubheadersLayout.astro'
-import SortIcon from '~icons/bx/sort'
-import { artistListItem, artistTitle, artistGigCount, artistsWrapper } from './Artists.css'
-import ChevronRight from '~icons/bx/chevron-right'
+import ReactWindow from 'src/components/ReactWindow'
+import { artistListItem, artistGigCount } from './Artists.css'
 
 const artists = await loadAndFormatCollection('artist')
 
@@ -17,72 +13,48 @@ export interface ArtistMetadata {
 	lastGig?: number
 }
 
-let origins: { [key: string]: number } = {}
+let originCounts: { [key: string]: number } = {}
 
 // Get the origins list for the dropdown
 for (const artist of artists) {
 	const origin = artist.entry.data.origin || 'Dunedin'
-	if (!origins[origin]) origins[origin] = 0
-	origins[origin]++
+	if (!originCounts[origin]) originCounts[origin] = 0
+	originCounts[origin]++
 }
+const originsList = Object.entries(originCounts).map(([key, value]) => [`${key} (${value})`, key])
+
+// Cells to be passed to the virtual list
+const cells = artists.reduce((acc, artist) => {
+	acc.push(
+		`<a 
+			href="${artist.extra.absolutePath}" 
+			class="${artistListItem} ${artist.entry.data.died ? 'dead' : ''}"
+			data-category="${artist.entry.data.origin || 'Dunedin'},${!artist.entry.data.died ? 'active' : ''}"
+			data-title="${artist.entry.data.title}"
+			data-lastgig="${artist.extra.lastGig}"
+			data-numbergigs="${artist.extra.gigCount}"
+		>
+			${artist.entry.data.title} ${artist.entry.data.origin ? '(' + artist.entry.data.origin + ')' : ''}
+			<span class="${artistGigCount}"">${artist.extra.gigCount}</span>
+		</a>`
+	)
+	return acc
+}, [] as string[])
 ---
 
-<SubheadersLayout poo={{ title: 'Artists' }}>
-	<ShuffleFilters slot="subheaderTop" layout="sameHeight">
-		<SearchBox placeholder="Filter artists by name" className="fixedBottomMobile" />
-		<div class="filterGroup">
-			<div>
-				<label><SortIcon /></label>
-				<select data-sortOrder>
-					<option value="index" data-order="asc"> Title </option>
-					<option value="lastgig" data-order="desc"> Last Played </option>
-					<option value="numbergigs" data-order="desc"> Most Gigs </option>
-				</select>
-			</div>
-			<div>
-				<label>
-					<input name="hideInactive" type="checkbox" data-multifilter="active" />
-					Hide inactive
-				</label>
-			</div>
-			<div class="hideMobile">
-				<select name="countries">
-					<option value="all" data-multifilter="all">All origins ({artists.length})</option>
-					{
-						origins &&
-							Object.keys(origins).map((country) => (
-								<option value={country.toLowerCase()} data-multifilter={country.toLowerCase()}>
-									{country} ({origins[country]})
-								</option>
-							))
-					}
-				</select>
-			</div>
-		</div>
-	</ShuffleFilters>
-	<FlexGridContainer grid={{ xs: 12, md: 4, lg: 2 }} className=`${artistsWrapper} filter-container` fixedWidth={true}>
-		<div class={`${artistListItem} showMobile flex`}>
-			<strong>Name</strong>
-			<strong style={{ marginLeft: 'auto' }}>Gigs</strong>
-		</div>
-		{
-			artists.map((artist) => (
-				<a
-					href={artist.extra.absolutePath}
-					class="filtr-item"
-					data-lastgig={artist.extra.lastGig || 0}
-					data-numbergigs={artist.extra.gigCount.toString().padStart(4)}
-					data-category={`${artist.entry.data.died === undefined ? 'active' : ''},${artist.entry.data.origin?.toLowerCase() || 'dunedin'}`}
-				>
-					<div class={artistListItem}>
-						<span class={`${artistTitle} ${artist.entry.data.died !== undefined ? 'dead' : ''}`}>
-							{artist.entry.data.title}
-						</span>
-						<span class={artistGigCount}>{artist.extra.gigCount}</span>
-						<ChevronRight class="showMobile" />
-					</div>
-				</a>
-			))
-		}
-	</FlexGridContainer>
+<SubheadersLayout poo={{ title: 'Artists' }} hideFooter={true}>
+	<ReactWindow
+		items={cells}
+		search={'Filter artists by name'}
+		sort={[
+			{ value: 'title', order: 'asc', title: 'Title' },
+			{ value: 'lastgig', order: 'desc', title: 'Last played' },
+			{ value: 'numbergigs', order: 'desc', title: 'Most gigs' }
+		]}
+		filter={[
+			{ value: 'active', title: 'Hide inactive', type: 'checkbox' },
+			{ values: originsList, title: 'Country', type: 'select' }
+		]}
+		client:only
+	/>
 </SubheadersLayout>

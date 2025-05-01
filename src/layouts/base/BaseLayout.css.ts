@@ -272,6 +272,7 @@ globalStyle('.hideMobile.flex', {
 globalStyle('.fixedBottomMobile', {
 	position: 'fixed',
 	bottom: theme.dimensions.headerHeightMobile,
+	zIndex: 1,
 	'@media': {
 		'screen and (--md)': {
 			position: 'static'

@@ -12,6 +12,7 @@ const tileWrapperBase = style({
 	color: theme.color.text,
 	position: 'relative',
 	overflow: 'clip',
+	contentVisibility: 'auto',
 	height: fallbackVar(heightMobile, height, '40vh'),
 	scrollMarginTop: theme.dimensions.headerHeightMobileWithSubheader,
 	border: `1px solid ${theme.color.background}`,

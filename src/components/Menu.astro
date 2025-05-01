@@ -61,7 +61,7 @@ const { links, menuType = 'horizontal' } = Astro.props
 						title={link.title}
 						id={sidebarButtonClass || link.id}
 					>
-						{!link.image && link.title}
+						{!link.image && !link.icon && link.title}
 						{link.image && <img src={link.image} alt={link.title} />}
 						{link.icon && link.icon === 'home' ? <HomeIcon /> : link.icon === 'info' ? <InfoIcon /> : ''}
 					</a>

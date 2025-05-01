@@ -17,9 +17,9 @@ const gigs = await loadAndFormatCollection('gig')
 >
 	<ShuffleFilters slot="subheaderTop" layout="vertical">
 		<SearchBox placeholder="Filter gigs by title, artist, venue" className="fixedBottomMobile" />
-		<div class="filterGroup">
-			<label>Mode: </label>
-			<div class="buttonGroup">
+		<label>
+			Mode:
+			<div>
 				<a href="/gigs">
 					<button class={'active'}>Timeline</button>
 				</a>
@@ -27,7 +27,7 @@ const gigs = await loadAndFormatCollection('gig')
 					<button>Shuffle</button>
 				</a>
 			</div>
-		</div>
+		</label>
 	</ShuffleFilters>
 	<GigsMenu slot="sidebarMenu" transition:persist />
 	<div id="gigs" class="filter-container" slot="content" style={{ width: '100%' }}>

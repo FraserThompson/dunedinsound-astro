@@ -6,7 +6,7 @@ import { headerWrapper, headerMobile, header, infoLink } from './SiteHeader.css'
 import { isPartiallyActive } from 'src/util/helpers'
 
 const links: MenuLink[] = [
-	{ icon: 'home', href: '/', class: 'headerButton noPadding' },
+	{ icon: 'home', href: '/', title: 'Home', class: 'headerButton noPadding' },
 	{ title: 'Gigs', href: '/gigs/' },
 	{ title: 'Artists', href: '/artists/' },
 	{ title: 'Venues', href: '/venues/' },
@@ -19,7 +19,7 @@ const linksMobile: MenuLink[] = [
 	{ title: 'Artists', href: '/artists/', sidebarOnActive: 'partial' },
 	{ title: 'Venues', href: '/venues/', sidebarOnActive: true },
 	{ title: 'Articles', href: '/blog/', sidebarOnActive: true },
-	{ href: '/page/info/', icon: 'info', class: 'headerButton' }
+	{ href: '/page/info/', icon: 'info', title: 'Info', class: 'headerButton' }
 ]
 
 const currentPath = new URL(Astro.request.url).pathname
@@ -31,7 +31,11 @@ const currentPath = new URL(Astro.request.url).pathname
 <div class={headerWrapper}>
 	<div class={header}>
 		<Menu links={links} menuType={'sideways'} />
-		<a class={`${infoLink} ${isPartiallyActive('/page/info/', currentPath) ? 'active' : ''}`} href="/page/info/">
+		<a
+			class={`${infoLink} ${isPartiallyActive('/page/info/', currentPath) ? 'active' : ''}`}
+			href="/page/info/"
+			title="Info"
+		>
 			<InfoCircle />
 		</a>
 	</div>
