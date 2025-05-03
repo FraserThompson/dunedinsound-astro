@@ -113,13 +113,13 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	<h3 style={{ marginBottom: 0 }}>{entryData.title}</h3>
 </Divider>
 {entryData.intro && <BigIntro text={entryData.intro} />}
-{!!uncategorizedImages?.length && <ImageGallery images={uncategorizedImages} />}
+{!!uncategorizedImages?.length && <ImageGallery images={uncategorizedImages} noLightbox={true}/>}
 {
 	!entryData.audioOnly && (
-		<div>
+		<>
 			<ArtistDropdown entry={entry} />
 			<ArtistMedia entry={entry} />
-		</div>
+		</>
 	)
 }
 

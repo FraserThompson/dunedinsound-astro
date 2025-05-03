@@ -1,6 +1,5 @@
 ---
 import GigsMenu from 'src/components/gig/GigsMenu.astro'
-import SearchBox from 'src/components/SearchBox.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 import Gig from 'src/layouts/collection/Gig.astro'
@@ -33,9 +32,11 @@ const entryExtra = entry.extra
 		date: entryData.date.toISOString()
 	}}
 >
-	<ShuffleFilters slot="subheaderTopDesktop" layout="vertical">
-		<SearchBox placeholder=`Filter gigs by title, artist, venue` className="fixedBottomMobile openWithSidebar" />
-	</ShuffleFilters>
+	<ShuffleFilters
+		slot="subheaderTopDesktop"
+		search="Filter gigs by title, artist, venue"
+		openSearchWithSidebar={true}
+	/>
 	<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href="/gigs">
 		<ChevronLeftIcon /> Go to gigs home
 	</a>

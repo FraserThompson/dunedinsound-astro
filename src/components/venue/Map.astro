@@ -203,12 +203,12 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			this.sidebar?.toggleSidebar()
 		}
 
-		onShuffle = (e: any) => {
-			const shuffleItems = e.detail.items as NodeListOf<HTMLElement> | null
-			const filteredItems = e.detail.filteredItems as NodeListOf<HTMLElement> | null
+		onFilter = (e: any) => {
+			const items = e.detail.items as HTMLElement[] | null
+			const filteredItems = e.detail.filteredItems as HTMLElement[] | null
 			const bounds = new mapboxgl.LngLatBounds()
 
-			shuffleItems?.forEach((item) => {
+			items?.forEach((item) => {
 				const el = item.querySelector('a')
 				const key = el?.dataset.markerkey
 
@@ -221,7 +221,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 					return
 				}
 
-				if (item.classList.contains('filteredOut')) {
+				if (!filteredItems?.includes(item)) {
 					this.markers[marker].remove()
 				} else {
 					this.markers[marker].addTo(this.map)
@@ -246,12 +246,12 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 		connectedCallback() {
 			this.sidebarLinks?.forEach((link) => link.addEventListener('mousedown', (e) => this.sidebarClick(e)))
 
-			// Support for hiding markers on shuffle filter
-			document.addEventListener('shuffle-filter', this.onShuffle, false)
+			// Support for hiding markers on filter
+			window.addEventListener('react-window-filter', this.onFilter, false)
 		}
 
 		disconnectedCallback() {
-			document.removeEventListener('shuffle-filter', this.onShuffle, false)
+			window.removeEventListener('react-window-filter', this.onFilter, false)
 		}
 	}
 

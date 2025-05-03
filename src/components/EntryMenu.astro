@@ -35,14 +35,14 @@ const entries = collection ? await loadAndFormatCollection(collection) : collect
 	)
 }
 
-<ul class={`${MenuWrapper['vertical']} filter-container`}>
+<ul class={`${MenuWrapper['vertical']}`}>
 	{
 		entries
 			?.sort((a, b) => (a.entry.id < b.entry.id ? -1 : 1))
 			?.map((entry, i) => (
 				<li
 					data-category={`${'died' in entry.entry.data && entry.entry.data.died !== undefined ? 'active' : 'dead'},${'allAges' in entry.entry.data && entry.entry.data.allAges ? 'allages' : ''}`}
-					class={`filtr-item ${MenuLi['vertical']} ${entry.entry.id === selected ? 'active' : ''}`}
+					class={`filter-item ${MenuLi['vertical']} ${entry.entry.id === selected ? 'active' : ''}`}
 				>
 					<a
 						class={MenuLinkWrapper['vertical']}

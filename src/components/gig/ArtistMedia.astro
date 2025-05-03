@@ -33,7 +33,7 @@ const entryData = entry.entry.data
 			>
 				{artist.entry.data.title}
 			</Divider>
-			<FlexGridContainer grid={{ xs: 12, md: 6 }} maxWidth="1080px">
+			<FlexGridContainer grid={{ xs: 12, md: 6 }} maxWidth="1080px" justifyContent="center">
 				{entryData.artists[i].vid?.map((vid) => (
 					<LiteYoutube videoid={vid.link} loadAPI={true} />
 				))}

@@ -63,7 +63,7 @@ const { selected } = Astro.props
 								<ul class={`${MenuWrapper['vertical']} gigList`}>
 									{gigs.map((gig) => (
 										<li
-											class={`${MenuLi['vertical']} gigItem ${gig.entry.id === selected ? 'active' : ''}`}
+											class={`${MenuLi['vertical']} gigItem filter-item ${gig.entry.id === selected ? 'active' : ''}`}
 											data-gig={makeHash(gig.entry.id)}
 										>
 											<a class={gigLink} href={!selected ? `#${makeHash(gig.entry.id)}` : gig.extra.absolutePath}>
@@ -81,27 +81,6 @@ const { selected } = Astro.props
 	}
 </ul>
 
-<!-- 
-	This is a bit of an ugly workaround.
-	On the gigs page we shuffle the tiles and listen on the menu.
-	On individual gig pages there are no tiles to shuffle, but ShuffleJS doesn't 
-	work with nested menu items. So we shuffle this hidden list instead.
-	Downside is extra DOM items, but it is what it is.
--->
-{
-	selected && (
-		<div style="visibility: hidden; height: 0px; width: 0px; position: absolute;">
-			<ul class="filter-container">
-				{gigs.map((gig) => (
-					<li id={makeHash(gig.entry.id)} class="filtr-item" data-category="all">
-						{gig.entry.data.title}
-					</li>
-				))}
-			</ul>
-		</div>
-	)
-}
-
 <slot />
 
 <script>
@@ -114,9 +93,6 @@ const { selected } = Astro.props
 	 * A menu of gigs.
 	 *
 	 * Similar to EntryMenu.astro but with subcategories for year/month.
-	 *
-	 * Because of these subcategories we can't Shuffle it directly, so
-	 * instead we respond to shuffle events from another list.
 	 */
 	class GigsMenu extends HTMLUListElement {
 		sidebar: SidebarWrapper | null
@@ -136,27 +112,34 @@ const { selected } = Astro.props
 			// Close sidebar on mobile
 			// See: SidebarNav.astro
 			this.sidebar?.toggleSidebar()
+			if (!this.gigLinks) return
+			// Find where the gig appears in the menu
+			const target = e.currentTarget as HTMLElement
+			const index = Array.from(this.gigLinks).indexOf(target)
+			// Scroll to it in the virtualized list
+			// See ReactWindow.tsx
+			// @ts-ignore
+			window.scrollToItem && window.scrollToItem(0, index)
 		}
 
 		/**
-		 * Respond to shuffle events and hide gigs/years/months.
+		 * Respond to react-window filter events and hide gigs/years/months.
 		 * @param e
 		 */
-		onShuffle = (e: any) => {
-			const shuffleItems = e.detail.items as NodeListOf<HTMLElement> | null
-			const filteredItems = e.detail.filteredItems as NodeListOf<HTMLElement> | null
-
-			console.log(filteredItems?.length)
+		onFilter = (e: any) => {
+			const items = e.detail.items as HTMLElement[] | null
+			const filteredItems = e.detail.filteredItems as HTMLElement[] | null
 
 			// Hide the artists menu if we're shuffling
-			if (filteredItems?.length !== shuffleItems?.length && this.selected) {
+			if (filteredItems?.length !== items?.length && this.selected) {
 				this.artistsMenu?.classList.add('hidden')
 			} else {
 				this.artistsMenu?.classList.remove('hidden')
 			}
 
-			shuffleItems?.forEach((item) => {
-				const gigId = item.id
+			items?.forEach((item) => {
+				const gigId = item.dataset.gig
+
 				const sidebarItem = this.querySelector(`[data-gig="${gigId}"]`)
 
 				const gigList = sidebarItem?.closest('.gigList')
@@ -165,8 +148,8 @@ const { selected } = Astro.props
 				const monthList = gigList.closest('.monthList')
 				if (!monthList) return
 
-				// Hide items filtered out by shuffle
-				if (item.classList.contains('filteredOut')) {
+				// Hide items filtered out by shuffle if they arent alreaedy
+				if (!filteredItems?.includes(item)) {
 					sidebarItem?.classList.add('hidden')
 				} else {
 					sidebarItem?.classList.remove('hidden')
@@ -195,12 +178,12 @@ const { selected } = Astro.props
 		}
 
 		connectedCallback() {
-			document.addEventListener('shuffle-filter', this.onShuffle, false)
+			window.addEventListener('react-window-filter', this.onFilter, false)
 			!this.selected && this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e) => this.itemClick(e)))
 		}
 
 		disconnectedCallback() {
-			document.removeEventListener('shuffle-filter', this.onShuffle, false)
+			window.removeEventListener('react-window-filter', this.onFilter, false)
 			!this.selected &&
 				this.gigLinks?.forEach((gigLink) => gigLink.removeEventListener('click', (e) => this.itemClick(e)))
 		}

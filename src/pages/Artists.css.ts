@@ -7,7 +7,7 @@ export const artistListItem = style({
 	contentVisibility: 'auto',
 	paddingLeft: theme.dimensions.basePaddingMobile,
 	paddingRight: theme.dimensions.basePaddingMobile,
-	height: '1.5em',
+	height: '35px',
 	borderBottom: '1px solid rgba(255,255,255,0.1)',
 	textOverflow: 'ellipsis',
 	whiteSpace: 'nowrap',

@@ -6,7 +6,6 @@ import ActiveIndicator from 'src/components/ActiveIndicator.astro'
 import SocialLinks from 'src/components/SocialLinks.astro'
 import EntryMenu from 'src/components/EntryMenu.astro'
 import Image2 from 'src/components/Image2.astro'
-import SearchBox from 'src/components/SearchBox.astro'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 import { theme } from 'src/Theme.css'
 import AllAgesIndicator from 'src/components/AllAgesIndicator.astro'
@@ -37,21 +36,27 @@ const markers = groupedVenues.map((venueList) => ({
 ---
 
 <SidebarLayout hideFooter={true} hasSubheaderBottomMobile={true} poo={{ title: 'Venues' }}>
-	<ShuffleFilters slot="subheaderTop">
-		<SearchBox placeholder="Filter venues by name" className="fixedBottomMobile" />
-		<label>
-			<input name="hideNotAllAges" type="checkbox" data-multifilter="allages" />
-			All ages only
-		</label>
-		<label>
-			<input name="hideInactive" type="checkbox" data-multifilter="active" />
-			Hide dead
-		</label>
-		<label>
-			<input name="hideActive" type="checkbox" data-multifilter="dead" />
-			Hide alive
-		</label>
-	</ShuffleFilters>
+	<ShuffleFilters
+		slot="subheaderTop"
+		search="Filter venues by name"
+		filter={[
+			{
+				title: 'All ages only',
+				value: 'allages',
+				type: 'checkbox'
+			},
+			{
+				title: 'Hide dead',
+				value: 'active',
+				type: 'checkbox'
+			},
+			{
+				title: 'Hide alive',
+				value: 'dead',
+				type: 'checkbox'
+			}
+		]}
+	/>
 	<EntryMenu collectionEntries={venues} slot="sidebarMenu" transition:persist />
 	<Map markers={markers} slot="content">
 		<div slot="popups">

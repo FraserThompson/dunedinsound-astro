@@ -1,11 +1,9 @@
 ---
-import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import { loadAndFormatCollection } from 'src/util/collection'
-import SearchBox from 'src/components/SearchBox.astro'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 import GigsMenu from 'src/components/gig/GigsMenu.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
-import FlexGridContainer from 'src/components/FlexGridContainer.astro'
+import VirtualizedList from 'src/components/VirtualizedList.astro'
 
 const gigs = await loadAndFormatCollection('gig')
 ---
@@ -15,24 +13,10 @@ const gigs = await loadAndFormatCollection('gig')
 	poo={{ title: 'Gigs', image: gigs[0].extra.cover?.src }}
 	hideFooter={true}
 >
-	<ShuffleFilters slot="subheaderTop" layout="vertical">
-		<SearchBox placeholder="Filter gigs by title, artist, venue" className="fixedBottomMobile" />
-		<label>
-			Mode:
-			<div>
-				<a href="/gigs">
-					<button class={'active'}>Timeline</button>
-				</a>
-				<a href="/gigs/shuffle">
-					<button>Shuffle</button>
-				</a>
-			</div>
-		</label>
-	</ShuffleFilters>
 	<GigsMenu slot="sidebarMenu" transition:persist />
-	<div id="gigs" class="filter-container" slot="content" style={{ width: '100%' }}>
-		{gigs.map((gig) => <GigTile gig={gig} responsiveImageSizes="full" className="filtr-workaround" />)}
-	</div>
+	<VirtualizedList slot="content" id="gigs" rowHeight={300} search={'Filter gigs by title, artist, venue'}>
+		{gigs.map((gig) => <GigTile gig={gig} responsiveImageSizes="full" />)}
+	</VirtualizedList>
 </SidebarLayout>
 
 <script>
@@ -40,11 +24,12 @@ const gigs = await loadAndFormatCollection('gig')
 	// the spec differently.
 	import { scrollIntoView } from 'seamless-scroll-polyfill'
 
-	document.addEventListener('astro:page-load', () => {
-		const gigs = document.querySelectorAll('#gigs .tile')
+	// See SidebarNav.astro
+	const sidebar = document.querySelector('sidebar-wrapper')
 
-		// See SidebarNav.astro
-		const sidebar = document.querySelector('sidebar-wrapper')
+	// See ReactWindow.tsx
+	window.addEventListener('react-window-scroll', () => {
+		const gigs = document.querySelectorAll('#gigs .tile')
 
 		const options = {
 			rootMargin: '-40px 0px -95% 0px'

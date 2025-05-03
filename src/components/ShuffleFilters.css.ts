@@ -6,7 +6,7 @@ export const shuffleFilter = style({
 	alignItems: 'center',
 	flexWrap: 'wrap',
 	color: theme.color.text,
-	minHeight: theme.dimensions.headerHeightMobile,
+	minHeight: 0,
 	background: theme.color.primary,
 	'@media': {
 		'screen and (--md)': {
@@ -14,11 +14,6 @@ export const shuffleFilter = style({
 			minHeight: theme.dimensions.subheaderHeight
 		}
 	}
-})
-
-globalStyle('.filter-container', {
-	display: 'none',
-	overflow: 'hidden'
 })
 
 globalStyle('.filtr-item', {

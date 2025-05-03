@@ -13,13 +13,13 @@ const tileWrapperBase = style({
 	position: 'relative',
 	overflow: 'clip',
 	contentVisibility: 'auto',
-	height: fallbackVar(heightMobile, height, '40vh'),
+	height: fallbackVar(heightMobile, height, '300px'),
 	scrollMarginTop: theme.dimensions.headerHeightMobileWithSubheader,
 	border: `1px solid ${theme.color.background}`,
 	boxSizing: 'border-box',
 	'@media': {
 		'screen and (--md)': {
-			height: fallbackVar(height, '40vh')
+			height: fallbackVar(height, '300px')
 		},
 		'screen and (--xs)': {
 			scrollMarginTop: theme.dimensions.headerHeightWithSubheader
@@ -43,7 +43,7 @@ export const tileWrapper = styleVariants({
 export const tileInner = style({
 	background: fallbackVar(background, 'black'),
 	width: '100%',
-	height: fallbackVar(heightMobile, height, '40vh'),
+	height: fallbackVar(heightMobile, height, '300px'),
 	transition: 'height 100ms ease-in-out',
 	position: 'relative',
 	display: 'block',
@@ -55,7 +55,7 @@ export const tileInner = style({
 	},
 	'@media': {
 		'screen and (--md)': {
-			height: fallbackVar(height, '40vh')
+			height: fallbackVar(height, '300px')
 		}
 	}
 })

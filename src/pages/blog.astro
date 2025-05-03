@@ -6,7 +6,6 @@ import { generateExcerpt } from 'src/util/helpers'
 import BlogTags from 'src/components/blog/BlogTags.astro'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
-import SearchBox from 'src/components/SearchBox.astro'
 
 interface Props {
 	entries?: ProcessedEntry<'blog'>[]
@@ -19,18 +18,16 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 ---
 
 <SidebarLayout poo={{ title: 'Blog' }}>
-	<ShuffleFilters slot="subheaderTopDesktop">
-		<SearchBox placeholder=`Filter articles by title` className="fixedBottomMobile"/>
-	</ShuffleFilters>
+	<ShuffleFilters slot="subheaderTopDesktop" search={`Filter articles by title`} />
 	<div slot="sidebarMenu">
 		<BlogTags selected={selectedTag} />
 	</div>
 	<TextContainer slot="content">
 		{selectedTag && <h2>Articles tagged with "{selectedTag}"</h2>}
-		<div class="filter-container">
+		<div>
 			{
 				blogs.map((blog) => (
-					<div class="filtr-item" data-category="">
+					<div class="filter-item" data-category="">
 						<h2>
 							<a href={blog.extra.absolutePath}>
 								{blog.entry.data.tags.includes('interview') && 'INTERVIEW: '}
@@ -45,6 +42,7 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 									heightMobile="20vh"
 									responsiveImageSizes={'blog'}
 									backgroundImage={blog.extra.cover}
+									loading={'lazy'}
 								/>
 							</a>
 						)}
@@ -61,10 +59,3 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 		</div>
 	</TextContainer>
 </SidebarLayout>
-
-<style>
-	.filter-container {
-		top: 40px;
-		margin: 10px;
-	}
-</style>

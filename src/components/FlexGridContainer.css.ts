@@ -11,9 +11,12 @@ export const widthLg = createVar()
 
 export const maxWidth2 = createVar()
 
+export const flexJustifyContent = createVar()
+
 export const FlexGridWrapper = style({
 	display: 'flex',
-	flexWrap: 'wrap'
+	flexWrap: 'wrap',
+	justifyContent: flexJustifyContent
 })
 
 globalStyle(`${FlexGridWrapper} > *:not(script)`, {

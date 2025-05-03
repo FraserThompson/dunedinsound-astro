@@ -1,0 +1,37 @@
+---
+/**
+ * Wraps the react-window component in an astro component.
+ * 
+ * This is so we can pass in the cells as HTML then use Astro.slots.render
+ * to render to a string for the react component (JSX can't be passed via props)
+ * to framework components in Astro.
+ * 
+ * See ReactWindow for more info.
+ */
+import ReactWindow from 'src/components/ReactWindow'
+import type { Grid } from './GridChild.astro'
+
+interface Props {
+	search: string
+	rowHeight: number
+	id?: string
+	grid?: Grid
+	sort?: any[]
+	filter?: any[]
+}
+
+const cells = await Astro.slots.render('default')
+
+const { id, search, sort, filter, grid, rowHeight } = Astro.props
+---
+
+<ReactWindow
+	id={id}
+	items={cells}
+	grid={grid}
+	rowHeight={rowHeight}
+	search={search}
+	sort={sort}
+	filter={filter}
+	client:only
+/>

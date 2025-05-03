@@ -50,7 +50,6 @@
 		"autoprefixer": "^10.4.21",
 		"cssnano": "^7.0.6",
 		"fdir": "^6.4.4",
-		"filterizr": "^2.2.4",
 		"lightgallery": "^2.8.3",
 		"mapbox-gl": "^3.11.1",
 		"picomatch": "^4.0.2",

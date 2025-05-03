@@ -12,7 +12,6 @@
  *  - banner: Content to go in the banner at the top.
  */
 import EntryMenu from 'src/components/EntryMenu.astro'
-import SearchBox from 'src/components/SearchBox.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import ContentByEntry from '../../components/ContentByEntry.astro'
 import type { ProcessedEntry } from 'src/util/collection'
@@ -43,9 +42,7 @@ const hasBanner = Astro.slots.has('banner')
 		date: 'date' in entryData ? entryData.date?.toISOString() : undefined
 	}}
 >
-	<ShuffleFilters slot="subheaderTopDesktop">
-		<SearchBox placeholder=`Filter ${collection}s` className="fixedBottomMobile openWithSidebar" />
-	</ShuffleFilters>
+	<ShuffleFilters slot="subheaderTopDesktop" search={`Filter ${collection}s`} openSearchWithSidebar={true} />
 	<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href=`/${collection}s`>
 		<ChevronLeftIcon /> Go to ${collection}s home
 	</a>

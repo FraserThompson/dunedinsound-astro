@@ -1,152 +1,258 @@
 ---
 /**
- * Encapsulates the filter and sort elements for Filtirz.
- * Also initializes the Filtizr board.
- *
+ * Encapsulates filter, sort, and search functionality for elements on the page.
+ * 
+ * To use give the items you want to be filterable the class 'filter-item'.
+ * 
+ * Other components can listen for the 'react-window-filter' event to respond when 
+ * this component filters stuff (same as ReactWindow.tsx)
+ * 
  * Props:
- *  - layout: The layout to use (check filtr docs) (default: sameSize)
- *  - className: Optional classname to add
- *
- * The filter board needs the filter-container class and the items need filtr-item.
- *
- * Create filter child elements inside this component. Wrap your filters in .filterGroup.
- *
- * Then follow filterizr docs to add search/filters/sorts.
- *
- * A 'shuffle-filter' event is emitted to document on filter.
- * e.detail contains:
- *  - items: The full list of items in the board
- *  - filteredItems: The list of items after filtering.
+ *  - search: Supply a placeholder string to enable search. (optional)
+ *  - sort: Array of Sorters (optional)
+ *  - filter: Array of Filters (optional)
+ *  - className: Class to add to the wrapper (optional)
+ *  - openSearchWithSidebar: Whether to only show search when the sidebar is open (optional)
  */
 
-import LoadingSpinner from './LoadingSpinner'
 import { shuffleFilter } from './ShuffleFilters.css'
-import type { Layout } from 'filterizr/dist/types'
+import { searchboxWrapper } from './SearchBox.css'
+import SortIcon from '~icons/bx/sort'
+import SearchIcon from '~icons/bx/search'
 
-interface Props {
-	layout?: Layout
-	className?: string
+export interface Sorter {
+	value: string
+	order: string
+	title: string
 }
 
-const { layout = 'sameSize', className = '' } = Astro.props
+export interface Filter {
+	value?: string
+	values?: string[][]
+	title: string
+	type: 'select' | 'checkbox'
+}
+
+interface Props {
+	openSearchWithSidebar?: boolean
+	className?: string
+	search?: string
+	sort?: Sorter[]
+	filter?: Filter[]
+}
+
+const { openSearchWithSidebar, search, sort, filter, className = '' } = Astro.props
 ---
 
-<shuffle-filters data-layout={layout} class={`${shuffleFilter} ${className}`}>
-	<slot />
-	<div class="loading-wrapper" style={{ position: 'fixed', marginTop: '100px', marginLeft: '50%' }}>
-		<LoadingSpinner />
-	</div>
+<shuffle-filters class={`${shuffleFilter} ${className}`}>
+	{
+		search && (
+			<label class={`${searchboxWrapper} fixedBottomMobile flex ${openSearchWithSidebar ? 'openWithSidebar' : ''}`}>
+				<SearchIcon class="hideMobile" />
+				<input type="search" placeholder={search} />
+			</label>
+		)
+	}
+	{
+		sort && (
+			<label>
+				<SortIcon aria-label="Sort by" />
+				<select data-sort>
+					{sort.map((sort) => (
+						<option value={sort.value} data-order={sort.order}>
+							{sort.title}
+						</option>
+					))}
+				</select>
+			</label>
+		)
+	}
+	{
+		filter?.map((filter) =>
+			filter.type !== 'select' ? (
+				<label>
+					<input name={filter.value} value={filter.value} type={filter.type} />
+					{filter.title}
+				</label>
+			) : (
+				<label class="hideMobile flex">
+					{filter.title}
+					<select name={filter.title} data-filter>
+						<option value="">All</option>
+						{filter.values?.map(([title, value]) => (
+							<option value={value}>{title}</option>
+						))}
+					</select>
+				</label>
+			)
+		)
+	}
 </shuffle-filters>
 
 <script>
-	import Filterizr from 'filterizr'
-	import type { Layout } from 'filterizr/dist/types'
-	import { debounce } from 'throttle-debounce'
-
 	class ShuffleFilters extends HTMLElement {
-		filtrInstance: Filterizr
-		filtrElement: HTMLElement | null
+		htmlElements: HTMLElement[]
+		filteredElements: HTMLElement[]
+		sidebar: HTMLElement | null
 
-		loadingSpinner: HTMLElement | null
+		searchValue: string
 
-		itemSelector: string
-		boardSelector: string
-		layout: Layout
+		sortValue: string
+		sortOrder: number
 
-		oldValue: string
+		filters: string[]
+		selectFilters: {}
+
+		searchElement: HTMLElement | null
+		selectFilterElements: NodeListOf<HTMLElement> | null
+		checkboxFilterElements: NodeListOf<HTMLElement> | null
+		sortElement: HTMLElement | null
 
 		constructor() {
 			super()
 
-			this.itemSelector = '.filtr-item'
-			this.boardSelector = '.filter-container'
-			this.layout = this.getAttribute('data-layout') as Layout
+			const itemSelector = '.filter-item'
 
-			this.filtrElement = document.querySelector(this.boardSelector)
-			this.loadingSpinner = this.querySelector('.loading-wrapper')
+			this.htmlElements = Array.from(document.querySelectorAll(itemSelector))
+			this.sidebar = document.querySelector('#sidebar')
 
-			this.filtrInstance = new Filterizr(this.boardSelector, {
-				gridItemsSelector: this.itemSelector,
-				animationDuration: 0.1,
-				multifilterLogicalOperator: 'and',
-				layout: this.layout,
-				callbacks: {
-					onInit: () => {
-						// Hide until it's initialized
-						if (this.filtrElement) this.filtrElement.style.display = 'flex'
-						if (this.loadingSpinner) this.loadingSpinner.style.display = 'none'
-					},
-					onSortingEnd: this.onChange,
-					onShufflingEnd: this.onChange,
-					onFilteringEnd: this.onChange
-				}
-			})
+			this.filters = []
+			this.filteredElements = []
+			this.selectFilters = {}
+
+			this.searchValue = ''
+			this.sortValue = ''
+			this.sortOrder = 1
+
+			this.searchElement = this.querySelector('input[type=search]')
+			this.selectFilterElements = this.querySelectorAll('select[data-filter]')
+			this.checkboxFilterElements = this.querySelectorAll('input[type=checkbox]')
+			this.sortElement = this.querySelector('select[data-sort]')
 		}
 
-		// Emits event when something changes.
+		// Combines the results of all filters and determines whether an item should be filtered
+		filterItem = (item: HTMLElement) => {
+			const lowerSearch = this.searchValue.toLowerCase()
+			const searchResult = item.innerText.toLowerCase().includes(lowerSearch)
+			const itemCategories = item.dataset.category?.split(',')
+			const combinedFilters = [...this.filters, ...Object.values(this.selectFilters)] as string[]
+			const filterResult =
+				combinedFilters.length > 0
+					? combinedFilters.every((filter) => itemCategories && itemCategories.includes(filter))
+					: true
+
+			const visible = searchResult && filterResult
+
+			if (visible) {
+				item.classList.remove('hidden')
+			} else {
+				item.classList.add('hidden')
+			}
+
+			return visible
+		}
+
+		// Toggle a checkbox filter on and off
+		toggleFilter = (value: string) => {
+			if (this.filters.includes(value)) {
+				this.filters = this.filters.filter((currentFilter) => currentFilter !== value)
+			} else {
+				this.filters = [...this.filters, value]
+			}
+		}
+
+		// Set a select filter
+		selectFilter = (title: string, value: string) => {
+			const newFilters = { ...this.selectFilters }
+			if (!value) {
+				delete newFilters[title]
+			} else {
+				newFilters[title] = value
+			}
+			this.selectFilters = newFilters
+		}
+
+		// Filter and sort items based on current filters and sorts
+		filterItems = () => {
+			const filtered = this.htmlElements.filter((item) => this.filterItem(item))
+
+			// Scroll to top on filtering
+			this.sidebar?.scrollTo(0, 0)
+
+			if (this.sortValue) {
+				this.filteredElements = filtered.sort((a, b) => {
+					const sortA = a.dataset[this.sortValue] || ''
+					const sortB = b.dataset[this.sortValue] || ''
+					const aNumber = parseInt(sortA)
+					const bNumber = parseInt(sortB)
+
+					if (typeof aNumber === 'number') {
+						return (aNumber - bNumber) * this.sortOrder
+					} else {
+						return sortA.localeCompare(sortB)
+					}
+				})
+			} else {
+				this.filteredElements = filtered
+			}
+
+			this.onChange()
+		}
+
+		// When anything changes let everyone know
 		onChange = () => {
-			const event = new CustomEvent('shuffle-filter', {
+			const event = new CustomEvent('react-window-filter', {
 				detail: {
-					items: this.filtrElement?.querySelectorAll(this.itemSelector),
-					filteredItems: this.filtrElement?.querySelectorAll(`${this.itemSelector}:not(.filteredOut)`)
+					items: this.htmlElements,
+					filteredItems: this.filteredElements
 				}
 			})
-			document.dispatchEvent(event)
+			window.dispatchEvent(event)
+		}
+
+		onSearch = (e) => {
+			const target = e.currentTarget
+			this.searchValue = target.value
+			this.filterItems()
+		}
+
+		onSelectFilter = (e) => {
+			const target = e.currentTarget
+			this.selectFilter(target.title, target.value)
+			this.filterItems()
+		}
+
+		onCheckboxFilter = (e) => {
+			const target = e.currentTarget
+			this.toggleFilter(target.value)
+			this.filterItems()
+		}
+
+		onSort = (e) => {
+			const target = e.currentTarget
+			this.sortValue = target.value
+			this.sortOrder = target.dataset.order === 'asc' ? 1 : -1
+			this.filterItems()
 		}
 
 		connectedCallback() {
-			const selectFilters = this.querySelectorAll('select:not([data-sortOrder])')
-			const sorters = this.querySelectorAll('select[data-sortOrder]')
-			const search = this.querySelector('input[data-search]')
-
-			// Searches don't trigger the callbacks so we trigger a sort.
-			search?.addEventListener(
-				'input',
-				debounce(300, () => {
-					// If we're in a sidebar we should scroll that to the top.
-					// Else the window.
-					const sidebar = document.querySelector('#sidebar-menu')
-					if (sidebar && this.filtrElement?.closest('#sidebar-menu') && sidebar.scrollTop !== 0) {
-						sidebar.scrollTo(0, 0)
-					} else if (window.scrollY !== 0) {
-						window.scrollTo(0, 0)
-					}
-					this.filtrInstance.sort('index', 'asc')
-				})
-			)
-
-			// Input type search clear doesn't trigger refilter, so we do it.
-			search?.addEventListener('input', (e) => {
-				const target = e.target as HTMLInputElement | undefined
-				target?.value === '' && this.filtrInstance.search('')
-			})
-
-			// So we can filter with select elements
-			selectFilters.forEach((el: HTMLSelectElement) =>
-				el.addEventListener('change', (e) => {
-					// Untoggle last filter
-					if (this.oldValue) {
-						this.filtrInstance.toggleFilter(this.oldValue)
-					}
-					const target = e.target as HTMLSelectElement
-					this.oldValue = target.value
-					this.filtrInstance.toggleFilter(target.value)
-				})
-			)
-
-			// So we can control sort order per sorting element with an attribute
-			sorters.forEach((el: HTMLSelectElement) =>
-				el.addEventListener('change', (e) => {
-					const target = e.target as HTMLSelectElement
-					const selectedOption = target.options[target.selectedIndex]
-					const sortOrder = selectedOption.dataset.order as 'asc' | 'desc' | undefined
-					this.filtrInstance.sort(target.value, sortOrder || 'asc')
-				})
-			)
+			// attach callbacks for search, sort, filter elements
+			this.searchElement?.addEventListener('input', this.onSearch)
+			this.selectFilterElements &&
+				Array.from(this.selectFilterElements).map((el) => el?.addEventListener('select', this.onSelectFilter))
+			this.checkboxFilterElements &&
+				Array.from(this.checkboxFilterElements).map((el) => el?.addEventListener('input', this.onCheckboxFilter))
+			this.sortElement?.addEventListener('select', this.onSort)
 		}
 
 		disconnectedCallback() {
-			this.filtrInstance?.destroy()
+			// detach callbacks for search, sort, filter elements
+			this.searchElement?.removeEventListener('input', this.onSearch)
+			this.selectFilterElements &&
+				Array.from(this.selectFilterElements).map((el) => el?.removeEventListener('select', this.onSelectFilter))
+			this.checkboxFilterElements &&
+				Array.from(this.checkboxFilterElements).map((el) => el?.removeEventListener('input', this.onCheckboxFilter))
+			this.sortElement?.removeEventListener('select', this.onSort)
 		}
 	}
 

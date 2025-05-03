@@ -45,7 +45,8 @@ const gigExtra = gig.extra
 	containerHeightMobile={containerHeightMobile}
 	containerWidth={'100%'}
 	dataAttributes={{
-		'data-category': 'all'
+		'data-title': gigData.title,
+		'data-gig': makeHash(gig.entry.id)
 	}}
 >
 	<h5 style={{ marginBottom: '0px' }}>
