@@ -366,7 +366,7 @@ globalStyle('.trippy2', {
 	fontWeight: '600',
 	color: 'white',
 	transition: 'all 0.2s ease-in-out',
-	transform: 'skew(-10deg) scale(1, 1.5)',
+	transform: 'scale(1, 1.5)',
 	background: 'linear-gradient(to right,rgb(13, 255, 0),rgb(255, 0, 119),rgb(96, 64, 224))',
 	WebkitBackgroundClip: 'text',
 	backgroundClip: 'text',

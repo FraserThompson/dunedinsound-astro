@@ -36,9 +36,19 @@ combinedPosts.splice(latestGigIndex, 1)
 					.slice(0, 2)
 					.map((post) =>
 						post.entry.collection === 'gig' ? (
-							<GigTile gig={post as ProcessedEntry<'gig'>} responsiveImageSizes={'largeGrid'} backgroundStyle="full" />
+							<GigTile
+								containerHeight="40vh"
+								gig={post as ProcessedEntry<'gig'>}
+								responsiveImageSizes={'largeGrid'}
+								backgroundStyle="full"
+							/>
 						) : (
-							<BlogTile blog={post as ProcessedEntry<'blog'>} responsiveImageSizes={'largeGrid'} backgroundStyle="full" />
+							<BlogTile
+								containerHeight="40vh"
+								blog={post as ProcessedEntry<'blog'>}
+								responsiveImageSizes={'largeGrid'}
+								backgroundStyle="full"
+							/>
 						)
 					)
 			}
@@ -47,7 +57,7 @@ combinedPosts.splice(latestGigIndex, 1)
 			<GridContainer fixed={true}>
 				{
 					combinedPosts
-						.slice(2, 14)
+						.slice(2, 11)
 						.map((post) => (
 							<GridChild grid={{ xs: 12, md: 4, lg: 4 }}>
 								{post.entry.collection === 'gig' ? (
@@ -55,10 +65,16 @@ combinedPosts.splice(latestGigIndex, 1)
 										className={gridChild}
 										gig={post as ProcessedEntry<'gig'>}
 										responsiveImageSizes={'largeGrid'}
+										containerHeight="40vh"
 										backgroundStyle="full"
 									/>
 								) : (
-									<BlogTile blog={post as ProcessedEntry<'blog'>} responsiveImageSizes={'largeGrid'} backgroundStyle="full" />
+									<BlogTile
+										containerHeight="40vh"
+										blog={post as ProcessedEntry<'blog'>}
+										responsiveImageSizes={'largeGrid'}
+										backgroundStyle="full"
+									/>
 								)}
 							</GridChild>
 						))
@@ -67,19 +83,11 @@ combinedPosts.splice(latestGigIndex, 1)
 		</GridChild>
 	</GridContainer>
 	<FlexGridContainer grid={{ xs: 6 }}>
-		<Tile
-			containerHeight={'50px'}
-			href="/gigs"
-			backgroundColor={theme.color.foreground}
-		>
-			<h3 class="center">More Gigs</h3>
+		<Tile containerHeight={'50px'} href="/gigs" backgroundColor={theme.color.foreground}>
+			<h3 class="center" style={{marginTop: "10px"}}>More Gigs</h3>
 		</Tile>
-		<Tile
-			containerHeight={'50px'}
-			href="/blog"
-			backgroundColor={theme.color.secondary}
-		>
-			<h3 class="center">More Articles</h3>
+		<Tile containerHeight={'50px'} href="/blog" backgroundColor={theme.color.secondary}>
+			<h3 class="center" style={{marginTop: "10px"}}>More Articles</h3>
 		</Tile>
 	</FlexGridContainer>
 </BaseLayout>

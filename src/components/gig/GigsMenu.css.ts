@@ -70,14 +70,20 @@ export const yearLink = style([
 	{
 		position: 'sticky',
 		color: `black !important`,
-		height: `${theme.dimensions.subheaderHeight} !important`,
-		lineHeight: `${theme.dimensions.subheaderHeight} !important`,
+		height: `${theme.dimensions.headerHeightMobile} !important`,
+		lineHeight: `${theme.dimensions.headerHeightMobile} !important`,
 		top: '0px',
 		backgroundColor: `white !important`,
 		paddingLeft: '0px !important',
 		margin: 0,
 		zIndex: 7,
-		fontWeight: 'bold'
+		fontWeight: 'bold',
+		'@media': {
+			'screen and (--md)': {
+				height: `${theme.dimensions.headerHeight} !important`,
+				lineHeight: `${theme.dimensions.headerHeight} !important`,
+			}
+		}
 	}
 ])
 

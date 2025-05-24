@@ -28,7 +28,7 @@ export const socialLinksWrapper = style({
 export const descriptionWrapper = style({
 	backgroundColor: 'black',
 	margin: theme.dimensions.basePaddingMobile,
-	marginBottom: `calc(${theme.dimensions.subheaderHeight} + ${theme.dimensions.basePaddingMobile})`,
+	marginBottom: `calc(${theme.dimensions.subheaderHeight} + ${theme.dimensions.basePadding})`,
 	textAlign: 'left',
 	'@media': {
 		'screen and (--md)': {

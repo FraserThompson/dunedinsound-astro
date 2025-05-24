@@ -27,30 +27,32 @@ const gigs = await loadAndFormatCollection('gig')
 	// See SidebarNav.astro
 	const sidebar = document.querySelector('sidebar-wrapper')
 
+	const options = {
+		rootMargin: '-40px 0px -95% 0px'
+	}
+
+	/**
+	 * Highlights gig in the sidebar when its scrolled over on the main page.
+	 */
+	const callback = (entries: IntersectionObserverEntry[]) => {
+		entries.forEach((entry) => {
+			const sidebarItem = sidebar?.querySelector<HTMLElement>(`[href="#${entry.target.id}"]`)
+			if (entry.isIntersecting && sidebarItem) {
+				sidebarItem?.classList.add('active')
+				scrollIntoView(sidebarItem, { behavior: 'smooth', block: 'center' })
+			} else {
+				sidebarItem?.classList.remove('active')
+			}
+		})
+	}
+
+	const observer = new IntersectionObserver(callback, options)
+
 	// See ReactWindow.tsx
 	window.addEventListener('react-window-scroll', () => {
+		// Since react-window adds and removes elements from the DOM
+		// We have to query and watch on each scroll.
 		const gigs = document.querySelectorAll('#gigs .tile')
-
-		const options = {
-			rootMargin: '-40px 0px -95% 0px'
-		}
-
-		/**
-		 * Highlights gig in the sidebar when its scrolled over on the main page.
-		 */
-		const callback = (entries: IntersectionObserverEntry[]) => {
-			entries.forEach((entry) => {
-				const sidebarItem = sidebar?.querySelector<HTMLElement>(`[href="#${entry.target.id}"]`)
-				if (entry.isIntersecting && sidebarItem) {
-					sidebarItem?.classList.add('active')
-					scrollIntoView(sidebarItem, { behavior: 'smooth', block: 'center' })
-				} else {
-					sidebarItem?.classList.remove('active')
-				}
-			})
-		}
-
-		const observer = new IntersectionObserver(callback, options)
 		gigs?.forEach((el) => observer.observe(el))
 	})
 </script>

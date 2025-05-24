@@ -353,14 +353,14 @@ export async function getBlogExtra(
 ): Promise<EntryExtraMap['blog']> {
 	const relatedArtists = entry.data.relatedArtists
 		? (
-				await Promise.all(entry.data.relatedArtists.map(async (artist: any) => await getEntry('artist', artist.id)))
-			).filter((thing) => thing !== undefined)
+			await Promise.all(entry.data.relatedArtists.map(async (artist: any) => await getEntry('artist', artist.id)))
+		).filter((thing) => thing !== undefined)
 		: []
 
 	const relatedVenues = entry.data.relatedVenues
 		? (await Promise.all(entry.data.relatedVenues.map(async (venue: any) => await getEntry('venue', venue.id)))).filter(
-				(thing) => thing !== undefined
-			)
+			(thing) => thing !== undefined
+		)
 		: []
 
 	// Find gigs which mention related artists
@@ -529,8 +529,14 @@ function getEntrySlug(title: string, collection?: string): string {
  */
 export function getEntryPath(title: string, collection: CollectionKey): string {
 	const slug = getEntrySlug(title, collection)
-	const slugType = collection !== 'blog' &&  collection !== 'series'? collection + 's' : collection
-	return '/' + slugType + '/' + slug
+	switch (collection) {
+		case "blog":
+			return '/' + collection + '/' + slug
+		case "series":
+			return '/gigs/' + collection + '/' + slug
+		default:
+			return '/' + collection + 's/' + slug
+	}
 }
 
 /**

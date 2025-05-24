@@ -51,7 +51,7 @@ export const tileInner = style({
 		'&:hover': {
 			color: theme.color.lightText,
 			textDecoration: 'none'
-		}
+		},
 	},
 	'@media': {
 		'screen and (--md)': {

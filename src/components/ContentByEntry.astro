@@ -114,7 +114,7 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 		{
 			!!previouslyKnownAs.length && (
 				<h4 style={{ margin: 0 }}>
-					Previously known as
+					Previously at this location
 					{previouslyKnownAs.map((thing) => (
 						<a href={thing.extra.absolutePath}>{thing.entry.data.title}</a>
 					))}
@@ -194,7 +194,7 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 						<Divider href={`#y${year}`} sticky={true} top={theme.dimensions.subheaderHeight} smoothScroll={true}>
 							{year} ({gigs?.length})
 						</Divider>
-						<FlexGridContainer grid={gigs && gigs.length <= 4 ? { xs: 12, md: 6 } : undefined}>
+						<FlexGridContainer grid={gigs && gigs.length <= 4 ? { xs: 12, md: 6 } : { xs: 12, md: 6, lg: 3 }}>
 							{gigs?.map((gig) => (
 								<GigTile gig={gig} backgroundStyle="center" responsiveImageSizes={gigs.length <= 4 ? 'full' : 'grid'} />
 							))}
@@ -226,7 +226,7 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 		}
 	</div>
 	<div data-tabid="blogs">
-		<FlexGridContainer>
+		<FlexGridContainer grid={{ xs: 12, md: 6, lg: 3 }}>
 			{
 				blogs.map((blog) => (
 					<Tile
@@ -249,7 +249,7 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 		)
 	}
 	<div data-tabid="vaultsessions">
-		<FlexGridContainer>
+		<FlexGridContainer grid={{ xs: 12, md: 6, lg: 3 }}>
 			{
 				vaultSessions.map((vaultsession) => (
 					<Tile

@@ -41,13 +41,16 @@ const entryExtra = entry.extra
 								</a>
 							</li>
 						))}
-						<li>
-							<a class={`${artistDropdownLink} seeOther`} href={`/artists/${artist.entry.id}`}>
-								<small>
-									SEE {artist.extra.gigCount - 1} OTHER GIG{artist.extra.gigCount - 1 === 1 ? '' : 'S'} FROM THIS ARTIST
-								</small>
-							</a>
-						</li>
+						{artist.extra.gigCount - 1 > 0 && (
+							<li>
+								<a class={`${artistDropdownLink} seeOther`} href={`/artists/${artist.entry.id}`}>
+									<small>
+										SEE {artist.extra.gigCount - 1} OTHER GIG{artist.extra.gigCount - 1 === 1 ? '' : 'S'} FROM THIS
+										ARTIST
+									</small>
+								</a>
+							</li>
+						)}
 					</ul>
 				)}
 			</li>

@@ -24,6 +24,7 @@ const { entry } = Astro.props
 const entryData = entry.entry.data
 const entryExtra = entry.extra
 
+const galleryCount = Object.values(entryExtra.artistImages).filter((images) => images.length > 0).length
 const uncategorizedImages = entryExtra.artistImages?._uncategorized
 ---
 
@@ -76,7 +77,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 			<CornerLabel position="right" background={theme.color.transparentForeground} slot="customContent">
 				<a href={entryExtra.series.extra.absolutePath} class="trippy2">
 					<small style={{ color: theme.color.dullText }}>Series</small>
-					{entryExtra.series.entry.data.title}
+					<em>{entryExtra.series.entry.data.title}</em>
 					<small>({entryExtra.series.extra.gigCount} gigs)</small>
 				</a>
 			</CornerLabel>
@@ -113,7 +114,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	<h3 style={{ marginBottom: 0 }}>{entryData.title}</h3>
 </Divider>
 {entryData.intro && <BigIntro text={entryData.intro} />}
-{!!uncategorizedImages?.length && <ImageGallery images={uncategorizedImages} noLightbox={true}/>}
+{!!uncategorizedImages?.length && <ImageGallery images={uncategorizedImages} noLightbox={galleryCount === 1 ? false : true}/>}
 {
 	!entryData.audioOnly && (
 		<>
