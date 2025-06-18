@@ -24,9 +24,9 @@ export const toMachineName = (string: string, space_character?: string) => {
 export const stringNormalize = (string?: string | null) => {
 	return string
 		? string
-				.toLowerCase()
-				.normalize('NFD')
-				.replace(/\p{Diacritic}/gu, '')
+			.toLowerCase()
+			.normalize('NFD')
+			.replace(/\p{Diacritic}/gu, '')
 		: ''
 }
 
@@ -36,3 +36,5 @@ export const stringNormalize = (string?: string | null) => {
  * @returns
  */
 export const makeHash = (string: string) => 'h' + encodeURIComponent(toMachineName(string))
+
+export const formattedDate = (date: Date) => date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })

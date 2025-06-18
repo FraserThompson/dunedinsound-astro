@@ -22,6 +22,7 @@ import ImageGallery from 'src/components/ImageGallery.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
 import { contentByEntryTitle, descriptionWrapper } from './ContentByEntry.css'
 import CornerLabel from './gig/CornerLabel.astro'
+import { formattedDate } from 'src/util/names'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'> | ProcessedEntry<'series'>
@@ -100,7 +101,6 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 					born={entryData.date}
 					died={entryData.died}
 					collection={entry.entry.collection}
-					hideIfActive={true}
 				/>
 			)
 		}
@@ -232,7 +232,7 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 					<Tile
 						href={blog.extra.absolutePath}
 						title={blog.entry.data.title}
-						label={blog.entry.data.date.toLocaleDateString()}
+						label={formattedDate(blog.entry.data.date)}
 						responsiveImage={blog.extra.cover}
 						responsiveImageSizes={'grid'}
 						backgroundStyle="center"
@@ -255,7 +255,7 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 					<Tile
 						href={vaultsession.extra.absolutePath}
 						title={vaultsession.entry.data.title}
-						label={vaultsession.entry.data.date.toLocaleDateString()}
+						label={formattedDate(vaultsession.entry.data.date)}
 						responsiveImage={vaultsession.extra.cover}
 						responsiveImageSizes={'grid'}
 						backgroundStyle="center"

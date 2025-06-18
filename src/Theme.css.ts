@@ -9,6 +9,7 @@ export const theme = createThemeContract({
 		secondary: '',
 		contrast: '',
 		contrast2: '',
+		contrast3: '',
 		text: '',
 		lightText: '',
 		dullText: '',
@@ -75,6 +76,7 @@ const foregroundColor = 'rgb(0, 77, 68)'
 const secondaryColor = 'rgb(27, 69, 120)'
 const contrastColor = 'rgb(250, 249, 249)'
 const contrastColor2 = 'rgb(150, 255, 125)'
+const contrastColor3 = 'rgb(130, 9, 51)'
 const textColor = '#ccc'
 
 createGlobalTheme(':root', theme, {
@@ -85,6 +87,7 @@ createGlobalTheme(':root', theme, {
 		secondary: secondaryColor,
 		contrast: contrastColor,
 		contrast2: contrastColor2,
+		contrast3: contrastColor3,
 		text: textColor,
 		lightText: lighten(0.5, textColor),
 		dullText: darken(0.2, textColor),

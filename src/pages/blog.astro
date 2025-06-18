@@ -6,6 +6,7 @@ import { generateExcerpt } from 'src/util/helpers'
 import BlogTags from 'src/components/blog/BlogTags.astro'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
+import { formattedDate } from 'src/util/names'
 
 interface Props {
 	entries?: ProcessedEntry<'blog'>[]
@@ -34,7 +35,7 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 								{blog.entry.data.title}
 							</a>
 						</h2>
-						<h4>{blog.entry.data.date.toLocaleDateString()}</h4>
+						<h4>{formattedDate(blog.entry.data.date)}</h4>
 						{blog.extra.cover && (
 							<a href={blog.extra.absolutePath}>
 								<Banner

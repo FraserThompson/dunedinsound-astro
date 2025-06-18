@@ -8,14 +8,13 @@ interface Props {
 	died?: Date
 	born?: Date
 	collection?: string
-	hideIfActive?: boolean
 }
 
-const { died, born, collection, hideIfActive } = Astro.props
+const { died, born, collection } = Astro.props
 ---
 
 <!-- we only want to show "active" status on venues -->{
-	died === undefined && born && collection !== 'artist' && !hideIfActive && (
+	died === undefined && born && collection !== 'artist' && (
 		<h4 class={activeIcon} title="Active">
 			Active since {born.getFullYear()}
 		</h4>

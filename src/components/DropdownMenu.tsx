@@ -14,7 +14,7 @@
 
 import { useState, useEffect, useCallback, useRef, type MutableRef } from "preact/hooks"
 import type { FunctionalComponent } from "preact"
-import MenuIcon from '~icons/bx/menu'
+import MenuIcon from '~icons/iconoir/menu'
 import { background, dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, dropdownLink, dropdownMenu, dropdownTop, dropdownTopMobile, dropdownWrapper, menuWidth, color, dropdownHeight, dropdownHeightMobile } from './DropdownMenu.css'
 import { scrollTo } from 'src/util/helpers'
 import { assignInlineVars } from '@vanilla-extract/dynamic'

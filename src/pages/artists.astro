@@ -39,8 +39,8 @@ const originsList = Object.entries(originCounts).map(([key, value]) => [`${key} 
 		]}
 		rowHeight={35}
 		filter={[
-			{ value: 'active', title: 'Hide inactive', type: 'checkbox' },
-			{ values: originsList, title: 'Country', type: 'select' }
+			{ values: originsList, title: 'Origins', icon: 'globe', type: 'select' },
+			{ value: 'active', title: 'Hide inactive', type: 'checkbox' }
 		]}
 	>
 		{

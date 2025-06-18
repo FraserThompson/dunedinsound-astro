@@ -185,7 +185,7 @@ globalStyle('input[type="text"], input[type="search"]', {
 
 globalStyle('select', {
 	backgroundImage: 'none',
-	padding: '4px 6px',
+	padding: '4px 0px',
 	border: '1px solid #000',
 	minWidth: '0px',
 	maxWidth: '100%',

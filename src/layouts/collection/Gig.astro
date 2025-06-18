@@ -4,7 +4,7 @@ import type { ProcessedEntry } from 'src/util/collection'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import Player from 'src/components/gig/Player'
 import PlayerContainer from 'src/components/gig/PlayerContainer.astro'
-import MapIcon from '~icons/bx/map'
+import MapIcon from '~icons/iconoir/map-pin'
 import CornerLabel from 'src/components/gig/CornerLabel.astro'
 import BigIntro from 'src/components/gig/BigIntro.astro'
 import ArtistMedia from 'src/components/gig/ArtistMedia.astro'
@@ -14,6 +14,7 @@ import { theme } from 'src/Theme.css'
 import { GigBannerPlayer, GigFeatureVid } from './Gig.css'
 import ArtistDropdown from 'src/components/gig/ArtistDropdown.astro'
 import { descriptionWrapper } from 'src/components/ContentByEntry.css'
+import { formattedDate } from 'src/util/names'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -70,7 +71,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 		)
 	}
 	<CornerLabel position="left" slot="customContent">
-		{entryData.date.toLocaleDateString()}
+		{formattedDate(entryData.date)}
 	</CornerLabel>
 	{
 		entryExtra.series && (

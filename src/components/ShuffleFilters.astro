@@ -1,12 +1,12 @@
 ---
 /**
  * Encapsulates filter, sort, and search functionality for elements on the page.
- * 
+ *
  * To use give the items you want to be filterable the class 'filter-item'.
- * 
- * Other components can listen for the 'react-window-filter' event to respond when 
+ *
+ * Other components can listen for the 'react-window-filter' event to respond when
  * this component filters stuff (same as ReactWindow.tsx)
- * 
+ *
  * Props:
  *  - search: Supply a placeholder string to enable search. (optional)
  *  - sort: Array of Sorters (optional)
@@ -17,8 +17,8 @@
 
 import { shuffleFilter } from './ShuffleFilters.css'
 import { searchboxWrapper } from './SearchBox.css'
-import SortIcon from '~icons/bx/sort'
-import SearchIcon from '~icons/bx/search'
+import SortIcon from '~icons/iconoir/sort'
+import SearchIcon from '~icons/iconoir/search'
 
 export interface Sorter {
 	value: string
@@ -30,6 +30,8 @@ export interface Filter {
 	value?: string
 	values?: string[][]
 	title: string
+	checkedTitle?: string
+	icon?: string
 	type: 'select' | 'checkbox'
 }
 

@@ -11,7 +11,7 @@
 
 import { useRef, useState, useEffect, useCallback } from "preact/hooks"
 import type { FunctionalComponent } from "preact"
-import DownloadIcon from '~icons/bx/download'
+import DownloadIcon from '~icons/iconoir/download'
 import LoadingSpinner from '../LoadingSpinner.tsx'
 import { timeToSeconds } from '../../util/helpers.ts'
 import { AudioWrapper, LengthWrapper, PlayerWrapper, Titlebar, TracklistTrack, TracklistWrapper, TransportButton, WaveWrapper } from './Player.css.ts'

@@ -5,7 +5,7 @@
 import type { ProcessedEntry } from 'src/util/collection'
 import Tile, { type BackgroundStyle } from '../Tile.astro'
 import { artistsToString } from 'src/util/helpers'
-import { makeHash } from 'src/util/names'
+import { formattedDate, makeHash } from 'src/util/names'
 import type { ResponsiveImageSizes } from '../Image2.astro'
 import CornerLabel from './CornerLabel.astro'
 
@@ -39,7 +39,7 @@ const gigExtra = gig.extra
 	backgroundStyle={backgroundStyle}
 	id={makeHash(gig.entry.id)}
 	subtitle={gigExtra.venue?.data.title}
-	label={gigData.date.toLocaleDateString()}
+	label={formattedDate(gigData.date)}
 	title={gigData.title}
 	containerHeight={containerHeight}
 	containerHeightMobile={containerHeightMobile}

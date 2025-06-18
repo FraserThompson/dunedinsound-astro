@@ -22,8 +22,9 @@ import AutoSizer from "react-virtualized-auto-sizer"
 import type { FunctionalComponent } from "preact"
 import { useMemo, useState, useCallback, useEffect, useRef } from "preact/hooks"
 import { searchboxWrapper } from "./SearchBox.css"
-import SortIcon from '~icons/bx/sort'
-import SearchIcon from '~icons/bx/search'
+import SortIcon from '~icons/iconoir/sort'
+import SearchIcon from '~icons/iconoir/search'
+import GlobeIcon from '~icons/iconoir/globe'
 import type { ChangeEvent } from "react-dom/src"
 import { shuffleFilter } from "./ShuffleFilters.css"
 import { reactWindowWrapper } from "./ReactWindow.css"
@@ -187,6 +188,14 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
         }
     }, [filteredItems])
 
+    // Hardcoded map of icons to strings we can pass in from astro
+    const getIcon = useCallback((name: string) => {
+        switch (name) {
+            case 'globe':
+                return <GlobeIcon />
+        }
+    }, [])
+
     return (
         <div id={id} className={`${className} ${reactWindowWrapper}`}>
             {(search || sort || filter) && <div class={shuffleFilter}>
@@ -208,29 +217,32 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
                         </select>
                     </label>
                 }
-                {filter?.map((filter) =>
-                (filter.type !== 'select'
-                    ?
-                    <label>
-                        <input name={filter.value} value={filter.value} type={filter.type} onChange={(e: ChangeEvent<HTMLInputElement>) => toggleFilter(e.currentTarget.value)} />
-                        {filter.title}
-                    </label>
-                    :
-                    <label class="hideMobile flex">
-                        {filter.title}
-                        <select name={filter.title} onChange={(e: ChangeEvent<HTMLSelectElement>) => selectFilter(filter.title, e.currentTarget.value)} >
-                            <option value="">All</option>
-                            {
-                                filter.values?.map(([title, value]) => (
-                                    <option value={value}>
-                                        {title}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </label>)
-                )
-                }
+                {filter && <div style={{ display: "flex", marginLeft: "auto" }}>
+                    {filter?.map((filter) =>
+                    (filter.type !== 'select'
+                        ?
+                        <label style={{ cursor: "pointer" }}>
+                            <input name={filter.value} value={filter.value} type={filter.type} onChange={(e: ChangeEvent<HTMLInputElement>) => toggleFilter(e.currentTarget.value)} />
+                            <span className={filter.checkedTitle ? 'whenUnchecked' : ''}>{filter.icon ? getIcon(filter.icon) : filter.title}</span>
+                            {filter.checkedTitle && <span className='whenChecked'>{filter.checkedTitle}</span>}
+                        </label>
+                        :
+                        <label class="flex">
+                            <span className="flex hideMobile">{filter.icon ? getIcon(filter.icon) : filter.title}</span>
+                            <select name={filter.title} onChange={(e: ChangeEvent<HTMLSelectElement>) => selectFilter(filter.title, e.currentTarget.value)} >
+                                <option value="">All {filter.title}</option>
+                                {
+                                    filter.values?.map(([title, value]) => (
+                                        <option value={value}>
+                                            {title}
+                                        </option>
+                                    ))
+                                }
+                            </select>
+                        </label>)
+                    )
+                    }
+                </div>}
             </div>}
             <AutoSizer>
                 {({ height, width }) =>

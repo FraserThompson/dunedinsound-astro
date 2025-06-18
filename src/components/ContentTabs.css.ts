@@ -28,12 +28,18 @@ export const tabButton = style({
 	borderLeft: `2px solid ${theme.color.primary}`,
 	borderRight: theme.color.text,
 	borderBottom: theme.color.text,
+	transition: 'top 0.1s ease-in-out',
+	top: '0px',
 	selectors: {
 		'&.active': {
+			color: 'black',
+			position: 'relative',
+			top: '1px',
+			height: 'calc(100% + 1px)',
 			borderLeft: theme.borders.secondary,
 			borderRight: theme.borders.secondary,
-			borderBottom: theme.borders.secondary,
-			background: `linear-gradient(90deg, ${theme.color.secondary}, rgb(0, 0, 0))`
+			borderBottom: theme.color.contrast,
+			background: theme.color.contrast
 		},
 		'&:hover:not(.active)': {
 			color: 'black',

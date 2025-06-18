@@ -32,7 +32,7 @@ const MenuLiBase = style({
 	backgroundColor: theme.color.primary,
 	selectors: {
 		'&.active, &:active': {
-			backgroundColor: theme.color.secondary,
+			backgroundColor: theme.color.contrast3,
 			color: theme.color.lightText
 		}
 	}
@@ -51,7 +51,12 @@ export const MenuLi = styleVariants({
 	vertical: [
 		MenuLiBase,
 		{
-			width: '100%'
+			width: '100%',
+			selectors: {
+				'&.active, &:active': {
+					backgroundColor: theme.color.secondary
+				}
+			}
 		}
 	],
 	sideways: [
@@ -83,7 +88,7 @@ const MenuLinkWrapperBase = style({
 			textDecoration: 'none'
 		},
 		'&.active, &:active': {
-			backgroundColor: theme.color.secondary,
+			backgroundColor: theme.color.contrast3,
 			color: theme.color.lightText
 		}
 	},
@@ -129,6 +134,11 @@ export const MenuLinkWrapper = styleVariants({
 				'screen and (--md)': {
 					paddingLeft: theme.dimensions.basePadding,
 					paddingRight: theme.dimensions.basePadding
+				}
+			},
+			selectors: {
+				'&.active, &:active': {
+					backgroundColor: theme.color.secondary
 				}
 			}
 		}

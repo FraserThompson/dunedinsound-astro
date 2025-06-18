@@ -22,11 +22,12 @@ import siteIcon from 'src/assets/site-icon.jpg'
 
 interface Props {
 	hideFooter?: boolean
+	hasSidebar?: boolean
 	className?: string
 	poo: Poo
 }
 
-const { hideFooter, className = '', poo } = Astro.props
+const { hideFooter, hasSidebar, className = '', poo } = Astro.props
 ---
 
 <html lang="en" transition:animate="none">
@@ -49,7 +50,7 @@ const { hideFooter, className = '', poo } = Astro.props
 				<slot />
 			</div>
 		</div>
-		{!hideFooter && <SiteFooter transition:persist />}
+		{!hideFooter && <SiteFooter hasSidebar={hasSidebar} transition:persist />}
 	</body>
 </html>
 
