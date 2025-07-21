@@ -18,6 +18,7 @@ export const GigFeatureVid = style({
 	width: '100%',
 	aspectRatio: '16/9',
 	padding: 0,
+	paddingTop: "25px",
 	'@media': {
 		'screen and (--md)': {
 			padding: theme.dimensions.basePadding,

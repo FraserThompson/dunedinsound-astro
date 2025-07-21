@@ -61,6 +61,7 @@ const vaultSessions = await loadAndFormatCollection('vaultsession', (thing) => {
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
+const collection = entry.entry.collection
 
 const images = entryExtra.images
 
@@ -69,19 +70,21 @@ blogs.length > 0 && tabs.push({ title: `Articles (${blogs.length})`, id: 'blogs'
 images && Object.keys(images).length > 0 && tabs.push({ title: `Images (${Object.keys(images).length})`, id: 'images' })
 vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessions' })
 
-// Find other entries which reference this one as an alias (it was once them)
-const previouslyKnownAs = await loadAndFormatCollection(
-	entry.entry.collection,
+// Find other entries which reference this one as an alias
+const referencesThis = await loadAndFormatCollection(
+	collection,
 	(thing) => 'aliases' in thing.entry.data && thing.entry.data.aliases?.find((alias) => alias.id === entry.entry.id)
 )
 
-// Load this entries aliases (it will become them)
-const willBeKnownAs =
-	'aliases' in entryData &&
-	entryData.aliases &&
-	(await Promise.all(
-		entryData.aliases.map(async (thing) => await loadAndFormatEntry(entry.entry.collection, thing.id))
-	))
+// Load this entries aliases
+const thisReferences =
+	'aliases' in entryData && entryData.aliases
+		? Array.from(
+				await Promise.all(entryData.aliases.map(async (thing) => await loadAndFormatEntry(collection, thing.id)))
+			)
+		: []
+// All references to or by this entry
+const allReferences = [...Array.from(thisReferences), ...referencesThis]
 
 const hasBanner = Astro.slots.has('banner')
 const hasAudioculture = entryData.links && 'audioculture' in entryData.links
@@ -97,11 +100,7 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 	<div slot="title" class={contentByEntryTitle}>
 		{
 			('date' in entryData || 'died' in entryData) && (
-				<ActiveIndicator
-					born={entryData.date}
-					died={entryData.died}
-					collection={entry.entry.collection}
-				/>
+				<ActiveIndicator born={entryData.date} died={entryData.died} collection={collection} />
 			)
 		}
 	</div>
@@ -109,13 +108,17 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 	<CornerLabel slot="customContent">
 		{entryData.links && <SocialLinks links={entryData.links} />}
 	</CornerLabel>
-	<!-- description/audioculture quote and was link -->
-	<Fragment slot={entryData.description || hasAudioculture || !!previouslyKnownAs.length ? 'subtitle' : ''}>
+	<!-- description/audioculture quote and link to references of this -->
+	<Fragment
+		slot={entryData.description || hasAudioculture || !!referencesThis.length || !!thisReferences.length
+			? 'subtitle'
+			: ''}
+	>
 		{
-			!!previouslyKnownAs.length && (
+			!!referencesThis.length && collection === 'venue' && (
 				<h4 style={{ margin: 0 }}>
 					Previously at this location
-					{previouslyKnownAs.map((thing) => (
+					{referencesThis.map((thing) => (
 						<a href={thing.extra.absolutePath}>{thing.entry.data.title}</a>
 					))}
 				</h4>
@@ -142,6 +145,18 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 				</blockquote>
 			)
 		}
+		{
+			!!allReferences.length && collection === 'artist' && (
+				<h4 style={{ margin: 0 }}>
+					Also performed as:
+					{allReferences.map((thing, i, arr) => (
+						<span>
+							<a href={thing.extra.absolutePath}>{thing.entry.data.title}</a> {i < arr.length - 1 ? '|' : ''}
+						</span>
+					))}
+				</h4>
+			)
+		}
 	</Fragment>
 	<slot name="banner" slot={hasBanner ? 'background' : ''} />
 </Banner>
@@ -160,25 +175,38 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 	<div data-tabid="gigs">
 		<DropdownMenu
 			direction="down"
+			backgroundColor="white"
+			textColor="black"
 			top={theme.dimensions.subheaderHeight}
-			list={gigsYearDropdownItems.map((item) => ({ title: `${item.year} (${item.count})`, hash: `y${item.year}` }))}
+			list={gigsYearDropdownItems.map((item) => ({
+				title: item.year,
+				subtitle: `(${item.count})`,
+				hash: `y${item.year}`
+			}))}
 			client:load
 		/>
 		{
-			willBeKnownAs &&
-				willBeKnownAs.map((thing) => (
+			collection === 'venue' && !!thisReferences.length && (
+				<Divider sticky={true} top={theme.dimensions.subheaderHeight} smoothScroll={true}>
+					Future
+				</Divider>
+			)
+		}
+		{
+			collection === 'venue' &&
+				thisReferences.map((thing) => (
 					<Tile
 						responsiveImage={thing.extra.cover}
 						backgroundStyle="center"
 						href={thing.extra.absolutePath}
 						containerHeight="30vh"
 					>
-						{'died' in thing.entry.data && (
-							<h4 class="center" style={{ marginBottom: 0, color: 'white' }}>
-								At this location from {entryData.died?.getFullYear()}
-								{thing.entry.data.died ? ` to ${thing.entry.data.died?.getFullYear()}` : ' to present'}
-							</h4>
-						)}
+						<h4 class="center" style={{ marginBottom: 0, color: 'white' }}>
+							At this location from {'died' in entryData && entryData.died?.getFullYear()}
+							{'died' in thing.entry.data && thing.entry.data.died
+								? ` to ${thing.entry.data.died?.getFullYear()}`
+								: ' to present'}
+						</h4>
 						<h3 class="center" style={{ marginBottom: 0 }}>
 							{thing.entry.data.title}
 						</h3>
@@ -203,8 +231,15 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 				))
 		}
 		{
-			!!previouslyKnownAs.length &&
-				previouslyKnownAs.map((thing) => (
+			collection === 'venue' && !!referencesThis.length && (
+				<Divider sticky={true} top={theme.dimensions.subheaderHeight} smoothScroll={true}>
+					Previously
+				</Divider>
+			)
+		}
+		{
+			collection === 'venue' &&
+				referencesThis.map((thing) => (
 					<Tile
 						responsiveImage={thing.extra.cover}
 						backgroundStyle="center"

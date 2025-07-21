@@ -93,8 +93,8 @@ export const backButton = style({
 	display: 'flex',
 	alignItems: 'center',
 	top: 0,
-	color: theme.color.darkText,
-	backgroundColor: theme.color.lightText,
+	color: theme.color.text,
+	backgroundColor: theme.color.primary,
 	width: '100%',
 	zIndex: 10,
 	position: 'fixed'

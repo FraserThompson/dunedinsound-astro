@@ -9,13 +9,13 @@
  */
 import { loadAndFormatCollection, sortGigs } from 'src/util/collection.ts'
 import { gigLink, yearLink, monthLink, yearsMenuWrapper } from './GigsMenu.css'
-import { artistsToString } from 'src/util/helpers'
 import { makeHash } from 'src/util/names'
 import DropdownMenu from '../DropdownMenu'
 import { theme } from 'src/Theme.css'
 import { MenuLi } from '../Menu.css'
 import { MenuWrapper } from '../Menu.css'
 import ArtistsMenu from './ArtistsMenu.astro'
+import { artistsToString } from 'src/util/helpers'
 
 interface Props {
 	selected?: string
@@ -28,14 +28,16 @@ const { selected } = Astro.props
 ---
 
 <DropdownMenu
-	list={Object.keys(sortedGigs)
+	list={Object.entries(sortedGigs)
 		.reverse()
-		.map((year) => ({
-			hash: makeHash(year),
-			title: year
+		.map(([yearName, yearObj]) => ({
+			hash: makeHash(yearName),
+			title: yearName,
+			subtitle: `(${yearObj.count})`
 		}))}
 	direction="down"
-	backgroundColor={theme.color.foreground}
+	backgroundColor="white" 
+	textColor="black"
 	heightMobile={theme.dimensions.headerHeightMobile}
 	top={'0px'}
 	client:load
@@ -45,26 +47,21 @@ const { selected } = Astro.props
 	{
 		Object.entries(sortedGigs)
 			.reverse()
-			.map(([year, months]) => (
-				<li class={MenuLi['vertical']} id={makeHash(year)}>
+			.map(([yearName, yearObj]) => (
+				<li class={MenuLi['vertical']} id={makeHash(yearName)}>
 					<a class={yearLink}>
-						{year}
-						{'(' +
-							Object.values(months).reduce((acc, month) => {
-								acc += month.length
-								return acc
-							}, 0) +
-							')'}
+						{yearName} {`(${yearObj.count})`}
 					</a>
 					<ul class={`${MenuWrapper['vertical']} monthList`}>
-						{Object.entries(months).map(([month, gigs]) => (
+						{Object.entries(yearObj.gigs).map(([monthName, gigs]) => (
 							<li class={`${MenuLi['vertical']} monthItem`}>
-								<a class={monthLink}>{month}</a>
+								<a class={monthLink}>{monthName}</a>
 								<ul class={`${MenuWrapper['vertical']} gigList`}>
 									{gigs.map((gig) => (
 										<li
 											class={`${MenuLi['vertical']} gigItem filter-item ${gig.entry.id === selected ? 'active' : ''}`}
 											data-gig={makeHash(gig.entry.id)}
+											data-searchable={`${gig.entry.data.venue}${artistsToString(gig.extra.artists)}`}
 										>
 											<a class={gigLink} href={!selected ? `#${makeHash(gig.entry.id)}` : gig.extra.absolutePath}>
 												{gig.entry.data.title}

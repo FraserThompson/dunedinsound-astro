@@ -1,6 +1,9 @@
 export const DIST_MEDIA_DIR = 'dist_media'
 
-export const monthMap: { [i: number]: string } = {
+export type Month = 'January' | 'February' | 'March' | 'April' | 'May' | 'June' |
+	'July' | 'August' | 'September' | 'October' | 'November' | 'December'
+
+export const monthMap: { [i: number]: Month } = {
 	0: 'January',
 	1: 'February',
 	2: 'March',

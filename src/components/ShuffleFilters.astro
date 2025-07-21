@@ -8,7 +8,8 @@
  * this component filters stuff (same as ReactWindow.tsx)
  *
  * Props:
- *  - search: Supply a placeholder string to enable search. (optional)
+ *  - search: Supply a placeholder string to enable searching of the text inside elements. (optional)
+ *    (additional searchable text can be defined with data-searchable on elements)
  *  - sort: Array of Sorters (optional)
  *  - filter: Array of Filters (optional)
  *  - className: Class to add to the wrapper (optional)
@@ -77,7 +78,7 @@ const { openSearchWithSidebar, search, sort, filter, className = '' } = Astro.pr
 					{filter.title}
 				</label>
 			) : (
-				<label class="hideMobile flex">
+				<label class="flex">
 					{filter.title}
 					<select name={filter.title} data-filter>
 						<option value="">All</option>
@@ -135,7 +136,8 @@ const { openSearchWithSidebar, search, sort, filter, className = '' } = Astro.pr
 		// Combines the results of all filters and determines whether an item should be filtered
 		filterItem = (item: HTMLElement) => {
 			const lowerSearch = this.searchValue.toLowerCase()
-			const searchResult = item.innerText.toLowerCase().includes(lowerSearch)
+			const elementSearchableText = `${item.innerText}${item.dataset.searchable || ''}`
+			const searchResult = elementSearchableText.toLowerCase().includes(lowerSearch)
 			const itemCategories = item.dataset.category?.split(',')
 			const combinedFilters = [...this.filters, ...Object.values(this.selectFilters)] as string[]
 			const filterResult =

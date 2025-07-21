@@ -19,6 +19,7 @@ import { background, dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, drop
 import { scrollTo } from 'src/util/helpers'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import { replaceEventName } from "src/util/history"
+import { theme } from "src/Theme.css"
 
 export interface MenuLink {
 	title?: string
@@ -30,6 +31,7 @@ export interface MenuLink {
 
 interface DropdownItem {
 	title?: string
+	subtitle?: string
 	href?: string
 	image?: string
 	id?: string
@@ -113,16 +115,23 @@ const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, 
 			</a>
 			<ul className={`${dropdownMenu} ${open ? 'open' : ''} ${direction}`}>
 				{list && list.map((item) =>
-					<li className={`${dropdownLi}`}>
+					<li
+						className={`${dropdownLi}`}
+						style={assignInlineVars({
+							[background]: backgroundColor,
+							[color]: textColor
+						})}>
 						<a
 							className={`${dropdownLink} menuLink menu-title`}
 							title={item.title}
 							href={`${item.href ? item.href : item.hash ? ('#' + item.hash) : ''}`}
 							style={assignInlineVars({
+								[background]: backgroundColor,
 								[color]: textColor
 							})}
 						>
 							{item.title}
+							<span style={{ marginLeft: 'auto', color: theme.color.dullText }}>{item.subtitle}</span>
 						</a>
 					</li>
 				)}

@@ -6,7 +6,7 @@ import { getEntry } from 'astro:content'
 import * as path from 'node:path'
 import { getResponsiveImage, getResponsiveImagesByDir } from './image'
 import type { ResponsiveImage } from './ResponsiveImage'
-import { monthMap } from './constants'
+import { monthMap, type Month } from './constants'
 import { getCollectionMetaDescription } from './seo'
 import { DIST_MEDIA_DIR } from './constants'
 import { existsSync } from 'node:fs'
@@ -552,12 +552,17 @@ export function sortCollectionByDate<C extends CollectionKey>(entries: Collectio
 	)
 }
 
-interface MonthsGroup {
-	[month: string]: ProcessedEntry<'gig'>[]
+type MonthsGroup = {
+	[K in Month]?: ProcessedEntry<'gig'>[];
+}
+
+interface YearObj {
+	count: number;
+	gigs: MonthsGroup;
 }
 
 export interface SortedGigs {
-	[year: string]: MonthsGroup
+	[year: string]: YearObj
 }
 
 /**
@@ -571,13 +576,16 @@ export const sortGigs = (gigs: ProcessedEntry<'gig'>[]): SortedGigs =>
 		const month = monthMap[gig.entry.data.date.getMonth()]
 
 		if (!acc[year]) {
-			acc[year] = {}
-		}
-		if (!acc[year][month]) {
-			acc[year][month] = []
+			acc[year] = {count: 0, gigs: {}}
 		}
 
-		acc[year][month].push(gig)
+		acc[year].count++
+
+		if (!acc[year]['gigs'][month]) {
+			acc[year]['gigs'][month] = []
+		}
+
+		acc[year]['gigs'][month].push(gig)
 
 		return acc
 	}, {} as SortedGigs)

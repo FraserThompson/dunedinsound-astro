@@ -73,7 +73,7 @@ globalStyle(`${tileInner} > a`, {
 
 export const tileContent = style({
 	position: 'relative',
-	background: 'radial-gradient(circle, rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 70%)',
+	background: 'radial-gradient(circle, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.4) 70%)',
 	marginLeft: '0',
 	height: '100%',
 	display: 'flex',

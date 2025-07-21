@@ -90,7 +90,7 @@ createGlobalTheme(':root', theme, {
 		contrast3: contrastColor3,
 		text: textColor,
 		lightText: lighten(0.5, textColor),
-		dullText: darken(0.2, textColor),
+		dullText: darken(0.1, textColor),
 		darkText: invert(textColor),
 		lightPrimary: lighten(0.2, primaryColor),
 		lightSecondary: lighten(0.5, secondaryColor),

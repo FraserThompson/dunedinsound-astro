@@ -85,7 +85,13 @@ export const dropdownLi = style([
 	MenuLi['vertical'],
 	{
 		width: 'initial',
-		flexWrap: 'wrap'
+		flexWrap: 'wrap',
+		backgroundColor: fallbackVar(background, theme.color.primary),
+		selectors: {
+			'&:hover': {
+				filter: 'brightness(0.9)'
+			}
+		}
 	}
 ])
 
@@ -93,9 +99,11 @@ export const dropdownLink = style([
 	MenuLinkWrapper['vertical'],
 	{
 		color: fallbackVar(color, theme.color.text),
+		display: 'flex',
+		gap: '1rem',
 		selectors: {
 			'&:hover': {
-				backgroundColor: theme.color.lightPrimary
+				color: fallbackVar(color, theme.color.text),
 			}
 		}
 	}

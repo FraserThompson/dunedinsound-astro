@@ -1,6 +1,7 @@
 title: "Eyegum Scenic Tours 4"
 date: 2024-11-30 09:30:00 Z
 venue: crown_hotel
+series: eyegum_scenic_tours
 artists:
   - id: koizilla
     vid:

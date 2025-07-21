@@ -21,6 +21,9 @@ do
 		ffmpeg -i "$file" -metadata title="$artist at $gig" -metadata artist="$artist" -metadata album="dunedinsound.com" -metadata year="$(date +%Y)" -c copy "$file".temp.mp3 -y
 		mv "$file".temp.mp3 "$file"
 
+    # Validate
+    ffmpeg -v error -i "$file" -f null -
+
 		# Generate waveform
 		audiowaveform -i "$file" -o "$file".json --pixels-per-second 1 --bits 8
 done
