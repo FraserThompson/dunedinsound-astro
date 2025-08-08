@@ -6,14 +6,13 @@
 		"dev": "astro dev",
 		"start": "astro dev",
 		"build": "astro check && astro build",
-		"deploy": "aws s3 sync dist/ s3://dunedinsound.com/ --exclude \"*.webp\" --follow-symlinks",
-		"deploy-images": "aws s3 sync dist/ s3://dunedinsound.com/ --exclude \"*\" --include \"*.webp\" --content-type image/webp --size-only --follow-symlinks",
-		"full-deploy": "npm run build && npm run link-media && npm run deploy-images && npm run deploy",
+		"deploy": "npx wrangler deploy",
+		"deploy-media": "dotenv -e .env -- aws s3 sync dist_media/ s3://dunedinsound --endpoint-url https://4c6bd0757857b41b98da8d9e4e6c4ebb.r2.cloudflarestorage.com --size-only",
+		"full-deploy": "npm run build && npm run deploy-media && npm run deploy",
 		"code-deploy": "npm run build && npm run deploy",
 		"preview": "astro preview",
 		"astro": "astro",
 		"media": "node ./scripts/generateMedia.mjs",
-		"link-media": "powershell -Command \"New-Item -Path .\\dist\\dist_media -ItemType Junction -Value .\\dist_media\" > nul",
 		"new": "node ./scripts/generateGig.mjs",
 		"audio": "docker compose up --build && node ./scripts/copyAudio.mjs"
 	},
@@ -34,6 +33,7 @@
 		"prettier": "^3.6.2",
 		"prettier-plugin-astro": "^0.14.1",
 		"sharp": "^0.33.5",
+		"wrangler": "^4.28.1",
 		"yaml": "^2.8.0"
 	},
 	"dependencies": {

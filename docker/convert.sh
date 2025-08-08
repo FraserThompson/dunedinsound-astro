@@ -35,5 +35,5 @@ do
     filename=$(basename "$file" .$extension)
     echo "Working on $filename"
 		echo "Converting to 24bit WAV..."
-		ffmpeg -y -i "$file" -af "loudnorm=I=-16:TP=-1:LRA=11" -c:a pcm_s24le -ar 96000 $filename.24.wav
+		ffmpeg -y -i "$file" -af "loudnorm=I=-16:TP=-1" -c:a pcm_s24le -ar 96000 $filename.24.wav
 done

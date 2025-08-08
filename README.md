@@ -79,15 +79,20 @@ Use one like this:
 @media (--xs) { }
 ```
 
-## 🧞 Commands
+## Deploy
 
-All commands are run from the root of the project, from a terminal:
+The static site ready for deployment is in `dist` once `pnpm run build` has been run, and the media is in `dist_media` once `pnpm run media` has been run.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm run dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm run build`           | Build your production site to `./dist/`          |
-| `pnpm run preview`         | Preview your build locally, before deploying     |
-| `pnpm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm run astro -- --help` | Get help using the Astro CLI                     |
+To build and deploy the static code only, run `pnpm run code-deploy`.
+
+To deploy everything including the media run `pnpm run full-deploy`.
+
+### Production architecture
+
+All requests go to a CloudFlare Worker which routes them appropriately.
+
+The built Astro site in `dist` are deployed via Wrangler with the worker (see https://developers.cloudflare.com/workers/static-assets/).
+
+The big JPG and MP3 files in `dist_media` are served from Cloudflare R2 which is bound to the worker (see `wrangler.jsonc`), which then routes requests for these files to R2 via `worker.js`.
+
+CloudFlare R2 is compatible with the AWS S3 API, so we can use the AWS CLI to deploy to it (helpful).
