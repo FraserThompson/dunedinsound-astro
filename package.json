@@ -7,7 +7,7 @@
 		"start": "astro dev",
 		"build": "astro check && astro build",
 		"deploy": "npx wrangler deploy",
-		"deploy-media": "dotenv -e .env -- aws s3 sync dist_media/ s3://dunedinsound --endpoint-url https://4c6bd0757857b41b98da8d9e4e6c4ebb.r2.cloudflarestorage.com --size-only",
+		"deploy-media": "dotenv -e .env -- rclone sync dist_media/ r2:dunedinsound --size-only",
 		"full-deploy": "npm run build && npm run deploy-media && npm run deploy",
 		"code-deploy": "npm run build && npm run deploy",
 		"preview": "astro preview",

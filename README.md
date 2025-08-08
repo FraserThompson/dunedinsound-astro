@@ -87,12 +87,12 @@ To build and deploy the static code only, run `pnpm run code-deploy`.
 
 To deploy everything including the media run `pnpm run full-deploy`.
 
+We use `rclone` for deployment. This will need to be installed and configured on the system by following these instructions: https://developers.cloudflare.com/r2/examples/rclone/
+
 ### Production architecture
 
 All requests go to a CloudFlare Worker which routes them appropriately.
 
-The built Astro site in `dist` are deployed via Wrangler with the worker (see https://developers.cloudflare.com/workers/static-assets/).
+The built Astro site in `dist` are deployed via Wrangler as static assets in the worker (see https://developers.cloudflare.com/workers/static-assets/).
 
 The big JPG and MP3 files in `dist_media` are served from Cloudflare R2 which is bound to the worker (see `wrangler.jsonc`), which then routes requests for these files to R2 via `worker.js`.
-
-CloudFlare R2 is compatible with the AWS S3 API, so we can use the AWS CLI to deploy to it (helpful).
