@@ -7,7 +7,7 @@
 		"start": "astro dev",
 		"build": "astro check && astro build",
 		"deploy": "npx wrangler deploy",
-		"deploy-media": "dotenv -e .env -- rclone sync dist_media/ r2:dunedinsound --size-only",
+		"deploy-media": "dotenv -e .env -- rclone sync dist_media/ r2:dunedinsound/dist_media --progress --size-only --transfers=8 --multi-thread-streams=8 --s3-upload-concurrency=8 --checkers=32 --fast-list",
 		"full-deploy": "npm run build && npm run deploy-media && npm run deploy",
 		"code-deploy": "npm run build && npm run deploy",
 		"preview": "astro preview",
