@@ -1,13 +1,15 @@
 import { z, defineCollection, reference } from 'astro:content'
 import { glob } from 'astro/loaders'
 
-// Venues
-const artistAudioculture = z.object({
+// Intended to describe and provide links to resources on other websites
+const externalResource = z.object({
 	link: z.string(),
+	title: z.string().optional(),
 	snippet: z.string(),
 	image: z.string().optional()
 })
 
+// An object used globally for providing links out to socials for artists/venues
 export const webLinks = z.object({
 	facebook: z.string().optional(),
 	bandcamp: z.string().optional(),
@@ -15,7 +17,7 @@ export const webLinks = z.object({
 	soundcloud: z.string().optional(),
 	instagram: z.string().optional(),
 	spotify: z.string().optional(),
-	audioculture: artistAudioculture.optional()
+	audioculture: externalResource.optional()
 })
 
 // Gig
@@ -59,7 +61,7 @@ const Series = defineCollection({
 		title: z.string(),
 		venue: z.array(reference('venue')).optional(),
 		description: z.string().optional(),
-		links: webLinks.optional(),
+		resources: z.array(externalResource).optional()
 	})
 })
 

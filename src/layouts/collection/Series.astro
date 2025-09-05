@@ -1,0 +1,64 @@
+---
+import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
+import FlexGridContainer from 'src/components/FlexGridContainer.astro'
+import GigTile from 'src/components/gig/GigTile.astro'
+import GridContainer from 'src/components/GridContainer.astro'
+import GridChild from 'src/components/GridChild.astro'
+import { BannerTitle } from 'src/components/Banner.css'
+import TextContainer from 'src/components/TextContainer.astro'
+import { sideTextWrapper } from './Series.css'
+
+interface Props {
+	entry: ProcessedEntry<'series'>
+}
+
+const { entry } = Astro.props
+
+const gigs = await loadAndFormatCollection('gig', (thing) => {
+	return thing.entry.data.series?.id === entry.entry.id
+})
+
+const entryData = entry.entry.data
+const entryExtra = entry.extra
+---
+
+<div class={BannerTitle}>
+	<h1 class="smaller" style={{ marginBottom: '0px', textAlign: 'left', color: 'white' }}>
+		{entryData.title}
+	</h1>
+</div>
+<GridContainer fixed={true}>
+	<GridChild grid={{ xs: 12, md: 3 }}>
+		<TextContainer className={sideTextWrapper} light={true}>
+			<strong>Summary</strong>
+			<p>
+				<Fragment set:html={entryData.description} />
+			</p>
+            {entryData.resources &&  (
+			<hr />
+			<strong>Resources</strong>
+                <ul>
+                    {entryData.resources.map((resource) => (
+                        <li>
+                            <a href={resource.link} target="_blank">
+                                {resource.title}
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            )}
+		</TextContainer>
+	</GridChild>
+	<GridChild grid={{ xs: 12, md: 9 }}>
+		<FlexGridContainer
+			className={'padding-y'}
+			grid={gigs && gigs.length <= 4 ? { xs: 12, md: 6 } : { xs: 12, md: 6, lg: 3 }}
+		>
+			{
+				gigs?.map((gig) => (
+					<GigTile gig={gig} backgroundStyle="center" responsiveImageSizes={gigs.length <= 4 ? 'full' : 'grid'} />
+				))
+			}
+		</FlexGridContainer>
+	</GridChild>
+</GridContainer>

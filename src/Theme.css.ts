@@ -97,7 +97,7 @@ createGlobalTheme(':root', theme, {
 		darkSecondary: darken(0.2, secondaryColor),
 		lightContrast2: lighten(0.2, contrastColor2),
 		darkContrast2: darken(0.5, contrastColor2),
-		lightForeground: lighten(0.6, foregroundColor),
+		lightForeground: lighten(0.4, foregroundColor),
 		transparentForeground: transparentize(0.4, foregroundColor)
 	},
 	font: {

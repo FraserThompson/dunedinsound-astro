@@ -20,12 +20,12 @@ import { theme } from 'src/Theme.css'
 import SocialLinks from 'src/components/SocialLinks.astro'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
-import { contentByEntryTitle, descriptionWrapper } from './ContentByEntry.css'
+import { contentByEntryTitle } from './ContentByEntry.css'
 import CornerLabel from './gig/CornerLabel.astro'
 import { formattedDate } from 'src/util/names'
 
 interface Props {
-	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'> | ProcessedEntry<'series'>
+	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
 }
 
 const { entry } = Astro.props
@@ -33,8 +33,7 @@ const { entry } = Astro.props
 const gigs = await loadAndFormatCollection('gig', (thing) => {
 	const matchByArtist = thing.entry.data.artists?.find((artist) => artist.id.id === entry.entry.id)
 	const matchByVenue = thing.entry.data.venue.id === entry.entry.id
-	const matchBySeries = thing.entry.data.series?.id === entry.entry.id
-	return matchByArtist || matchByVenue || matchBySeries
+	return matchByArtist || matchByVenue
 })
 
 const gigsByYear = Object.groupBy(gigs, (gig) => gig.entry.data.date.getFullYear())
@@ -116,17 +115,22 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 	>
 		{
 			!!referencesThis.length && collection === 'venue' && (
-				<h4 style={{ margin: 0 }}>
-					Previously at this location
-					{referencesThis.map((thing) => (
-						<a href={thing.extra.absolutePath}>{thing.entry.data.title}</a>
+				<strong style={{ margin: 0 }}>
+					Previously at this location:
+					{referencesThis.map((thing, i) => (
+						<>
+							<a href={thing.extra.absolutePath}>{thing.entry.data.title}</a>
+							{i < referencesThis.length - 1 ? ',' : ''}
+						</>
 					))}
-				</h4>
+				</strong>
 			)
 		}
 		{
 			entryData.description && (
-				<p class={descriptionWrapper}>
+				<p>
+					<strong>Summary</strong>
+					<br/>
 					<Fragment set:html={entryData.description} />
 				</p>
 			)
@@ -147,14 +151,14 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 		}
 		{
 			!!allReferences.length && collection === 'artist' && (
-				<h4 style={{ margin: 0 }}>
+				<strong style={{ margin: 0 }}>
 					Also performed as:
 					{allReferences.map((thing, i, arr) => (
 						<span>
 							<a href={thing.extra.absolutePath}>{thing.entry.data.title}</a> {i < arr.length - 1 ? '|' : ''}
 						</span>
 					))}
-				</h4>
+				</strong>
 			)
 		}
 	</Fragment>
@@ -233,7 +237,7 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 		{
 			collection === 'venue' && !!referencesThis.length && (
 				<Divider sticky={true} top={theme.dimensions.subheaderHeight} smoothScroll={true}>
-					Previously
+					Past
 				</Divider>
 			)
 		}

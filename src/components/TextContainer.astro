@@ -4,8 +4,16 @@
  */
 import { textContainer } from './TextContainer.css'
 
+interface Props {
+	style?: any
+	className?: string
+	light?: boolean
+}
+
+const { style, className, light } = Astro.props
+
 ---
 
-<article class={textContainer}>
+<article class={`${textContainer} ${light ? 'light' : ''} ${className}`} style={style}>
 	<slot />
 </article>

@@ -9,3 +9,13 @@ export const reactWindowWrapper = style({
         }
     }
 })
+
+export const filtersWrapper = style({
+    display: "flex",
+    marginLeft: "0",
+    '@media': {
+		'screen and (--md)': {
+			marginLeft: "auto",
+		}
+	}
+})

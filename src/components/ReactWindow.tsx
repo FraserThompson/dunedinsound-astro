@@ -27,7 +27,7 @@ import SearchIcon from '~icons/iconoir/search'
 import GlobeIcon from '~icons/iconoir/globe'
 import type { ChangeEvent } from "react-dom/src"
 import { shuffleFilter } from "./ShuffleFilters.css"
-import { reactWindowWrapper } from "./ReactWindow.css"
+import { filtersWrapper, reactWindowWrapper } from "./ReactWindow.css"
 import type { Filter, Sorter } from "./ShuffleFilters.astro"
 import type { Grid as GridDefinition } from 'src/components/GridChild.astro'
 
@@ -217,7 +217,7 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
                         </select>
                     </label>
                 }
-                {filter && <div style={{ display: "flex", marginLeft: "auto" }}>
+                {filter && <div className={filtersWrapper}>
                     {filter?.map((filter) =>
                     (filter.type !== 'select'
                         ?
@@ -228,7 +228,7 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
                         </label>
                         :
                         <label class="flex">
-                            <span className="flex hideMobile">{filter.icon ? getIcon(filter.icon) : filter.title}</span>
+                            <span className="flex">{filter.icon ? getIcon(filter.icon) : filter.title}</span>
                             <select name={filter.title} onChange={(e: ChangeEvent<HTMLSelectElement>) => selectFilter(filter.title, e.currentTarget.value)} >
                                 <option value="">All {filter.title}</option>
                                 {

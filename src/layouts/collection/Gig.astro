@@ -13,7 +13,6 @@ import Divider from 'src/components/Divider.astro'
 import { theme } from 'src/Theme.css'
 import { GigBannerPlayer, GigFeatureVid } from './Gig.css'
 import ArtistDropdown from 'src/components/gig/ArtistDropdown.astro'
-import { descriptionWrapper } from 'src/components/ContentByEntry.css'
 import { formattedDate } from 'src/util/names'
 
 interface Props {
@@ -59,7 +58,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 		}
 	</div>
 	<div slot={entryData.description ? 'subtitle' : ''}>
-		<p class={descriptionWrapper}>
+		<p>
 			<Fragment set:html={entryData.description} />
 		</p>
 	</div>
@@ -115,7 +114,11 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	<h3 style={{ marginBottom: 0 }}>{entryData.title}</h3>
 </Divider>
 {entryData.intro && <BigIntro text={entryData.intro} />}
-{!!uncategorizedImages?.length && <ImageGallery images={uncategorizedImages} noLightbox={galleryCount === 1 ? false : true}/>}
+{
+	!!uncategorizedImages?.length && (
+		<ImageGallery images={uncategorizedImages} noLightbox={galleryCount === 1 ? false : true} />
+	)
+}
 {
 	!entryData.audioOnly && (
 		<>

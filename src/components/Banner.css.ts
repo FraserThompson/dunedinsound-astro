@@ -38,27 +38,30 @@ export const BackgroundContent = style({
 })
 
 export const BannerSubtitle = style({
-	margin: '0 auto',
-	textAlign: 'center',
+	textAlign: 'left',
 	width: '100%',
+	boxSizing: 'border-box',
+	boxShadow: theme.borders.shadowLight,
 	maxWidth: '450px',
-	paddingTop: theme.dimensions.headerHeightMobile,
+	marginTop: '0',
+	marginRight: '0',
+	padding: theme.dimensions.basePaddingMobile,
+	paddingTop: theme.dimensions.headerHeight,
 	marginBottom: '-3px',
 	position: 'relative',
 	zIndex: '1',
 	borderBottomRightRadius: '6px',
-	borderBottomLeftRadius: '6px',
 	'@media': {
 		'screen and (--md)': {
-			marginBottom: theme.dimensions.headerHeight,
-			marginTop: 'auto',
-			paddingTop: 0
+			padding: theme.dimensions.basePadding,
+			paddingTop: theme.dimensions.headerHeight,
+			marginRight: 'auto',
 		}
 	},
 	selectors: {
 		'&:not(:empty)': {
-			background: 'linear-gradient(90deg, rgba(0, 0, 0, 0.9), rgba(75, 0, 77, 0.8))',
-			boxShadow: theme.borders.shadowLight
+			backgroundColor: theme.color.contrast,
+			color: 'black',
 		}
 	}
 })

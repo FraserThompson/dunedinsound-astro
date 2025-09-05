@@ -43,7 +43,7 @@ const { selected } = Astro.props
 	client:load
 />
 
-<ul is="gigs-menu" data-selected={selected} class={`${yearsMenuWrapper} yearList`} style={{ overflow: 'initial' }}>
+<ul is="gigs-menu" data-selected={selected} class={`${yearsMenuWrapper} yearList`} style={{ overflow: 'clip' }}>
 	{
 		Object.entries(sortedGigs)
 			.reverse()

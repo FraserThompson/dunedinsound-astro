@@ -1,6 +1,9 @@
 ---
 import { loadAndFormatCollection } from 'src/util/collection.ts'
-import EntriesByCollectionLayout from 'src/layouts/base/EntriesByCollectionLayout.astro'
+import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
+import Series from 'src/layouts/collection/Series.astro'
+import EntryMenu from 'src/components/EntryMenu.astro'
+import { MenuLi, MenuLinkWrapper, MenuWrapper } from 'src/components/Menu.css'
 
 export async function getStaticPaths() {
 	const entries = await loadAndFormatCollection('series')
@@ -13,6 +16,47 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props
+
+const entryData = entry.entry.data
+const entryExtra = entry.extra
 ---
 
-<EntriesByCollectionLayout entry={entry} />
+<SidebarLayout
+	poo={{
+		title: entryData.title,
+		collection: entry.entry.collection,
+		description: entryExtra.metaDescription,
+		image: entryExtra.cover?.src
+	}}
+>
+	<ul class={`${MenuWrapper['vertical']}`} style={{zIndex: 15}} slot="sidebarMenu">
+		<li class={`${MenuLi['vertical']}`}>
+			<a
+				class={`${MenuLinkWrapper['vertical']} active`}
+				style={{ backgroundColor: 'white', color: 'black' }}
+				href="/gigs/series"
+			>
+				<strong>Series</strong>
+			</a>
+		</li>
+	</ul>
+	<EntryMenu
+		slot="sidebarMenu"
+		collection={'series'}
+		style={{ borderLeft: '3px solid white' }}
+		selected={entry.entry.id}
+		transition:persist
+	/>
+		<ul class={`${MenuWrapper['vertical']}`} style={{zIndex: 15}} slot="sidebarMenu">
+		<li class={`${MenuLi['vertical']}`}>
+			<a
+				class={`${MenuLinkWrapper['vertical']} active`}
+				style={{ backgroundColor: 'white', color: 'black' }}
+				href="/gigs"
+			>
+				<strong>All gigs</strong>
+			</a>
+		</li>
+	</ul>
+	<Series entry={entry} slot="content" />
+</SidebarLayout>

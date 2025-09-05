@@ -17,12 +17,13 @@ import { theme } from 'src/Theme.css'
 import AllAgesIndicator from './AllAgesIndicator.astro'
 
 interface Props {
+	style?: any
 	collection?: CollectionKey
 	collectionEntries?: ProcessedEntry<CollectionKey>[]
 	selected?: string
 }
 
-const { selected, collection, collectionEntries } = Astro.props
+const { selected, collection, collectionEntries, style} = Astro.props
 
 const entries = collection ? await loadAndFormatCollection(collection) : collectionEntries
 ---
@@ -35,7 +36,7 @@ const entries = collection ? await loadAndFormatCollection(collection) : collect
 	)
 }
 
-<ul class={`${MenuWrapper['vertical']}`}>
+<ul class={`${MenuWrapper['vertical']}`} style={style}>
 	{
 		entries
 			?.sort((a, b) => (a.entry.id < b.entry.id ? -1 : 1))

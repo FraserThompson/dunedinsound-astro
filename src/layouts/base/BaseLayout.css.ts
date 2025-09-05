@@ -313,6 +313,18 @@ globalStyle('.padding', {
 	}
 })
 
+globalStyle('.padding-y', {
+	paddingTop: theme.dimensions.basePaddingMobile,
+	paddingBottom: theme.dimensions.basePaddingMobile,
+	'@media': {
+		'screen and (--md)': {
+			paddingTop: theme.dimensions.basePadding,
+			paddingBottom: theme.dimensions.basePadding,
+		}
+	}
+})
+
+
 globalStyle('.noPadding', {
 	padding: '0 !important',
 	minWidth: '0 !important',

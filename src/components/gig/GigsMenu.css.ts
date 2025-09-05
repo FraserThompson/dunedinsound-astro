@@ -1,4 +1,4 @@
-import { style } from '@vanilla-extract/css'
+import { globalStyle, style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 import { MenuLi, MenuLinkWrapper, MenuWrapper } from '../Menu.css'
 
@@ -6,10 +6,7 @@ import { MenuLi, MenuLinkWrapper, MenuWrapper } from '../Menu.css'
 // vite integration which means we can't override base style properties.
 
 export const yearsMenuWrapper = style([
-	MenuWrapper['vertical'],
-	{
-		borderLeft: `6px solid white !important`
-	}
+	MenuWrapper['vertical']
 ])
 
 export const artistsMenuWrapper = style([
@@ -53,7 +50,6 @@ export const monthLink = style([
 		height: `${theme.dimensions.subheaderHeight} !important`,
 		lineHeight: `${theme.dimensions.subheaderHeight} !important`,
 		cursor: 'default',
-		backgroundColor: `${theme.color.contrast} !important`,
 		boxShadow: theme.borders.shadowLight,
 		position: 'relative',
 		paddingLeft: '0px !important',
@@ -73,7 +69,6 @@ export const yearLink = style([
 		height: `${theme.dimensions.headerHeightMobile} !important`,
 		lineHeight: `${theme.dimensions.headerHeightMobile} !important`,
 		top: '0px',
-		backgroundColor: `white !important`,
 		paddingLeft: '0px !important',
 		margin: 0,
 		zIndex: 7,
@@ -98,4 +93,28 @@ export const backButton = style({
 	width: '100%',
 	zIndex: 10,
 	position: 'fixed'
+})
+
+// Zebra striping
+const oddColor = theme.color.lightSecondary
+const evenColor = theme.color.lightForeground
+
+globalStyle(`.yearList > *:nth-child(odd)`, {
+	borderLeft: `6px solid ${oddColor}`
+})
+globalStyle(`.yearList > *:nth-child(odd) > ${yearLink}`, {
+	backgroundColor: `${oddColor}`
+})
+globalStyle(`.yearList > *:nth-child(odd) ${monthLink}`, {
+	background: `linear-gradient(90deg, ${oddColor}, ${theme.color.lightPrimary})`
+})
+
+globalStyle(`.yearList > *:nth-child(even)`, {
+	borderLeft: `6px solid ${evenColor}`,
+})
+globalStyle(`.yearList > *:nth-child(even) ${yearLink}`, {
+	backgroundColor: `${evenColor}`,
+})
+globalStyle(`.yearList > *:nth-child(even) ${monthLink}`, {
+	background: `linear-gradient(90deg, ${evenColor}, ${theme.color.lightPrimary})`
 })
