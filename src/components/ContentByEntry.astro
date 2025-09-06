@@ -80,7 +80,7 @@ const thisReferences =
 	'aliases' in entryData && entryData.aliases
 		? Array.from(
 				await Promise.all(entryData.aliases.map(async (thing) => await loadAndFormatEntry(collection, thing.id)))
-			)
+			).sort((a, b) => (a.entry.data.date && b.entry.data.date && a.entry.data.date > b.entry.data.date ? -1 : 1))
 		: []
 // All references to or by this entry
 const allReferences = [...Array.from(thisReferences), ...referencesThis]
@@ -114,23 +114,10 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 			: ''}
 	>
 		{
-			!!referencesThis.length && collection === 'venue' && (
-				<strong style={{ margin: 0 }}>
-					Previously at this location:
-					{referencesThis.map((thing, i) => (
-						<>
-							<a href={thing.extra.absolutePath}>{thing.entry.data.title}</a>
-							{i < referencesThis.length - 1 ? ',' : ''}
-						</>
-					))}
-				</strong>
-			)
-		}
-		{
 			entryData.description && (
 				<p>
 					<strong>Summary</strong>
-					<br/>
+					<br />
 					<Fragment set:html={entryData.description} />
 				</p>
 			)
@@ -149,18 +136,20 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 				</blockquote>
 			)
 		}
-		{
-			!!allReferences.length && collection === 'artist' && (
-				<strong style={{ margin: 0 }}>
-					Also performed as:
-					{allReferences.map((thing, i, arr) => (
-						<span>
-							<a href={thing.extra.absolutePath}>{thing.entry.data.title}</a> {i < arr.length - 1 ? '|' : ''}
-						</span>
-					))}
-				</strong>
-			)
-		}
+		<div>
+			{
+				!!allReferences.length && (
+					<strong>{collection === 'artist' ? 'Also performed as' : 'Also at this location'}</strong>
+					<ul>
+						{allReferences.map((thing, i, arr) => (
+							<li>
+								<a href={thing.extra.absolutePath}>{thing.entry.data.title} {thing.entry.data.date ? `(${thing.entry.data.date.getFullYear()})` : ''}</a>
+							</li>
+						))}
+					</ul>
+				)
+			}
+		</div>
 	</Fragment>
 	<slot name="banner" slot={hasBanner ? 'background' : ''} />
 </Banner>
@@ -206,7 +195,7 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 						containerHeight="30vh"
 					>
 						<h4 class="center" style={{ marginBottom: 0, color: 'white' }}>
-							At this location from {'died' in entryData && entryData.died?.getFullYear()}
+							At this location from {'date' in thing.entry.data && thing.entry.data.date?.getFullYear()}
 							{'died' in thing.entry.data && thing.entry.data.died
 								? ` to ${thing.entry.data.died?.getFullYear()}`
 								: ' to present'}

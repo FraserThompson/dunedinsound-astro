@@ -39,29 +39,18 @@ export const BackgroundContent = style({
 
 export const BannerSubtitle = style({
 	textAlign: 'left',
-	width: '100%',
+	maxWidth: '450px',
+	clipPath: 'border-box',
 	boxSizing: 'border-box',
 	boxShadow: theme.borders.shadowLight,
-	maxWidth: '450px',
-	marginTop: '0',
 	marginRight: '0',
-	padding: theme.dimensions.basePaddingMobile,
-	paddingTop: theme.dimensions.headerHeight,
 	marginBottom: '-3px',
 	position: 'relative',
 	zIndex: '1',
 	borderBottomRightRadius: '6px',
 	'@media': {
 		'screen and (--md)': {
-			padding: theme.dimensions.basePadding,
-			paddingTop: theme.dimensions.headerHeight,
 			marginRight: 'auto',
-		}
-	},
-	selectors: {
-		'&:not(:empty)': {
-			backgroundColor: theme.color.contrast,
-			color: 'black',
 		}
 	}
 })

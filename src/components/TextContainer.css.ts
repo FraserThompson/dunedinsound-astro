@@ -8,7 +8,7 @@ export const textContainer = style({
 	paddingTop: theme.dimensions.basePaddingMobile,
 	selectors: {
 		'&.light': {
-			backgroundColor: "white",
+			backgroundColor: theme.color.contrast,
 			color: "black"
 		}
 	},

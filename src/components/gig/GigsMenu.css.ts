@@ -96,8 +96,8 @@ export const backButton = style({
 })
 
 // Zebra striping
-const oddColor = theme.color.lightSecondary
-const evenColor = theme.color.lightForeground
+const oddColor = theme.color.contrast
+const evenColor = theme.color.lightSecondary
 
 globalStyle(`.yearList > *:nth-child(odd)`, {
 	borderLeft: `6px solid ${oddColor}`

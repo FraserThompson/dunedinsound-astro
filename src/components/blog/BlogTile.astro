@@ -2,7 +2,7 @@
 /**
  * A regular tile but pre-filled with blog metadata.
  */
- import type { ProcessedEntry } from 'src/util/collection'
+import type { ProcessedEntry } from 'src/util/collection'
 import Tile, { type BackgroundStyle } from '../Tile.astro'
 import type { ResponsiveImageSizes } from '../Image2.astro'
 import { tagLink } from './BlogTags.css'
@@ -31,10 +31,13 @@ const blogExtra = blog.extra
 	backgroundStyle={backgroundStyle}
 	containerHeight={containerHeight}
 	containerHeightMobile={containerHeightMobile}
-	>
-	{blogData.tags.map((tag) => 
-		<span class={`${tagLink}`} title={tag}>
-		{tag}
-		</span>
-	)}
+>
+	{
+		blogData.tags.map((tag) => (
+			<span class={`${tagLink}`} title={tag}>
+				{tag}
+			</span>
+		))
+	}
+	<h5 style={{ marginBottom: 0 }}>{blogData.description}</h5>
 </Tile>

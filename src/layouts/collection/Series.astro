@@ -7,6 +7,7 @@ import GridChild from 'src/components/GridChild.astro'
 import { BannerTitle } from 'src/components/Banner.css'
 import TextContainer from 'src/components/TextContainer.astro'
 import { sideTextWrapper } from './Series.css'
+import SocialLinks from 'src/components/SocialLinks.astro'
 
 interface Props {
 	entry: ProcessedEntry<'series'>
@@ -16,6 +17,9 @@ const { entry } = Astro.props
 
 const gigs = await loadAndFormatCollection('gig', (thing) => {
 	return thing.entry.data.series?.id === entry.entry.id
+})
+const articles = await loadAndFormatCollection('blog', (thing) => {
+	return thing.entry.data.relatedSeries?.find((series) => series.id === entry.entry.id)
 })
 
 const entryData = entry.entry.data
@@ -34,18 +38,40 @@ const entryExtra = entry.extra
 			<p>
 				<Fragment set:html={entryData.description} />
 			</p>
-            {entryData.resources &&  (
-			<hr />
-			<strong>Resources</strong>
-                <ul>
-                    {entryData.resources.map((resource) => (
-                        <li>
-                            <a href={resource.link} target="_blank">
-                                {resource.title}
-                            </a>
-                        </li>
-                    ))}
-                </ul>
+			{entryData.venue && (
+				<hr />
+				<strong>Venues associated with this series</strong>
+				<ul>
+					{entryData.venue.map((venue) => (
+						<li>
+							<a href={`/${venue.collection}/${venue.id}`}>
+								{venue.id}
+							</a>
+						</li>
+					))}
+				</ul>
+				<SocialLinks links={entryData.links} />
+            )}
+            {entryData.resources && (
+				<hr />
+				<strong>Resources</strong>
+				<ul>
+					{articles.map((article) => (
+						<li>
+							<a href={article.extra.absolutePath}>
+								Dunedinsound "{article.entry.data.title}"
+							</a>
+						</li>
+					))}
+					{entryData.resources.map((resource) => (
+						<li>
+							<a href={resource.link} target="_blank">
+								{resource.title}
+							</a>
+						</li>
+					))}
+				</ul>
+				<SocialLinks links={entryData.links} />
             )}
 		</TextContainer>
 	</GridChild>

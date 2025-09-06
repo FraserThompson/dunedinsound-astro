@@ -61,6 +61,7 @@ const Series = defineCollection({
 		title: z.string(),
 		venue: z.array(reference('venue')).optional(),
 		description: z.string().optional(),
+		links: webLinks.optional(),
 		resources: z.array(externalResource).optional()
 	})
 })
@@ -73,6 +74,7 @@ const Venue = defineCollection({
 		lng: z.number(),
 		description: z.string().optional(),
 		links: webLinks.optional(),
+		resources: z.array(externalResource).optional(),
 		died: z.date().optional(),
 		date: z.date().optional(),
 		hidden: z.boolean().optional(),
@@ -89,6 +91,7 @@ const Artist = defineCollection({
 		description: z.string().optional(),
 		date: z.date().optional(),
 		links: webLinks.optional(),
+		resources: z.array(externalResource).optional(),
 		origin: z.string().optional(),
 		died: z.date().optional(),
 		hidden: z.boolean().optional(),
@@ -109,6 +112,7 @@ const Blog = defineCollection({
 		hidden: z.boolean().optional(),
 		hideCaptions: z.boolean().optional(),
 		relatedGigs: z.array(reference('gig')).optional(),
+		relatedSeries: z.array(reference('series')).optional(),
 		relatedArtists: z.array(reference('artist')).optional(),
 		relatedVenues: z.array(reference('venue')).optional()
 	})
