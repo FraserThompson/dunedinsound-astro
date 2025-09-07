@@ -3,6 +3,7 @@ import { loadAndFormatCollection } from 'src/util/collection.ts'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 import Series from 'src/layouts/collection/Series.astro'
 import EntryMenu from 'src/components/EntryMenu.astro'
+import BackIcon from '~icons/iconoir/long-arrow-up-left'
 import { MenuLi, MenuLinkWrapper, MenuWrapper } from 'src/components/Menu.css'
 
 export async function getStaticPaths() {
@@ -29,7 +30,7 @@ const entryExtra = entry.extra
 		image: entryExtra.cover?.src
 	}}
 >
-	<ul class={`${MenuWrapper['vertical']}`} style={{zIndex: 15}} slot="sidebarMenu">
+	<ul class={`${MenuWrapper['vertical']}`} style={{ zIndex: 15 }} slot="sidebarMenu">
 		<li class={`${MenuLi['vertical']}`}>
 			<a
 				class={`${MenuLinkWrapper['vertical']} active`}
@@ -47,14 +48,14 @@ const entryExtra = entry.extra
 		selected={entry.entry.id}
 		transition:persist
 	/>
-		<ul class={`${MenuWrapper['vertical']}`} style={{zIndex: 15}} slot="sidebarMenu">
+	<ul class={`${MenuWrapper['vertical']}`} style={{ zIndex: 15 }} slot="sidebarMenu">
 		<li class={`${MenuLi['vertical']}`}>
 			<a
 				class={`${MenuLinkWrapper['vertical']} active`}
 				style={{ backgroundColor: 'white', color: 'black' }}
 				href="/gigs"
 			>
-				<strong>Other gigs</strong>
+				<strong><BackIcon style={{ position: 'relative', top: '2px' }} /> Other gigs</strong>
 			</a>
 		</li>
 	</ul>

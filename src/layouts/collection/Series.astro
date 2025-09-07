@@ -8,6 +8,7 @@ import { BannerTitle } from 'src/components/Banner.css'
 import TextContainer from 'src/components/TextContainer.astro'
 import { sideTextWrapper } from './Series.css'
 import SocialLinks from 'src/components/SocialLinks.astro'
+import { theme } from 'src/Theme.css'
 
 interface Props {
 	entry: ProcessedEntry<'series'>
@@ -24,6 +25,11 @@ const articles = await loadAndFormatCollection('blog', (thing) => {
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
+
+const resources = Array.isArray(entryData.resources)
+  ? entryData.resources
+  : [];
+
 ---
 
 <div class={BannerTitle}>
@@ -44,26 +50,25 @@ const entryExtra = entry.extra
 				<ul>
 					{entryData.venue.map((venue) => (
 						<li>
-							<a href={`/${venue.collection}/${venue.id}`}>
+							<a href={`/venues/${venue.id}`}>
 								{venue.id}
 							</a>
 						</li>
 					))}
 				</ul>
-				<SocialLinks links={entryData.links} />
             )}
-            {entryData.resources && (
+            {(resources.length > 0 || entryData.links || articles.length > 0) && (
 				<hr />
 				<strong>Resources</strong>
 				<ul>
-					{articles.map((article) => (
+					{articles && articles.map((article) => (
 						<li>
 							<a href={article.extra.absolutePath}>
 								Dunedinsound "{article.entry.data.title}"
 							</a>
 						</li>
 					))}
-					{entryData.resources.map((resource) => (
+					{resources.map((resource) => (
 						<li>
 							<a href={resource.link} target="_blank">
 								{resource.title}
@@ -71,18 +76,23 @@ const entryExtra = entry.extra
 						</li>
 					))}
 				</ul>
-				<SocialLinks links={entryData.links} />
+				<SocialLinks style={{ paddingTop: '0' }} links={entryData.links} />
             )}
 		</TextContainer>
 	</GridChild>
 	<GridChild grid={{ xs: 12, md: 9 }}>
 		<FlexGridContainer
-			className={'padding-y'}
+			justifyContent='flex-start'
+			fixedWidth={true}
 			grid={gigs && gigs.length <= 4 ? { xs: 12, md: 6 } : { xs: 12, md: 6, lg: 3 }}
 		>
 			{
 				gigs?.map((gig) => (
-					<GigTile gig={gig} backgroundStyle="center" responsiveImageSizes={gigs.length <= 4 ? 'full' : 'grid'} />
+					<GigTile 
+						gig={gig}
+						backgroundStyle="center"
+						responsiveImageSizes={gigs.length <= 4 ? 'full' : 'grid'}
+					/>
 				))
 			}
 		</FlexGridContainer>

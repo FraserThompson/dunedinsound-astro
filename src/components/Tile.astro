@@ -46,6 +46,7 @@ interface Props {
 	image?: string
 	responsiveImage?: ResponsiveImage
 	backgroundStyle?: BackgroundStyle
+	style?: Partial<CSSStyleDeclaration>
 	title?: string
 	label?: string
 	subtitle?: string
@@ -74,6 +75,7 @@ const {
 	containerWidth,
 	dataAttributes,
 	backgroundStyle = 'full',
+	style = {},
 	responsiveImageSizes
 } = Astro.props
 
@@ -83,11 +85,14 @@ const hasDefault = Astro.slots.has('default')
 <div
 	{...dataAttributes}
 	class={`${tileWrapper[containerWidth ? 'fixedWidth' : 'noWidth']} ${className} tile filtr-item`}
-	style={assignInlineVars({
-		[height]: containerHeight,
-		[heightMobile]: containerHeightMobile,
-		[width]: containerWidth
-	})}
+	style={{
+		...style,
+		...assignInlineVars({
+			[height]: containerHeight,
+			[heightMobile]: containerHeightMobile,
+			[width]: containerWidth
+		})
+	}}
 	id={id}
 >
 	<a

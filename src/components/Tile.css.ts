@@ -73,18 +73,17 @@ globalStyle(`${tileInner} > a`, {
 
 export const tileContent = style({
 	position: 'relative',
+	boxSizing: 'border-box',
 	background: 'radial-gradient(circle, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.4) 70%)',
 	marginLeft: '0',
 	height: '100%',
 	display: 'flex',
 	flexDirection: 'column',
 	color: theme.color.lightText,
-	paddingLeft: theme.dimensions.basePaddingMobile,
-	paddingRight: theme.dimensions.basePaddingMobile,
+	padding: theme.dimensions.basePaddingMobile,
 	'@media': {
 		'screen and (--xs)': {
-			paddingLeft: theme.dimensions.basePadding,
-			paddingRight: theme.dimensions.basePadding
+			padding: theme.dimensions.basePadding,
 		}
 	}
 })

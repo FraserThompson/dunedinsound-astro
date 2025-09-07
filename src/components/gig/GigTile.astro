@@ -7,13 +7,14 @@ import Tile, { type BackgroundStyle } from '../Tile.astro'
 import { artistsToString } from 'src/util/helpers'
 import { formattedDate, makeHash } from 'src/util/names'
 import type { ResponsiveImageSizes } from '../Image2.astro'
-import CornerLabel from './CornerLabel.astro'
+import { theme } from 'src/Theme.css'
 
 interface Props {
 	gig: ProcessedEntry<'gig'>
 	containerHeight?: string
 	containerHeightMobile?: string
 	className?: string
+	style?: Partial<CSSStyleDeclaration>
 	responsiveImageSizes?: keyof ResponsiveImageSizes
 	backgroundStyle?: BackgroundStyle
 }
@@ -23,6 +24,7 @@ const {
 	containerHeight,
 	containerHeightMobile,
 	className = '',
+	style,
 	backgroundStyle,
 	responsiveImageSizes
 } = Astro.props
@@ -32,6 +34,7 @@ const gigExtra = gig.extra
 ---
 
 <Tile
+	style={style}
 	className={className}
 	href={gigExtra.absolutePath}
 	responsiveImage={gigExtra.cover}
@@ -49,7 +52,7 @@ const gigExtra = gig.extra
 		'data-gig': makeHash(gig.entry.id)
 	}}
 >
-	<h5 style={{ marginBottom: '0px' }}>
+	<p style={{ marginBottom: '0px', fontSize: '14px', color: theme.color.dullText }}>
 		{artistsToString(gigExtra.artists)}
-	</h5>
+	</p>
 </Tile>

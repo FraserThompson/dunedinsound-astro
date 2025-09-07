@@ -15,26 +15,19 @@ const { died, born, collection } = Astro.props
 
 <!-- we only want to show "active" status on venues -->{
 	died === undefined && born && collection !== 'artist' && (
-		<h4 class={activeIcon} title="Active">
+		<small class={activeIcon} title="Active">
 			Active since {born.getFullYear()}
-		</h4>
+		</small>
 	)
 }
 {
 	died !== undefined && (
-		<h4 class={defunctIcon} title="Defunct">
+		<small class={defunctIcon} title="Defunct">
 			{died.getFullYear() !== 1600
 				? !born
 					? `Defunct since ${died.getFullYear()}`
 					: `Active ${born.getFullYear()} to ${died.getFullYear()}`
 				: 'Defunct'}
-		</h4>
+		</small>
 	)
 }
-
-<style>
-	h4 {
-		display: inline-block;
-		margin-bottom: 0;
-	}
-</style>

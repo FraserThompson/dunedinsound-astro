@@ -88,7 +88,7 @@ const hasSubtitle = Astro.slots.has('subtitle')
 	{
 		hasSubtitle && (
 			<div class={BannerSubtitle}>
-				<TextContainer light={true} style={{paddingTop: "30px"}}>
+				<TextContainer light={true}>
 					<slot name="subtitle" />
 				</TextContainer>
 			</div>

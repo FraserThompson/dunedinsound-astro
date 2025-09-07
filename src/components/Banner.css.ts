@@ -1,4 +1,4 @@
-import { style, createVar, fallbackVar, globalStyle } from '@vanilla-extract/css'
+import { style, createVar, fallbackVar } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 export const bannerHeight = createVar()
@@ -43,14 +43,13 @@ export const BannerSubtitle = style({
 	clipPath: 'border-box',
 	boxSizing: 'border-box',
 	boxShadow: theme.borders.shadowLight,
-	marginRight: '0',
-	marginBottom: '-3px',
-	position: 'relative',
+	width: '100%',
+	marginRight: 'auto',
 	zIndex: '1',
 	borderBottomRightRadius: '6px',
 	'@media': {
 		'screen and (--md)': {
-			marginRight: 'auto',
+			width: 'auto',
 		}
 	}
 })

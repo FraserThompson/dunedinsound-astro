@@ -5,12 +5,22 @@
  * Props:
  *  - grid (optional): an object containing the sizes used for each screen size. Defaults if not provided.
  *  - maxWidth (optional): the maximum width for the container.
- *  - fixedWidth (optional): if provided grid children will have a fixed width rather than auto.
+ *  - fixedWidth (optional): if provided grid children will have a fixed width rather than growing to take up the space.
  *  - id (optional)
  *  - classname (optional)
  *  - style (optional)
  */
-import { FlexGridWrapper, flexXs, widthXs, flexMd, widthMd, flexLg, widthLg, maxWidth2, flexJustifyContent } from './FlexGridContainer.css'
+import {
+	FlexGridWrapper,
+	flexXs,
+	widthXs,
+	flexMd,
+	widthMd,
+	flexLg,
+	widthLg,
+	maxWidth2,
+	flexJustifyContent
+} from './FlexGridContainer.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import type { Grid } from './GridChild.astro'
 
@@ -18,21 +28,23 @@ interface Props {
 	grid?: Grid
 	maxWidth?: string
 	fixedWidth?: boolean
-	justifyContent?: string
+	justifyContent?: 'center' | 'start' | 'end' | 'flex-start' | 'flex-end' | 'left' | 'right' | 'normal' | 'space-around' | 'space-between' | 'space-evenly' | 'stretch'
 	id?: string
 	className?: string
-	style?: any
+	style?: Partial<CSSStyleDeclaration>
 }
 
 const cols = 12
 
-const { grid, maxWidth, fixedWidth, justifyContent = 'normal', id, style, className = '' } = Astro.props
+const { grid, maxWidth, fixedWidth, justifyContent = 'normal', id = '', style, className = '' } = Astro.props
 
 const processedGrid = {
 	xs: grid?.xs || 6,
 	md: grid?.md || grid?.xs || 3,
 	lg: grid?.lg || grid?.md || grid?.xs || 3
 }
+
+const flexGrow = fixedWidth ? '0' : '1'
 ---
 
 <div
@@ -40,11 +52,11 @@ const processedGrid = {
 	id={id}
 	style={{
 		...assignInlineVars({
-			[flexXs]: `1 1 ${100 * (processedGrid.xs / cols)}%`,
+			[flexXs]: `${flexGrow} 1 ${100 * (processedGrid.xs / cols)}%`,
 			[widthXs]: fixedWidth ? `${100 * (processedGrid.xs / cols)}%` : undefined,
-			[flexMd]: `1 1 ${100 * (processedGrid.md / cols)}%`,
+			[flexMd]: `${flexGrow} 1 ${100 * (processedGrid.md / cols)}%`,
 			[widthMd]: fixedWidth ? `${100 * (processedGrid.md / cols)}%` : undefined,
-			[flexLg]: `1 1 ${100 * (processedGrid.lg / cols)}%`,
+			[flexLg]: `${flexGrow} 1 ${100 * (processedGrid.lg / cols)}%`,
 			[widthLg]: fixedWidth ? `${100 * (processedGrid.lg / cols)}%` : undefined,
 			[maxWidth2]: maxWidth,
 			[flexJustifyContent]: justifyContent

@@ -9,13 +9,14 @@ import { SocialLinkWrapper, SocialLinkImage } from './SocialLinks.css'
 
 interface Props {
 	links?: z.infer<typeof webLinks>
+    style?: Partial<CSSStyleDeclaration>
 	className?: string
 }
 
-const { links, className = '' } = Astro.props
+const { links, style = {}, className = '' } = Astro.props
 ---
 
-<div class={className}>
+<div class={className} style={style}>
 	{
 		socialLinksToMenuItems(links).map((item) => (
 			<a href={item.href} title={item.title} class={SocialLinkWrapper}>

@@ -7,11 +7,12 @@ export const topOffset = createVar()
 const cornerLabelWrapperBase = style({
 	position: 'absolute',
 	backdropFilter: 'blur(5px)',
+	fontSize: '14px',
 	background: fallbackVar(backgroundColor, theme.color.lightText),
 	color: theme.color.darkText,
 	paddingLeft: theme.dimensions.basePaddingMobile,
 	paddingRight: theme.dimensions.basePaddingMobile,
-	top: fallbackVar(topOffset, `calc(${theme.dimensions.headerHeightMobile} + 1px)`),
+	top: fallbackVar(topOffset, `calc(${theme.dimensions.headerHeightMobile})`),
 	boxShadow: theme.borders.shadowLight,
 	width: 'fit-content',
 	textAlign: 'center',
@@ -19,9 +20,7 @@ const cornerLabelWrapperBase = style({
 	height: 'auto',
 	'@media': {
 		'screen and (--md)': {
-			paddingLeft: theme.dimensions.basePadding,
-			paddingRight: theme.dimensions.basePadding,
-			top: fallbackVar(topOffset, `calc(${theme.dimensions.headerHeight} + 1px)`)
+			top: fallbackVar(topOffset, `calc(${theme.dimensions.headerHeight})`)
 		}
 	}
 })

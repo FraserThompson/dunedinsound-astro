@@ -17,7 +17,7 @@ import { theme } from 'src/Theme.css'
 import AllAgesIndicator from './AllAgesIndicator.astro'
 
 interface Props {
-	style?: any
+	style?: Partial<CSSStyleDeclaration>
 	collection?: CollectionKey
 	collectionEntries?: ProcessedEntry<CollectionKey>[]
 	selected?: string

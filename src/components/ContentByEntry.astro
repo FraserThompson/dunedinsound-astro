@@ -87,6 +87,7 @@ const allReferences = [...Array.from(thisReferences), ...referencesThis]
 
 const hasBanner = Astro.slots.has('banner')
 const hasAudioculture = entryData.links && 'audioculture' in entryData.links
+const hasInfo = entryData.description || hasAudioculture || !!referencesThis.length || !!thisReferences.length
 ---
 
 <Banner
@@ -103,54 +104,53 @@ const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 			)
 		}
 	</div>
-	<!-- social links -->
-	<CornerLabel slot="customContent">
-		{entryData.links && <SocialLinks links={entryData.links} />}
-	</CornerLabel>
 	<!-- description/audioculture quote and link to references of this -->
-	<Fragment
-		slot={entryData.description || hasAudioculture || !!referencesThis.length || !!thisReferences.length
-			? 'subtitle'
-			: ''}
-	>
-		{
-			entryData.description && (
-				<p>
-					<strong>Summary</strong>
-					<br />
-					<Fragment set:html={entryData.description} />
-				</p>
-			)
-		}
-		{
-			hasAudioculture && (
-				<blockquote cite={entryData.links?.audioculture?.link}>
-					"{entryData.links?.audioculture?.snippet}" -{' '}
-					<a
-						href={entryData.links?.audioculture?.link}
-						title={`Read about ${entryData.title} at Audioculture`}
-						target="_blank"
-					>
-						Audioculture
-					</a>
-				</blockquote>
-			)
-		}
-		<div>
-			{
-				!!allReferences.length && (
-					<strong>{collection === 'artist' ? 'Also performed as' : 'Also at this location'}</strong>
-					<ul>
-						{allReferences.map((thing, i, arr) => (
-							<li>
-								<a href={thing.extra.absolutePath}>{thing.entry.data.title} {thing.entry.data.date ? `(${thing.entry.data.date.getFullYear()})` : ''}</a>
-							</li>
-						))}
-					</ul>
-				)
-			}
-		</div>
-	</Fragment>
+	{
+		(
+			<div style={{ paddingTop: '15px' }} slot={hasInfo ? 'subtitle' : ''}>
+				{entryData.description && (
+					<p>
+						<strong>Summary</strong>
+						<br />
+						<Fragment set:html={entryData.description} />
+					</p>
+				)}
+				{hasAudioculture && (
+					<blockquote cite={entryData.links?.audioculture?.link}>
+						"{entryData.links?.audioculture?.snippet}" -{' '}
+						<a
+							href={entryData.links?.audioculture?.link}
+							title={`Read about ${entryData.title} at Audioculture`}
+							target="_blank"
+						>
+							Audioculture
+						</a>
+					</blockquote>
+				)}
+				{!!allReferences.length && (
+					<div>
+						<strong>{collection === 'artist' ? 'Also performed as' : 'Also at this location'}</strong>
+						<ul>
+							{allReferences.map((thing, i, arr) => (
+								<li>
+									<a href={thing.extra.absolutePath}>
+										{thing.entry.data.title} {thing.entry.data.date ? `(${thing.entry.data.date.getFullYear()})` : ''}
+									</a>
+								</li>
+							))}
+						</ul>
+					</div>
+				)}
+			</div>
+		)
+	}
+	{
+		entryData.links && (
+			<CornerLabel slot="customContent" background="black">
+				<SocialLinks links={entryData.links} />
+			</CornerLabel>
+		)
+	}
 	<slot name="banner" slot={hasBanner ? 'background' : ''} />
 </Banner>
 <Divider

@@ -5,15 +5,15 @@
 import { textContainer } from './TextContainer.css'
 
 interface Props {
-	style?: any
+	style?: Partial<CSSStyleDeclaration>
 	className?: string
 	light?: boolean
 }
 
-const { style, className, light } = Astro.props
+const { style, className = '', light } = Astro.props
 
 ---
 
-<article class={`${textContainer} ${light ? 'light' : ''} ${className ? className : ''}`} style={style}>
+<article class={`${textContainer} ${light ? 'light' : ''} ${className}`} style={style}>
 	<slot />
 </article>

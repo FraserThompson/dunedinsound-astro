@@ -24,7 +24,7 @@ const { entry } = Astro.props
 		heightMobile={'40vh'}
 		height={theme.dimensions.defaultBannerHeight}
 		markers={[{ coords: [entry.entry.data.lng, entry.entry.data.lat] }]}
-		center={[entry.entry.data.lng, entry.entry.data.lat + 0.001]}
+		center={[entry.entry.data.lng, entry.entry.data.lat]}
 		zoom="16"
 		nointeract={true}
 	>
