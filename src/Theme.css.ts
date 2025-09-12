@@ -19,6 +19,8 @@ export const theme = createThemeContract({
 		darkSecondary: '',
 		lightContrast2: '',
 		darkContrast2: '',
+		lightContrast3: '',
+		darkContrast3: '',
 		lightForeground: '',
 		transparentForeground: ''
 	},
@@ -97,6 +99,8 @@ createGlobalTheme(':root', theme, {
 		darkSecondary: darken(0.2, secondaryColor),
 		lightContrast2: lighten(0.2, contrastColor2),
 		darkContrast2: darken(0.5, contrastColor2),
+		lightContrast3: lighten(0.2, contrastColor3),
+		darkContrast3: darken(0.5, contrastColor3),
 		lightForeground: lighten(0.4, foregroundColor),
 		transparentForeground: transparentize(0.4, foregroundColor)
 	},

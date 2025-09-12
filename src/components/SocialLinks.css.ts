@@ -10,7 +10,6 @@ export const SocialLinkImage = style({
 	background: 'black',
 	border: '1px solid black',
 	borderRadius: '6px',
-	top: '2px',
 	position: 'relative',
 	height: theme.dimensions.subheaderHeight,
 	width: theme.dimensions.subheaderHeight,

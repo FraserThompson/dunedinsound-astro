@@ -2,35 +2,35 @@ import { globalStyle, style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
 export const textContainer = style({
-	fontSize: '16px',
+	fontSize: '18px',
 	maxWidth: theme.dimensions.contentContainerWidth,
 	margin: '0 auto',
-	paddingTop: theme.dimensions.basePaddingMobile,
 	selectors: {
 		'&.light': {
 			backgroundColor: theme.color.contrast,
 			color: "black"
 		}
-	},
-	'@media': {
-		'screen and (--xs)': {
-			paddingTop: theme.dimensions.basePadding,
-		}
 	}
 })
 
-globalStyle(`${textContainer} > *:not(blockquote):not(h1):not(h2)`, {
+globalStyle(`${textContainer} > *:not(blockquote):not(h1):not(h2), ${textContainer} section > *:not(blockquote):not(h1):not(h2)`, {
 	fontSize: 'inherit'
 })
 
-globalStyle(`${textContainer} section > *:not(blockquote):not(h1):not(h2)`, {
-	fontSize: 'inherit'
+globalStyle(`${textContainer} section`, {
+	padding: `0 !important`,
 })
 
-globalStyle(`${textContainer} > *:not(.lightboxImage):not(ul):not(ol):not(hr)`, {
+globalStyle(`${textContainer} > *:not(.lightboxImage):not(ul):not(ol):not(hr):not(.noCenter), ${textContainer} section > *:not(.lightboxImage):not(ul):not(ol):not(hr):not(.noCenter)`, {
 	margin: '0 auto',
 	padding: theme.dimensions.basePadding,
-	maxWidth: theme.dimensions.contentContainerWidth
+	paddingTop: '8px',
+	paddingBottom: '8px',
+	maxWidth: `min(100vw, 740px)`
+})
+
+globalStyle(`${textContainer} > iframe`, {
+	padding: `0 !important`,
 })
 
 globalStyle(`${textContainer} > ul`, {
@@ -46,7 +46,7 @@ globalStyle(`${textContainer}.light a:hover`, {
 })
 
 globalStyle(`${textContainer} a.active`, {
-	color: 'white'
+	color: theme.color.lightContrast3
 })
 
 globalStyle(`${textContainer} .lightboxImage`, {

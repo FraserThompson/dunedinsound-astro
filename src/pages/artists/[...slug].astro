@@ -4,7 +4,7 @@ import EntriesByCollectionLayout from 'src/layouts/base/EntriesByCollectionLayou
 
 export async function getStaticPaths() {
 	const entries = await loadAndFormatCollection('artist')
-	// We don't want artist pages for artists with only 1 gig.
+	// We don't want artist pages for artists with only 1 gig (these redirect to gig see collection.ts)
 	return entries.filter((entry) => entry.extra.gigCount > 1).map((entry) => ({
 		params: { slug: entry.extra.slug },
 		props: {

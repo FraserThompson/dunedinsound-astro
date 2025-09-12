@@ -1,26 +1,41 @@
 import { style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
 
-export const contentByEntryTitle = style({
-	marginLeft: 'auto',
-	display: 'flex',
-	gap: theme.dimensions.basePadding
+export const contentByEntryActiveWrapper = style({
+	position: 'absolute',
+	top: theme.dimensions.headerHeightMobile,
+	right: '0px',
+	zIndex: 3,
+	borderBottomLeftRadius: "6px",
+	clipPath: 'border-box',
+	'@media': {
+		'screen and (--md)': {
+			top: theme.dimensions.headerHeight,
+		}
+	}
+})
+
+export const spacer = style({
+	padding: '0px',
+	paddingTop: '0px',
+	'@media': {
+		'screen and (--md)': {
+			paddingTop: theme.dimensions.headerHeight
+		}
+	}
 })
 
 export const socialLinksWrapper = style({
 	position: 'absolute',
-	left: '0px',
-	top: theme.dimensions.headerHeightMobile,
-	paddingLeft: theme.dimensions.basePaddingMobile,
-	paddingRight: theme.dimensions.basePaddingMobile,
-	borderBottomRightRadius: '6px',
-	backgroundColor: 'white',
-	boxShadow: theme.borders.shadowLight,
+	right: theme.dimensions.basePaddingMobile,
+	top: '4px',
+	zIndex: 3,
 	'@media': {
 		'screen and (--md)': {
 			top: theme.dimensions.headerHeight,
-			paddingLeft: theme.dimensions.basePadding,
-			paddingRight: theme.dimensions.basePadding
+			paddingTop: theme.dimensions.basePaddingMobile,
+			right: 'auto',
+			left: theme.dimensions.basePaddingMobile
 		}
 	}
 })

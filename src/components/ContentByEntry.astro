@@ -19,10 +19,11 @@ import ActiveIndicator from 'src/components/ActiveIndicator.astro'
 import { theme } from 'src/Theme.css'
 import SocialLinks from 'src/components/SocialLinks.astro'
 import ImageGallery from 'src/components/ImageGallery.astro'
+import BlogTile from 'src/components/blog/BlogTile.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
-import { contentByEntryTitle } from './ContentByEntry.css'
-import CornerLabel from './gig/CornerLabel.astro'
+import { contentByEntryActiveWrapper, spacer } from './ContentByEntry.css'
 import { formattedDate } from 'src/util/names'
+import { socialLinksWrapper } from './ContentByEntry.css'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
@@ -96,18 +97,11 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 	backgroundImage={entryExtra.cover}
 	bottomMargin={`calc(${theme.dimensions.subheaderHeightNegative} * 2)`}
 >
-	<!-- all ages and active indicator -->
-	<div slot="title" class={contentByEntryTitle}>
-		{
-			('date' in entryData || 'died' in entryData) && (
-				<ActiveIndicator born={entryData.date} died={entryData.died} collection={collection} />
-			)
-		}
-	</div>
 	<!-- description/audioculture quote and link to references of this -->
 	{
 		(
-			<div style={{ paddingTop: '15px' }} slot={hasInfo ? 'subtitle' : ''}>
+			<Fragment slot={hasInfo ? 'subtitle' : ''}>
+				<div class={`${entryData.links ? spacer : ''} noCenter`} />
 				{entryData.description && (
 					<p>
 						<strong>Summary</strong>
@@ -129,8 +123,8 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 				)}
 				{!!allReferences.length && (
 					<div>
-						<strong>{collection === 'artist' ? 'Also performed as' : 'Also at this location'}</strong>
-						<ul>
+						<strong>{collection === 'artist' ? 'Also performed as' : 'Other venues at this location'}</strong>
+						<ul style={{ marginTop: '0px' }}>
 							{allReferences.map((thing, i, arr) => (
 								<li>
 									<a href={thing.extra.absolutePath}>
@@ -141,16 +135,24 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 						</ul>
 					</div>
 				)}
-			</div>
+			</Fragment>
 		)
 	}
 	{
 		entryData.links && (
-			<CornerLabel slot="customContent" background="black">
+			<div slot="customContent" class={socialLinksWrapper}>
 				<SocialLinks links={entryData.links} />
-			</CornerLabel>
+			</div>
 		)
 	}
+	<!-- active indicator -->
+	<div slot="customContent" class={contentByEntryActiveWrapper}>
+		{
+			('date' in entryData || 'died' in entryData) && (
+				<ActiveIndicator born={entryData.date} died={entryData.died} collection={collection} />
+			)
+		}
+	</div>
 	<slot name="banner" slot={hasBanner ? 'background' : ''} />
 </Banner>
 <Divider
@@ -255,18 +257,7 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 	</div>
 	<div data-tabid="blogs">
 		<FlexGridContainer grid={{ xs: 12, md: 6, lg: 3 }}>
-			{
-				blogs.map((blog) => (
-					<Tile
-						href={blog.extra.absolutePath}
-						title={blog.entry.data.title}
-						label={formattedDate(blog.entry.data.date)}
-						responsiveImage={blog.extra.cover}
-						responsiveImageSizes={'grid'}
-						backgroundStyle="center"
-					/>
-				))
-			}
+			{blogs.map((blog) => <BlogTile blog={blog} responsiveImageSizes={'grid'} backgroundStyle="center" />)}
 		</FlexGridContainer>
 	</div>
 	{

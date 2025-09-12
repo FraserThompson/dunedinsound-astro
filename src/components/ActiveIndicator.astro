@@ -2,7 +2,7 @@
 /**
  * Indicator used site-wide to indicate activeness of an artist/venue.
  */
-import { activeIcon, defunctIcon } from './ActiveIndicator.css'
+import { statusIcon, activeIcon, defunctIcon } from './ActiveIndicator.css'
 
 interface Props {
 	died?: Date
@@ -15,14 +15,14 @@ const { died, born, collection } = Astro.props
 
 <!-- we only want to show "active" status on venues -->{
 	died === undefined && born && collection !== 'artist' && (
-		<small class={activeIcon} title="Active">
+		<small class={`${statusIcon} ${activeIcon}`} title="Active">
 			Active since {born.getFullYear()}
 		</small>
 	)
 }
 {
 	died !== undefined && (
-		<small class={defunctIcon} title="Defunct">
+		<small class={`${statusIcon} ${defunctIcon}`} title="Defunct">
 			{died.getFullYear() !== 1600
 				? !born
 					? `Defunct since ${died.getFullYear()}`

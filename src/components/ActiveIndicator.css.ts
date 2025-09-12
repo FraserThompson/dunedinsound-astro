@@ -1,24 +1,31 @@
 import { style } from "@vanilla-extract/css";
-import { darken, lighten } from "polished";
+import { darken } from "polished";
 import { theme } from "src/Theme.css";
 
-const activeColor = "#54a868";
-const defunctColor = "#a63d3d";
+const activeColor = "#23ae44ff";
+const defunctColor = "#b41c1cff";
+
+export const statusIcon = style({
+	fontWeight: "bold",
+	display: "block",
+	opacity: 0.8,
+	paddingRight: theme.dimensions.basePaddingMobile,
+	paddingLeft: theme.dimensions.basePaddingMobile,
+	zIndex: 3,
+	'@media': {
+		'screen and (--md)': {
+			paddingRight: theme.dimensions.basePadding,
+			paddingLeft: theme.dimensions.basePadding,
+		}
+	}
+})
 
 export const activeIcon = style({
-	backgroundColor: activeColor,
-	fontWeight: "bold",
-	padding: "3px",
-	borderRadius: '3px',
-	border: `2px solid ${darken(0.3, activeColor)}`,
-	color: darken(0.3, activeColor)
+	color: activeColor,
+	backgroundColor: darken(0.2, activeColor),
 })
 
 export const defunctIcon = style({
-	backgroundColor: defunctColor,
-	fontWeight: "bold",
-	padding: "3px",
-	borderRadius: '3px',
-	border: `2px solid ${darken(0.3, defunctColor)}`,
-	color: darken(0.3, defunctColor)
+	color: defunctColor,
+	backgroundColor: darken(0.2, defunctColor),
 })

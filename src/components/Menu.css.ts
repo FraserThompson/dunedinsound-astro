@@ -77,6 +77,7 @@ const MenuLinkWrapperBase = style({
 	color: theme.color.text,
 	width: '100%',
 	cursor: 'pointer',
+	position: 'relative',
 	textDecoration: 'none',
 	whiteSpace: 'nowrap',
 	lineHeight: theme.dimensions.headerHeightMobile,

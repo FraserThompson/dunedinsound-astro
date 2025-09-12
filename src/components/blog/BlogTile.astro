@@ -7,6 +7,8 @@ import Tile, { type BackgroundStyle } from '../Tile.astro'
 import type { ResponsiveImageSizes } from '../Image2.astro'
 import { tagLink } from './BlogTags.css'
 import { formattedDate } from 'src/util/names'
+import { theme } from 'src/Theme.css'
+import FastArrowRight from '~icons/iconoir/fast-arrow-right'
 
 interface Props {
 	blog: ProcessedEntry<'blog'>
@@ -39,5 +41,8 @@ const blogExtra = blog.extra
 			</span>
 		))
 	}
-	<h5 style={{ marginBottom: 0 }}>{blogData.description}</h5>
+	<h6 style={{ marginBottom: '0px', marginTop: '0px' }}>
+		{blogData.description}
+		<FastArrowRight style={{ top: '3px', position: 'relative' }} />
+	</h6>
 </Tile>

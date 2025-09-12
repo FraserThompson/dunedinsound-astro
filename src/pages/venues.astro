@@ -9,6 +9,7 @@ import Image2 from 'src/components/Image2.astro'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 import { theme } from 'src/Theme.css'
 import AllAgesIndicator from 'src/components/AllAgesIndicator.astro'
+import SeriesIndicator from 'src/components/SeriesIndicator.astro'
 
 const venues = await loadAndFormatCollection('venue')
 
@@ -21,7 +22,7 @@ const groupedVenues = Object.values(
 				acc[index] = []
 			}
 			acc[index].push(venue)
-			acc[index].sort((a, b) => (b.entry.data.date?.getTime() || 0) - (a.entry.data.date?.getTime() || 0))
+			acc[index].sort((a, b) => (a.entry.data.date?.getTime() || 0) - (b.entry.data.date?.getTime() || 0))
 			return acc
 		},
 		{} as { [key: string]: ProcessedEntry<'venue'>[] }
@@ -64,20 +65,23 @@ const markers = groupedVenues.map((venueList) => ({
 				groupedVenues.map((venueList) => (
 					<div class="popup">
 						{venueList.map((venue) => (
-							<div>
-								<h3 class="center" style={{ marginBottom: '0' }}>
-									{venue.entry.data.title}
-								</h3>
-								<div
-									class="center"
-									style={{
-										marginTop: '0',
-										marginBottom: '10px',
-										gap: '10px'
-									}}
-								>
-									<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} />
-									{venue.entry.data.allAges && <AllAgesIndicator />}
+							<div style={{ display: 'flex', flexDirection: 'column' }}>
+								<div style={{ marginBottom: 'auto' }}>
+									<h3 class="center" style={{ marginBottom: '0px' }}>
+										{venue.entry.data.title}
+									</h3>
+									<div
+										class="center"
+										style={{
+											marginTop: '0',
+											marginBottom: '10px',
+											gap: '10px'
+										}}
+									>
+										<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} />
+										{venue.entry.data.allAges && <AllAgesIndicator />}
+										{venue.entry.data.series && <SeriesIndicator />}
+									</div>
 								</div>
 								<SocialLinks links={venue.entry.data.links} />
 								{venue.extra.cover && (
@@ -86,6 +90,7 @@ const markers = groupedVenues.map((venueList) => ({
 										href={venue.extra.absolutePath}
 										style={{
 											display: 'block',
+											minWidth: '128px',
 											border: theme.borders.contrast,
 											borderRadius: '6px',
 											aspectRatio: '3/2'
@@ -94,9 +99,10 @@ const markers = groupedVenues.map((venueList) => ({
 										<Image2 responsiveImage={venue.extra.cover} />
 									</a>
 								)}
-								<div class="center" style="padding-top: 5px;">
+								<div class="center" style={{ paddingTop: '5px' }}>
 									<a class="button" title={venue.entry.data.title} href={venue.extra.absolutePath}>
-										See <strong>{venue.extra.gigCount}</strong> gig{venue.extra.gigCount > 1 ? 's' : ''} at this venue
+										See <strong>{venue.extra.gigCount}</strong> gig{venue.extra.gigCount > 1 ? 's' : ''}{' '}
+										{venue.entry.data.series ? 'in this series' : 'at this venue'}
 									</a>
 								</div>
 							</div>

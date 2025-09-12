@@ -7,7 +7,8 @@ import AllAgesIndicator from 'src/components/AllAgesIndicator.astro'
 
 export async function getStaticPaths() {
 	const artistEntries = await loadAndFormatCollection('venue')
-	return artistEntries.map((entry) => ({
+	// We don't want venue pages with venues with series (these redirect to series see colleection.ts)
+	return artistEntries.filter((entry) => !entry.entry.data.series).map((entry) => ({
 		params: { slug: entry.extra.slug },
 		props: {
 			entry
@@ -24,7 +25,7 @@ const { entry } = Astro.props
 		heightMobile={'40vh'}
 		height={theme.dimensions.defaultBannerHeight}
 		markers={[{ coords: [entry.entry.data.lng, entry.entry.data.lat] }]}
-		center={[entry.entry.data.lng, entry.entry.data.lat]}
+		center={[entry.entry.data.lng, entry.entry.data.lat + 0.0002]}
 		zoom="16"
 		nointeract={true}
 	>

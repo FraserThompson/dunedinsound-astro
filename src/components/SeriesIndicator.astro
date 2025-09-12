@@ -1,0 +1,39 @@
+---
+/**
+ * Indicator used site-wide to indicate something is part of a series.
+ */
+import PlayListIcon from '~icons/iconoir/playlist'
+import { theme } from 'src/Theme.css'
+
+interface Props {
+	hideText?: Boolean
+}
+
+const { hideText } = Astro.props
+---
+
+<h4
+	title="A series of gigs"
+	class={hideText ? "hiddenText" : ""}
+	style={{
+		color: theme.color.lightSecondary
+	}}
+>
+	<PlayListIcon />
+	{!hideText && 'A series of gigs'}
+</h4>
+
+
+
+<style>
+	h4.hiddenText svg {
+		position: relative;
+		top: 4px;
+	}
+	h4 {
+		margin-bottom: 0;
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+	}
+</style>

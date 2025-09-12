@@ -66,6 +66,7 @@ const Series = defineCollection({
 	})
 })
 
+// Venue
 const Venue = defineCollection({
 	loader: glob({ pattern: '*.yml', base: './src/content/venue/' }),
 	schema: z.object({
@@ -75,6 +76,7 @@ const Venue = defineCollection({
 		description: z.string().optional(),
 		links: webLinks.optional(),
 		resources: z.array(externalResource).optional(),
+		series: reference('series').optional(),
 		died: z.date().optional(),
 		date: z.date().optional(),
 		hidden: z.boolean().optional(),

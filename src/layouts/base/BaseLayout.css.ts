@@ -86,8 +86,10 @@ globalStyle('h5', {
 })
 
 globalStyle('h6', {
-	fontSize: `calc(${theme.font.baseSize} * 0.8)`,
-	lineHeight: '1.1'
+	fontSize: '14px',
+	color: theme.color.dullText,
+	textShadow: "1px 1px 0px black",
+	fontWeight: '400'
 })
 
 globalStyle('blockquote', {
@@ -160,6 +162,7 @@ globalStyle('a:hover', {
 })
 
 globalStyle('input[type="text"], input[type="search"]', {
+	fontSize: theme.font.baseSize,
 	backgroundImage: 'none',
 	border: '1px solid #000',
 	minWidth: '0px',

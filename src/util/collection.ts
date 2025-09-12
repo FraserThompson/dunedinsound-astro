@@ -490,6 +490,7 @@ export async function getVenueExtra(
 	const venueGigs = await getCollection('gig', (gig) => gig.data.venue.id === venueId)
 	return {
 		...extra,
+		absolutePath: entry.data.series ? getEntryPath(entry.data.series.id, 'series') : extra.absolutePath,
 		gigCount: venueGigs.length
 	}
 }
