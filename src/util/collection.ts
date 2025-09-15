@@ -6,7 +6,7 @@ import { getEntry } from 'astro:content'
 import * as path from 'node:path'
 import { getResponsiveImage, getResponsiveImagesByDir } from './image'
 import type { ResponsiveImage } from './ResponsiveImage'
-import { monthMap, type Month } from './constants'
+import { epochYear, monthMap, type Month } from './constants'
 import { getCollectionMetaDescription } from './seo'
 import { DIST_MEDIA_DIR } from './constants'
 import { existsSync } from 'node:fs'
@@ -45,9 +45,11 @@ export type EntryExtraMap = {
 	artist: EntryExtraCommon & {
 		gigCount: number
 		lastGig?: number
+		lifetimeString?: string
 	}
 	venue: EntryExtraCommon & {
 		gigCount: number
+		lifetimeString?: string
 	}
 	vaultsession: EntryExtraCommon & {
 		artist?: CollectionEntry<'artist'>
@@ -440,6 +442,30 @@ export async function getVaultSessionExtra(
 }
 
 /**
+ * Helper function which takes an artist or venue and makes a handy string to summarize its lifetime.
+ * 
+ * For example, if it's born in 1990 and died in 2000 it'll return "1990 - 2000".
+ * If it died at an unspecified date but was born in 1990 it'll return "1990".
+ * Returns undefined if the entry is still alive.
+ * 
+ * @param entry 
+ * @returns string
+ */
+function getLifetimeString(entry: CollectionEntry<'artist'> | CollectionEntry<'venue'>) {
+	const openYear = entry.data.date?.getFullYear()
+	const closeYear = entry.data.died?.getFullYear()
+
+	let lifetimeString;
+
+	// If it's still alive the lifetimeString is empty.
+	if (closeYear) {
+		lifetimeString = `${(openYear && openYear !== epochYear) ? openYear : ''}${(closeYear && closeYear !== epochYear ? (closeYear && openYear ? ' - ' : '') + closeYear : '')}`;
+	}
+
+	return lifetimeString
+}
+
+/**
  * Extends extra fields for artists:
  * - cover: override the default cover with the latest gig cover.
  * - gigCount: number of gigs featuring this artist.
@@ -469,6 +495,7 @@ export async function getArtistExtra(
 
 	return {
 		...extra,
+		lifetimeString: getLifetimeString(entry),
 		absolutePath: artistGigs.length <= 1 && latestGig ? getEntryPath(latestGig.data.title, 'gig') : extra.absolutePath,
 		gigCount: artistGigs.length,
 		lastGig: latestGig?.data.date.getTime(),
@@ -488,8 +515,10 @@ export async function getVenueExtra(
 ): Promise<EntryExtraMap['venue']> {
 	const venueId = entry.id
 	const venueGigs = await getCollection('gig', (gig) => gig.data.venue.id === venueId)
+
 	return {
 		...extra,
+		lifetimeString: getLifetimeString(entry),
 		absolutePath: entry.data.series ? getEntryPath(entry.data.series.id, 'series') : extra.absolutePath,
 		gigCount: venueGigs.length
 	}
@@ -577,7 +606,7 @@ export const sortGigs = (gigs: ProcessedEntry<'gig'>[]): SortedGigs =>
 		const month = monthMap[gig.entry.data.date.getMonth()]
 
 		if (!acc[year]) {
-			acc[year] = {count: 0, gigs: {}}
+			acc[year] = { count: 0, gigs: {} }
 		}
 
 		acc[year].count++

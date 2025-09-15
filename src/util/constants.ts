@@ -17,3 +17,5 @@ export const monthMap: { [i: number]: Month } = {
 	10: 'November',
 	11: 'December'
 }
+
+export const epochYear = 1600

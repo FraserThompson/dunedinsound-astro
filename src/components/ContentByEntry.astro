@@ -128,7 +128,9 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 							{allReferences.map((thing, i, arr) => (
 								<li>
 									<a href={thing.extra.absolutePath}>
-										{thing.entry.data.title} {thing.entry.data.date ? `(${thing.entry.data.date.getFullYear()})` : ''}
+										{thing.entry.data.title}{' '}
+										{thing.entry.collection === 'venue' &&
+											(thing.extra.lifetimeString ? `(${thing.extra.lifetimeString})` : '(Present)')}
 									</a>
 								</li>
 							))}
@@ -147,11 +149,7 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 	}
 	<!-- active indicator -->
 	<div slot="customContent" class={contentByEntryActiveWrapper}>
-		{
-			('date' in entryData || 'died' in entryData) && (
-				<ActiveIndicator born={entryData.date} died={entryData.died} collection={collection} />
-			)
-		}
+		<ActiveIndicator entry={entry} />
 	</div>
 	<slot name="banner" slot={hasBanner ? 'background' : ''} />
 </Banner>

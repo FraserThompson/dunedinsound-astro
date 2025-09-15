@@ -29,10 +29,10 @@ const groupedVenues = Object.values(
 	)
 )
 
-// Markers use the first venue in the group (will be the latest)
+// Markers use the last venue in the group (will be the latest)
 const markers = groupedVenues.map((venueList) => ({
-	coords: [venueList[0].entry.data.lng, venueList[0].entry.data.lat],
-	class: venueList[0].entry.data.died === undefined ? undefined : 'dead-marker'
+	coords: [venueList[venueList.length - 1].entry.data.lng, venueList[venueList.length - 1].entry.data.lat],
+	class: venueList[venueList.length - 1].entry.data.died === undefined ? undefined : 'dead-marker'
 }))
 ---
 
@@ -78,7 +78,7 @@ const markers = groupedVenues.map((venueList) => ({
 											gap: '10px'
 										}}
 									>
-										<ActiveIndicator died={venue.entry.data.died} born={venue.entry.data.date} />
+										<ActiveIndicator entry={venue} />
 										{venue.entry.data.allAges && <AllAgesIndicator />}
 										{venue.entry.data.series && <SeriesIndicator />}
 									</div>

@@ -1,52 +1,53 @@
-import { globalStyle, style } from '@vanilla-extract/css'
+import { style } from '@vanilla-extract/css'
 import { theme } from 'src/Theme.css'
-import { MenuLi, MenuLinkWrapper } from '../Menu.css'
+import { MenuLinkWrapper } from '../Menu.css'
 
 export const artistExtraWrapper = style({
-	width: '100%',
 	listStyle: 'none',
-	paddingLeft: '0'
+	paddingLeft: '0',
+	position: 'absolute',
+	height: 'auto !important',
+	width: 'auto !important',
+	right: theme.dimensions.basePaddingMobile,
+	top: '0px'
 })
 
 export const artistDropdownLink = style([
 	MenuLinkWrapper['vertical'],
 	{
-		color: 'inherit !important',
-		paddingLeft: '0 !important',
-		width: 'auto !important',
-		flexGrow: '1 !important',
+		height: '100% !important',
+		color: `${theme.color.darkText} !important`,
 		selectors: {
 			'&.seeOther': {
-				color: `${theme.color.dullText} !important`
+				color: `${theme.color.dullDarkText} !important`,
+				position: 'absolute',
+				lineHeight: '1',
+				height: 'auto !important',
+				width: 'auto !important',
+				bottom: theme.dimensions.basePaddingMobile,
+				right: 0
 			},
 			'&.seeOther:hover': {
-				color: `${theme.color.text} !important`
+				color: `${theme.color.darkText} !important`,
 			}
 		}
 	}
 ])
 
 export const artistDropdownLi = style([
-	MenuLi['vertical'],
 	{
-		display: 'flex',
-		flexWrap: 'wrap',
-		width: 'auto !important',
-		paddingLeft: theme.dimensions.basePaddingMobile,
-		paddingRight: '2px',
-		'@media': {
-			'screen and (--md)': {
-				paddingLeft: theme.dimensions.basePadding,
-				paddingRight: '2px'
-			}
-		},
+		height: '60px',
+		minWidth: '320px',
+		position: 'relative',
+		paddingLeft: '0',
+		paddingRight: '0',
 		selectors: {
 			'&.active': {
 				backgroundColor: `${theme.color.contrast2} !important`,
 				color: `black !important`
 			},
 			'&:hover': {
-				backgroundColor: theme.color.lightPrimary,
+				backgroundColor: theme.color.contrast2,
 				color: `${theme.color.lightText} !important`
 			},
 			'&.active:hover': {
@@ -58,10 +59,3 @@ export const artistDropdownLi = style([
 		}
 	}
 ])
-
-globalStyle(`${artistDropdownLi}.active ${artistExtraWrapper} a`, {
-	color: `${theme.color.darkContrast2} !important`
-})
-globalStyle(`${artistDropdownLi}.active ${artistExtraWrapper} a:hover`, {
-	color: `black !important`
-})

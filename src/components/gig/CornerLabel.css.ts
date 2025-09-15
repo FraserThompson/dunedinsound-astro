@@ -20,7 +20,9 @@ const cornerLabelWrapperBase = style({
 	height: 'auto',
 	'@media': {
 		'screen and (--md)': {
-			top: fallbackVar(topOffset, `calc(${theme.dimensions.headerHeight})`)
+			top: fallbackVar(topOffset, `calc(${theme.dimensions.headerHeight})`),
+			paddingLeft: theme.dimensions.basePadding,
+			paddingRight: theme.dimensions.basePadding,
 		}
 	}
 })

@@ -5,6 +5,7 @@ import { socialLinksToMenuItems } from 'src/util/helpers'
 import { artistDropdownLink, artistDropdownLi, artistExtraWrapper } from './ArtistDropdown.css'
 import { theme } from 'src/Theme.css'
 import { SocialLinkImage } from '../SocialLinks.css'
+import ChevronRightIcon from '~icons/iconoir/nav-arrow-right'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -16,9 +17,12 @@ const entryExtra = entry.extra
 
 <DropdownMenu
 	direction="down"
-	heightMobile={theme.dimensions.headerHeightMobile}
+	heightMobile={theme.dimensions.subheaderHeight}
 	height={theme.dimensions.headerHeight}
-	textColor={theme.color.contrast}
+	top={theme.dimensions.headerHeight}
+	topMobile={theme.dimensions.headerHeightMobile}
+	backgroundColor="white"
+	textColor="black"
 	client:load
 >
 	{
@@ -27,7 +31,7 @@ const entryExtra = entry.extra
 				<a class={`${artistDropdownLink} menuLink`} title={artist.entry.data.title} href={`#${artist.entry.id}`}>
 					{artist.entry.data.title}
 				</a>
-				{(artist.extra.gigCount - 1 > 0 || artist.entry.data.links) && (
+				{artist.entry.data.links && (
 					<ul class={artistExtraWrapper}>
 						{socialLinksToMenuItems(artist.entry.data.links).map((link) => (
 							<li style={{ display: 'inline-block' }}>
@@ -41,17 +45,15 @@ const entryExtra = entry.extra
 								</a>
 							</li>
 						))}
-						{artist.extra.gigCount - 1 > 0 && (
-							<li>
-								<a class={`${artistDropdownLink} seeOther`} href={`/artists/${artist.entry.id}`}>
-									<small>
-										SEE {artist.extra.gigCount - 1} OTHER GIG{artist.extra.gigCount - 1 === 1 ? '' : 'S'} FROM THIS
-										ARTIST
-									</small>
-								</a>
-							</li>
-						)}
 					</ul>
+				)}
+				{artist.extra.gigCount - 1 > 0 && (
+					<a class={`${artistDropdownLink} seeOther`} href={`/artists/${artist.entry.id}`}>
+						<small>
+							{artist.extra.gigCount - 1} OTHER GIG{artist.extra.gigCount - 1 === 1 ? '' : 'S'} 
+							<ChevronRightIcon style={{ position: 'relative', top: '3px' }} />
+						</small>
+					</a>
 				)}
 			</li>
 		))

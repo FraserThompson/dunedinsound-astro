@@ -76,6 +76,7 @@ export const Content = style({
 	}
 })
 
+// Top subheader on mobile and desktop
 export const WithTopSubheader = style({
 	marginTop: theme.dimensions.headerHeightMobile,
 	'@media': {
@@ -85,11 +86,22 @@ export const WithTopSubheader = style({
 	}
 })
 
+// Top subheader on mobile
 export const WithTopSubheaderMobile = style({
 	marginTop: theme.dimensions.headerHeightMobile,
 	'@media': {
 		'screen and (--md)': {
 			marginTop: '0px'
+		}
+	}
+})
+
+// Top subheader on desktop
+export const WithTopSubheaderDesktop = style({
+	marginTop: 0,
+	'@media': {
+		'screen and (--md)': {
+			marginTop: theme.dimensions.subheaderHeight
 		}
 	}
 })

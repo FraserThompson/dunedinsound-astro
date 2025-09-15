@@ -5,6 +5,7 @@
  *
  * Props:
  *  - hideFooter: See BaseLayout
+ *  - contentOverTopSubheader: Content overlays top subheader on desktop (sidebar still makes room)
  *  - poo: SEO gubbins
  *
  * Slots:
@@ -20,29 +21,45 @@ import { theme } from 'src/Theme.css'
 import BaseLayout from '../base/BaseLayout.astro'
 import SidebarNav from 'src/components/SidebarNav.astro'
 import type { Poo } from 'src/components/SEO.astro'
-import { WithTopSubheader, WithBottomSubheaderMobile, Subheader } from 'src/components/UtilClasses.css'
+import {
+	WithTopSubheader,
+	WithBottomSubheaderMobile,
+	WithTopSubheaderDesktop,
+	WithTopSubheaderMobile,
+	Subheader
+} from 'src/components/UtilClasses.css'
 
 interface Props {
 	hideFooter?: boolean
+	contentOverTopSubheader?: boolean
 	hasSubheaderBottomMobile?: boolean
 	hasSidebarSubheaderBottomMobile?: boolean
 	poo: Poo
 }
 
-const { hideFooter, hasSubheaderBottomMobile, hasSidebarSubheaderBottomMobile, poo } = Astro.props
+const { hideFooter, contentOverTopSubheader, hasSubheaderBottomMobile, hasSidebarSubheaderBottomMobile, poo } = Astro.props
 
 const hasSubheaderTop = Astro.slots.has('subheaderTop')
 const hasSubheaderTopMobile = Astro.slots.has('subheaderTopMobile')
 const hasSubheaderTopDesktop = Astro.slots.has('subheaderTopDesktop')
 const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile')
+
+const contentWrapperClass = hasSubheaderTop
+	? WithTopSubheader
+	: hasSubheaderTopMobile
+		? WithTopSubheaderMobile
+		: hasSubheaderTopDesktop && !contentOverTopSubheader
+			? WithTopSubheaderDesktop
+			: ''
 ---
 
 <BaseLayout
-	className=`${(hasSubheaderTop || hasSubheaderTopDesktop) ? WithTopSubheader : ''} ${hasSubheaderBottomMobile ? WithBottomSubheaderMobile : ''}`
+	className=`${contentWrapperClass} ${hasSubheaderBottomMobile ? WithBottomSubheaderMobile : ''}`
 	hideFooter={hideFooter}
 	hasSidebar={true}
 	poo={poo}
 >
+	<!-- top subheader on mobile and desktop -->
 	{
 		hasSubheaderTop && (
 			<div class={`${Subheader['top']}`}>
@@ -50,6 +67,7 @@ const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile'
 			</div>
 		)
 	}
+	<!-- top subheader on mobile -->
 	{
 		hasSubheaderTopMobile && (
 			<div class={`${Subheader['topMobile']}`}>
@@ -57,6 +75,7 @@ const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile'
 			</div>
 		)
 	}
+	<!-- top subheader on desktop -->
 	{
 		hasSubheaderTopDesktop && (
 			<div class={`${Subheader['topDesktop']}`}>
@@ -73,7 +92,10 @@ const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile'
 		customButton={true}
 	>
 		<slot name="sidebarMenu" slot="sidebarMenu" />
-		<slot name="sidebarSubheaderTopMobile" slot={`${hasSidebarSubheaderTopMobile && 'sidebarSubheaderTopMobile'}`} />
+		<slot
+			name="sidebarSubheaderTopMobile"
+			slot={`${hasSidebarSubheaderTopMobile ? 'sidebarSubheaderTopMobile' : ''}`}
+		/>
 		<slot name="content" slot="content" />
 	</SidebarNav>
 </BaseLayout>

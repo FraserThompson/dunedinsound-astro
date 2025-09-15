@@ -7,6 +7,7 @@ import BlogTags from 'src/components/blog/BlogTags.astro'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import { formattedDate } from 'src/util/names'
+import { theme } from 'src/Theme.css'
 
 interface Props {
 	entries?: ProcessedEntry<'blog'>[]
@@ -25,38 +26,34 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 	</div>
 	<TextContainer slot="content">
 		{selectedTag && <h2>Articles tagged with "{selectedTag}"</h2>}
-		<div>
-			{
-				blogs.map((blog) => (
-					<div class="filter-item" data-category="">
-						<h2>
-							<a href={blog.extra.absolutePath}>
-								{blog.entry.data.tags.includes('interview') && 'INTERVIEW: '}
-								{blog.entry.data.title}
-							</a>
-						</h2>
-						<h4>{formattedDate(blog.entry.data.date)}</h4>
-						{blog.extra.cover && (
-							<a href={blog.extra.absolutePath}>
-								<Banner
-									height="20vh"
-									heightMobile="20vh"
-									responsiveImageSizes={'blog'}
-									backgroundImage={blog.extra.cover}
-									loading={'lazy'}
-								/>
-							</a>
-						)}
-						<TextContainer>
-							{blog.entry.body && generateExcerpt(blog.entry.body)}
-							<small>
-								<a href={blog.extra.absolutePath}>More</a>
-							</small>
-						</TextContainer>
-						<hr />
-					</div>
-				))
-			}
-		</div>
+		{
+			blogs.map((blog) => (
+				<div class="filter-item" data-category="">
+					<h2 style={{ marginBottom: '5px' }}>
+						<a href={blog.extra.absolutePath}>
+							{blog.entry.data.tags.includes('interview') && 'INTERVIEW: '}
+							{blog.entry.data.title}
+						</a>
+					</h2>
+					<h4>{formattedDate(blog.entry.data.date)}</h4>
+					{blog.extra.cover && (
+						<a href={blog.extra.absolutePath}>
+							<Banner
+								height="20vh"
+								heightMobile="20vh"
+								responsiveImageSizes={'blog'}
+								backgroundImage={blog.extra.cover}
+								loading={'lazy'}
+							/>
+						</a>
+					)}
+					{blog.entry.body && <p>{generateExcerpt(blog.entry.body)}</p>}
+					<p>
+						<a href={blog.extra.absolutePath}>More</a>
+					</p>
+					<hr />
+				</div>
+			))
+		}
 	</TextContainer>
 </SidebarLayout>

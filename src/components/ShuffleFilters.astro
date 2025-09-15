@@ -52,7 +52,7 @@ const { openSearchWithSidebar, search, sort, filter, className = '' } = Astro.pr
 		search && (
 			<label class={`${searchboxWrapper} fixedBottomMobile flex ${openSearchWithSidebar ? 'openWithSidebar' : ''}`}>
 				<SearchIcon class="hideMobile" />
-				<input type="search" placeholder={search} />
+				<input type="search" name="search" placeholder={search} />
 			</label>
 		)
 	}

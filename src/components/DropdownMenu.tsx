@@ -61,6 +61,8 @@ const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, 
 		// We do this instead of onclick so we can handle custom menu children
 		dropdownRef.current?.querySelectorAll('.menuLink')
 			.forEach((el: HTMLAnchorElement) => el.addEventListener('click', (e: MouseEvent) => select(e)))
+		// Handle initial navigation on create
+		handleURLChange(new URL(window.location.href))
 		return () => document.removeEventListener(replaceEventName, (e: any) => handleURLChange(e.detail))
 	}, [])
 

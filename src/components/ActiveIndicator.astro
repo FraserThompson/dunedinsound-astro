@@ -2,32 +2,30 @@
 /**
  * Indicator used site-wide to indicate activeness of an artist/venue.
  */
+import { epochYear } from 'src/util/constants'
 import { statusIcon, activeIcon, defunctIcon } from './ActiveIndicator.css'
+import type { ProcessedEntry } from 'src/util/collection'
 
 interface Props {
-	died?: Date
-	born?: Date
-	collection?: string
+	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
 }
 
-const { died, born, collection } = Astro.props
+const { entry } = Astro.props
+const entryData = entry.entry.data
 ---
 
-<!-- we only want to show "active" status on venues -->{
-	died === undefined && born && collection !== 'artist' && (
+<!-- no lifetime string means currently active -->{
+	!entry.extra.lifetimeString && entryData.date && (
 		<small class={`${statusIcon} ${activeIcon}`} title="Active">
-			Active since {born.getFullYear()}
+			Active since {entryData.date?.getFullYear()}
 		</small>
 	)
 }
+<!-- lifetime string means dead -->
 {
-	died !== undefined && (
+	entry.extra.lifetimeString && (
 		<small class={`${statusIcon} ${defunctIcon}`} title="Defunct">
-			{died.getFullYear() !== 1600
-				? !born
-					? `Defunct since ${died.getFullYear()}`
-					: `Active ${born.getFullYear()} to ${died.getFullYear()}`
-				: 'Defunct'}
+			{entryData.date ? `Active ${entry.extra.lifetimeString}` : `Defunct since ${entry.extra.lifetimeString}`}
 		</small>
 	)
 }

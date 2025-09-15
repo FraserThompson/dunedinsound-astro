@@ -202,7 +202,7 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
                 {search &&
                     <label class={`${searchboxWrapper} fixedBottomMobile flex`}>
                         <SearchIcon class="hideMobile" />
-                        <input type="search" placeholder={search} onChange={(e: ChangeEvent<HTMLInputElement>) => setSearch(e.currentTarget?.value)} />
+                        <input type="search" name="search" placeholder={search} onChange={(e: ChangeEvent<HTMLInputElement>) => setSearch(e.currentTarget?.value)} />
                     </label>
                 }
                 {sort &&

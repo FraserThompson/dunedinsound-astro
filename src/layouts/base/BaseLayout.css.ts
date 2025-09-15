@@ -43,6 +43,10 @@ globalStyle('p, span', {
 	fontSize: theme.font.baseSize
 })
 
+globalStyle('small', {
+	fontSize: '14px'
+})
+
 globalStyle('h1, h2, h3, h4, h5', {
 	textShadow: '0px 0px 3px rgba(0, 0, 0, 1)'
 })
@@ -63,7 +67,7 @@ globalStyle('h1.smaller', {
 })
 
 globalStyle('h2', {
-	fontSize: `calc(${theme.font.baseSize} * 1.6)`,
+	fontSize: `calc(${theme.font.baseSize} * 1.5)`,
 	lineHeight: '1.1'
 })
 
