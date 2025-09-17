@@ -1,5 +1,5 @@
 import { globalStyle, style, styleVariants } from '@vanilla-extract/css'
-import { theme } from '../ThemeContract.css'
+import { theme } from '../Theme.css'
 
 const MenuWrapperBase = style({
 	paddingLeft: 0,
@@ -111,7 +111,6 @@ export const MenuLinkWrapper = styleVariants({
 		{
 			display: 'inline-flex',
 			justifyContent: 'center',
-			position: 'relative',
 			alignItems: 'center',
 			borderBottom: 'none',
 			borderTop: 'none',
@@ -148,7 +147,6 @@ export const MenuLinkWrapper = styleVariants({
 		MenuLinkWrapperBase,
 		{
 			boxSizing: 'content-box',
-			position: 'relative',
 			writingMode: 'vertical-rl',
 			textOrientation: 'mixed',
 			textAlign: 'center',

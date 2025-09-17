@@ -1,5 +1,5 @@
 import { globalStyle, style } from '@vanilla-extract/css'
-import { theme } from '../../ThemeContract.css'
+import { theme } from '../../Theme.css'
 import { MenuLinkWrapper, MenuWrapper } from '../Menu.css'
 
 export const yearsMenuWrapper = style([
@@ -9,8 +9,8 @@ export const yearsMenuWrapper = style([
 export const artistsMenuWrapper = style([
 	MenuWrapper['vertical'],
 	{
-		borderLeft: `6px solid ${theme.color.secondary}`,
-		borderBottom: `6px solid ${theme.color.secondary}`
+		borderLeft: `6px solid ${theme.color.secondary} !important`,
+		borderBottom: `6px solid ${theme.color.secondary} !important`
 	}
 ])
 
@@ -25,16 +25,16 @@ export const artistLink = style([
 	MenuLinkWrapper['vertical'],
 	{
 		backgroundColor: theme.color.darkSecondary,
-		paddingLeft: `calc(${theme.dimensions.basePadding})`,
+		paddingLeft: `calc(${theme.dimensions.basePadding}) !important`,
 		selectors: {
 			'&.active': {
-				backgroundColor: `${theme.color.contrast2}`,
-				color: `black`
+				backgroundColor: `${theme.color.contrast2} !important`,
+				color: `black !important`
 			}
 		},
 		'@media': {
 			'screen and (--md)': {
-				paddingLeft: `calc(${theme.dimensions.basePadding} * 2)`
+				paddingLeft: `calc(${theme.dimensions.basePadding} * 2) !important`
 			}
 		}
 	}
@@ -43,13 +43,12 @@ export const artistLink = style([
 export const monthLink = style([
 	MenuLinkWrapper['vertical'],
 	{
-		color: `${theme.color.darkText}`,
-		height: `${theme.dimensions.subheaderHeight}`,
-		lineHeight: `${theme.dimensions.subheaderHeight}`,
+		color: `${theme.color.darkText} !important`,
+		height: `${theme.dimensions.subheaderHeight} !important`,
+		lineHeight: `${theme.dimensions.subheaderHeight} !important`,
 		cursor: 'default',
 		boxShadow: theme.borders.shadowLight,
-		position: 'relative',
-		paddingLeft: '0px',
+		paddingLeft: '0px !important',
 		selectors: {
 			'&:hover': {
 				color: `black`
@@ -61,12 +60,11 @@ export const monthLink = style([
 export const yearLink = style([
 	MenuLinkWrapper['vertical'],
 	{
-		position: 'sticky',
-		color: `black`,
+		color: `black !important`,
 		height: `${theme.dimensions.headerHeightMobile}`,
 		lineHeight: `${theme.dimensions.headerHeightMobile}`,
 		top: '0px',
-		paddingLeft: '0px',
+		paddingLeft: '0px !important',
 		margin: 0,
 		zIndex: 7,
 		fontWeight: 'bold',

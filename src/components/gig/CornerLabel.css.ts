@@ -1,5 +1,5 @@
 import { style, styleVariants, createVar, fallbackVar } from '@vanilla-extract/css'
-import { theme } from '../../ThemeContract.css'
+import { theme } from '../../Theme.css'
 
 export const backgroundColor = createVar()
 export const topOffset = createVar()

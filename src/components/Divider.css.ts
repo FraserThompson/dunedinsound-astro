@@ -1,6 +1,6 @@
 import { createVar, fallbackVar, globalStyle, style, styleVariants } from '@vanilla-extract/css'
 import { darken } from 'polished'
-import { theme } from '../ThemeContract.css'
+import { theme } from '../Theme.css'
 
 export const dividerColor = createVar()
 export const dividerBackgroundColor = createVar()

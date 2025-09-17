@@ -1,5 +1,5 @@
 import { createVar, fallbackVar, style } from '@vanilla-extract/css'
-import { theme } from '../../ThemeContract.css'
+import { theme } from '../../Theme.css'
 
 export const mapHeight = createVar()
 export const mapHeightMobile = createVar()

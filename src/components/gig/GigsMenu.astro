@@ -11,7 +11,7 @@ import { loadAndFormatCollection, sortGigs } from 'src/util/collection.ts'
 import { gigLink, yearLink, monthLink, yearsMenuWrapper } from './GigsMenu.css'
 import { makeHash } from 'src/util/names'
 import DropdownMenu from '../DropdownMenu'
-import { theme } from '../../ThemeContract.css'
+import { theme } from '../../Theme.css'
 import { MenuLi } from '../Menu.css'
 import { MenuWrapper } from '../Menu.css'
 import ArtistsMenu from './ArtistsMenu.astro'
@@ -36,7 +36,7 @@ const { selected } = Astro.props
 			subtitle: `(${yearObj.count})`
 		}))}
 	direction="down"
-	backgroundColor="white" 
+	backgroundColor="white"
 	textColor="black"
 	heightMobile={theme.dimensions.headerHeightMobile}
 	top={'0px'}
@@ -49,7 +49,7 @@ const { selected } = Astro.props
 			.reverse()
 			.map(([yearName, yearObj]) => (
 				<li class={MenuLi['vertical']} id={makeHash(yearName)}>
-					<a class={yearLink}>
+					<a class={yearLink} style={{ position: 'sticky' }}>
 						{yearName} {`(${yearObj.count})`}
 					</a>
 					<ul class={`${MenuWrapper['vertical']} monthList`}>

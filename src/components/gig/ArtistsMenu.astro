@@ -60,13 +60,11 @@ const { artists } = Astro.props
 		 *
 		 * Highlights the active artist.
 		 *
-		 * @param location
+		 * @param artist hash
 		 */
-		handleArtistChange = (e: any) => {
-			const url: URL = e.detail
-
-			if (url.hash) {
-				const selectedItem = this.querySelector(`[href="${url.hash}"]`)
+		handleArtistChange = (hash?: string) => {
+			if (hash) {
+				const selectedItem = this.querySelector(`[href="${hash}"]`)
 
 				if (!selectedItem) {
 					this.selectedArtist && this.selectedArtist.classList.remove('active')
@@ -97,14 +95,15 @@ const { artists } = Astro.props
 		 * Adds event listeners.
 		 */
 		connectedCallback() {
-			document.addEventListener(replaceEventName, this.handleArtistChange)
+			document.addEventListener(replaceEventName, (e: any) => this.handleArtistChange(e.detail.hash))
+			this.handleArtistChange(window.location.hash);
 			this.links?.forEach((link) => {
 				link.addEventListener('click', (e) => this.itemClick(e))
 			})
 		}
 
 		disconnectedCallback() {
-			document.removeEventListener(replaceEventName, this.handleArtistChange)
+			document.removeEventListener(replaceEventName, (e: any) => this.handleArtistChange(e.detail.hash))
 			this.unlisten && this.unlisten()
 		}
 	}

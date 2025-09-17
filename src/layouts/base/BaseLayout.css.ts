@@ -1,5 +1,5 @@
 import { globalStyle } from '@vanilla-extract/css'
-import { theme } from '../../ThemeContract.css'
+import { theme } from '../../Theme.css'
 
 /**
  * Base element style defaults.

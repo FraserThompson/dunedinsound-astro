@@ -1,5 +1,5 @@
 import { style, createVar, fallbackVar } from '@vanilla-extract/css'
-import { theme } from '../ThemeContract.css'
+import { theme } from '../Theme.css'
 
 export const bannerHeight = createVar()
 export const bannerHeightMobile = createVar()
