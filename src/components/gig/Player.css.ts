@@ -1,5 +1,5 @@
 import { style, globalStyle } from '@vanilla-extract/css'
-import { theme } from 'src/Theme.css'
+import { theme } from '../../ThemeContract.css'
 
 export const PlayerWrapper = style({
 	transition: 'all 150ms ease-in-out',

@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { darken } from "polished";
-import { theme } from "src/Theme.css";
+import { theme } from "../ThemeContract.css";
 
 const activeColor = "#23ae44ff";
 const defunctColor = "#b41c1cff";

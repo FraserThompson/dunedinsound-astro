@@ -1,5 +1,5 @@
 import { style, styleVariants } from '@vanilla-extract/css'
-import { theme } from 'src/Theme.css'
+import { theme } from '../ThemeContract.css'
 
 const SubheaderBase = style({
 	zIndex: '6',

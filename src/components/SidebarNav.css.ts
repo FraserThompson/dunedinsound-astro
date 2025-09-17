@@ -1,5 +1,5 @@
 import { createVar, style, fallbackVar, styleVariants, globalStyle } from '@vanilla-extract/css'
-import { theme } from 'src/Theme.css'
+import { theme } from '../ThemeContract.css'
 
 const defaultWidth = '100vw'
 

@@ -1,5 +1,5 @@
 import { globalStyle, keyframes, style, styleVariants } from '@vanilla-extract/css'
-import { theme } from 'src/Theme.css'
+import { theme } from '../ThemeContract.css'
 
 const camFocus = keyframes({
 	'0%': {

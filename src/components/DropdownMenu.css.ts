@@ -1,5 +1,5 @@
 import { createVar, fallbackVar, style } from '@vanilla-extract/css'
-import { theme } from 'src/Theme.css'
+import { theme } from '../ThemeContract.css'
 import { MenuLi, MenuLinkWrapper, MenuWrapper } from './Menu.css'
 
 export const dropdownTop = createVar()
@@ -48,7 +48,7 @@ export const dropdownMenu = style([
 		position: 'absolute',
 		width: fallbackVar(menuWidth, '100vw'),
 		backgroundColor: fallbackVar(background, theme.color.primary),
-		right: '0 !important',
+		right: '0',
 		left: 'auto',
 		maxHeight: '80vh',
 		overflowY: 'auto',

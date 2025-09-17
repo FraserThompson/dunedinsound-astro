@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css'
-import { theme } from 'src/Theme.css'
+import { theme } from '../../ThemeContract.css'
 
 export const tagsWrapper = style({
 	display: 'flex',

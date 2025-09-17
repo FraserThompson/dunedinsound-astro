@@ -1,5 +1,5 @@
 import { globalStyle, style } from '@vanilla-extract/css'
-import { theme } from 'src/Theme.css'
+import { theme } from '../../ThemeContract.css'
 
 export const playerWrapper = style({
 	bottom: '0px',

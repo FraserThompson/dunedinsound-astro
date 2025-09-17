@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css'
-import { theme } from 'src/Theme.css'
+import { theme } from '../../ThemeContract.css'
 import { Titlebar } from './Player.css'
 
 export const GigsShuffleWrapper = style({

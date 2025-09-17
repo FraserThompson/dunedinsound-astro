@@ -1,5 +1,5 @@
 import { style, keyframes } from '@vanilla-extract/css'
-import { theme } from 'src/Theme.css'
+import { theme } from '../../ThemeContract.css'
 
 export const infoHeader = style({
 	backgroundColor: 'black',

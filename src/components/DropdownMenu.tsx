@@ -19,7 +19,7 @@ import { background, dropdownButtonIcon, dropdownButtonWrapper, dropdownLi, drop
 import { scrollTo } from 'src/util/helpers'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import { replaceEventName } from "src/util/history"
-import { theme } from "src/Theme.css"
+import { theme } from "../ThemeContract.css"
 
 export interface MenuLink {
 	title?: string

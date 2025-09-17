@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css'
-import { theme } from 'src/Theme.css'
+import { theme } from '../../ThemeContract.css'
 import { MenuLinkWrapper } from '../Menu.css'
 
 export const artistExtraWrapper = style({
@@ -15,20 +15,20 @@ export const artistExtraWrapper = style({
 export const artistDropdownLink = style([
 	MenuLinkWrapper['vertical'],
 	{
-		height: '100% !important',
-		color: `${theme.color.darkText} !important`,
+		height: '100%',
+		color: `${theme.color.darkText}`,
 		selectors: {
 			'&.seeOther': {
-				color: `${theme.color.dullDarkText} !important`,
+				color: `${theme.color.dullDarkText}`,
 				position: 'absolute',
 				lineHeight: '1',
-				height: 'auto !important',
-				width: 'auto !important',
+				height: 'auto',
+				width: 'auto',
 				bottom: theme.dimensions.basePaddingMobile,
 				right: 0
 			},
 			'&.seeOther:hover': {
-				color: `${theme.color.darkText} !important`,
+				color: `${theme.color.darkText}`,
 			}
 		}
 	}
@@ -43,15 +43,15 @@ export const artistDropdownLi = style([
 		paddingRight: '0',
 		selectors: {
 			'&.active': {
-				backgroundColor: `${theme.color.contrast2} !important`,
-				color: `black !important`
+				backgroundColor: `${theme.color.contrast2}`,
+				color: `black`
 			},
 			'&:hover': {
 				backgroundColor: theme.color.contrast2,
-				color: `${theme.color.lightText} !important`
+				color: `${theme.color.lightText}`
 			},
 			'&.active:hover': {
-				color: `black !important`
+				color: `black`
 			},
 			'&:not(:last-child)': {
 				borderBottom: `1px solid ${theme.color.dullText}`

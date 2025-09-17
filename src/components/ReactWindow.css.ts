@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css'
-import { theme } from 'src/Theme.css'
+import { theme } from '../ThemeContract.css'
 
 export const reactWindowWrapper = style({
     height: `calc(100vh - ${theme.dimensions.headerHeightMobile})`,

@@ -1,7 +1,7 @@
 {
   "extends": "astro/tsconfigs/base",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["**/dist", "**/public", "**/media", "**/dist_media", "**/node_modules", "**/audio"],
+  "exclude": ["**/dist", "**/public", "**/media", "**/dist_media", "**/node_modules", "**/audio", "**/scripts", "**/docker"],
   "compilerOptions": {
     "jsx": "react-jsx",
     "strictNullChecks": true,
@@ -21,6 +21,6 @@
     ]
   },
   "watchOptions": {
-    "excludeDirectories": ["**/dist", "**/public", "**/media", "**/dist_media", "**/node_modules", "**/audio"]
+    "excludeDirectories": ["**/dist", "**/public", "**/media", "**/dist_media", "**/node_modules", "**/audio", "**/scripts", "**/docker"]
   }
 }

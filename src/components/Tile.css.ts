@@ -1,5 +1,5 @@
 import { createVar, fallbackVar, globalStyle, style, styleVariants } from '@vanilla-extract/css'
-import { theme } from 'src/Theme.css'
+import { theme } from '../ThemeContract.css'
 import { backgroundImageWrapper } from './BackgroundImage.css'
 import { ImageWrapper } from './Image2.css'
 

@@ -1,6 +1,5 @@
 import { globalStyle } from '@vanilla-extract/css'
-import { borderWidth } from 'polished'
-import { theme } from 'src/Theme.css'
+import { theme } from '../../ThemeContract.css'
 
 /**
  * Base element style defaults.

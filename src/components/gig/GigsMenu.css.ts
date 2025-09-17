@@ -1,9 +1,6 @@
 import { globalStyle, style } from '@vanilla-extract/css'
-import { theme } from 'src/Theme.css'
-import { MenuLi, MenuLinkWrapper, MenuWrapper } from '../Menu.css'
-
-// The !importants are due to a bug in 3.9.5 of the vanilla extract
-// vite integration which means we can't override base style properties.
+import { theme } from '../../ThemeContract.css'
+import { MenuLinkWrapper, MenuWrapper } from '../Menu.css'
 
 export const yearsMenuWrapper = style([
 	MenuWrapper['vertical']
@@ -12,8 +9,8 @@ export const yearsMenuWrapper = style([
 export const artistsMenuWrapper = style([
 	MenuWrapper['vertical'],
 	{
-		borderLeft: `6px solid ${theme.color.secondary} !important`,
-		borderBottom: `6px solid ${theme.color.secondary} !important`
+		borderLeft: `6px solid ${theme.color.secondary}`,
+		borderBottom: `6px solid ${theme.color.secondary}`
 	}
 ])
 
@@ -31,13 +28,13 @@ export const artistLink = style([
 		paddingLeft: `calc(${theme.dimensions.basePadding})`,
 		selectors: {
 			'&.active': {
-				backgroundColor: `${theme.color.contrast2} !important`,
-				color: `black !important`
+				backgroundColor: `${theme.color.contrast2}`,
+				color: `black`
 			}
 		},
 		'@media': {
 			'screen and (--md)': {
-				paddingLeft: `calc(${theme.dimensions.basePadding} * 2) !important`
+				paddingLeft: `calc(${theme.dimensions.basePadding} * 2)`
 			}
 		}
 	}
@@ -46,16 +43,16 @@ export const artistLink = style([
 export const monthLink = style([
 	MenuLinkWrapper['vertical'],
 	{
-		color: `${theme.color.darkText} !important`,
-		height: `${theme.dimensions.subheaderHeight} !important`,
-		lineHeight: `${theme.dimensions.subheaderHeight} !important`,
+		color: `${theme.color.darkText}`,
+		height: `${theme.dimensions.subheaderHeight}`,
+		lineHeight: `${theme.dimensions.subheaderHeight}`,
 		cursor: 'default',
 		boxShadow: theme.borders.shadowLight,
 		position: 'relative',
-		paddingLeft: '0px !important',
+		paddingLeft: '0px',
 		selectors: {
 			'&:hover': {
-				color: `black !important`
+				color: `black`
 			}
 		}
 	}
@@ -65,18 +62,18 @@ export const yearLink = style([
 	MenuLinkWrapper['vertical'],
 	{
 		position: 'sticky',
-		color: `black !important`,
-		height: `${theme.dimensions.headerHeightMobile} !important`,
-		lineHeight: `${theme.dimensions.headerHeightMobile} !important`,
+		color: `black`,
+		height: `${theme.dimensions.headerHeightMobile}`,
+		lineHeight: `${theme.dimensions.headerHeightMobile}`,
 		top: '0px',
-		paddingLeft: '0px !important',
+		paddingLeft: '0px',
 		margin: 0,
 		zIndex: 7,
 		fontWeight: 'bold',
 		'@media': {
 			'screen and (--md)': {
-				height: `${theme.dimensions.headerHeight} !important`,
-				lineHeight: `${theme.dimensions.headerHeight} !important`,
+				height: `${theme.dimensions.headerHeight}`,
+				lineHeight: `${theme.dimensions.headerHeight}`,
 			}
 		}
 	}
