@@ -15,17 +15,15 @@ export const sidebarWrapper = style({
 	boxSizing: 'border-box',
 	top: fallbackVar(offsetTopMobile, '0px'),
 	bottom: `calc(${fallbackVar(offsetBottomMobile, '0px')} + ${theme.dimensions.headerHeightMobile})`,
-	height: `calc(100% - ${fallbackVar(offsetTopMobile, '0px')} - ${fallbackVar(offsetBottomMobile, '0px')} - ${
-		theme.dimensions.headerHeightMobile
-	})`,
+	height: `calc(100% - ${fallbackVar(offsetTopMobile, '0px')} - ${fallbackVar(offsetBottomMobile, '0px')} - ${theme.dimensions.headerHeightMobile
+		})`,
 	left: 0,
 	width: defaultWidth,
 	zIndex: '10',
 	boxShadow: theme.borders.shadow,
 	borderRight: theme.borders.primary,
-	transform: `translateY(calc(100vh - ${fallbackVar(offsetTopMobile, '0px')} - ${
-		theme.dimensions.headerHeightMobile
-	}))`,
+	transform: `translateY(calc(100vh - ${fallbackVar(offsetTopMobile, '0px')} - ${theme.dimensions.headerHeightMobile
+		}))`,
 	transition: 'transform 0.3s ease-in',
 	willChange: 'transform',
 	selectors: {
@@ -163,9 +161,8 @@ export const sidebarButtonWrapper = styleVariants({
 	]
 })
 
+
 globalStyle('.openWithSidebar', {
-	bottom: '-100px !important',
-	transition: 'bottom 0.5s ease-in-out',
 	'@media': {
 		'screen and (--md)': {
 			zIndex: 'auto'
@@ -173,11 +170,35 @@ globalStyle('.openWithSidebar', {
 	}
 })
 
-globalStyle('.openedWithSidebar', {
+// Open with sidebar at bottom (default)
+globalStyle('.openWithSidebar.bottom', {
+	bottom: '-100px !important',
+	transition: 'bottom 0.5s ease-in-out',
+})
+globalStyle('.openedWithSidebar.bottom', {
 	bottom: `${theme.dimensions.headerHeightMobile} !important`,
 	'@media': {
 		'screen and (--md)': {
 			bottom: 'auto'
+		}
+	}
+})
+
+// Open with sidebar at top
+globalStyle('.openWithSidebar.top', {
+	top: '-100px !important',
+	transition: 'top 0.5s ease-in-out',
+	'@media': {
+		'screen and (--md)': {
+			zIndex: 'auto'
+		}
+	}
+})
+globalStyle('.openedWithSidebar.top', {
+	top: `0px !important`,
+	'@media': {
+		'screen and (--md)': {
+			top: 'auto'
 		}
 	}
 })

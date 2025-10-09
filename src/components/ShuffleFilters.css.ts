@@ -11,10 +11,27 @@ export const shuffleFilter = style({
 	'@media': {
 		'screen and (--md)': {
 			flexWrap: 'nowrap',
-			minHeight: theme.dimensions.subheaderHeight
+			minHeight: theme.dimensions.subheaderHeight,
+			minWidth: theme.dimensions.sidebarWidth
 		}
 	}
 })
+
+export const modalFiltersWrapper = style({
+	display: 'flex',
+	flexDirection: 'column'
+})
+
+export const dropdownButton = style(({
+	position: 'fixed',
+	top: '0px',
+	right: '0px',
+	'@media': {
+		'screen and (--md)': {
+			position: 'static'
+		}
+	}
+}))
 
 globalStyle('.filtr-item', {
 	willChange: 'opacity, transform'
@@ -23,6 +40,7 @@ globalStyle('.filtr-item', {
 globalStyle(`${shuffleFilter} label:not(.fixedBottomMobile)`, {
 	display: 'flex',
 	alignItems: 'center',
+	textWrap: 'nowrap',
 	gap: '4px',
 	lineHeight: theme.dimensions.subheaderHeight,
 	paddingLeft: '4px',

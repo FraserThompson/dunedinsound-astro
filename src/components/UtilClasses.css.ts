@@ -28,7 +28,7 @@ export const Subheader = styleVariants({
 		SubheaderBase,
 		{
 			bottom: '-100px ',
-			zIndex: 9,
+			zIndex: 11,
 			'@media': {
 				'screen and (--md)': {
 					zIndex: 6,

@@ -12,7 +12,7 @@
  *  - banner: Content to go in the banner at the top.
  */
 import EntryMenu from 'src/components/EntryMenu.astro'
-import ShuffleFilters from 'src/components/ShuffleFilters.astro'
+import ShuffleFilters, { type Filter, type Sorter } from 'src/components/ShuffleFilters.astro'
 import ContentByEntry from '../../components/ContentByEntry.astro'
 import type { ProcessedEntry } from 'src/util/collection'
 import SidebarLayout from './SidebarLayout.astro'
@@ -30,6 +30,62 @@ const entryData = entry.entry.data
 const entryExtra = entry.extra
 
 const hasBanner = Astro.slots.has('banner')
+
+// So we can have filtering/sorting in the entry menu
+let sorters: Sorter[] | undefined = undefined
+let filters: Filter[] | undefined = undefined
+
+if (collection === 'venue') {
+	filters = [
+		{
+			title: 'All ages only',
+			value: 'allages',
+			type: 'checkbox',
+			inDropdown: true
+		},
+		{
+			title: 'Hide dead',
+			value: 'active',
+			type: 'checkbox',
+			inDropdown: true
+		},
+		{
+			title: 'Hide alive',
+			value: 'dead',
+			type: 'checkbox',
+			inDropdown: true
+		}
+	]
+} else if (collection === 'artist') {
+	sorters = [
+		{
+			value: 'title',
+			order: 'asc',
+			title: 'Title',
+			inDropdown: true
+		},
+		{
+			value: 'lastgig',
+			order: 'desc',
+			title: 'Last played',
+			inDropdown: true
+		},
+		{
+			value: 'numbergigs',
+			order: 'desc',
+			title: 'Most gigs',
+			inDropdown: true
+		}
+	]
+	filters = [
+		{
+			title: 'Hide inactive',
+			value: 'active',
+			type: 'checkbox',
+			inDropdown: true
+		}
+	]
+}
 ---
 
 <SidebarLayout
@@ -43,9 +99,15 @@ const hasBanner = Astro.slots.has('banner')
 		date: 'date' in entryData ? entryData.date?.toISOString() : undefined
 	}}
 >
-	<ShuffleFilters slot="subheaderTopDesktop" search={`Filter ${collection}s`} openSearchWithSidebar={true} />
+	<ShuffleFilters
+		slot="subheaderTopDesktop"
+		search={`Filter ${collection}s`}
+		sort={sorters}
+		filter={filters}
+		openSearchWithSidebar={true}
+	/>
 	<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href=`/${collection}s`>
-		<ChevronLeftIcon /> Go to ${collection}s home
+		<ChevronLeftIcon /> Go to {collection}s home
 	</a>
 	<EntryMenu slot="sidebarMenu" collection={collection} selected={entry.entry.id} transition:persist />
 	<ContentByEntry entry={entry} slot="content">

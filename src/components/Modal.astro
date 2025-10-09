@@ -1,0 +1,103 @@
+---
+/**
+ *
+ * Provides an element for displaying a button which opens content in a modal
+ * positioned above all over elements.
+ *
+ * TODO: Options for where modal is positioned.
+ *
+ * Props:
+ *  - className (optional): Class to add to the wrapper
+ *
+ * Slots:
+ *  - content: The content inside the modal.
+ *  - button: The content inside the button.
+ */
+
+import { modalContent, modalButton } from './Modal.css'
+
+interface Props {
+	className?: string
+}
+
+const { className = '' } = Astro.props
+---
+
+<modal-wrapper>
+	<button class={`${modalButton} ${className}`} data-dropdownbutton aria-haspopup="true">
+		<slot name="button" />
+	</button>
+	<div class={modalContent} data-dropdowncontent>
+		<slot name="content" />
+	</div>
+</modal-wrapper>
+
+<script>
+	class Modal extends HTMLElement {
+		dropdownButton: HTMLElement | null
+		dropdownContent: HTMLElement | null
+
+		constructor() {
+			super()
+			this.dropdownButton = this.querySelector('[data-dropdownbutton]')
+			this.dropdownContent = this.querySelector('[data-dropdowncontent]')
+		}
+
+		openDropdown = (e) => {
+			if (!this.dropdownContent || !this.dropdownButton) return
+
+			// If already open, close and restore
+			if (this.dropdownContent.classList.contains('open')) {
+				this.dropdownContent.classList.remove('open')
+				this.dropdownButton.classList.remove('active')
+				this.restoreDropdown()
+				return
+			}
+
+			// Get button position
+			const rect = this.dropdownButton.getBoundingClientRect()
+
+			// Move dropdown to body
+			document.body.appendChild(this.dropdownContent)
+
+			const isMobile = window.innerWidth <= 768
+
+			// Position dropdown absolutely
+			Object.assign(this.dropdownContent.style, {
+				position: 'absolute',
+				top: `${rect.bottom + window.scrollY}px`,
+				left: `${!isMobile ? rect.left + window.scrollX + 'px' : 'auto'}`,
+				right: `${isMobile ? '0px' : 'auto'}`,
+				zIndex: 9999,
+				minWidth: `${rect.width}px`
+			})
+
+			this.dropdownContent.classList.add('open')
+			this.dropdownButton.classList.add('active')
+		}
+
+		restoreDropdown() {
+			// Restore dropdown to its original parent
+			if (this.dropdownContent && this.dropdownButton?.parentElement) {
+				this.dropdownButton.parentElement.appendChild(this.dropdownContent)
+				this.dropdownContent.style.position = ''
+				this.dropdownContent.style.top = ''
+				this.dropdownContent.style.left = ''
+				this.dropdownContent.style.zIndex = ''
+				this.dropdownContent.style.minWidth = ''
+			}
+		}
+
+		connectedCallback() {
+			// attach callback for showing/hiding dropdown content
+			this.dropdownButton?.addEventListener('mousedown', this.openDropdown)
+		}
+
+		disconnectedCallback() {
+			// detach callback for showing/hiding dropdown content
+			this.dropdownButton?.removeEventListener('mousedown', this.openDropdown)
+		}
+	}
+
+	customElements.define('modal-wrapper', Modal)
+</script>

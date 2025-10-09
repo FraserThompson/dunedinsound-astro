@@ -215,6 +215,10 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 				// The index of the marker matching the shuffle item
 				const marker = this.markers.findIndex((marker) => marker.getLngLat().toString() == key)
 
+				if (this.markers[marker] === undefined) {
+					return
+				}
+
 				if (marker === undefined) {
 					console.error('No matching marker:')
 					console.error(el?.dataset.markerkey)

@@ -179,7 +179,7 @@ globalStyle('input[type="text"], input[type="search"]', {
 	transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s',
 	'@media': {
 		'screen and (--lg)': {
-			maxWidth: `calc(${theme.dimensions.sidebarWidth} - ${theme.dimensions.basePadding} - ${theme.dimensions.basePadding})`,
+			maxWidth: theme.dimensions.sidebarWidth,
 			paddingLeft: theme.dimensions.basePadding,
 			paddingRight: theme.dimensions.basePadding
 		},

@@ -45,7 +45,7 @@ const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile'
 <sidebar-wrapper>
 	<div
 		id="sidebar"
-		class={sidebarWrapper}
+		class={`${sidebarWrapper}`}
 		style={assignInlineVars({
 			[offsetTop]: top,
 			[offsetTopMobile]: topMobile,

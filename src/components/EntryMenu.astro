@@ -5,23 +5,22 @@
  *
  * Props:
  *  - collection: the collection to display entries from.
- *  - entries (optional): OR the already loaded entries to display.
- *  - selected: the current entry. Will highlight it if supplied.
+ *  - collectionEntries (optional): OR the already loaded entries to display.
+ *  - selected (optional): the current entry. Will highlight it if supplied.
+ *  - style (optional): Style object to apply to the wrapper
  */
 import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
 import { MenuLi, MenuLinkWrapper, MenuWrapper } from 'src/components/Menu.css'
-import { backButton } from 'src/components/gig/GigsMenu.css'
 import type { CollectionKey } from 'astro:content'
-import ChevronLeftIcon from '~icons/iconoir/nav-arrow-left'
 import { theme } from '../Theme.css'
 import AllAgesIndicator from './AllAgesIndicator.astro'
 import SeriesIndicator from './SeriesIndicator.astro'
 
 interface Props {
-	style?: Partial<CSSStyleDeclaration>
 	collection?: CollectionKey
 	collectionEntries?: ProcessedEntry<CollectionKey>[]
 	selected?: string
+	style?: Partial<CSSStyleDeclaration>
 }
 
 const { selected, collection, collectionEntries, style } = Astro.props
@@ -33,21 +32,15 @@ const isAllAges = (entry) => 'allAges' in entry.entry.data && entry.entry.data.a
 const entries = collection ? await loadAndFormatCollection(collection) : collectionEntries
 ---
 
-{
-	selected && (
-		<a class={`showMobile flex ${backButton}`} href={`/${collection}s`}>
-			<ChevronLeftIcon /> Go to {collection === 'blog' ? 'article' : collection}s home
-		</a>
-	)
-}
-
-<ul class={`${MenuWrapper['vertical']}`} style={style}>
+<ul class={`${MenuWrapper['vertical']} filter-container`} style={style}>
 	{
 		entries
 			?.sort((a, b) => (a.entry.id < b.entry.id ? -1 : 1))
 			?.map((entry) => (
 				<li
 					data-category={`${isDied(entry) ? 'dead' : 'active'},${isAllAges(entry) ? 'allages' : ''}`}
+					data-lastgig={'lastGig' in entry.extra && entry.extra.lastGig}
+					data-numbergigs={'gigCount' in entry.extra && entry.extra.gigCount}
 					class={`filter-item ${MenuLi['vertical']} ${entry.entry.id === selected ? 'active' : ''}`}
 				>
 					<a
@@ -64,7 +57,7 @@ const entries = collection ? await loadAndFormatCollection(collection) : collect
 						href={selected ? entry.extra.absolutePath : undefined}
 					>
 						{entry.entry.data.title}
-						{'allAges' in entry.entry.data && <AllAgesIndicator hideText={true} />}
+						{isAllAges(entry) && <AllAgesIndicator hideText={true} />}
 						{'series' in entry.entry.data && <SeriesIndicator hideText={true} />}
 						{'gigCount' in entry.extra && (
 							<small
