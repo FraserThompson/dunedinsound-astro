@@ -2,9 +2,11 @@
 /**
  *
  * Provides an element for displaying a button which opens content in a modal
- * positioned above all over elements.
+ * positioned above all other elements.
+ * 
+ * The element is duplicated so it can escape the parents stacking context.
  *
- * TODO: Options for where modal is positioned.
+ * TODO: Options for where modal is positioned. 
  *
  * Props:
  *  - className (optional): Class to add to the wrapper
@@ -24,46 +26,46 @@ const { className = '' } = Astro.props
 ---
 
 <modal-wrapper>
-	<button class={`${modalButton} ${className}`} data-dropdownbutton aria-haspopup="true">
+	<button class={`${modalButton} ${className}`} data-modalbutton aria-haspopup="true">
 		<slot name="button" />
 	</button>
-	<div class={modalContent} data-dropdowncontent>
+	<div class={modalContent} data-modalcontent>
 		<slot name="content" />
 	</div>
 </modal-wrapper>
 
 <script>
 	class Modal extends HTMLElement {
-		dropdownButton: HTMLElement | null
-		dropdownContent: HTMLElement | null
+		modalButton: HTMLElement | null
+		modalContent: HTMLElement | null
 
 		constructor() {
 			super()
-			this.dropdownButton = this.querySelector('[data-dropdownbutton]')
-			this.dropdownContent = this.querySelector('[data-dropdowncontent]')
+			this.modalButton = this.querySelector('[data-modalbutton]')
+			this.modalContent = this.querySelector('[data-modalcontent]')
 		}
 
-		openDropdown = (e) => {
-			if (!this.dropdownContent || !this.dropdownButton) return
+		openModal = (e) => {
+			if (!this.modalContent || !this.modalButton) return
 
 			// If already open, close and restore
-			if (this.dropdownContent.classList.contains('open')) {
-				this.dropdownContent.classList.remove('open')
-				this.dropdownButton.classList.remove('active')
-				this.restoreDropdown()
+			if (this.modalContent.classList.contains('open')) {
+				this.modalContent.classList.remove('open')
+				this.modalButton.classList.remove('active')
+				this.restoreModal()
 				return
 			}
 
 			// Get button position
-			const rect = this.dropdownButton.getBoundingClientRect()
+			const rect = this.modalButton.getBoundingClientRect()
 
-			// Move dropdown to body
-			document.body.appendChild(this.dropdownContent)
+			// Move modal to body
+			document.body.appendChild(this.modalContent)
 
 			const isMobile = window.innerWidth <= 768
 
-			// Position dropdown absolutely
-			Object.assign(this.dropdownContent.style, {
+			// Position modal absolutely
+			Object.assign(this.modalContent.style, {
 				position: 'absolute',
 				top: `${rect.bottom + window.scrollY}px`,
 				left: `${!isMobile ? rect.left + window.scrollX + 'px' : 'auto'}`,
@@ -72,30 +74,30 @@ const { className = '' } = Astro.props
 				minWidth: `${rect.width}px`
 			})
 
-			this.dropdownContent.classList.add('open')
-			this.dropdownButton.classList.add('active')
+			this.modalContent.classList.add('open')
+			this.modalButton.classList.add('active')
 		}
 
-		restoreDropdown() {
-			// Restore dropdown to its original parent
-			if (this.dropdownContent && this.dropdownButton?.parentElement) {
-				this.dropdownButton.parentElement.appendChild(this.dropdownContent)
-				this.dropdownContent.style.position = ''
-				this.dropdownContent.style.top = ''
-				this.dropdownContent.style.left = ''
-				this.dropdownContent.style.zIndex = ''
-				this.dropdownContent.style.minWidth = ''
+		restoreModal() {
+			// Restore modal to its original parent
+			if (this.modalContent && this.modalButton?.parentElement) {
+				this.modalButton.parentElement.appendChild(this.modalContent)
+				this.modalContent.style.position = ''
+				this.modalContent.style.top = ''
+				this.modalContent.style.left = ''
+				this.modalContent.style.zIndex = ''
+				this.modalContent.style.minWidth = ''
 			}
 		}
 
 		connectedCallback() {
-			// attach callback for showing/hiding dropdown content
-			this.dropdownButton?.addEventListener('mousedown', this.openDropdown)
+			// attach callback for showing/hiding modal content
+			this.modalButton?.addEventListener('mousedown', this.openModal)
 		}
 
 		disconnectedCallback() {
-			// detach callback for showing/hiding dropdown content
-			this.dropdownButton?.removeEventListener('mousedown', this.openDropdown)
+			// detach callback for showing/hiding modal content
+			this.modalButton?.removeEventListener('mousedown', this.openModal)
 		}
 	}
 

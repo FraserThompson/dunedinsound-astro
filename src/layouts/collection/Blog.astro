@@ -25,35 +25,51 @@ const { Content, headings } = await render(entry.entry)
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
-
 ---
-{entryExtra.cover && !entryExtra.coverVid && <Banner backgroundImage={entryExtra.cover} backgroundImageVertical={entryExtra.coverVertical} title={entryData.title}>
-<ShareButton
-	style={{ position: 'absolute', left: '50%', transform: 'translate(-50%)' }}
-	shareData={{
-		title: 'ARTICLE: ' + entryData.title,
-		url: 'https://dunedinsound.com' + entryExtra.slug,
-		text: `${entryData.description}.`
-	}}/>
-</Banner>}
-{entryExtra.coverVid && <Banner title={entryData.title}>
-	<div slot="customContent">
-		<video src={entryExtra.coverVid} autoplay={true} loop={true} muted={true} class={VideoCover}/>
-	</div>
-	<ShareButton
-		style={{ position: 'absolute', left: '50%', transform: 'translate(-50%)' }}
-		shareData={{
-			title: 'ARTICLE: ' + entryData.title,
-			url: 'https://dunedinsound.com' + entryExtra.slug,
-			text: `${entryData.description}.`
-		}}/>
-	</Banner>}
+
+{
+	entryExtra.cover && !entryExtra.coverVid && (
+		<Banner
+			backgroundImage={entryExtra.cover}
+			backgroundImageVertical={entryExtra.coverVertical}
+			title={entryData.title}
+		>
+			<ShareButton
+				style={{ position: 'absolute', left: '50%', transform: 'translate(-50%)' }}
+				shareData={{
+					title: 'ARTICLE: ' + entryData.title,
+					url: 'https://dunedinsound.com' + entryExtra.slug,
+					text: `${entryData.description}.`
+				}}
+			/>
+		</Banner>
+	)
+}
+{
+	entryExtra.coverVid && (
+		<Banner title={entryData.title}>
+			<div slot="customContent">
+				<video src={entryExtra.coverVid} autoplay={true} loop={true} muted={true} class={VideoCover} />
+			</div>
+			<ShareButton
+				style={{ position: 'absolute', left: '50%', transform: 'translate(-50%)' }}
+				shareData={{
+					title: 'ARTICLE: ' + entryData.title,
+					url: 'https://dunedinsound.com' + entryExtra.slug,
+					text: `${entryData.description}.`
+				}}
+			/>
+		</Banner>
+	)
+}
 <div class={BlogPageContainer} id="overview">
-	<BlogSidebar className="hideMobile" entry={entry} headings={headings}/>
-	<div class={BlogTextContainer}>
-		<TextContainer>
-			<Content components={{ Player, Image }} />
-		</TextContainer>
+	<div style={{ maxWidth: '1600px', margin: '0 auto', display: 'flex' }}>
+		<BlogSidebar className="hideMobile" entry={entry} headings={headings} />
+		<div class={BlogTextContainer}>
+			<TextContainer light={true}>
+				<Content components={{ Player, Image }} />
+			</TextContainer>
+		</div>
 	</div>
 </div>
 <div class="showMobile">
@@ -68,7 +84,7 @@ const entryExtra = entry.extra
 <div class="padding">
 	<hr />
 	<ul>
-	{
+		{
 			entry.prev && (
 				<li>
 					<a href={getEntryPath(entry.prev.data.title, 'blog')} rel="prev">

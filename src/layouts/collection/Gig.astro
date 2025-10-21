@@ -75,7 +75,7 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	{
 		entryExtra.series && (
 			<CornerLabel position="right" background={theme.color.transparentForeground} slot="customContent">
-				<a href={entryExtra.series.extra.absolutePath} class="trippy2">
+				<a href={entryExtra.series.extra.absolutePath}>
 					<small style={{ color: theme.color.dullText }}>Series</small>
 					<em>{entryExtra.series.entry.data.title}</em>
 					<small>({entryExtra.series.extra.gigCount} gigs)</small>

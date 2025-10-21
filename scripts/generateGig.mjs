@@ -54,7 +54,7 @@ const create_venue_page = (venue) => {
     Params: Date, Gig title, venue name, array of artists
 */
 const create_gig_yaml = (date, gig, venue, artists) => {
-	const yamlDate = date + ' 08:30:00 Z'
+	const yamlDate = date + ' 08:30:00+13:00'
 
 	const gigTemplate = `title: "${gig}"
 date: ${yamlDate}

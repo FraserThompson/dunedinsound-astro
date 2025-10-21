@@ -26,3 +26,5 @@ audio/
 public/gigs.json
 
 .wrangler
+
+_drafts/

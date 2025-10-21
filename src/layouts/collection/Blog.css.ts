@@ -2,7 +2,8 @@ import { style } from '@vanilla-extract/css'
 
 export const BlogPageContainer = style({
 	display: 'flex',
-	maxWidth: '1600px',
+	backgroundColor: "white",
+	color: "black",
 	margin: '0 auto'
 })
 

@@ -3,7 +3,9 @@ import { theme } from '../Theme.css'
 
 export const modalContent = style({
 	position: 'absolute',
-	display: 'none',
+	visibility: 'hidden',
+	opacity: 0,
+	pointerEvents: 'none',
 	top: theme.dimensions.headerHeightMobile,
 	left: '0px',
 	backgroundColor: theme.color.background,
@@ -11,6 +13,8 @@ export const modalContent = style({
 	border: theme.borders.contrast,
 	boxShadow: theme.borders.shadow,
 	padding: theme.dimensions.basePaddingMobile,
+	transitionProperty: 'visibility, opacity',
+	transitionDuration: '0.3s',
 	'@media': {
 		'screen and (--md)': {
 			top: theme.dimensions.headerHeight,
@@ -20,16 +24,20 @@ export const modalContent = style({
 	},
 	selectors: {
 		'&.open': {
-			display: 'block'
+			visibility: 'visible',
+			opacity: 1,
+			pointerEvents: 'auto',
 		}
 	}
 })
 
 export const modalButton = style({
 	height: theme.dimensions.headerHeightMobile,
+	width: theme.dimensions.headerHeightMobile,
 	'@media': {
 		'screen and (--md)': {
-			height: theme.dimensions.headerHeight
+			height: theme.dimensions.headerHeight,
+			width: theme.dimensions.headerHeight
 		}
 	},
 })

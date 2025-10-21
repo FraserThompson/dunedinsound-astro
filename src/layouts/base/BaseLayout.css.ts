@@ -96,7 +96,7 @@ globalStyle('h6', {
 })
 
 globalStyle('blockquote', {
-	fontSize: `calc(${theme.font.baseSize} * 1.6)`,
+	fontSize: `calc(${theme.font.baseSize} * 1.2)`,
 	backgroundColor: theme.color.lightContrast2,
 	fontStyle: 'italic',
 	lineHeight: '1.1'

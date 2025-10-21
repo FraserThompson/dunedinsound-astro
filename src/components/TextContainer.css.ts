@@ -5,16 +5,18 @@ export const textContainer = style({
 	fontSize: '18px',
 	maxWidth: theme.dimensions.contentContainerWidth,
 	margin: '0 auto',
+	lineHeight: '1.8rem',
 	selectors: {
 		'&.light': {
-			backgroundColor: theme.color.contrast,
+			backgroundColor: "white",
 			color: "black"
 		}
 	}
 })
 
 globalStyle(`${textContainer} > *:not(blockquote):not(h1):not(h2), ${textContainer} section > *:not(blockquote):not(h1):not(h2)`, {
-	fontSize: 'inherit'
+	fontSize: 'inherit',
+	lineHeight: 'inherit'
 })
 
 globalStyle(`${textContainer} section`, {
@@ -24,8 +26,8 @@ globalStyle(`${textContainer} section`, {
 globalStyle(`${textContainer} > *:not(.lightboxImage):not(ul):not(ol):not(hr):not(.noCenter), ${textContainer} section > *:not(.lightboxImage):not(ul):not(ol):not(hr):not(.noCenter)`, {
 	margin: '0 auto',
 	padding: theme.dimensions.basePadding,
-	paddingTop: '8px',
-	paddingBottom: '8px',
+	paddingTop: '9px',
+	paddingBottom: '9px',
 	maxWidth: `min(100vw, 740px)`
 })
 
@@ -43,6 +45,11 @@ globalStyle(`${textContainer}.light a`, {
 
 globalStyle(`${textContainer}.light a:hover`, {
 	color: theme.color.contrast2
+})
+
+// Shadows look bad on white background
+globalStyle(`${textContainer}.light h2, h3, h4, h5, a`, {
+	textShadow: 'none'
 })
 
 globalStyle(`${textContainer} a.active`, {
