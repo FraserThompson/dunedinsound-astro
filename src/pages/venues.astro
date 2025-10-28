@@ -40,9 +40,13 @@ const markers = groupedVenues.map((venueList) => ({
 	<ShuffleFilters
 		slot="subheaderTop"
 		search="Filter venues by name"
+		sort={[
+			{ value: 'title', order: 'asc', title: 'Title' },
+			{ value: 'numbergigs', order: 'desc', title: 'Most gigs' }
+		]}
 		filter={[
 			{
-				title: 'All ages only',
+				title: 'All ages',
 				value: 'allages',
 				type: 'checkbox'
 			},

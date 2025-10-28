@@ -496,7 +496,7 @@ export async function getArtistExtra(
 	return {
 		...extra,
 		lifetimeString: getLifetimeString(entry),
-		absolutePath: artistGigs.length <= 1 && latestGig ? getEntryPath(latestGig.data.title, 'gig') : extra.absolutePath,
+		absolutePath: artistGigs.length <= 1 && latestGig ? `${getEntryPath(latestGig.data.title, 'gig')}#${entry.id}` : extra.absolutePath,
 		gigCount: artistGigs.length,
 		lastGig: latestGig?.data.date.getTime(),
 		cover

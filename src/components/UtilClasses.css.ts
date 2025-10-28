@@ -4,6 +4,8 @@ import { theme } from '../Theme.css'
 const SubheaderBase = style({
 	zIndex: '6',
 	position: 'fixed',
+	display: 'flex',
+	flexGrow: '1',
 	width: '100%',
 	borderBottom: '1px solid black',
 	boxShadow: theme.borders.shadow,

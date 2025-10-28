@@ -56,7 +56,10 @@ const { links, menuType = 'horizontal' } = Astro.props
 			return (
 				<li class={`${MenuLi[menuType]} ${link.class || ''}`}>
 					<a
-						class={`${MenuLinkWrapper[menuType]} ${partiallyActive ? 'active' : ''} ${sidebarButtonClass ? sidebarButtonWrapper['base'] : ''}`}
+						class:list={[
+							MenuLinkWrapper[menuType],
+							{ active: partiallyActive, [sidebarButtonWrapper['base']]: sidebarButtonClass }
+						]}
 						href={sidebarButtonClass ? undefined : link.href}
 						title={link.title}
 						id={sidebarButtonClass || link.id}

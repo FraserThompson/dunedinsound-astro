@@ -45,6 +45,7 @@ export const MenuLi = styleVariants({
 			display: 'inline-flex',
 			alignItems: 'center',
 			textAlign: 'center',
+			borderRadius: '10px 10px 0px 0px',
 			width: '100%'
 		}
 	],
@@ -63,6 +64,7 @@ export const MenuLi = styleVariants({
 		MenuLiBase,
 		{
 			textOverflow: 'clip',
+			borderRadius: '0px 10px 10px 0px',
 			overflow: 'hidden',
 			display: 'flex',
 			alignItems: 'center',

@@ -2,20 +2,29 @@ import { style } from '@vanilla-extract/css'
 import { theme } from '../Theme.css'
 
 export const reactWindowWrapper = style({
-    height: `calc(100vh - ${theme.dimensions.headerHeightMobile})`,
-    '@media': {
-        'screen and (--md)': {
-            height: `calc(100vh - ${theme.dimensions.headerHeight})`,
-        }
-    }
+	height: `calc(100vh - ${theme.dimensions.headerHeightMobile})`,
+	'@media': {
+		'screen and (--md)': {
+			height: `calc(100vh - ${theme.dimensions.headerHeight})`,
+		}
+	}
 })
 
 export const filtersWrapper = style({
-    display: "flex",
-    marginLeft: "0",
-    '@media': {
+	display: "flex",
+	marginLeft: "0",
+	'@media': {
 		'screen and (--md)': {
 			marginLeft: "auto",
+		}
+	}
+})
+
+export const headerWrapper = style({
+	height: `${theme.dimensions.headerHeightMobile}`,
+	'@media': {
+		'screen and (--md)': {
+			height: `${theme.dimensions.headerHeight}`,
 		}
 	}
 })

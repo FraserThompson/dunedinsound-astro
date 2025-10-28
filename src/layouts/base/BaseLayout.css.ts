@@ -194,13 +194,14 @@ globalStyle('select', {
 	padding: '4px 0px',
 	border: '1px solid #000',
 	minWidth: '0px',
-	maxWidth: '100%',
 	width: '100%',
+	maxWidth: '90px',
 	boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
 	transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s',
 	'@media': {
 		'screen and (--md)': {
-			width: 'auto'
+			width: 'auto',
+			maxWidth: 'auto',
 		}
 	}
 })

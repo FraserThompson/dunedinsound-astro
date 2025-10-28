@@ -102,7 +102,7 @@ createGlobalTheme(':root', theme, {
 		lightContrast2: lighten(0.2, contrastColor2),
 		darkContrast2: darken(0.5, contrastColor2),
 		lightContrast3: lighten(0.2, contrastColor3),
-		darkContrast3: darken(0.5, contrastColor3),
+		darkContrast3: darken(0.1, contrastColor3),
 		lightForeground: lighten(0.4, foregroundColor),
 		transparentForeground: transparentize(0.4, foregroundColor)
 	},

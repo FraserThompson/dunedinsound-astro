@@ -27,7 +27,7 @@ import SearchIcon from '~icons/iconoir/search'
 import GlobeIcon from '~icons/iconoir/globe'
 import type { ChangeEvent } from "react-dom/src"
 import { shuffleFilter } from "./ShuffleFilters.css"
-import { filtersWrapper, reactWindowWrapper } from "./ReactWindow.css"
+import { filtersWrapper, headerWrapper, reactWindowWrapper } from "./ReactWindow.css"
 import type { Filter, Sorter } from "./ShuffleFilters.astro"
 import type { Grid as GridDefinition } from 'src/components/GridChild.astro'
 

@@ -1,4 +1,4 @@
-import { createVar, style, fallbackVar, styleVariants, globalStyle } from '@vanilla-extract/css'
+import { createVar, style, fallbackVar, styleVariants, globalStyle, keyframes } from '@vanilla-extract/css'
 import { theme } from '../Theme.css'
 
 const defaultWidth = '100vw'
@@ -93,18 +93,24 @@ export const contentWrapper = style({
 	}
 })
 
+const fade = keyframes({
+	to: { opacity: '1' }
+})
+
 const sidebarButtonBase = style({
 	selectors: {
 		'&.open': {
-			boxShadow: `inset 0px 0px 3px 2px ${theme.color.darkSecondary}`
+			boxShadow: `inset 0px 0px 2px 2px ${theme.color.darkContrast3}`,
 		},
 		'&::after': {
+			opacity: 0,
+			animation: `${fade} 0.5s forwards`,
 			transform: 'rotate(0deg)',
 			transformOrigin: '12px 14px',
-			transition: 'transform 0.3s ease-in',
+			transition: 'transform 0.2s ease-in',
 			willChange: 'transform',
-			height: '24px',
-			width: '24px',
+			height: "24px",
+			width: "24px",
 			content:
 				"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24px' height='24px' class='up-icon'%3E%3Cpath fill='white' d='m6.293 13.293l1.414 1.414L12 10.414l4.293 4.293l1.414-1.414L12 7.586z'%3E%3C/path%3E%3C/svg%3E\")"
 		},
@@ -112,7 +118,7 @@ const sidebarButtonBase = style({
 			transform: 'rotate(180deg)'
 		},
 		'&:active, &:focus': {
-			backgroundColor: theme.color.darkSecondary
+			backgroundColor: theme.color.darkContrast3
 		}
 	},
 	'@media': {
