@@ -34,6 +34,7 @@ export const modalContent = style({
 export const modalButton = style({
 	height: theme.dimensions.headerHeightMobile,
 	width: theme.dimensions.headerHeightMobile,
+	padding: 0,
 	'@media': {
 		'screen and (--md)': {
 			height: theme.dimensions.headerHeight,

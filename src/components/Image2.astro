@@ -24,7 +24,7 @@ import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 export type ResponsiveImageSizes = {
 	full: string
-	blog: string
+	textContainer: string
 	grid: string
 	smallGrid: string
 	largeGrid: string
@@ -52,10 +52,9 @@ const {
 } = Astro.props
 
 const sizes: ResponsiveImageSizes = {
-	full: '60vw',
-	blog: `
-				(min-width: 1600px) 1600px, 
-				(min-width: 768px) 800px, 
+	full: '50vw',
+	textContainer: `
+				(min-width: 768px) 740px,
 				50vw
 				`,
 	grid: `

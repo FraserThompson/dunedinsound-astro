@@ -24,17 +24,18 @@ interface Props {
 	hideFooter?: boolean
 	hasSidebar?: boolean
 	className?: string
+	style?: Partial<CSSStyleDeclaration>
 	poo: Poo
 }
 
-const { hideFooter, hasSidebar, className = '', poo } = Astro.props
+const { hideFooter, hasSidebar, style, className = '', poo } = Astro.props
 ---
 
 <html lang="en" transition:animate="none">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/jpg" href={siteIcon.src} />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
 		<meta name="theme-color" content="#08090C" />
 		<meta name="generator" content={Astro.generator} />
 		<SEO poo={poo} />
@@ -46,7 +47,7 @@ const { hideFooter, hasSidebar, className = '', poo } = Astro.props
 	<body>
 		<div class={SiteContainer[hideFooter ? 'hideFooter' : 'default']}>
 			<SiteHeader transition:persist />
-			<div class={`${Content} ${className}`}>
+			<div class={`${Content} ${className}`} style={style}>
 				<slot />
 			</div>
 		</div>

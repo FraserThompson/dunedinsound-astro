@@ -218,7 +218,7 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 						</Divider>
 						<FlexGridContainer grid={gigs && gigs.length <= 4 ? { xs: 12, md: 6 } : { xs: 12, md: 6, lg: 3 }}>
 							{gigs?.map((gig) => (
-								<GigTile gig={gig} backgroundStyle="center" responsiveImageSizes={gigs.length <= 4 ? 'full' : 'grid'} />
+								<GigTile gig={gig} backgroundStyle="center" responsiveImageSizes={'smallGrid'} />
 							))}
 						</FlexGridContainer>
 					</div>

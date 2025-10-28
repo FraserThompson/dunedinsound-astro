@@ -62,7 +62,6 @@ export const MenuLi = styleVariants({
 	sideways: [
 		MenuLiBase,
 		{
-			borderRadius: '0 6px 6px 0',
 			textOverflow: 'clip',
 			overflow: 'hidden',
 			display: 'flex',
@@ -114,6 +113,7 @@ export const MenuLinkWrapper = styleVariants({
 			alignItems: 'center',
 			borderBottom: 'none',
 			borderTop: 'none',
+			borderRadius: '10px 10px 0px 0px',
 			paddingLeft: theme.dimensions.basePaddingMobile,
 			paddingRight: theme.dimensions.basePaddingMobile,
 			'@media': {
@@ -153,6 +153,7 @@ export const MenuLinkWrapper = styleVariants({
 			minHeight: '50px',
 			paddingTop: theme.dimensions.basePaddingMobile,
 			paddingBottom: theme.dimensions.basePaddingMobile,
+			borderRadius: '0px 10px 10px 0px',
 			'@media': {
 				'screen and (--md)': {
 					paddingTop: theme.dimensions.basePadding,

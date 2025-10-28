@@ -1,0 +1,33 @@
+---
+import TextContainer from 'src/components/TextContainer.astro'
+import BaseLayout from '../layouts/base/BaseLayout.astro'
+import CloudBackground from 'src/components/gig/CloudBackground'
+import SiteFooter from 'src/components/SiteFooter.astro'
+import { GigsShuffleBottom } from 'src/components/gig/GigsShuffle.css'
+---
+
+<BaseLayout
+	poo={{ title: 'Nothing here' }}
+	hideFooter={true}
+	style={{ backgroundColor: 'lightblue', height: `100vh`, display: 'flex', flexDirection: 'column' }}
+>
+	<TextContainer
+		style={{
+			display: 'flex',
+			flexGrow: '1',
+			position: 'relative',
+			flexDirection: 'column',
+			justifyContent: 'center',
+			color: 'black',
+			zIndex: '2'
+		}}
+	>
+		<h1>Oh no!!!</h1>
+		<p>This page doesn't exist :(</p>
+		<p>Maybe you were looking for a particular <a href="/gigs">gig</a>?</p>
+	</TextContainer>
+	<div class={`${GigsShuffleBottom}`}>
+		<SiteFooter style={{ background: 'none', zIndex: '5', minHeight: 'auto' }} />
+	</div>
+	<CloudBackground />
+</BaseLayout>

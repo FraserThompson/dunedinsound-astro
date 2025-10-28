@@ -4,14 +4,16 @@ import youtubeIcon from '../assets/youtube-icon.png'
 import { footerContent, footerWrapper } from './SiteFooter.css'
 
 interface Props {
+	className?: string
+	style?: Partial<CSSStyleDeclaration>
 	hasSidebar?: boolean
 }
 
-const { hasSidebar } = Astro.props
+const { hasSidebar, className, style } = Astro.props
 ---
 
-<div class={footerWrapper}>
-	<div class={`${footerContent} ${hasSidebar ? 'hasSidebar' : ''}`}>
+<div class:list={[footerWrapper, className]} style={style}>
+	<div class:list={[footerContent, { hasSidebar: hasSidebar }]}>
 		<p>
 			A permanent and non-commercial media archive for gigs in Ōtepoti since 2014.<br />
 			<a href="/page/info/" title="Info">More Info</a> | <a

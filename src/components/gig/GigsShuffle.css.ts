@@ -40,6 +40,6 @@ export const GigsShuffleBottom = style({
 	boxShadow: '0px -150px 1000px white',
 	bottom: '0',
 	height: '200px',
-	width: '100vw',
+	width: '100%',
 	marginTop: 'auto'
 })

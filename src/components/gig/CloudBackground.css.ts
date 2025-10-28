@@ -1,6 +1,6 @@
 import { keyframes, style } from '@vanilla-extract/css'
 
-export const CloudsWrapper = style({ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%' })
+export const CloudsWrapper = style({ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', overflow: 'hidden' })
 
 const animateCloud = keyframes({
 	'0%': { left: '-100px' },

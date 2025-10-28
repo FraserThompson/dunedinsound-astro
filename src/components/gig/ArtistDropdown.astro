@@ -48,7 +48,7 @@ const entryExtra = entry.extra
 					</ul>
 				)}
 				{artist.extra.gigCount - 1 > 0 && (
-					<a class={`${artistDropdownLink} seeOther`} href={`/artists/${artist.entry.id}`}>
+					<a class={`${artistDropdownLink} seeOther`} href={`${artist.extra.absolutePath}`}>
 						<small>
 							{artist.extra.gigCount - 1} OTHER GIG{artist.extra.gigCount - 1 === 1 ? '' : 'S'} 
 							<ChevronRightIcon style={{ position: 'relative', top: '3px' }} />

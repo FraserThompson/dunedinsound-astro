@@ -480,10 +480,10 @@ export async function getArtistExtra(
 	const artistId = entry.id
 
 	// Get the latest gig featuring this artist
-	const artistGigs = await getCollection('gig', (gig) =>
-		gig.data.artists.find((gigArtist) => gigArtist.id.id === artistId)
-	)
-	const latestGig = artistGigs.length ? artistGigs.reverse()[0] : undefined
+	const artistGigs = (await getCollection('gig', (gig) => gig.data.artists.find((gigArtist) => gigArtist.id.id === artistId))).sort(
+		(a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+	);
+	const latestGig = artistGigs.length ? artistGigs[0] : undefined
 
 	let cover: ResponsiveImage | undefined = undefined
 	// Resolve an image

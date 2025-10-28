@@ -48,7 +48,7 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 	const [filters, setFilters] = useState([] as string[])
 	const [selectFilters, setSelectFilters] = useState({})
 	const [sortValue, setSort] = useState('')
-	const [sortOrder, setSortOrder] = useState(1)
+	const [sortOrder, setSortOrder] = useState(1 as 1 | -1)
 
 	const gridRef = useRef()
 
@@ -138,10 +138,11 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 			return filtered.sort((a, b) => {
 				const sortA = a.dataset[sortValue] || ''
 				const sortB = b.dataset[sortValue] || ''
-				const aNumber = parseInt(sortA)
-				const bNumber = parseInt(sortB)
 
-				if (typeof aNumber === 'number') {
+				const aNumber = Number(sortA)
+				const bNumber = Number(sortB)
+
+				if (!Number.isNaN(aNumber)) {
 					return (aNumber - bNumber) * sortOrder
 				} else {
 					return sortA.localeCompare(sortB)
