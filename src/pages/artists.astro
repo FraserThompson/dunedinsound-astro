@@ -1,5 +1,5 @@
 ---
-import { loadAndFormatCollection } from 'src/util/collection'
+import { loadAndFormatCollection, Shufflers } from 'src/util/collection'
 import { ResponsiveImage } from 'src/util/ResponsiveImage'
 import SubheadersLayout from 'src/layouts/base/SubheadersLayout.astro'
 import { artistListItem, artistGigCount } from './Artists.css'
@@ -12,6 +12,8 @@ export interface ArtistMetadata {
 	cover?: ResponsiveImage
 	lastGig?: number
 }
+
+const artistShufflers = Shufflers['artist']
 
 let originCounts: { [key: string]: number } = {}
 
@@ -32,16 +34,9 @@ const originsList = Object.entries(originCounts).map(([key, value]) => [`${key} 
 			md: 4,
 			lg: 2
 		}}
-		sort={[
-			{ value: 'title', order: 'asc', title: 'Title' },
-			{ value: 'lastgig', order: 'desc', title: 'Last played' },
-			{ value: 'numbergigs', order: 'desc', title: 'Most gigs' }
-		]}
+		sort={artistShufflers['sort']}
 		rowHeight={35}
-		filter={[
-			{ values: originsList, title: 'Origins', icon: 'globe', type: 'select' },
-			{ value: 'active', title: 'Hide inactive', type: 'checkbox' }
-		]}
+		filter={artistShufflers['filter']}
 	>
 		{
 			artists.map((artist) => (

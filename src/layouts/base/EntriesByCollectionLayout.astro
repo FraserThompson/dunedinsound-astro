@@ -12,9 +12,9 @@
  *  - banner: Content to go in the banner at the top.
  */
 import EntryMenu from 'src/components/EntryMenu.astro'
-import ShuffleFilters, { type Filter, type Sorter } from 'src/components/ShuffleFilters.astro'
+import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import ContentByEntry from '../../components/ContentByEntry.astro'
-import type { ProcessedEntry } from 'src/util/collection'
+import { Shufflers, type ProcessedEntry } from 'src/util/collection'
 import SidebarLayout from './SidebarLayout.astro'
 import ChevronLeftIcon from '~icons/iconoir/nav-arrow-left'
 import { backButton } from 'src/components/gig/GigsMenu.css'
@@ -31,61 +31,7 @@ const entryExtra = entry.extra
 
 const hasBanner = Astro.slots.has('banner')
 
-// So we can have filtering/sorting in the entry menu
-let sorters: Sorter[] | undefined = undefined
-let filters: Filter[] | undefined = undefined
-
-if (collection === 'venue') {
-	filters = [
-		{
-			title: 'All ages only',
-			value: 'allages',
-			type: 'checkbox',
-			inDropdown: true
-		},
-		{
-			title: 'Hide dead',
-			value: 'active',
-			type: 'checkbox',
-			inDropdown: true
-		},
-		{
-			title: 'Hide alive',
-			value: 'dead',
-			type: 'checkbox',
-			inDropdown: true
-		}
-	]
-} else if (collection === 'artist') {
-	sorters = [
-		{
-			value: 'title',
-			order: 'asc',
-			title: 'Title',
-			inDropdown: true
-		},
-		{
-			value: 'lastgig',
-			order: 'desc',
-			title: 'Last played',
-			inDropdown: true
-		},
-		{
-			value: 'numbergigs',
-			order: 'desc',
-			title: 'Most gigs',
-			inDropdown: true
-		}
-	]
-	filters = [
-		{
-			title: 'Hide inactive',
-			value: 'active',
-			type: 'checkbox',
-			inDropdown: true
-		}
-	]
-}
+const shufflers = collection in Shufflers ? Shufflers[collection] : null
 ---
 
 <SidebarLayout
@@ -102,8 +48,8 @@ if (collection === 'venue') {
 	<ShuffleFilters
 		slot="subheaderTopDesktop"
 		search={`Filter ${collection}s`}
-		sort={sorters}
-		filter={filters}
+		sort={shufflers?.sort}
+		filter={shufflers?.filter}
 		openSearchWithSidebar={true}
 	/>
 	<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href=`/${collection}s`>

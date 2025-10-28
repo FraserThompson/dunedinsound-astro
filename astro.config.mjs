@@ -12,6 +12,10 @@ const ignoredDirs = ["dist", "public", "media", "dist_media", "node_modules", "a
 export default defineConfig({
 	integrations: [mdx({ remarkPlugins: [remarkImagesPlugin], rehypePlugins: [sectionize] }), preact({ compat: true })],
 	site: 'https://dunedinsound.com',
+	prefetch: {
+		prefetchAll: true,
+		defaultStrategy: 'tap'
+	},
 	build: {
 		rollupOptions: {
 			external: ignoredDirs

@@ -98,15 +98,20 @@ const fade = keyframes({
 })
 
 const sidebarButtonBase = style({
+	borderRadius: '10px 10px 0px 0px',
+	boxSizing: 'border-box',
 	selectors: {
 		'&.open': {
 			boxShadow: `inset 0px 0px 2px 2px ${theme.color.darkContrast3}`,
+			borderColor: theme.color.darkContrast3,
+			borderStyle: "solid",
+			borderWidth: "2px 2px 0"
 		},
 		'&::after': {
 			opacity: 0,
 			animation: `${fade} 0.5s forwards`,
 			transform: 'rotate(0deg)',
-			transformOrigin: '12px 14px',
+			transformOrigin: 'center 12px',
 			transition: 'transform 0.2s ease-in',
 			willChange: 'transform',
 			height: "24px",
@@ -123,6 +128,7 @@ const sidebarButtonBase = style({
 	},
 	'@media': {
 		'screen and (--md)': {
+			borderRadius: '0px 10px 10px 0px',
 			selectors: {
 				'&.open': {
 					boxShadow: 'none'

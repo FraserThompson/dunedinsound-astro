@@ -11,6 +11,7 @@ const MenuWrapperBase = style({
 	backgroundColor: theme.color.background,
 	backgroundClip: 'padding-box',
 	border: 'none',
+	boxSizing: 'border-box',
 	borderRadius: '0',
 	margin: '0',
 	overflow: 'hidden'
@@ -30,6 +31,7 @@ export const MenuWrapper = styleVariants({
 
 const MenuLiBase = style({
 	backgroundColor: theme.color.primary,
+	boxSizing: 'border-box',
 	selectors: {
 		'&.active, &:active': {
 			backgroundColor: theme.color.contrast3,
