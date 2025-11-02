@@ -28,6 +28,9 @@ const { selected, collection, collectionEntries, style } = Astro.props
 // Helpers for conciseness
 const isDied = (entry) => 'died' in entry.entry.data && entry.entry.data.died !== undefined
 const isAllAges = (entry) => 'allAges' in entry.entry.data && entry.entry.data.allAges
+const hasOrigin = (entry) => 'origin' in entry.entry.data
+
+const getCategory = (entry) => `${hasOrigin(entry) ? entry.entry.data.origin : 'Dunedin'},${isDied(entry) ? 'dead' : 'active'},${isAllAges(entry) ? 'allages' : ''}`
 
 const entries = collection ? await loadAndFormatCollection(collection) : collectionEntries
 ---
@@ -38,7 +41,7 @@ const entries = collection ? await loadAndFormatCollection(collection) : collect
 			?.sort((a, b) => (a.entry.id < b.entry.id ? -1 : 1))
 			?.map((entry) => (
 				<li
-					data-category={`${isDied(entry) ? 'dead' : 'active'},${isAllAges(entry) ? 'allages' : ''}`}
+					data-category={getCategory(entry)}
 					data-lastgig={'lastGig' in entry.extra && entry.extra.lastGig}
 					data-numbergigs={'gigCount' in entry.extra && entry.extra.gigCount}
 					class={`filter-item ${MenuLi['vertical']} ${entry.entry.id === selected ? 'active' : ''}`}

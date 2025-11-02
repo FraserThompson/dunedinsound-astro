@@ -3,10 +3,10 @@
  *
  * Provides an element for displaying a button which opens content in a modal
  * positioned above all other elements.
- * 
+ *
  * The element is duplicated so it can escape the parents stacking context.
  *
- * TODO: Options for where modal is positioned. 
+ * TODO: Options for where modal is positioned.
  *
  * Props:
  *  - className (optional): Class to add to the wrapper
@@ -45,7 +45,7 @@ const { className = '' } = Astro.props
 			this.modalContent = this.querySelector('[data-modalcontent]')
 		}
 
-		openModal = (e) => {
+		private closeModal = () => {
 			if (!this.modalContent || !this.modalButton) return
 
 			// If already open, close and restore
@@ -55,6 +55,10 @@ const { className = '' } = Astro.props
 				this.restoreModal()
 				return
 			}
+		}
+
+		private openModal = () => {
+			if (!this.modalContent || !this.modalButton) return
 
 			// Get button position
 			const rect = this.modalButton.getBoundingClientRect()
@@ -78,7 +82,7 @@ const { className = '' } = Astro.props
 			this.modalButton.classList.add('active')
 		}
 
-		restoreModal() {
+		private restoreModal() {
 			// Restore modal to its original parent
 			if (this.modalContent && this.modalButton?.parentElement) {
 				this.modalButton.parentElement.appendChild(this.modalContent)
@@ -90,14 +94,30 @@ const { className = '' } = Astro.props
 			}
 		}
 
+		public toggleModal() {
+			if (!this.modalContent) return
+
+			// If already open, close and restore
+			if (this.modalContent.classList.contains('open')) {
+				this.closeModal()
+			} else {
+				this.openModal()
+			}
+		}
+
 		connectedCallback() {
-			// attach callback for showing/hiding modal content
-			this.modalButton?.addEventListener('mousedown', this.openModal)
+			// Attach callback for showing/hiding modal content
+			this.modalButton?.addEventListener('mousedown', () => this.toggleModal())
+			// If there's a sidebar and it opens or closes the modal should also close
+			window.addEventListener('sidebar_close', () => this.closeModal())
+			window.addEventListener('sidebar_open', () => this.closeModal())
 		}
 
 		disconnectedCallback() {
-			// detach callback for showing/hiding modal content
-			this.modalButton?.removeEventListener('mousedown', this.openModal)
+			// detach callbacks
+			this.modalButton?.removeEventListener('mousedown', () => this.toggleModal())
+			window.removeEventListener('sidebar_close', () => this.closeModal())
+			window.removeEventListener('sidebar_open', () => this.closeModal())
 		}
 	}
 

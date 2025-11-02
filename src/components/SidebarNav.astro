@@ -14,6 +14,10 @@
  *  - bottomMobile: Offset from bottom on mobile (xs).
  *  - customButton: If true, it will not render its own button.
  *    You will need to put a button with id 'sidebar-button' somewhere on the page.
+ * 
+ * Events:
+ *  - sidebar_open: Fired when sidebar opens.
+ *  - sidebar_close: Fired when sidebar closes.
  */
 
 import {
@@ -78,24 +82,56 @@ const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile'
 
 <script>
 	export class SidebarWrapper extends HTMLElement {
-		sidebar
-		menu
-		button
+		private _internals
+
+		sidebar: HTMLElement | null
+		menu: HTMLElement | null
+		button: HTMLElement | null
 
 		constructor() {
 			super()
+
+			this._internals = this.attachInternals()
+
 			this.sidebar = this.querySelector('#sidebar')
 			this.menu = this.querySelector('#sidebar-menu')
 			this.button = document.querySelector('#sidebar-button')
 		}
 
+		get open() {
+			return this._internals.states.has('open')
+		}
+
+		set open(flag) {
+			if (flag) {
+				this._internals.states.add('open')
+			} else {
+				this._internals.states.delete('open')
+			}
+		}
+
 		toggleSidebar() {
+			// Toggle internal open state
+			this.open = !this.open
+
+			// Toggle the classes on child elements which does the actual opening
+			this.sidebar?.classList.toggle('open')
+			this.button?.classList.toggle('open')
+
+			// Fire events so other components can respond to the sidebar open/close
+			if (this.open) {
+				const event = new Event('sidebar_open')
+				window && window.dispatchEvent(event)
+			} else {
+				const event = new Event('sidebar_close')
+				window && window.dispatchEvent(event)
+			}
+
+			// Open desired elements with it
 			const openWithElements = document.querySelectorAll('.openWithSidebar')
 			openWithElements.forEach((el: HTMLElement) => {
 				el.classList.toggle('openedWithSidebar')
 			})
-			this.sidebar?.classList.toggle('open')
-			this.button?.classList.toggle('open')
 		}
 
 		connectedCallback() {

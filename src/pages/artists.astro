@@ -1,5 +1,6 @@
 ---
-import { loadAndFormatCollection, Shufflers } from 'src/util/collection'
+import { loadAndFormatCollection } from 'src/util/collection'
+import { Shufflers } from 'src/util/shufflers'
 import { ResponsiveImage } from 'src/util/ResponsiveImage'
 import SubheadersLayout from 'src/layouts/base/SubheadersLayout.astro'
 import { artistListItem, artistGigCount } from './Artists.css'
@@ -14,16 +15,6 @@ export interface ArtistMetadata {
 }
 
 const artistShufflers = Shufflers['artist']
-
-let originCounts: { [key: string]: number } = {}
-
-// Get the origins list for the dropdown
-for (const artist of artists) {
-	const origin = artist.entry.data.origin || 'Dunedin'
-	if (!originCounts[origin]) originCounts[origin] = 0
-	originCounts[origin]++
-}
-const originsList = Object.entries(originCounts).map(([key, value]) => [`${key} (${value})`, key])
 ---
 
 <SubheadersLayout poo={{ title: 'Artists' }} hideFooter={true}>

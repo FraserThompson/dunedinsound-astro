@@ -26,8 +26,8 @@ globalStyle(`${textContainer} section`, {
 globalStyle(`${textContainer} > *:not(.lightboxImage):not(ul):not(ol):not(hr):not(.noCenter), ${textContainer} section > *:not(.lightboxImage):not(ul):not(ol):not(hr):not(.noCenter)`, {
 	margin: '0 auto',
 	padding: theme.dimensions.basePadding,
-	paddingTop: '9px',
-	paddingBottom: '9px',
+	paddingTop: '12px',
+	paddingBottom: '12px',
 	maxWidth: `min(100vw, 740px)`
 })
 

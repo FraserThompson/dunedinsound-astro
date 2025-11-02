@@ -15,7 +15,8 @@
  *  - sort (optional): Array of Sorters
  *  - filter (optional): Array of Filters
  *  - className (optional): Class to add to the wrapper
- *  - openSearchWithSidebar(optional): Whether to only show search when the sidebar is open
+ *  - openSearchWithSidebar(optional): If true, all filters will be hidden on mobile until the
+ *    sidebar is opened. This will also hide filters/sorters inside a button which pops a modal.
  */
 
 import { shuffleFilter, modalFiltersWrapper, dropdownButton } from './ShuffleFilters.css'
@@ -23,13 +24,13 @@ import { searchboxWrapper } from './SearchBox.css'
 import SortIcon from '~icons/iconoir/sort'
 import SearchIcon from '~icons/iconoir/search'
 import FilterIcon from '~icons/iconoir/filter'
+import GlobeIcon from '~icons/iconoir/globe'
 import Modal from './Modal.astro'
 
 export interface Sorter {
 	value: string
 	order: string
 	title: string
-	inDropdown?: boolean
 }
 
 export interface Filter {
@@ -38,7 +39,6 @@ export interface Filter {
 	title: string
 	checkedTitle?: string
 	icon?: string
-	inDropdown?: boolean
 	type: 'select' | 'checkbox'
 }
 
@@ -47,15 +47,14 @@ interface Props {
 	sort?: Sorter[]
 	filter?: Filter[]
 	className?: string
+	style?: Partial<CSSStyleDeclaration>
 	openSearchWithSidebar?: boolean
 }
 
-const { openSearchWithSidebar, search, sort, filter, className = '' } = Astro.props
-
-const hasDropdown = filter?.find((x) => x.inDropdown) || sort?.find((x) => x.inDropdown)
+const { openSearchWithSidebar, search, sort, filter, className = '', style } = Astro.props
 ---
 
-<shuffle-filters class={`${shuffleFilter} ${className}`}>
+<shuffle-filters class:list={[shuffleFilter, className]} style={style}>
 	{
 		search && (
 			<label
@@ -67,33 +66,30 @@ const hasDropdown = filter?.find((x) => x.inDropdown) || sort?.find((x) => x.inD
 		)
 	}
 	{
-		sort && sort.some((x) => !x.inDropdown) && (
+		!openSearchWithSidebar && sort && (
 			<label>
 				<SortIcon aria-label="Sort by" />
 				<select data-sort>
-					{sort
-						.filter((x) => !x.inDropdown)
-						.map((sort) => (
-							<option value={sort.value} data-order={sort.order}>
-								{sort.title}
-							</option>
-						))}
+					{sort.map((sort) => (
+						<option value={sort.value} data-order={sort.order}>
+							{sort.title}
+						</option>
+					))}
 				</select>
 			</label>
 		)
 	}
 	{
-		filter
-			?.filter((x) => !x.inDropdown)
-			.map((filter) =>
+		!openSearchWithSidebar &&
+			filter?.map((filter) =>
 				filter.type !== 'select' ? (
 					<label>
 						<input name={filter.value} value={filter.value} type={filter.type} />
-						{filter.title}
+						{!filter.icon ? filter.title : filter.icon === 'globe' && <GlobeIcon />}
 					</label>
 				) : (
 					<label class="flex">
-						{filter.title}
+						{!filter.icon ? filter.title : filter.icon === 'globe' && <GlobeIcon />}
 						<select name={filter.title} data-filter>
 							<option value="">All</option>
 							{filter.values?.map(([title, value]) => (
@@ -105,7 +101,7 @@ const hasDropdown = filter?.find((x) => x.inDropdown) || sort?.find((x) => x.inD
 			)
 	}
 	{
-		hasDropdown && (
+		openSearchWithSidebar && (sort || filter) && (
 			<Modal className={`${openSearchWithSidebar ? dropdownButton + ' openWithSidebar top' : ''}`}>
 				<FilterIcon slot="button" />
 				<div slot="content" class={`${modalFiltersWrapper}`}>
@@ -113,36 +109,32 @@ const hasDropdown = filter?.find((x) => x.inDropdown) || sort?.find((x) => x.inD
 						<label>
 							<SortIcon aria-label="Sort by" />
 							<select data-sort>
-								{sort
-									.filter((x) => x.inDropdown)
-									.map((sort) => (
-										<option value={sort.value} data-order={sort.order}>
-											{sort.title}
-										</option>
-									))}
+								{sort?.map((sort) => (
+									<option value={sort.value} data-order={sort.order}>
+										{sort.title}
+									</option>
+								))}
 							</select>
 						</label>
 					)}
-					{filter
-						?.filter((x) => x.inDropdown)
-						.map((filter) =>
-							filter.type !== 'select' ? (
-								<label>
-									<input name={filter.value} value={filter.value} type={filter.type} />
-									{filter.title}
-								</label>
-							) : (
-								<label class="flex">
-									{filter.title}
-									<select name={filter.title} data-filter>
-										<option value="">All</option>
-										{filter.values?.map(([title, value]) => (
-											<option value={value}>{title}</option>
-										))}
-									</select>
-								</label>
-							)
-						)}
+					{filter?.map((filter) =>
+						filter.type !== 'select' ? (
+							<label>
+								<input name={filter.value} value={filter.value} type={filter.type} />
+								{!filter.icon ? filter.title : filter.icon === 'globe' && <GlobeIcon />}
+							</label>
+						) : (
+							<label class="flex">
+								{!filter.icon ? filter.title : filter.icon === 'globe' && <GlobeIcon />}
+								<select name={filter.title} data-filter>
+									<option value="">All</option>
+									{filter.values?.map(([title, value]) => (
+										<option value={value}>{title}</option>
+									))}
+								</select>
+							</label>
+						)
+					)}
 				</div>
 			</Modal>
 		)

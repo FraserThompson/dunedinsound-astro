@@ -74,6 +74,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 		sidebarLinks: NodeListOf<HTMLAnchorElement> | undefined
 		selectedMarker: mapboxgl.Marker | undefined
 		selectedSidebar: HTMLElement | null | undefined
+		interactive: boolean
 
 		constructor() {
 			super()
@@ -84,14 +85,15 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			const centerAttrib = this.getAttribute('data-center')
 			const center = centerAttrib ? JSON.parse(centerAttrib) : [170.5016047, -45.8745557]
 			const zoom = this.getAttribute('data-zoom') || '13'
-			const interactive = this.getAttribute('data-nointeract') ? false : true
+	
+			this.interactive  = this.getAttribute('data-nointeract') ? false : true
 
 			this.map = new mapboxgl.Map({
 				container: 'map',
 				style: 'mapbox://styles/mapbox/dark-v11',
 				center: center,
 				zoom: parseInt(zoom),
-				interactive
+				interactive: this.interactive
 			})
 
 			this.markers = []
@@ -204,6 +206,9 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 		}
 
 		onFilter = (e: any) => {
+			// If it's not interactive we dont want to be zoomin around on filter
+			if (!this.interactive) return
+
 			const items = e.detail.items as HTMLElement[] | null
 			const filteredItems = e.detail.filteredItems as HTMLElement[] | null
 			const bounds = new mapboxgl.LngLatBounds()

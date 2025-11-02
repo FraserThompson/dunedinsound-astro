@@ -109,10 +109,10 @@ const sidebarButtonBase = style({
 		},
 		'&::after': {
 			opacity: 0,
-			animation: `${fade} 0.5s forwards`,
+			animation: `${fade} 1s forwards`,
 			transform: 'rotate(0deg)',
 			transformOrigin: 'center 12px',
-			transition: 'transform 0.2s ease-in',
+			transition: 'transform 0.2s ease-in-out',
 			willChange: 'transform',
 			height: "24px",
 			width: "24px",

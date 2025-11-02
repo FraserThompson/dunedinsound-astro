@@ -31,7 +31,8 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 	const waveformRef = useRef(null)
 
 	const [playing, setPlaying] = useState(false)
-	const [ready, setReady] = useState(false)
+	const [ready, setReady] = useState(false) // used only on initial load
+	const [loading, setLoading] = useState(true)
 	const [currentTime, setCurrentTime] = useState(undefined as number | undefined)
 	const [duration, setDuration] = useState(undefined as number | undefined)
 	const [selectedArtist, setSelectedArtist] = useState(0)
@@ -73,10 +74,18 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 		if (!wavesurfer) return
 		wavesurfer.on('ready', (duration) => {
 			setReady(true)
+			setLoading(false)
 			setDuration(duration)
 		})
+		wavesurfer.on('seeking', () => setLoading(true))
 		wavesurfer.on('finish', () => next(true))
-		wavesurfer.on('play', () => setPlaying(true))
+		wavesurfer.on('audioprocess', () => {
+			setLoading(false)
+		})
+		wavesurfer.on('play', () => {
+			setPlaying(true)
+			setLoading(false)
+		})
 		wavesurfer.on('pause', () => setPlaying(false))
 		wavesurfer.on('timeupdate', (time) => setCurrentTime(time))
 		return () => wavesurfer && wavesurfer.destroy()
@@ -258,8 +267,8 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 					{ready && <div className={LengthWrapper} style={{ left: '0px' }}>{currentTime ? formatTime(currentTime) : "00:00"}</div>}
 					{ready && <div className={LengthWrapper} style={{ right: '0px' }}>{duration && formatTime(duration)}</div>}
 				</div>
-				{!ready && (
-					<div style={{ position: 'absolute' }}>
+				{loading && (
+					<div style={{ position: 'absolute', zIndex: '10' }}>
 						<LoadingSpinner />
 					</div>
 				)}

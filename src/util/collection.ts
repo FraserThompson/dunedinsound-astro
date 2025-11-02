@@ -10,7 +10,6 @@ import { epochYear, monthMap, type Month } from './constants'
 import { getCollectionMetaDescription } from './seo'
 import { DIST_MEDIA_DIR } from './constants'
 import { existsSync } from 'node:fs'
-import type { Filter, Sorter } from 'src/components/ShuffleFilters.astro'
 
 type EntryExtraCommon = {
 	slug: string
@@ -629,76 +628,4 @@ export const sortGigs = (gigs: ProcessedEntry<'gig'>[]): SortedGigs =>
  */
 export function getEntryId<C extends CollectionKey>(entry: CollectionEntry<C>) {
 	return entry.id.replace('.mdx', '')
-}
-
-/**
- * Filters and sorters used on collection parent pages and their entry menus.
- */
-interface SortersAndFilters {
-	'sort': Sorter[]
-	'filter': Filter[]
-}
-
-interface CollectionShufflersMap {
-	'venue': SortersAndFilters
-	'artist': SortersAndFilters
-}
-
-export const Shufflers: CollectionShufflersMap = {
-	'venue': {
-		'sort': [
-			{ value: 'title', order: 'asc', title: 'Title', inDropdown: true },
-			{ value: 'numbergigs', order: 'desc', title: 'Most gigs', inDropdown: true }
-		],
-		'filter': [
-			{
-				title: 'All ages',
-				value: 'allages',
-				inDropdown: true,
-				type: 'checkbox' as 'checkbox'
-			},
-			{
-				title: 'Hide dead',
-				value: 'active',
-				inDropdown: true,
-				type: 'checkbox' as 'checkbox'
-			},
-			{
-				title: 'Hide alive',
-				value: 'dead',
-				inDropdown: true,
-				type: 'checkbox' as 'checkbox'
-			}
-		]
-	},
-	'artist': {
-		'sort': [
-			{
-				value: 'title',
-				order: 'asc',
-				title: 'Title',
-				inDropdown: true
-			},
-			{
-				value: 'lastgig',
-				order: 'desc',
-				title: 'Last played',
-				inDropdown: true
-			},
-			{
-				value: 'numbergigs',
-				order: 'desc',
-				title: 'Most gigs',
-				inDropdown: true
-			}
-		],
-		'filter': [
-			{
-				title: 'Hide inactive',
-				value: 'active',
-				type: 'checkbox',
-				inDropdown: true
-			}
-		]
-	}
 }
