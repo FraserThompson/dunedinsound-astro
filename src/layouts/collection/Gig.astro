@@ -1,6 +1,7 @@
 ---
 import Banner from 'src/components/Banner.astro'
-import type { ProcessedEntry } from 'src/util/collection'
+import { processEntry, type ProcessedEntry, type ArtistAudio } from 'src/util/collection'
+import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import Player from 'src/components/gig/Player'
 import PlayerContainer from 'src/components/gig/PlayerContainer.astro'
@@ -14,18 +15,24 @@ import { theme } from '../../Theme.css'
 import { GigBannerPlayer, GigFeatureVid } from './Gig.css'
 import ArtistDropdown from 'src/components/gig/ArtistDropdown.astro'
 import { formattedDate } from 'src/util/names'
+import TextContainer from 'src/components/TextContainer.astro'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
+	artistImages: { [id: string]: ResponsiveImage[] }
+	audio: ArtistAudio[]
 }
 
-const { entry } = Astro.props
+const { entry, artistImages, audio } = Astro.props
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
 
-const galleryCount = Object.values(entryExtra.artistImages).filter((images) => images.length > 0).length
-const uncategorizedImages = entryExtra.artistImages?._uncategorized
+const galleryCount = Object.values(artistImages).filter((images) => images.length > 0).length
+const uncategorizedImages = artistImages?._uncategorized
+
+// True if there's artist media (uncategorized images don't count)
+const hasArtistMedia = galleryCount === 1 ? !uncategorizedImages.length : galleryCount > 0
 ---
 
 <Banner
@@ -84,17 +91,17 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 		)
 	}
 	{
-		(!!entryExtra.audio?.length || entryData.feature_vid) && (
+		(!!audio?.length || entryData.feature_vid) && (
 			<Fragment slot="customContent">
 				{entryData.feature_vid && (
 					<div class={GigFeatureVid}>
 						<LiteYoutube videoid={entryData.feature_vid} loadAPI={true} />
 					</div>
 				)}
-				{!!entryExtra.audio?.length && (
+				{!!audio?.length && (
 					<div class={GigBannerPlayer}>
 						<PlayerContainer>
-							<Player artistAudio={entryExtra.audio} hideNextPrevOnMobile={true} client:load />
+							<Player artistAudio={audio} hideNextPrevOnMobile={true} client:load />
 						</PlayerContainer>
 					</div>
 				)}
@@ -120,11 +127,25 @@ const uncategorizedImages = entryExtra.artistImages?._uncategorized
 	)
 }
 {
-	!entryData.audioOnly && (
+	hasArtistMedia && (
 		<>
 			<ArtistDropdown entry={entry} />
-			<ArtistMedia entry={entry} />
+			<ArtistMedia entry={entry} artistImages={artistImages} />
 		</>
+	)
+}
+{
+	!!entryExtra.relatedBlogs?.length && (
+		<TextContainer light={true} containerWidth="none" className="padding-y">
+			<h3>Related articles...</h3>
+			<ul>
+				{entryExtra.relatedBlogs.map((entry) => (
+					<li>
+						<a href={entry.id}>{entry.data.title}</a>
+					</li>
+				))}
+			</ul>
+		</TextContainer>
 	)
 }
 

@@ -1,5 +1,5 @@
 ---
-import { loadAndFormatCollection } from 'src/util/collection.ts'
+import { loadAndFormatCollection, getEntryImages } from 'src/util/collection.ts'
 import Map from 'src/components/venue/Map.astro'
 import EntriesByCollectionLayout from 'src/layouts/base/EntriesByCollectionLayout.astro'
 import { theme } from '../../Theme.css'
@@ -8,18 +8,26 @@ import AllAgesIndicator from 'src/components/AllAgesIndicator.astro'
 export async function getStaticPaths() {
 	const artistEntries = await loadAndFormatCollection('venue')
 	// We don't want venue pages with venues with series (these redirect to series see colleection.ts)
-	return artistEntries.filter((entry) => !entry.entry.data.series).map((entry) => ({
-		params: { slug: entry.extra.slug },
-		props: {
-			entry
-		}
-	}))
+	return Promise.all(
+		artistEntries
+			.filter((entry) => !entry.entry.data.series)
+			.map(async (entry) => {
+				const images = await getEntryImages(entry.entry)
+				return {
+					params: { slug: entry.extra.slug },
+					props: {
+						entry,
+						images
+					}
+				}
+			})
+	)
 }
 
-const { entry } = Astro.props
+const { entry, images } = Astro.props
 ---
 
-<EntriesByCollectionLayout entry={entry}>
+<EntriesByCollectionLayout entry={entry} images={images}>
 	<Map
 		slot="banner"
 		heightMobile={'40vh'}

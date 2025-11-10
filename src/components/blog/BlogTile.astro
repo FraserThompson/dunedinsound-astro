@@ -2,15 +2,16 @@
 /**
  * A regular tile but pre-filled with blog metadata.
  */
-import type { ProcessedEntry } from 'src/util/collection'
+import { processEntry, type ProcessedEntry } from 'src/util/collection'
 import Tile, { type BackgroundStyle } from '../Tile.astro'
 import type { ResponsiveImageSizes } from '../Image2.astro'
 import { tagLink } from './BlogTags.css'
 import { formattedDate } from 'src/util/names'
 import FastArrowRight from '~icons/iconoir/fast-arrow-right'
+import type { CollectionEntry } from 'astro:content'
 
 interface Props {
-	blog: ProcessedEntry<'blog'>
+	blog: CollectionEntry<'blog'> | ProcessedEntry<'blog'>
 	containerHeight?: string
 	containerHeightMobile?: string
 	responsiveImageSizes?: keyof ResponsiveImageSizes
@@ -19,8 +20,14 @@ interface Props {
 
 const { blog, containerHeight, containerHeightMobile, backgroundStyle, responsiveImageSizes } = Astro.props
 
-const blogData = blog.entry.data
-const blogExtra = blog.extra
+// Type guard: ProcessedEntry has an 'extra' property, CollectionEntry doesn't
+const isProcessedEntry = (entry: CollectionEntry<'blog'> | ProcessedEntry<'blog'>): entry is ProcessedEntry<'blog'> => {
+	return 'extra' in entry
+}
+
+const processedEntry: ProcessedEntry<'blog'> = isProcessedEntry(blog) ? blog : await processEntry(blog)
+const blogData = processedEntry.entry.data
+const blogExtra = processedEntry.extra
 ---
 
 <Tile

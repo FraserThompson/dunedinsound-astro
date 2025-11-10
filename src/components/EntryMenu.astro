@@ -15,6 +15,7 @@ import type { CollectionKey } from 'astro:content'
 import { theme } from '../Theme.css'
 import AllAgesIndicator from './AllAgesIndicator.astro'
 import SeriesIndicator from './SeriesIndicator.astro'
+import { makeHash } from 'src/util/names'
 
 interface Props {
 	collection?: CollectionKey
@@ -44,6 +45,7 @@ const entries = collection ? await loadAndFormatCollection(collection) : collect
 					data-category={getCategory(entry)}
 					data-lastgig={'lastGig' in entry.extra && entry.extra.lastGig}
 					data-numbergigs={'gigCount' in entry.extra && entry.extra.gigCount}
+					data-sidebarid={makeHash(entry.entry.id)}
 					class={`filter-item ${MenuLi['vertical']} ${entry.entry.id === selected ? 'active' : ''}`}
 				>
 					<a
@@ -81,9 +83,3 @@ const entries = collection ? await loadAndFormatCollection(collection) : collect
 			))
 	}
 </ul>
-
-<script>
-	import { maintainSidebarScrollPosition } from 'src/util/helpers'
-	const collection = window.location.pathname.split('/')[1]
-	maintainSidebarScrollPosition(collection)
-</script>

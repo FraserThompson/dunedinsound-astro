@@ -87,3 +87,87 @@ const { hideFooter, hasSidebar, style, className = '', poo } = Astro.props
 		animation: spinner 0.6s linear infinite;
 	}
 </style>
+
+<script>
+	import { scrollIntoView } from 'seamless-scroll-polyfill'
+	import { navigate } from 'astro:transitions/client'
+	import { elementIsVisibleInViewport } from 'src/util/helpers'
+
+	interface StoredScrollPosition {
+		collection: string
+		position: number
+		sidebarId?: string
+	}
+
+	/**
+	 * On first load scroll to active element (since swap events aren't fired yet)
+	 */
+	document.addEventListener(
+		'astro:page-load',
+		() => {
+			const sidebarMenu = document.querySelector('#sidebar-menu')
+			const activeElement = sidebarMenu?.querySelector('.active')
+			if (activeElement) {
+				scrollIntoView(activeElement, { behavior: 'instant', block: 'center' })
+			}
+			sessionStorage.removeItem(`scrollPosition`)
+		},
+		{ once: true }
+	)
+
+	/**
+	 * Before navigating, store the sidebar scroll position and active element ID
+	 */
+	document.addEventListener('astro:before-swap', () => {
+		const collection = window.location.pathname.split('/')[1]
+		const sidebarMenu = document.querySelector<HTMLElement>('#sidebar-menu')
+		const scrollPosition = sidebarMenu?.scrollTop
+		const activeElementId = sidebarMenu?.querySelector<HTMLElement>('.active')?.dataset?.sidebarid
+		
+		if (scrollPosition !== undefined && collection) {
+			const storedScroll: StoredScrollPosition = {
+				position: scrollPosition,
+				collection: collection,
+				sidebarId: activeElementId
+			}
+			sessionStorage.setItem(`scrollPosition`, JSON.stringify(storedScroll))
+		}
+	})
+
+	/**
+	 * After navigation, restore scroll position if in same collection.
+	 * If navigating back to collection list page, also scroll body to that element.
+	 */
+	document.addEventListener('astro:after-swap', () => {
+		const collection = window.location.pathname.split('/')[1]
+		const pathDepth = window.location.pathname.split('/').length // includes trailing slash
+		const scrollPosition = sessionStorage.getItem(`scrollPosition`)
+		const storedScroll: StoredScrollPosition = scrollPosition ? JSON.parse(scrollPosition) : null
+
+		const sidebarMenu = document.querySelector<HTMLElement>('#sidebar-menu')
+		const activeElement = sidebarMenu?.querySelector<HTMLElement>('.active')
+
+		// Restore scroll position if navigating within the same collection
+		if (storedScroll && storedScroll.collection === collection && sidebarMenu) {
+			sidebarMenu.scrollTo({
+				top: storedScroll.position,
+				behavior: 'instant'
+			})
+
+			// Ensure active element is visible (handles edge cases where scroll was interrupted)
+			if (activeElement && !elementIsVisibleInViewport(activeElement, sidebarMenu)) {
+				scrollIntoView(activeElement, { behavior: 'instant', block: 'center' })
+			}
+
+			// If navigating back to collection list page (depth <= 3), scroll body to element too
+			if (pathDepth <= 3 && storedScroll.sidebarId) {
+				navigate(`#${storedScroll.sidebarId}`, { history: 'replace' })
+			}
+		} else if (activeElement) {
+			// Different collection or first visit - scroll to active element
+			scrollIntoView(activeElement, { behavior: 'instant', block: 'center' })
+		}
+
+		sessionStorage.removeItem(`scrollPosition`)
+	})
+</script>

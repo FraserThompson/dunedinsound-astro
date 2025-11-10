@@ -4,12 +4,14 @@
  *
  * Props:
  *  - entry: The entry.
+ *  - images: The images for the entry.
  *
  * Slots:
  *  - banner: Content to put in the banner instead of the cover image.
  */
 import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import { loadAndFormatCollection, loadAndFormatEntry, type ProcessedEntry } from 'src/util/collection'
+import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import Tile from 'src/components/Tile.astro'
 import DropdownMenu from 'src/components/DropdownMenu'
 import Divider from 'src/components/Divider.astro'
@@ -24,13 +26,13 @@ import GigTile from 'src/components/gig/GigTile.astro'
 import { contentByEntryActiveWrapper, spacer } from './ContentByEntry.css'
 import { formattedDate } from 'src/util/names'
 import { socialLinksWrapper } from './ContentByEntry.css'
-import { set } from 'astro:schema'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
+	images?: { [id: string]: ResponsiveImage }
 }
 
-const { entry } = Astro.props
+const { entry, images } = Astro.props
 
 const gigs = await loadAndFormatCollection('gig', (thing) => {
 	const matchByArtist = thing.entry.data.artists?.find((artist) => artist.id.id === entry.entry.id)
@@ -63,8 +65,6 @@ const vaultSessions = await loadAndFormatCollection('vaultsession', (thing) => {
 const entryData = entry.entry.data
 const entryExtra = entry.extra
 const collection = entry.entry.collection
-
-const images = entryExtra.images
 
 let tabs = [{ title: `Gigs (${gigs.length})`, id: 'gigs' }]
 blogs.length > 0 && tabs.push({ title: `Articles (${blogs.length})`, id: 'blogs' })

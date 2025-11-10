@@ -69,6 +69,16 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 			});
 			onScroll()
 		};
+
+		// Works with the usual location hash stuff (but only on one axis)
+		if (window.location.hash) {
+			const matchingEl = htmlElements.findIndex((el) => el.id === window.location.hash.substring(1))
+			if (matchingEl && colCount === 1) {
+				// @ts-ignore
+				window.scrollToItem(0 , matchingEl);
+			}
+		}
+
 	}, []);
 
 	// Turn inputted HTML string into an array of HTML elements

@@ -2,14 +2,15 @@
 /**
  * A regular tile but pre-filled with gig metadata.
  */
-import type { ProcessedEntry } from 'src/util/collection'
+import { processEntry, type ProcessedEntry } from 'src/util/collection'
 import Tile, { type BackgroundStyle } from '../Tile.astro'
 import { artistsToString } from 'src/util/helpers'
 import { formattedDate, makeHash } from 'src/util/names'
 import type { ResponsiveImageSizes } from '../Image2.astro'
+import type { CollectionEntry } from 'astro:content'
 
 interface Props {
-	gig: ProcessedEntry<'gig'>
+	gig: CollectionEntry<'gig'> | ProcessedEntry<'gig'>
 	containerHeight?: string
 	containerHeightMobile?: string
 	className?: string
@@ -28,8 +29,15 @@ const {
 	responsiveImageSizes
 } = Astro.props
 
-const gigData = gig.entry.data
-const gigExtra = gig.extra
+// Type guard: ProcessedEntry has an 'extra' property, CollectionEntry doesn't
+const isProcessedEntry = (entry: CollectionEntry<'gig'> | ProcessedEntry<'gig'>): entry is ProcessedEntry<'gig'> => {
+	return 'extra' in entry
+}
+
+const processedEntry: ProcessedEntry<'gig'> = isProcessedEntry(gig) ? gig : await processEntry(gig)
+const gigData = processedEntry.entry.data
+const gigExtra = processedEntry.extra
+const id = processedEntry.entry.id
 ---
 
 <Tile
@@ -39,7 +47,7 @@ const gigExtra = gig.extra
 	responsiveImage={gigExtra.cover}
 	responsiveImageSizes={responsiveImageSizes}
 	backgroundStyle={backgroundStyle}
-	id={makeHash(gig.entry.id)}
+	id={makeHash(id)}
 	subtitle={gigExtra.venue?.data.title}
 	label={formattedDate(gigData.date)}
 	title={gigData.title}
@@ -48,7 +56,7 @@ const gigExtra = gig.extra
 	containerWidth={'100%'}
 	dataAttributes={{
 		'data-title': gigData.title,
-		'data-gig': makeHash(gig.entry.id)
+		'data-sidebarid': makeHash(id)
 	}}
 >
 	<h6 style={{ marginBottom: '0px' }}>

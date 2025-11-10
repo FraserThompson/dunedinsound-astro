@@ -1,9 +1,12 @@
-import { globalStyle, style } from '@vanilla-extract/css'
+import { createVar, fallbackVar, globalStyle, style } from '@vanilla-extract/css'
 import { theme } from '../Theme.css'
 
+export const fontSize = createVar()
+export const containerWidth = createVar()
+
 export const textContainer = style({
-	fontSize: '18px',
-	maxWidth: theme.dimensions.contentContainerWidth,
+	fontSize: fallbackVar(fontSize, '18px'),
+	maxWidth: fallbackVar(containerWidth, theme.dimensions.contentContainerWidth),
 	margin: '0 auto',
 	lineHeight: '1.8rem',
 	selectors: {
@@ -28,7 +31,7 @@ globalStyle(`${textContainer} > *:not(.lightboxImage):not(ul):not(ol):not(hr):no
 	padding: theme.dimensions.basePadding,
 	paddingTop: '12px',
 	paddingBottom: '12px',
-	maxWidth: `min(100vw, 740px)`
+	maxWidth: fallbackVar(containerWidth, theme.dimensions.contentContainerWidth),
 })
 
 globalStyle(`${textContainer} > iframe`, {

@@ -44,7 +44,7 @@ const entryExtra = entry.extra
 	</div>
 	<TableOfContents headings={headings} />
 	{
-		!!entryExtra.relatedArtists.length && (
+		!!entryExtra.relatedArtists?.length && (
 			<div class={sidebarBox}>
 				<h3>Artists featured in this article</h3>
 				{entryExtra.relatedArtists.map((artist) => (
@@ -68,7 +68,7 @@ const entryExtra = entry.extra
 		)
 	}
 	{
-		!!entryExtra.relatedVenues.length && (
+		!!entryExtra.relatedVenues?.length && (
 			<div class={sidebarBox}>
 				<h3>Venues featured in this article</h3>
 				{entryExtra.relatedVenues.map((venue) => (

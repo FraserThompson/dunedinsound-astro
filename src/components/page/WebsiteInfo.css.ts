@@ -17,13 +17,8 @@ export const infoHeader = style({
 
 export const infoContent = style({
 	maxWidth: '740px',
-	padding: theme.dimensions.basePaddingMobile,
-	margin: '0 auto',
-	'@media': {
-		'screen and (--md)': {
-			padding: theme.dimensions.basePadding
-		}
-	}
+	padding: theme.dimensions.basePadding,
+	margin: '0 auto'
 })
 
 const fade = keyframes({

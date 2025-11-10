@@ -49,7 +49,6 @@ const Gig = defineCollection({
 		description: z.string().optional(),
 		intro: z.string().optional(),
 		feature_vid: z.string().optional(),
-		audioOnly: z.boolean().optional(),
 		series: reference('series').optional()
 	})
 })

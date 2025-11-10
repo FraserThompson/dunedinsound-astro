@@ -17,7 +17,6 @@ type EntryExtraCommon = {
 	metaDescription?: string
 	cover?: ResponsiveImage
 	coverVertical?: ResponsiveImage
-	images?: { [id: string]: ResponsiveImage }
 }
 
 interface Track {
@@ -33,11 +32,10 @@ export type ArtistAudio = {
 
 export type EntryExtraMap = {
 	gig: EntryExtraCommon & {
-		artistImages: { [id: string]: ResponsiveImage[] }
-		audio: ArtistAudio[]
 		artists: ProcessedEntry<'artist'>[]
 		series?: ProcessedEntry<'series'>
 		venue?: CollectionEntry<'venue'>
+		relatedBlogs?: CollectionEntry<'blog'>[]
 	}
 	series: EntryExtraCommon & {
 		gigCount: number
@@ -57,9 +55,9 @@ export type EntryExtraMap = {
 	}
 	blog: EntryExtraCommon & {
 		coverVid?: string
-		relatedGigs: ProcessedEntry<'gig'>[]
-		relatedArtists: CollectionEntry<'artist'>[]
-		relatedVenues: CollectionEntry<'venue'>[]
+		relatedGigs?: CollectionEntry<'gig'>[]
+		relatedArtists?: CollectionEntry<'artist'>[]
+		relatedVenues?: CollectionEntry<'venue'>[]
 	}
 	page: EntryExtraCommon
 }
@@ -72,13 +70,25 @@ export interface ProcessedEntry<C extends CollectionKey> {
 }
 
 /**
- * So entries aren't processed multiple times, we cache full collection results.
+ * Two-level cache for processed entries:
+ * 
+ * 1. cachedCollection[collection] = Full sorted array of all entries in a collection
+ *    - Preserves prev/next relationships and sort order
+ *    - Populated by loadAndFormatCollection()
+ * 
+ * 2. cachedIndividual[collection][id] = Individual processed entry lookup
+ *    - Fast O(1) lookup for single entries
+ *    - Populated by processEntry() and loadAndFormatCollection()
+ *    - Prevents reprocessing when accessing entries via different code paths
  */
-type CachedResults<C extends CollectionKey> = {
-	[key: string]: ProcessedEntry<C>[]
+type CachedIndividual = {
+	[collection: string]: {
+		[id: string]: ProcessedEntry<any>
+	}
 }
 
-const cachedResults: CachedResults<any> = {}
+const cachedCollection: { [collection: string]: ProcessedEntry<any>[] } = {}
+const cachedIndividual: CachedIndividual = {}
 
 /**
  * Loads a collection and adds extra generated fields to each entry.
@@ -94,7 +104,7 @@ export async function loadAndFormatCollection<C extends CollectionKey>(
 	name: C,
 	filter?: (arg: ProcessedEntry<C>) => void
 ): Promise<ProcessedEntry<C>[]> {
-	if (!cachedResults[name]) {
+	if (!cachedCollection[name]) {
 		const entries = await getCollection(name)
 		const sortedEntries = sortCollectionByDate(entries).filter((thing) =>
 			'hidden' in thing.data ? !thing.data.hidden : true
@@ -102,14 +112,22 @@ export async function loadAndFormatCollection<C extends CollectionKey>(
 		const processedEntries = await Promise.all(
 			sortedEntries.map(async (entry, i) => await processEntry(entry, sortedEntries, i))
 		)
-		cachedResults[name] = processedEntries
+		cachedCollection[name] = processedEntries
+
+		// Also populate individual entry cache for quick lookups
+		if (!cachedIndividual[name]) {
+			cachedIndividual[name] = {}
+		}
+		processedEntries.forEach((processed) => {
+			cachedIndividual[name][processed.entry.id] = processed
+		})
 	}
 
 	if (filter) {
-		return cachedResults[name].filter(filter)
+		return cachedCollection[name].filter(filter)
 	}
 
-	return cachedResults[name]
+	return cachedCollection[name]
 }
 
 /**
@@ -121,11 +139,22 @@ export async function loadAndFormatEntry<C extends keyof DataEntryMap>(
 	collection: C,
 	id: string
 ): Promise<ProcessedEntry<C>> {
-	// Try find a cached one if we've already gotten it
-	if (cachedResults[collection]) {
+	// Check individual entry cache first
+	if (cachedIndividual[collection]?.[id]) {
+		return cachedIndividual[collection][id]
+	}
+
+	// Try find in collection cache
+	if (cachedCollection[collection]) {
 		//@ts-expect-error
-		const cachedResult = cachedResults[collection].find((entry) => entry.entry.id === id)
-		if (cachedResult) return cachedResult
+		const cachedResult = cachedCollection[collection].find((entry) => entry.entry.id === id)
+		if (cachedResult) {
+			if (!cachedIndividual[collection]) {
+				cachedIndividual[collection] = {}
+			}
+			cachedIndividual[collection][id] = cachedResult
+			return cachedResult
+		}
 	}
 
 	const fullEntry = await getEntry(collection, id)
@@ -133,11 +162,18 @@ export async function loadAndFormatEntry<C extends keyof DataEntryMap>(
 	//@ts-expect-error
 	const processedEntry: ProcessedEntry<C> = await processEntry(fullEntry)
 
+	// Cache the result
+	if (!cachedIndividual[collection]) {
+		cachedIndividual[collection] = {}
+	}
+	cachedIndividual[collection][id] = processedEntry
+
 	return processedEntry
 }
 
 /**
  * Processes an entry and adds extra fields.
+ * Checks cache first to avoid reprocessing.
  * @param entry
  * @param entries
  * @param i
@@ -148,62 +184,83 @@ export async function processEntry<C extends CollectionKey>(
 	entries?: any,
 	i?: number
 ): Promise<ProcessedEntry<C>> {
+	// Check if this specific entry is already cached
+	if (cachedIndividual[entry.collection]?.[entry.id]) {
+		return cachedIndividual[entry.collection][entry.id]
+	}
+
 	const extraCommon: EntryExtraCommon = await getCommonExtra(entry)
 
 	const prev = i === undefined || i + 1 === entries.length ? undefined : entries[i + 1]
 	const next = i === undefined || i === 0 ? undefined : entries[i - 1]
 
+	let processedEntry: ProcessedEntry<C>
+
 	switch (entry.collection) {
 		case 'gig':
-			return {
+			processedEntry = {
 				entry,
 				prev,
 				next,
 				extra: (await getGigExtra(entry, extraCommon)) as EntryExtraMap[C]
 			}
+			break
 		case 'series':
-			return {
+			processedEntry = {
 				entry,
 				prev,
 				next,
 				extra: (await getSeriesExtra(entry, extraCommon)) as EntryExtraMap[C]
 			}
+			break
 		case 'blog':
-			return {
+			processedEntry = {
 				entry,
 				prev,
 				next,
 				extra: (await getBlogExtra(entry, extraCommon)) as EntryExtraMap[C]
 			}
+			break
 		case 'vaultsession':
-			return {
+			processedEntry = {
 				entry,
 				prev,
 				next,
 				extra: (await getVaultSessionExtra(entry, extraCommon)) as EntryExtraMap[C]
 			}
+			break
 		case 'artist':
-			return {
+			processedEntry = {
 				entry,
 				prev,
 				next,
 				extra: (await getArtistExtra(entry, extraCommon)) as EntryExtraMap[C]
 			}
+			break
 		case 'venue':
-			return {
+			processedEntry = {
 				entry,
 				prev,
 				next,
 				extra: (await getVenueExtra(entry, extraCommon)) as EntryExtraMap[C]
 			}
+			break
 		default:
-			return {
+			processedEntry = {
 				entry,
 				prev,
 				next,
 				extra: extraCommon as EntryExtraMap[C]
 			}
 	}
+
+	// Cache the processed entry
+	if (!cachedIndividual[entry.collection]) {
+		cachedIndividual[entry.collection] = {}
+	}
+	cachedIndividual[entry.collection][entry.id] = processedEntry
+
+	return processedEntry
 }
 
 /**
@@ -220,16 +277,12 @@ async function getCommonExtra<C extends CollectionKey>(entry: CollectionEntry<C>
 	// To preserve URLs from old site
 	const postSlug = getEntrySlug(title, entry.collection)
 
-	const images = await getResponsiveImagesByDir(`${DIST_MEDIA_DIR}/${entry.collection}/${getEntryId(entry)}`, title)
-	images && delete images['cover'] && delete images['cover_vertical']
-
 	return {
 		slug: postSlug,
 		metaDescription,
 		absolutePath: getEntryPath(postSlug, entry.collection),
 		cover: await getCover(entry),
-		coverVertical: await getCover(entry, 'cover_vertical'),
-		images: images
+		coverVertical: await getCover(entry, 'cover_vertical')
 	}
 }
 
@@ -249,75 +302,21 @@ export async function getGigExtra(
 		entry.data.artists.map(async (artist) => await loadAndFormatEntry('artist', artist.id.id))
 	)
 
-	// This is used for sorting media into the correct order
-	const artistIds: string[] = entry.data.artists.map((artist) => artist.id.id)
-
 	// Get associated venue entry
 	const venue = await getEntry('venue', entry.data.venue.id)
 
 	// Get associated series entry
 	const series = entry.data.series && (await loadAndFormatEntry('series', entry.data.series.id))
 
-	// Find artist subdirectories in this gig's dir
-	const artistDirs = await new fdir({
-		pathSeparator: '/',
-		includeBasePath: true,
-		maxDepth: 1
-	})
-		.onlyDirs()
-		.crawl(`${DIST_MEDIA_DIR}/gig/${entry.id}`)
-		.withPromise()
 
-	// We initialize this so they're in the right order.
-	let artistImages: { [id: string]: ResponsiveImage[] } = {
-		_uncategorized: [],
-		...artistIds.reduce((acc: { [id: string]: ResponsiveImage[] }, artistId) => {
-			acc[artistId] = []
-			return acc
-		}, {})
-	}
-	let audio: ArtistAudio[] = []
-
-	artistDirs.sort((a, b) => artistIds.indexOf(path.basename(a)) - artistIds.indexOf(path.basename(b)))
-
-	// Get all media from each subdirectory
-	for (const artistDir of artistDirs) {
-		const artistId = path.basename(artistDir)
-
-		if (artistId === 'cover' || artistId === entry.id) continue
-
-		// Get all image paths in each responsive image dir
-		const responsiveImages = await getResponsiveImagesByDir(artistDir, artistId)
-		artistImages[artistId] = responsiveImages ? Object.values(responsiveImages) : []
-
-		// Get the audio
-		const audioFiles = (
-			await new fdir({
-				pathSeparator: '/',
-				includeBasePath: true
-			})
-				.glob(`**@(mp3|json)`)
-				.crawl(artistDir)
-				.withPromise()
-		).map((src) => `/${src}`)
-
-		if (audioFiles.length) {
-			audio.push({
-				title: artistId,
-				files: audioFiles,
-				tracklist: entry.data.artists.find((artist) => artist.id.id === artistId)?.tracklist
-			})
-		}
-	}
-
-	if (audio.length) {
-		audio.sort((a, b) => artistIds.indexOf(a.title) - artistIds.indexOf(b.title))
-	}
+	// Find gigs which mention related artists
+	const relatedBlogs = await getCollection('blog', (blog) =>
+		blog.data.relatedGigs?.find((gig) => gig.id === entry.id)
+	)
 
 	return {
 		...extra,
-		artistImages,
-		audio,
+		relatedBlogs,
 		artists,
 		venue,
 		series
@@ -357,28 +356,28 @@ export async function getBlogExtra(
 		? (
 			await Promise.all(entry.data.relatedArtists.map(async (artist: any) => await getEntry('artist', artist.id)))
 		).filter((thing) => thing !== undefined)
-		: []
+		: undefined
 
 	const relatedVenues = entry.data.relatedVenues
 		? (await Promise.all(entry.data.relatedVenues.map(async (venue: any) => await getEntry('venue', venue.id)))).filter(
 			(thing) => thing !== undefined
 		)
-		: []
+		: undefined
 
 	// Find gigs which mention related artists
-	const relatedGigsByArtist = await loadAndFormatCollection('gig', (gig) =>
-		gig.entry.data.artists?.find((artist) =>
+	const relatedGigsByArtist = await getCollection('gig', (gig) =>
+		gig.data.artists?.find((artist) =>
 			entry.data.relatedArtists?.find((relatedArtist) => relatedArtist.id === artist.id.id)
 		)
 	)
 
 	// Filter out duplicates
 	const relatedSpecifiedGigs =
-		entry.data.relatedGigs?.filter((entry) => !relatedGigsByArtist.find((entry2) => entry.id === entry2.entry.id)) || []
+		entry.data.relatedGigs?.filter((entry) => !relatedGigsByArtist.find((entry2) => entry.id === entry2.id)) || []
 
 	// Get processed gig entries from relatedGigs
 	const processedRelatedSpecifiedGigs = await Promise.all(
-		relatedSpecifiedGigs.map(async (gig) => await loadAndFormatEntry(gig.collection, gig.id))
+		relatedSpecifiedGigs.map(async (gig) => await getEntry(gig.collection, gig.id))
 	)
 
 	// Total related gigs
@@ -396,7 +395,7 @@ export async function getBlogExtra(
 	return {
 		...extra,
 		coverVid,
-		relatedGigs,
+		relatedGigs: relatedGigs.length ? relatedGigs : undefined,
 		relatedArtists,
 		relatedVenues
 	}
@@ -628,4 +627,94 @@ export const sortGigs = (gigs: ProcessedEntry<'gig'>[]): SortedGigs =>
  */
 export function getEntryId<C extends CollectionKey>(entry: CollectionEntry<C>) {
 	return entry.id.replace('.mdx', '')
+}
+
+/**
+ * Gets all images for an entry (excluding cover images).
+ * @param entry The collection entry
+ * @returns Object mapping image names to ResponsiveImage objects
+ */
+export async function getEntryImages<C extends CollectionKey>(
+	entry: CollectionEntry<C>
+): Promise<{ [id: string]: ResponsiveImage } | undefined> {
+	const images = await getResponsiveImagesByDir(
+		`${DIST_MEDIA_DIR}/${entry.collection}/${getEntryId(entry)}`,
+		entry.data.title
+	)
+	if (images) {
+		delete images['cover']
+		delete images['cover_vertical']
+	}
+	return images
+}
+
+/**
+ * Get all media for a gig.
+ * This includes images sorted by artists, as well as audio.
+ * @param entry 
+ * @returns Array of [images, audio]
+ */
+export async function getGigMedia(entry: ProcessedEntry<'gig'>): Promise<[{ [id: string]: ResponsiveImage[] }, ArtistAudio[]]> {
+	const entryData = entry.entry.data
+
+	// This is used for sorting media into the correct order
+	const artistIds: string[] = entryData.artists.map((artist) => artist.id.id)
+
+	// Find artist subdirectories in this gig's dir
+	const artistDirs = await new fdir({
+		pathSeparator: '/',
+		includeBasePath: true,
+		maxDepth: 1
+	})
+		.onlyDirs()
+		.crawl(`${DIST_MEDIA_DIR}/gig/${entry.entry.id}`)
+		.withPromise()
+
+	// We initialize this so they're in the right order.
+	let artistImages: { [id: string]: ResponsiveImage[] } = {
+		_uncategorized: [],
+		...artistIds.reduce((acc: { [id: string]: ResponsiveImage[] }, artistId) => {
+			acc[artistId] = []
+			return acc
+		}, {})
+	}
+	let audio: ArtistAudio[] = []
+
+	artistDirs.sort((a, b) => artistIds.indexOf(path.basename(a)) - artistIds.indexOf(path.basename(b)))
+
+	// Get all media from each subdirectory
+	for (const artistDir of artistDirs) {
+		const artistId = path.basename(artistDir)
+
+		if (artistId === 'cover' || artistId === entry.entry.id) continue
+
+		// Get all image paths in each responsive image dir
+		const responsiveImages = await getResponsiveImagesByDir(artistDir, artistId)
+		artistImages[artistId] = responsiveImages ? Object.values(responsiveImages) : []
+
+		// Get the audio
+		const audioFiles = (
+			await new fdir({
+				pathSeparator: '/',
+				includeBasePath: true
+			})
+				.glob(`**@(mp3|json)`)
+				.crawl(artistDir)
+				.withPromise()
+		).map((src) => `/${src}`)
+
+		if (audioFiles.length) {
+			audio.push({
+				title: artistId,
+				files: audioFiles,
+				tracklist: entryData.artists.find((artist) => artist.id.id === artistId)?.tracklist
+			})
+		}
+	}
+
+	if (audio.length) {
+		audio.sort((a, b) => artistIds.indexOf(a.title) - artistIds.indexOf(b.title))
+	}
+
+	return [artistImages, audio]
 }

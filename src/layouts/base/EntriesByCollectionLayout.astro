@@ -7,6 +7,7 @@
  *
  * Props:
  *  - entry: The entry.
+ *  - images: The images for the entry.
  *
  * Slots:
  *  - banner: Content to go in the banner at the top.
@@ -15,6 +16,7 @@ import EntryMenu from 'src/components/EntryMenu.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import ContentByEntry from '../../components/ContentByEntry.astro'
 import { type ProcessedEntry } from 'src/util/collection'
+import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import { Shufflers } from 'src/util/shufflers'
 import SidebarLayout from './SidebarLayout.astro'
 import ChevronLeftIcon from '~icons/iconoir/nav-arrow-left'
@@ -22,9 +24,10 @@ import { backButton } from 'src/components/gig/GigsMenu.css'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
+	images?: { [id: string]: ResponsiveImage }
 }
 
-const { entry } = Astro.props
+const { entry, images } = Astro.props
 const collection = entry.entry.collection
 
 const entryData = entry.entry.data
@@ -57,7 +60,7 @@ const shufflers = collection in Shufflers ? Shufflers[collection] : null
 		<ChevronLeftIcon /> Go to {collection}s home
 	</a>
 	<EntryMenu slot="sidebarMenu" collection={collection} selected={entry.entry.id} transition:persist />
-	<ContentByEntry entry={entry} slot="content">
+	<ContentByEntry entry={entry} images={images} slot="content">
 		<slot name="banner" slot={hasBanner ? 'banner' : ''} />
 	</ContentByEntry>
 </SidebarLayout>

@@ -4,8 +4,10 @@
  *
  * Props:
  *  - entry: The current entry.
+ *  - artistImages: The artist images to display.
  */
 import type { ProcessedEntry } from 'src/util/collection'
+import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import Divider from '../Divider.astro'
 import ImageGallery from '../ImageGallery.astro'
 import ImageGalleryLightbox from '../ImageGalleryLightbox.astro'
@@ -15,9 +17,10 @@ import { theme } from '../../Theme.css'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
+	artistImages: { [id: string]: ResponsiveImage[] }
 }
 
-const { entry } = Astro.props
+const { entry, artistImages } = Astro.props
 const entryExtra = entry.extra
 const entryData = entry.entry.data
 ---
@@ -38,8 +41,8 @@ const entryData = entry.entry.data
 					<LiteYoutube videoid={vid.link} loadAPI={true} />
 				))}
 			</FlexGridContainer>
-			{entryExtra.artistImages[artist.entry.id] && (
-				<ImageGallery noLightbox={true} images={entryExtra.artistImages[artist.entry.id]} />
+			{artistImages[artist.entry.id] && (
+				<ImageGallery noLightbox={true} images={artistImages[artist.entry.id]} />
 			)}
 		</div>
 	))

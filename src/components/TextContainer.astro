@@ -1,19 +1,37 @@
 ---
 /**
  * Width restricted container for readable text.
+ * 
+ * Props:
+ *  - style (optional)
+ *  - fontSize (optional): Override default font size.
+ *  - containerWidth (optional): Override default container width.
+ *  - className (optional): Add a class name.
+ *  - light (optional): Light mode (default is dark mode).
  */
-import { textContainer } from './TextContainer.css'
+import { textContainer, fontSize as fontSizeVar, containerWidth as containerWidthVar } from './TextContainer.css'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
 	style?: Partial<CSSStyleDeclaration>
+	fontSize?: string
+	containerWidth?: string
 	className?: string
 	light?: boolean
 }
 
-const { style, className = '', light } = Astro.props
-
+const { style, fontSize, containerWidth, className = '', light } = Astro.props
 ---
 
-<article class={`${textContainer} ${light ? 'light' : ''} ${className}`} style={style}>
+<article
+	class={`${textContainer} ${light ? 'light' : ''} ${className}`}
+	style={{
+		...style,
+		...assignInlineVars({
+			[fontSizeVar]: fontSize,
+			[containerWidthVar]: containerWidth
+		})
+	}}
+>
 	<slot />
 </article>

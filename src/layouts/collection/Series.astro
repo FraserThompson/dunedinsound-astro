@@ -2,12 +2,13 @@
 import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
 import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
-import GridContainer from 'src/components/GridContainer.astro'
-import GridChild from 'src/components/GridChild.astro'
 import { BannerTitle } from 'src/components/Banner.css'
 import TextContainer from 'src/components/TextContainer.astro'
-import { sideTextWrapper } from './Series.css'
+import { gigsWrapper, sideTextWrapper } from './Series.css'
 import SocialLinks from 'src/components/SocialLinks.astro'
+import Divider from 'src/components/Divider.astro'
+import { theme } from 'src/Theme.css'
+import DropdownMenu from 'src/components/DropdownMenu'
 
 interface Props {
 	entry: ProcessedEntry<'series'>
@@ -22,6 +23,16 @@ const articles = await loadAndFormatCollection('blog', (thing) => {
 	return thing.entry.data.relatedSeries?.find((series) => series.id === entry.entry.id)
 })
 
+const gigsByYear = Object.groupBy(gigs, (gig) => gig.entry.data.date.getFullYear())
+
+const gigsYearDropdownItems = Object.entries(gigsByYear)
+	.reverse()
+	.map(([year, gigs]) => ({
+		year: year,
+		count: gigs?.length || 0
+	}))
+
+
 const entryData = entry.entry.data
 const entryExtra = entry.extra
 
@@ -31,69 +42,81 @@ const resources = Array.isArray(entryData.resources)
 
 ---
 
-<div class={BannerTitle}>
+<div class={BannerTitle} style={{position: "sticky", top: "0px"}}>
 	<h1 class="smaller" style={{ marginBottom: '0px', textAlign: 'left', color: 'white' }}>
 		{entryData.title}
 	</h1>
 </div>
-<GridContainer fixed={true}>
-	<GridChild grid={{ xs: 12, md: 3 }}>
-		<TextContainer className={sideTextWrapper} light={true}>
-			<strong>Summary</strong>
-			<p>
-				<Fragment set:html={entryData.description} />
-			</p>
-			{entryData.venue && (
-				<hr />
-				<strong>Venues associated with this series</strong>
-				<ul>
-					{entryData.venue.map((venue) => (
-						<li>
-							<a href={`/venues/${venue.id}`}>
-								{venue.id}
-							</a>
-						</li>
+<div class={sideTextWrapper}>
+	<TextContainer style={{height: '100%'}} light={true}>
+		<strong>Summary</strong>
+		<p>
+			<Fragment set:html={entryData.description} />
+		</p>
+		{entryData.venue && (
+			<hr />
+			<strong>Venues associated with this series</strong>
+			<ul>
+				{entryData.venue.map((venue) => (
+					<li>
+						<a href={`/venues/${venue.id}`}>
+							{venue.id}
+						</a>
+					</li>
+				))}
+			</ul>
+		)}
+		{(resources.length > 0 || entryData.links || articles.length > 0) && (
+			<hr />
+			<strong>Resources</strong>
+			<ul>
+				{articles && articles.map((article) => (
+					<li>
+						<a href={article.extra.absolutePath}>
+							Dunedinsound "{article.entry.data.title}"
+						</a>
+					</li>
+				))}
+				{resources.map((resource) => (
+					<li>
+						<a href={resource.link} target="_blank">
+							{resource.title}
+						</a>
+					</li>
+				))}
+			</ul>
+			<SocialLinks style={{ paddingTop: '0' }} links={entryData.links} />
+		)}
+	</TextContainer>
+</div>
+<div class={gigsWrapper}>
+	{gigsYearDropdownItems.length > 1 && <DropdownMenu
+		direction="down"
+		backgroundColor="white"
+		textColor="black"
+		topMobile={theme.dimensions.headerHeightMobile}
+		top={theme.dimensions.headerHeight}
+		list={gigsYearDropdownItems.map((item) => ({
+			title: item.year,
+			subtitle: `(${item.count})`,
+			hash: `y${item.year}`
+		}))}
+		client:load
+	/>}
+	{
+		Object.entries(gigsByYear)
+		.reverse()
+		.map(([year, gigs]) => (
+			<div id={`y${year}`}>
+				<Divider href={`#y${year}`} sticky={true} topMobile={theme.dimensions.headerHeightMobile} top={theme.dimensions.headerHeight} smoothScroll={true}>
+					{year} ({gigs?.length})
+				</Divider>
+				<FlexGridContainer grid={gigs && gigs.length <= 4 ? { xs: 12, md: 6 } : { xs: 12, md: 6, lg: 3 }}>
+					{gigs?.map((gig) => (
+						<GigTile gig={gig} backgroundStyle="center" responsiveImageSizes={'smallGrid'} />
 					))}
-				</ul>
-            )}
-            {(resources.length > 0 || entryData.links || articles.length > 0) && (
-				<hr />
-				<strong>Resources</strong>
-				<ul>
-					{articles && articles.map((article) => (
-						<li>
-							<a href={article.extra.absolutePath}>
-								Dunedinsound "{article.entry.data.title}"
-							</a>
-						</li>
-					))}
-					{resources.map((resource) => (
-						<li>
-							<a href={resource.link} target="_blank">
-								{resource.title}
-							</a>
-						</li>
-					))}
-				</ul>
-				<SocialLinks style={{ paddingTop: '0' }} links={entryData.links} />
-            )}
-		</TextContainer>
-	</GridChild>
-	<GridChild grid={{ xs: 12, md: 9 }}>
-		<FlexGridContainer
-			justifyContent='flex-start'
-			fixedWidth={true}
-			grid={gigs && gigs.length <= 4 ? { xs: 12, md: 6 } : { xs: 12, md: 6, lg: 3 }}
-		>
-			{
-				gigs?.map((gig) => (
-					<GigTile 
-						gig={gig}
-						backgroundStyle="center"
-						responsiveImageSizes={gigs.length <= 4 ? 'full' : 'grid'}
-					/>
-				))
-			}
-		</FlexGridContainer>
-	</GridChild>
-</GridContainer>
+				</FlexGridContainer>
+			</div>
+		))
+	}
+</div>

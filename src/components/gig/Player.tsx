@@ -77,7 +77,8 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 			setLoading(false)
 			setDuration(duration)
 		})
-		wavesurfer.on('seeking', () => setLoading(true))
+		wavesurfer.on('seeking', () => wavesurfer.isPlaying() && setLoading(true))
+		wavesurfer.on('loading', () => setLoading(true))
 		wavesurfer.on('finish', () => next(true))
 		wavesurfer.on('audioprocess', () => {
 			setLoading(false)
@@ -204,6 +205,11 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 		return mins + ':' + secs
 	}, [])
 
+	const playPause = useCallback(() => {
+		if (!wavesurfer) return
+		wavesurfer.playPause()
+	}, [wavesurfer])
+
 	const previous = useCallback(() => {
 		const newSelectedArtist = Math.max(selectedArtist - 1, 0)
 		selectArtist(newSelectedArtist)
@@ -251,7 +257,7 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 						<button
 							disabled={!ready}
 							className={playing ? `${TransportButton} pause` : `${TransportButton} play`}
-							onClick={() => wavesurfer && wavesurfer.playPause()}
+							onClick={() => playPause()}
 							aria-label="Play/Pause">
 						</button>
 						<button

@@ -2,9 +2,9 @@
 
 ## Project Structure
 
-Our media and content is kept seperately so we can avoid bogging down Astro with thousands of images.
+Our media and content is kept seperately so we can avoid bogging down Astro with thousands of images, and also to avoid vendor lockin for if Astro ever becomes untenable.
 
-We use Astro Collections for our content entries (eg. gigs, artists, venues)
+We use Astro Collections for our content entries (eg. gigs, artists, venues) and custom architecture for our media.
 
 ### Collection Mutation System
 
@@ -12,17 +12,17 @@ Collections work well for static data in YML entries, but we want to calculate d
 
 To resolve this, we use a custom function for loading collection entries (`loadAndFormatCollection()`). This function loads the entries using the built in Astro method, and then iterates each entry, adding various extra fields depending on the collection type.
 
-This is also where media in the `media/[collection]/[entry_id]` (such as the cover or other images) is resolved and added to the entry so it can access them.
+We don't add heavy stuff here, just metadata (media related to entries is added on the `[...slug].astro` dynamic route for each entry).
 
 See `collection.ts` for more.
 
-### Entry media directories
+### Collection media
 
-We keep large files like audio and images completely seperate from Astro/vite so we can avoid any importing/processing and just use them as URLs. To dynamically resolve these, we just use file system globs.
+We keep large files like audio and images completely seperate from Astro/vite so we can avoid any importing/processing and just use them as URLs at build time. To avoid slow filesystem lookups, we also cache these directory listings in a local SQLite DB at `.astro/image-cache.db` which is queried at build time. See `image.ts` for more on this.
 
-Raw media for each entry should be stored in `media/[collection_id]/[entry_id]`.
+Raw media for each entry should be stored in `media/[collection_id]/[entry_id]`, except for gigs which should be at `media/[collection]/[entry_id]/[artist_id]`.
 
-This media is then processed into `dist_media` and symlinked to `dist` on deploy.
+This media is then processed into `dist_media` via `scripts/generateMedia.mjs`.
 
 #### Generating media
 
@@ -30,13 +30,9 @@ To generate responsive image aggregates for all entries, run `pnpm run media`.
 
 This will copy the directory tree from `media` to `dist_media`, and process all full resolution JPGs into `ResponsiveImage` subdirectories (see ResponsiveImages section below). It will also copy any other files in that directory to `dist_media`.
 
-#### Images
+We use a local SQLite DB to index what media needs to be generated and avoid slow file system lookups. It's located at `.astro/media-generation.db`.
 
-In each entry media directory there can be full resolution JPG images, and any other file.
-
-#### Artist media
-
-Gigs follow a slightly different convention: Media should be stored in `media/[collection]/[entry_id]/[artist_id]`.
+You can run this script with `--dry-run` for a dry run or `--build-db` to just build the database from existing images without generating new ones (you will need to do this on first build if the database has been deleted).
 
 #### Blog media
 
@@ -44,20 +40,19 @@ Gigs follow a slightly different convention: Media should be stored in `media/[c
 
 It grabs responsive images from responsive image directories and puts them on `frontmatter.responsiveImages` keyed by the name of the file (minus the extension). It also grabs raw images from the entry media directory and puts them on the `frontmatter.images`.
 
-#### Audio
-
-MP3 and JSON files in a gig directory (ie. `media/gigs/[entry_id]`) will be copied as is.
-
 ## ResponsiveImages
 
 We are rolling our own system for storing and displaying responsive images.
 
 A responsive image is a directory named after the [image] name (without the extension) containing:
 
-- Any number of image proxies which follow this naming convention: [image].[width].jpg/webp
-- A full size image which follows this naming convention: [image].jpg/webp
+- Any number of image proxies which follow this naming convention: [ino].[mtime].[width].webp
+- A full size image which follows this naming convention: [image].[mtime].jpg
+- These are generated via `pnpm run media` (`scripts/generateMedia.mjs`)
 
 We import these as `ResponsiveImage` objects and use the `Image2` component to display these.
+
+Example: `Input File: \media\gig\2025-10-17-lines-of-flight-2025-friday\flesh_bug\P1090946_DxO.jpg > Output Directory: \dist_media\gig\2025-10-17-lines-of-flight-2025-friday\flesh_bug\P1090946_DxO\[responsive images]`
 
 ## CSS
 

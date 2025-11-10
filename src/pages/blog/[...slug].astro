@@ -1,19 +1,25 @@
 ---
-import { loadAndFormatCollection } from 'src/util/collection.ts'
+import { loadAndFormatCollection, getEntryImages } from 'src/util/collection.ts'
 import Blog from '../../layouts/collection/Blog.astro'
 import BaseLayout from 'src/layouts/base/BaseLayout.astro'
 
 export async function getStaticPaths() {
 	const entries = await loadAndFormatCollection('blog')
-	return entries.map((entry) => ({
-		params: { slug: entry.extra.slug },
-		props: {
-			entry
-		}
-	}))
+	return Promise.all(
+		entries.map(async (entry) => {
+			const images = await getEntryImages(entry.entry)
+			return {
+				params: { slug: entry.extra.slug },
+				props: {
+					entry,
+					images
+				}
+			}
+		})
+	)
 }
 
-const { entry } = Astro.props
+const { entry, images } = Astro.props
 const entryData = entry.entry.data
 const entryExtra = entry.extra
 ---
@@ -27,5 +33,5 @@ const entryExtra = entry.extra
 		image: entryExtra.cover?.src
 	}}
 >
-	<Blog entry={entry} />
+	<Blog entry={entry} images={images} />
 </BaseLayout>

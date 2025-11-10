@@ -1,6 +1,7 @@
 ---
 import TextContainer from 'src/components/TextContainer.astro'
 import { getEntryPath, type ProcessedEntry } from 'src/util/collection.ts'
+import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import Banner from 'src/components/Banner.astro'
 import BlogSidebar from 'src/components/blog/BlogSidebar.astro'
 import FlexGridContainer from 'src/components/FlexGridContainer.astro'
@@ -18,8 +19,9 @@ import { render } from 'astro:content'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>
+	images?: { [id: string]: ResponsiveImage }
 }
-const { entry } = Astro.props
+const { entry, images } = Astro.props
 
 const { Content, headings } = await render(entry.entry)
 
@@ -80,7 +82,7 @@ const entryExtra = entry.extra
 		</a>
 	</SidebarNav>
 </div>
-{entryData.gallery && entryExtra.images && <ImageGallery images={Object.values(entryExtra.images)} />}
+{entryData.gallery && images && <ImageGallery images={Object.values(images)} />}
 <div class="padding">
 	<hr />
 	<ul>
@@ -103,10 +105,10 @@ const entryExtra = entry.extra
 			)
 		}
 	</ul>
-	{!!entryExtra.relatedGigs.length && <h2>Related Gigs</h2>}
+	{!!entryExtra.relatedGigs?.length && <h2>Related gigs...</h2>}
 </div>
 {
-	!!entryExtra.relatedGigs.length && (
+	!!entryExtra.relatedGigs?.length && (
 		<FlexGridContainer>
 			{entryExtra.relatedGigs.map((entry) => (
 				<GigTile gig={entry} />
@@ -114,4 +116,4 @@ const entryExtra = entry.extra
 		</FlexGridContainer>
 	)
 }
-{entryExtra.images && <ImageGalleryLightbox />}
+{images && <ImageGalleryLightbox />}

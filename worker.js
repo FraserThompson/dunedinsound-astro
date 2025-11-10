@@ -1,50 +1,26 @@
 // --- Helper Functions ---
 
 const getTTL = (url) => {
-	// Cache big static files
-	if (url.pathname.match(/(.*\.(jpg|jpeg|png|bmp|pict|tif|tiff|webp|gif|heif|mp3|json))/)) {
-		return 31556952;
-	} else if (url.pathname.match(/\/_astro\/.*/)) {
-		return 31556952;
-	} else if (url.pathname.match(/(.*\.(html))/)) {
-		return 0;
-	} else {
-		return 3600;
+	const path = url.pathname;
+	if (path.endsWith('.html')) return 0; // No cache for HTML
+	if (path.includes('/_astro/') || /\.(jpg|jpeg|png|webp|gif|mp3|json)$/i.test(path)) {
+		return 31556952; // 1 year for static assets
 	}
+	return 3600; // 1 hour default
 };
 
-// Serve assets from the static ASSETS binding
-async function serveAssetRequest(normalizedReq, env, url, method) {
-	if (method === 'HEAD') {
-		const resp = await env.ASSETS.fetch(normalizedReq);
-		if (resp && resp.status === 404) {
-			const nf = await fetchSite404(env, url, false);
-			if (nf) return nf;
-		}
-		return new Response(null, {
-			status: resp ? resp.status : 404,
-			headers: resp ? resp.headers : new Headers()
-		});
-	}
-	const resp = await env.ASSETS.fetch(normalizedReq);
-	if (resp && resp.status === 404) {
-		const nf = await fetchSite404(env, url, true);
-		if (nf) return nf;
-	}
-	return resp;
-}
+const RANGE_CACHE_THRESHOLD = 10 * 1024 * 1024; // Cache ranges in first 10MB
+const FULL_FILE_CACHE_LIMIT = 50 * 1024 * 1024; // Cache full files under 50MB
 
-// Create a normalized GET Request
 function makeNormalizedGetRequest(url) {
 	return new Request(url.toString(), { method: 'GET', headers: new Headers({}) });
 }
 
-// Try to fetch the site's /404.html
 async function fetchSite404(env, url, wantBody = true) {
 	try {
 		const notFoundReq = makeNormalizedGetRequest(new URL('/404.html', url));
 		const notFoundResp = await env.ASSETS.fetch(notFoundReq);
-		if (notFoundResp && notFoundResp.status === 200) {
+		if (notFoundResp?.status === 200) {
 			return wantBody
 				? new Response(notFoundResp.body, { status: 404, headers: notFoundResp.headers })
 				: new Response(null, { status: 404, headers: notFoundResp.headers });
@@ -53,298 +29,164 @@ async function fetchSite404(env, url, wantBody = true) {
 	return null;
 }
 
-// Parse a Range header
 function parseRangeHeader(rangeHeader) {
 	if (!rangeHeader) return null;
-	const r = rangeHeader.trim();
-	let m = /^bytes=(\d+)-(\d+)?$/.exec(r);
-	if (m) {
-		const start = Number(m[1]);
-		const end = m[2] !== undefined ? Number(m[2]) : undefined;
-		return { type: 'range', start, end };
+	const match = /^bytes=(\d+)-(\d*)$/.exec(rangeHeader.trim());
+	if (match) {
+		return { start: Number(match[1]), end: match[2] ? Number(match[2]) : undefined };
 	}
-	m = /^bytes=-(\d+)$/.exec(r);
-	if (m) {
-		const suffixLength = Number(m[1]);
-		return { type: 'suffix', suffixLength };
+	const suffixMatch = /^bytes=-(\d+)$/.exec(rangeHeader.trim());
+	if (suffixMatch) {
+		return { suffix: Number(suffixMatch[1]) };
 	}
 	return null;
 }
 
-// Apply Content-Range headers
-function applyRangeHeaders(headers, start, end, totalSize) {
-	const finalEnd = (typeof end === 'number') ? end : (totalSize - 1);
-	const chunkLength = finalEnd - start + 1;
-	headers.set('Content-Range', `bytes ${start}-${finalEnd}/${totalSize}`);
-	headers.set('Content-Length', String(chunkLength));
+function buildCacheHeaders(ttl, etag, size) {
+	const headers = new Headers({
+		'Accept-Ranges': 'bytes',
+		'Cache-Control': ttl === 0 ? 'public, max-age=0, must-revalidate' : `public, max-age=${ttl}`
+	});
+	if (etag) headers.set('etag', etag);
+	if (size !== undefined) headers.set('Content-Length', String(size));
+	return headers;
 }
 
 // --- Main Worker Entrypoint ---
 export default {
 	async fetch(request, env, context) {
 		const url = new URL(request.url);
-		const encodedKey = url.pathname.slice(1);
-
 		let key;
 		try {
-			key = decodeURIComponent(encodedKey);
+			key = decodeURIComponent(url.pathname.slice(1));
 		} catch (e) {
 			return new Response("Invalid URI", { status: 400 });
 		}
 
+		// Only GET and HEAD allowed
+		if (request.method !== 'GET' && request.method !== 'HEAD') {
+			return new Response("Method Not Allowed", {
+				status: 405,
+				headers: { Allow: "GET, HEAD" }
+			});
+		}
+
+		// Serve non-R2 assets (Astro app files)
+		if (!url.pathname.startsWith("/dist_media/")) {
+			const resp = await env.ASSETS.fetch(request);
+			if (resp.status === 404) {
+				const nf = await fetchSite404(env, url, request.method === 'GET');
+				if (nf) return nf;
+			}
+			return resp;
+		}
+
+		// --- R2 Logic for /dist_media/ ---
 		const cache = caches.default;
 		const ttl = getTTL(url);
+		const rangeHeader = request.headers.get('range');
+		let parsedRange = parseRangeHeader(rangeHeader);
 
-		const cacheKey = makeNormalizedGetRequest(url);
-
-		switch (request.method) {
-			case "GET":
-			case "HEAD": {
-				// Serve non-R2 assets first
-				if (!url.pathname.startsWith("/dist_media/")) {
-					const normalized = makeNormalizedGetRequest(url);
-					const handled = await serveAssetRequest(normalized, env, url, request.method);
-					if (handled) return handled;
-				}
-
-				// --- R2 Logic for /dist_media/ ---
-				const rangeHeader = request.headers.get('range');
-				const parsedRange = parseRangeHeader(rangeHeader);
-
-				// Check cache for non-range requests only
-				if (!parsedRange && request.method === 'GET') {
-					const cacheResponse = await cache.match(cacheKey);
-					if (cacheResponse) {
-						const newHeaders = new Headers(cacheResponse.headers);
-						newHeaders.set('X-Cache-Hit', 'true');
-						return new Response(cacheResponse.body, {
-							status: cacheResponse.status,
-							statusText: cacheResponse.statusText,
-							headers: newHeaders
-						});
-					}
-				}
-
-				// For range requests, we need the total file size to set Content-Range correctly
-				// Strategy: Try to get it from cache, or do HEAD
-				let totalSize;
-				let objectMetadata;
-
-				// Always check size cache first if we need totalSize
-				if (parsedRange || request.method === 'HEAD') {
-					const sizeCacheKey = new Request(url.toString() + '?__size__', { 
-						method: 'HEAD', 
-						headers: new Headers({}) 
-					});
-					const cachedSize = await cache.match(sizeCacheKey).catch(() => null);
-					if (cachedSize) {
-						const sizeHeader = cachedSize.headers.get('X-Object-Size');
-						if (sizeHeader) {
-							totalSize = Number(sizeHeader);
-							console.log('Cache hit for file size', { 
-								key: key.substring(key.lastIndexOf('/') + 1),
-								size: totalSize 
-							});
-						}
-					}
-				
-					// Do HEAD if we don't have cached size
-					if (!totalSize) {
-						const headStart = Date.now();
-						objectMetadata = await env.STATIC.head(key);
-						const headTime = Date.now() - headStart;
-						
-						if (headTime > 500) {
-							console.warn('Slow R2 HEAD', { 
-								key: key.substring(key.lastIndexOf('/') + 1), 
-								ms: headTime 
-							});
-						} else if (headTime > 100) {
-							console.log('R2 HEAD', { 
-								key: key.substring(key.lastIndexOf('/') + 1), 
-								ms: headTime 
-							});
-						}
-						
-						if (objectMetadata === null) {
-							const nf = await fetchSite404(env, url, request.method === 'GET');
-							if (nf) return nf;
-							return new Response("Object Not Found", { status: 404 });
-						}
-						
-						totalSize = objectMetadata.size;
-						
-						// Cache size for future range requests (longer TTL for size metadata)
-						if (ttl > 0) {
-							const sizeCacheKey = new Request(url.toString() + '?__size__', { 
-								method: 'HEAD', 
-								headers: new Headers({}) 
-							});
-							const sizeResp = new Response(null, { 
-								headers: new Headers({ 
-									'X-Object-Size': String(totalSize),
-									'Cache-Control': `public, max-age=${ttl}`
-								}) 
-							});
-							context.waitUntil(cache.put(sizeCacheKey, sizeResp).catch(() => {}));
-						}
-					}
-				}
-
-				// Handle suffix ranges by converting to standard ranges
-				if (parsedRange?.type === 'suffix') {
-					const suffix = parsedRange.suffixLength;
-					const start = Math.max(0, totalSize - suffix);
-					const end = totalSize - 1;
-					parsedRange.type = 'range';
-					parsedRange.start = start;
-					parsedRange.end = end;
-				}
-
-				// Handle HEAD requests
-				if (request.method === 'HEAD') {
-					const headers = new Headers();
-					objectMetadata.writeHttpMetadata(headers);
-					headers.set("etag", objectMetadata.httpEtag);
-					headers.set("Accept-Ranges", "bytes");
-					headers.set('X-Cache-Hit', 'false');
-
-					if (ttl === 0) {
-						headers.set("Cache-Control", `public, max-age=0, must-revalidate`);
-					} else {
-						headers.set("Cache-Control", `public, max-age=${ttl}`);
-					}
-
-					if (parsedRange) {
-						applyRangeHeaders(headers, parsedRange.start, parsedRange.end, totalSize);
-						return new Response(null, { status: 206, headers });
-					} else {
-						headers.set('Content-Length', totalSize.toString());
-						return new Response(null, { status: 200, headers });
-					}
-				}
-
-				// Handle GET requests
-				let object;
-				let options;
-				
-				if (parsedRange) {
-					// For open-ended ranges (bytes=START-), only set offset
-					// For specific ranges (bytes=START-END), set offset and length
-					options = parsedRange.end !== undefined
-						? { range: { offset: parsedRange.start, length: parsedRange.end - parsedRange.start + 1 } }
-						: { range: { offset: parsedRange.start } };
-				}
-
-				const getStart = Date.now();
-				object = await env.STATIC.get(key, options);
-				const getTime = Date.now() - getStart;
-				
-				// Log slow requests
-				if (parsedRange) {
-					const logData = {
-						key: key.substring(key.lastIndexOf('/') + 1),
-						range: rangeHeader,
-						ms: getTime,
-						size: object?.size || 'unknown'
-					};
-					if (getTime > 1000) {
-						console.error('VERY SLOW R2 range GET', logData);
-					} else if (getTime > 200) {
-						console.warn('Slow R2 range GET', logData);
-					}
-				} else if (getTime > 1000) {
-					console.warn('Slow R2 full GET', { key, ms: getTime });
-				}
-
-				if (object === null) {
-					const nf = await fetchSite404(env, url, true);
-					if (nf) return nf;
-					return new Response("Object Not Found", { status: 404 });
-				}
-
-				// Build Response Headers
-				const headers = new Headers();
-				object.writeHttpMetadata(headers);
-				headers.set("etag", object.httpEtag);
-				headers.set("Accept-Ranges", "bytes");
-				headers.set('X-Cache-Hit', 'false');
-				
-				// Add timing hints for better mobile performance
-				headers.set('Timing-Allow-Origin', '*');
-
-				if (ttl === 0) {
-					headers.set("Cache-Control", `public, max-age=0, must-revalidate`);
-				} else {
-					headers.set("Cache-Control", `public, max-age=${ttl}`);
-				}
-
-				// Handle conditional requests (304 Not Modified) - only for full requests
-				if (!parsedRange) {
-					const ifNoneMatch = request.headers.get('if-none-match');
-					if (ifNoneMatch && object.httpEtag && ifNoneMatch === object.httpEtag) {
-						return new Response(null, { status: 304, headers });
-					}
-					const ifModifiedSince = request.headers.get('if-modified-since');
-					if (!object.httpEtag && ifModifiedSince) {
-						const lastMod = headers.get('last-modified');
-						if (lastMod && new Date(ifModifiedSince).getTime() >= new Date(lastMod).getTime()) {
-							return new Response(null, { status: 304, headers });
-						}
-					}
-				}
-
-				// Set status and range headers
-				const status = parsedRange ? 206 : 200;
-
-				if (parsedRange) {
-					applyRangeHeaders(headers, parsedRange.start, parsedRange.end, totalSize);
-				} else {
-					headers.set('Content-Length', object.size.toString());
-					
-					// Cache the file size for future range requests
-					if (ttl > 0) {
-						const sizeCacheKey = new Request(url.toString() + '?__size__', { 
-							method: 'HEAD', 
-							headers: new Headers({}) 
-						});
-						const sizeResp = new Response(null, { 
-							headers: new Headers({ 
-								'X-Object-Size': String(object.size),
-								'Cache-Control': `public, max-age=${ttl}`
-							}) 
-						});
-						context.waitUntil(cache.put(sizeCacheKey, sizeResp).catch(() => {}));
-					}
-				}
-
-				// Cloudflare edge caching: only cache full (200) responses
-				// Range responses (206) bypass edge cache to avoid serving wrong ranges
-				const cf = status === 200 ? {
-					cacheTtlByStatus: { "200-299": ttl, 404: 1, "500-599": 0 }
-				} : undefined;
-
-				// Cache full responses under 50MB in Workers cache
-				if (ttl > 0 && !parsedRange && object.size < 50 * 1024 * 1024) {
-					const response = new Response(object.body, { headers, status, cf });
-					context.waitUntil(
-						cache.put(cacheKey, response.clone()).catch((e) => 
-							console.warn('Cache put failed', { key, error: e.message })
-						)
-					);
-					return response;
-				}
-
-				return new Response(object.body, { headers, status, cf });
+		// Check Workers cache for full file requests
+		if (!parsedRange && request.method === 'GET') {
+			const cached = await cache.match(makeNormalizedGetRequest(url));
+			if (cached) {
+				cached.headers.append('X-Cache-Hit', 'true');
+				return cached;
 			}
-
-			default:
-				return new Response("Method Not Allowed", {
-					status: 405,
-					headers: {
-						Allow: "GET, HEAD",
-					},
-				});
 		}
+
+		// Check cache for range requests in the "hot zone" (first 10MB)
+		if (parsedRange && !parsedRange.suffix && parsedRange.start < RANGE_CACHE_THRESHOLD) {
+			const cached = await cache.match(new Request(url.toString(), {
+				headers: { 'Range': rangeHeader }
+			}));
+			if (cached) {
+				cached.headers.append('X-Cache-Hit', 'true');
+				return cached;
+			}
+		}
+
+		// Get file metadata
+		const metadata = await env.STATIC.head(key);
+		if (!metadata) {
+			const nf = await fetchSite404(env, url, request.method === 'GET');
+			if (nf) return nf;
+			return new Response("Object Not Found", { status: 404 });
+		}
+
+		// Convert suffix ranges to standard ranges
+		if (parsedRange?.suffix) {
+			parsedRange = {
+				start: Math.max(0, metadata.size - parsedRange.suffix),
+				end: metadata.size - 1
+			};
+		}
+
+		const range = parsedRange;
+
+		// Handle HEAD requests
+		if (request.method === 'HEAD') {
+			const headers = buildCacheHeaders(ttl, metadata.httpEtag, metadata.size);
+			metadata.writeHttpMetadata(headers);
+			
+			if (range) {
+				const end = range.end ?? metadata.size - 1;
+				headers.set('Content-Range', `bytes ${range.start}-${end}/${metadata.size}`);
+				headers.set('Content-Length', String(end - range.start + 1));
+				return new Response(null, { status: 206, headers });
+			}
+			return new Response(null, { status: 200, headers });
+		}
+
+		// Fetch from R2
+		const object = await env.STATIC.get(key, range ? {
+			range: range.end !== undefined
+				? { offset: range.start, length: range.end - range.start + 1 }
+				: { offset: range.start }
+		} : undefined);
+		if (!object) {
+			const nf = await fetchSite404(env, url, true);
+			if (nf) return nf;
+			return new Response("Object Not Found", { status: 404 });
+		}
+
+		// Build response headers
+		const headers = buildCacheHeaders(ttl, object.httpEtag, range ? undefined : object.size);
+		object.writeHttpMetadata(headers);
+
+		// Handle 304 Not Modified for full requests
+		if (!range && request.headers.get('if-none-match') === object.httpEtag) {
+			return new Response(null, { status: 304, headers });
+		}
+
+		// Set Content-Range for partial responses
+		if (range) {
+			const end = range.end ?? metadata.size - 1;
+			headers.set('Content-Range', `bytes ${range.start}-${end}/${metadata.size}`);
+			headers.set('Content-Length', String(end - range.start + 1));
+		}
+
+		const response = new Response(object.body, {
+			status: range ? 206 : 200,
+			headers,
+			cf: range ? undefined : { cacheTtlByStatus: { "200-299": ttl, 404: 1, "500-599": 0 } }
+		});
+
+		// Cache strategically in Workers cache
+		if (ttl > 0) {
+			if (!range && object.size < FULL_FILE_CACHE_LIMIT) {
+				// Cache full files under 50MB
+				context.waitUntil(cache.put(makeNormalizedGetRequest(url), response.clone()));
+			} else if (range && range.start < RANGE_CACHE_THRESHOLD) {
+				// Cache range requests in the "hot zone" (first 10MB of file)
+				context.waitUntil(cache.put(
+					new Request(url.toString(), { headers: { 'Range': rangeHeader } }),
+					response.clone()
+				));
+			}
+		}
+
+		return response;
 	},
 };

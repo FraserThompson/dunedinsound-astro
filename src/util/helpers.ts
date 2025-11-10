@@ -23,11 +23,11 @@ export const timeToSeconds = (str: string) => {
 }
 
 /*
-  Decides when the header should change.
-  If the banner element is on the page, just use the height of it.
-  Otherwise do a calculation:
-  - On mobile this is the window minus the headerheight * the banner height as a decimal.
-  - On desktop it's just the window height * the banner height as a decimal.
+	Decides when the header should change.
+	If the banner element is on the page, just use the height of it.
+	Otherwise do a calculation:
+	- On mobile this is the window minus the headerheight * the banner height as a decimal.
+	- On desktop it's just the window height * the banner height as a decimal.
 */
 export const calculateScrollHeaderOffset = (window: any, modifierDesktop = 0, modifierMobile = 0) => {
 	const bannerEl = document.querySelector<HTMLElement>('#top')
@@ -225,68 +225,7 @@ export function getRandom(min: number, max: number, floor?: boolean) {
 interface StoredScrollPosition {
 	collection: string
 	position: string
-}
-
-/**
- * Maintains the scroll position of the sidebar during page transitions.
- *
- * Uses events from the Astro Transitionms API.
- *
- * @param collection name of the collection the sidebar appears on
- */
-export function maintainSidebarScrollPosition(collection: string) {
-	// On first load scroll to active element
-	document.addEventListener(
-		'astro:page-load',
-		() => {
-			const sidebarMenu = document.querySelector('#sidebar-menu')
-			const activeElement = sidebarMenu?.querySelector('.active')
-			if (activeElement) {
-				scrollIntoView(activeElement, { behavior: 'instant', block: 'center' })
-			}
-			// Probably not there but remove it anyway
-			sessionStorage.removeItem(`scrollPosition`)
-		},
-		{ once: true }
-	)
-
-	// Before going to the next page, store the scroll position
-	document.addEventListener('astro:before-swap', () => {
-		const scrollPosition = document.querySelector('#sidebar-menu')?.scrollTop.toString()
-		if (scrollPosition) {
-			const storedScroll: StoredScrollPosition = { position: scrollPosition, collection: collection }
-			sessionStorage.setItem(`scrollPosition`, JSON.stringify(storedScroll))
-		}
-	})
-
-	// After going to next page, scroll to correct position, unless the collection changed
-	document.addEventListener('astro:after-swap', () => {
-		const scrollPosition = sessionStorage.getItem(`scrollPosition`)
-		const storedScroll: StoredScrollPosition = scrollPosition ? JSON.parse(scrollPosition) : null
-
-		const depth = window.location.pathname.split('/').length
-		const sidebarMenu = document.querySelector<HTMLElement>('#sidebar-menu')
-		const activeElement = sidebarMenu?.querySelector<HTMLElement>('.active')
-
-		// Only remember scroll positions for collection entries, not the parent page
-		// Also forget it when changing collections
-		if (storedScroll && storedScroll.collection === collection && depth > 2) {
-			sidebarMenu?.scrollTo({
-				top: parseInt(storedScroll.position, 10),
-				behavior: 'instant'
-			})
-
-			// It's possible for someone on mobile to scroll really fast so that the
-			// stored scrollbar position is wrong because it hasn't finished scrolling.
-			// We do this to ensure the active element is always visible in these cases.
-			if (activeElement && !elementIsVisibleInViewport(activeElement, sidebarMenu)) {
-				scrollIntoView(activeElement, { behavior: 'instant', block: 'center' })
-			}
-		} else if (activeElement) {
-			scrollIntoView(activeElement, { behavior: 'instant', block: 'center' })
-		}
-		sessionStorage.removeItem(`scrollPosition`)
-	})
+	elDataset?: any
 }
 
 /**

@@ -3,21 +3,28 @@ import GigsMenu from 'src/components/gig/GigsMenu.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 import Gig from 'src/layouts/collection/Gig.astro'
-import { loadAndFormatCollection } from 'src/util/collection.ts'
+import { loadAndFormatCollection, getGigMedia } from 'src/util/collection.ts'
 import ChevronLeftIcon from '~icons/iconoir/nav-arrow-left'
 import { backButton } from 'src/components/gig/GigsMenu.css'
 
 export async function getStaticPaths() {
 	const entries = await loadAndFormatCollection('gig')
-	return entries.map((entry) => ({
-		params: { slug: entry.extra.slug },
-		props: {
-			entry
-		}
-	}))
+	return Promise.all(
+		entries.map(async (entry) => {
+			const gigMedia = await getGigMedia(entry)
+			return {
+				params: { slug: entry.extra.slug },
+				props: {
+					entry,
+					artistImages: gigMedia[0],
+					audio: gigMedia[1]
+				}
+			}
+		})
+	)
 }
 
-const { entry } = Astro.props
+const { entry, artistImages, audio } = Astro.props
 const entryData = entry.entry.data
 const entryExtra = entry.extra
 ---
@@ -42,5 +49,5 @@ const entryExtra = entry.extra
 		<ChevronLeftIcon /> Go to gigs home
 	</a>
 	<GigsMenu slot="sidebarMenu" selected={entry.entry.id} transition:persist />
-	<Gig entry={entry} slot="content" />
+	<Gig entry={entry} artistImages={artistImages} audio={audio} slot="content" />
 </SidebarLayout>

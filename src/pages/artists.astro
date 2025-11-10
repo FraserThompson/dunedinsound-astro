@@ -5,6 +5,7 @@ import { ResponsiveImage } from 'src/util/ResponsiveImage'
 import SubheadersLayout from 'src/layouts/base/SubheadersLayout.astro'
 import { artistListItem, artistGigCount } from './Artists.css'
 import VirtualizedList from 'src/components/VirtualizedList.astro'
+import { makeHash } from 'src/util/names'
 
 const artists = await loadAndFormatCollection('artist')
 
@@ -33,6 +34,7 @@ const artistShufflers = Shufflers['artist']
 			artists.map((artist) => (
 				<a
 					href={artist.extra.absolutePath}
+					id={makeHash(artist.entry.id)}
 					class={`${artistListItem} ${artist.entry.data.died ? 'dead' : ''}`}
 					data-category={`${artist.entry.data.origin || 'Dunedin'},${!artist.entry.data.died ? 'active' : ''}`}
 					data-title={artist.entry.data.title}

@@ -60,8 +60,8 @@ const { selected } = Astro.props
 									{gigs.map((gig) => (
 										<li
 											class={`${MenuLi['vertical']} gigItem filter-item ${gig.entry.id === selected ? 'active' : ''}`}
-											data-gig={makeHash(gig.entry.id)}
-											data-searchable={`${gig.entry.data.venue}${artistsToString(gig.extra.artists)}`}
+											data-sidebarid={makeHash(gig.entry.id)}
+											data-searchable={`${gig.entry.data.venue.id.replace('_', ' ')},${artistsToString(gig.extra.artists)}`}
 										>
 											<a class={gigLink} href={!selected ? `#${makeHash(gig.entry.id)}` : gig.extra.absolutePath}>
 												{gig.entry.data.title}
@@ -81,10 +81,7 @@ const { selected } = Astro.props
 <slot />
 
 <script>
-	import { maintainSidebarScrollPosition } from 'src/util/helpers'
 	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
-
-	maintainSidebarScrollPosition('gig')
 
 	/**
 	 * A menu of gigs.
@@ -100,7 +97,7 @@ const { selected } = Astro.props
 		constructor() {
 			super()
 			this.sidebar = document.querySelector<SidebarWrapper>('sidebar-wrapper')
-			this.gigLinks = this.querySelectorAll('[data-gig]')
+			this.gigLinks = this.querySelectorAll('[data-sidebarid]')
 			this.artistsMenu = this.querySelector('artists-menu')
 			this.selected = this.getAttribute('data-selected')
 		}
@@ -135,9 +132,9 @@ const { selected } = Astro.props
 			}
 
 			items?.forEach((item) => {
-				const gigId = item.dataset.gig
+				const gigId = item.dataset.sidebarid
 
-				const sidebarItem = this.querySelector(`[data-gig="${gigId}"]`)
+				const sidebarItem = this.querySelector(`[data-sidebarid="${gigId}"]`)
 
 				const gigList = sidebarItem?.closest('.gigList')
 				if (!gigList) return
