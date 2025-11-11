@@ -91,8 +91,12 @@ export default {
 		if (!parsedRange && request.method === 'GET') {
 			const cached = await cache.match(makeNormalizedGetRequest(url));
 			if (cached) {
-				cached.headers.append('X-Cache-Hit', 'true');
-				return cached;
+				const headers = new Headers(cached.headers);
+				headers.set('X-Cache-Hit', 'true');
+				return new Response(cached.body, {
+					status: cached.status,
+					headers
+				});
 			}
 		}
 
@@ -102,8 +106,12 @@ export default {
 				headers: { 'Range': rangeHeader }
 			}));
 			if (cached) {
-				cached.headers.append('X-Cache-Hit', 'true');
-				return cached;
+				const headers = new Headers(cached.headers);
+				headers.set('X-Cache-Hit', 'true');
+				return new Response(cached.body, {
+					status: cached.status,
+					headers
+				});
 			}
 		}
 

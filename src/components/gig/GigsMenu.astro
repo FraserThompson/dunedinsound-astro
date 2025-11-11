@@ -90,30 +90,32 @@ const { selected } = Astro.props
 	 */
 	class GigsMenu extends HTMLUListElement {
 		sidebar: SidebarWrapper | null
-		gigLinks: NodeListOf<HTMLElement> | null
 		artistsMenu: HTMLElement | null
 		selected: string | null
 
 		constructor() {
 			super()
 			this.sidebar = document.querySelector<SidebarWrapper>('sidebar-wrapper')
-			this.gigLinks = this.querySelectorAll('[data-sidebarid]')
 			this.artistsMenu = this.querySelector('artists-menu')
 			this.selected = this.getAttribute('data-selected')
 		}
 
+		get gigLinks() {
+			return this.querySelectorAll('[data-sidebarid]:not(.hidden)')
+		}
+
 		itemClick(e: MouseEvent) {
+			e.preventDefault()
 			// Close sidebar on mobile
 			// See: SidebarNav.astro
 			this.sidebar?.toggleSidebar()
-			if (!this.gigLinks) return
 			// Find where the gig appears in the menu
 			const target = e.currentTarget as HTMLElement
 			const index = Array.from(this.gigLinks).indexOf(target)
 			// Scroll to it in the virtualized list
 			// See ReactWindow.tsx
 			// @ts-ignore
-			window.scrollToItem && window.scrollToItem(0, index)
+			window.scrollToRow && window.scrollToRow(index)
 		}
 
 		/**
@@ -173,13 +175,14 @@ const { selected } = Astro.props
 
 		connectedCallback() {
 			window.addEventListener('react-window-filter', this.onFilter, false)
-			!this.selected && this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e) => this.itemClick(e)))
+			!this.selected &&
+				this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e: MouseEvent) => this.itemClick(e)))
 		}
 
 		disconnectedCallback() {
 			window.removeEventListener('react-window-filter', this.onFilter, false)
 			!this.selected &&
-				this.gigLinks?.forEach((gigLink) => gigLink.removeEventListener('click', (e) => this.itemClick(e)))
+				this.gigLinks?.forEach((gigLink) => gigLink.removeEventListener('click', (e: MouseEvent) => this.itemClick(e)))
 		}
 	}
 

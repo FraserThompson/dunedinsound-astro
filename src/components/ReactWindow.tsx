@@ -17,10 +17,10 @@
  * @param id optional ID to add
  */
 
-import { FixedSizeGrid as Grid } from "react-window"
-import AutoSizer from "react-virtualized-auto-sizer"
+import { Grid, useGridRef } from "react-window";
+import { type CellComponentProps } from "react-window";
 import type { FunctionalComponent } from "preact"
-import { useMemo, useState, useCallback, useEffect, useRef } from "preact/hooks"
+import { useMemo, useState, useCallback, useEffect } from "preact/hooks"
 import { searchboxWrapper } from "./SearchBox.css"
 import SortIcon from '~icons/iconoir/sort'
 import SearchIcon from '~icons/iconoir/search'
@@ -42,6 +42,25 @@ interface Props {
 	id?: string
 }
 
+function CellComponent({
+	filteredItems,
+	colCount,
+	columnIndex,
+	rowIndex,
+	style
+}: CellComponentProps<{
+	colCount: number;
+	filteredItems: HTMLElement[];
+}>) {
+	const itemIndex = rowIndex * colCount + columnIndex
+	const item = filteredItems[itemIndex]
+	if (item) {
+		return <div style={{ ...style }} dangerouslySetInnerHTML={{ __html: item.outerHTML }}></div>
+	} else {
+		return <div></div>
+	}
+}
+
 const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeight, filter, grid, className = '', id = '' }) => {
 
 	const [searchValue, setSearch] = useState('')
@@ -50,7 +69,7 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 	const [sortValue, setSort] = useState('')
 	const [sortOrder, setSortOrder] = useState(1 as 1 | -1)
 
-	const gridRef = useRef()
+	const gridRef = useGridRef(null)
 
 	const onScroll = useCallback(() => {
 		const event = new Event('react-window-scroll')
@@ -60,12 +79,11 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 	useEffect(() => {
 		// Expose to window so vanilla JS can call it
 		// @ts-ignore
-		window.scrollToItem = (columnIndex, rowIndex) => {
-			// @ts-ignore
-			gridRef.current?.scrollToItem({
-				align: "start",
-				columnIndex: columnIndex,
-				rowIndex: rowIndex
+		window.scrollToRow = (rowIndex: number) => {
+			gridRef.current?.scrollToRow({
+				index: rowIndex,
+				behavior: "smooth",
+				align: "start"
 			});
 			onScroll()
 		};
@@ -75,7 +93,7 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 			const matchingEl = htmlElements.findIndex((el) => el.id === window.location.hash.substring(1))
 			if (matchingEl && colCount === 1) {
 				// @ts-ignore
-				window.scrollToItem(0 , matchingEl);
+				window.scrollToRow(matchingEl);
 			}
 		}
 
@@ -135,9 +153,7 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 		const filtered = htmlElements.filter((item) => filterItem(item, searchValue, filters, selectFilters))
 
 		// Scroll to top on filtering
-		// @ts-ignore
-		gridRef.current?.scrollToItem({
-			align: "start",
+		gridRef.current?.scrollToCell({
 			columnIndex: 0,
 			rowIndex: 0
 		});
@@ -187,17 +203,6 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 					: cols / processedGrid.lg
 
 	}, [grid])
-
-	// Calculates the contents of each cell 
-	const Cell = useCallback(({ columnIndex, rowIndex, style }) => {
-		const itemIndex = rowIndex * colCount + columnIndex
-		const item = filteredItems[itemIndex]
-		if (item) {
-			return <div style={{ ...style }} dangerouslySetInnerHTML={{ __html: item.outerHTML }}></div>
-		} else {
-			return ''
-		}
-	}, [filteredItems])
 
 	// Hardcoded map of icons to strings we can pass in from astro
 	const getIcon = useCallback((name: string) => {
@@ -255,22 +260,16 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 					}
 				</div>}
 			</div>}
-			<AutoSizer>
-				{({ height, width }) =>
-					<Grid
-						ref={gridRef}
-						height={height}
-						width={width}
-						rowCount={rowCount(colCount)}
-						rowHeight={rowHeight}
-						columnCount={colCount}
-						columnWidth={colWidth(width, colCount)}
-						onScroll={(e) => onScroll()}
-					>
-						{Cell}
-					</Grid>
-				}
-			</AutoSizer>
+			<Grid
+				gridRef={gridRef}
+				cellComponent={CellComponent}
+				cellProps={{ colCount, filteredItems }}
+				rowCount={rowCount(colCount)}
+				rowHeight={rowHeight}
+				columnCount={colCount}
+				columnWidth={`${100 / colCount}%`}
+				onScroll={() => onScroll()}
+			/>
 		</div>
 	)
 }
