@@ -9,8 +9,7 @@ const getTTL = (url) => {
 	return 3600; // 1 hour default
 };
 
-const RANGE_CACHE_THRESHOLD = 10 * 1024 * 1024; // Cache ranges in first 10MB
-const FULL_FILE_CACHE_LIMIT = 50 * 1024 * 1024; // Cache full files under 50MB
+const FULL_FILE_CACHE_LIMIT = 10 * 1024 * 1024; // Only cache small files under 10MB in Workers cache
 
 function makeNormalizedGetRequest(url) {
 	return new Request(url.toString(), { method: 'GET', headers: new Headers({}) });
@@ -100,18 +99,21 @@ export default {
 			}
 		}
 
-		// Check cache for range requests in the "hot zone" (first 10MB)
-		if (parsedRange && !parsedRange.suffix && parsedRange.start < RANGE_CACHE_THRESHOLD) {
-			const cached = await cache.match(new Request(url.toString(), {
-				headers: { 'Range': rangeHeader }
-			}));
-			if (cached) {
-				const headers = new Headers(cached.headers);
-				headers.set('X-Cache-Hit', 'true');
-				return new Response(cached.body, {
-					status: cached.status,
-					headers
+		// For range requests, check if we have the full file cached (only for small files)
+		// If so, we can serve the range from cache instead of hitting R2
+		if (parsedRange && request.method === 'GET') {
+			const fullFileCached = await cache.match(makeNormalizedGetRequest(url));
+			if (fullFileCached) {
+				// Use the native Cache API range support instead of manual slicing
+				const rangeRequest = new Request(url.toString(), {
+					headers: { 'Range': rangeHeader }
 				});
+				const rangeFromCache = await cache.match(rangeRequest);
+				if (rangeFromCache) {
+					const headers = new Headers(rangeFromCache.headers);
+					headers.set('X-Cache-Hit', 'true');
+					return rangeFromCache;
+				}
 			}
 		}
 
@@ -148,7 +150,12 @@ export default {
 		}
 
 		// Fetch from R2
-		const object = await env.STATIC.get(key, range ? {
+		// For small cacheable files with range requests, fetch the FULL file to cache it
+		// For large files (like 100MB+ MP3s), always use range requests directly
+		const shouldCacheFull = ttl > 0 && metadata.size < FULL_FILE_CACHE_LIMIT;
+		const fetchRange = range && !shouldCacheFull;
+		
+		const object = await env.STATIC.get(key, fetchRange ? {
 			range: range.end !== undefined
 				? { offset: range.start, length: range.end - range.start + 1 }
 				: { offset: range.start }
@@ -160,7 +167,7 @@ export default {
 		}
 
 		// Build response headers
-		const headers = buildCacheHeaders(ttl, object.httpEtag, range ? undefined : object.size);
+		const headers = buildCacheHeaders(ttl, object.httpEtag, range && fetchRange ? undefined : object.size);
 		object.writeHttpMetadata(headers);
 
 		// Handle 304 Not Modified for full requests
@@ -168,8 +175,32 @@ export default {
 			return new Response(null, { status: 304, headers });
 		}
 
-		// Set Content-Range for partial responses
-		if (range) {
+		// If we fetched the full file but need to return a range, slice it
+		if (range && !fetchRange) {
+			const fullBody = await object.arrayBuffer();
+			const end = range.end ?? metadata.size - 1;
+			const rangeBody = fullBody.slice(range.start, end + 1);
+			
+			headers.set('Content-Range', `bytes ${range.start}-${end}/${metadata.size}`);
+			headers.set('Content-Length', String(rangeBody.byteLength));
+			
+			const rangeResponse = new Response(rangeBody, { status: 206, headers });
+			
+			// Cache the full file for future range requests (only for small files)
+			if (shouldCacheFull) {
+				const fullResponse = new Response(fullBody, {
+					status: 200,
+					headers: buildCacheHeaders(ttl, object.httpEtag, metadata.size)
+				});
+				object.writeHttpMetadata(fullResponse.headers);
+				context.waitUntil(cache.put(makeNormalizedGetRequest(url), fullResponse));
+			}
+			
+			return rangeResponse;
+		}
+
+		// Set Content-Range for partial responses (large files doing range fetch)
+		if (range && fetchRange) {
 			const end = range.end ?? metadata.size - 1;
 			headers.set('Content-Range', `bytes ${range.start}-${end}/${metadata.size}`);
 			headers.set('Content-Length', String(end - range.start + 1));
@@ -178,21 +209,12 @@ export default {
 		const response = new Response(object.body, {
 			status: range ? 206 : 200,
 			headers,
-			cf: range ? undefined : { cacheTtlByStatus: { "200-299": ttl, 404: 1, "500-599": 0 } }
+			cf: !range ? { cacheTtlByStatus: { "200-299": ttl, 404: 1, "500-599": 0 } } : undefined
 		});
 
-		// Cache strategically in Workers cache
-		if (ttl > 0) {
-			if (!range && object.size < FULL_FILE_CACHE_LIMIT) {
-				// Cache full files under 50MB
-				context.waitUntil(cache.put(makeNormalizedGetRequest(url), response.clone()));
-			} else if (range && range.start < RANGE_CACHE_THRESHOLD) {
-				// Cache range requests in the "hot zone" (first 10MB of file)
-				context.waitUntil(cache.put(
-					new Request(url.toString(), { headers: { 'Range': rangeHeader } }),
-					response.clone()
-				));
-			}
+		// Cache full files
+		if (ttl > 0 && !range && object.size < FULL_FILE_CACHE_LIMIT) {
+			context.waitUntil(cache.put(makeNormalizedGetRequest(url), response.clone()));
 		}
 
 		return response;
