@@ -12,7 +12,7 @@
 		"code-deploy": "npm run build && npm run deploy",
 		"preview": "astro preview",
 		"astro": "astro",
-		"media": "node ./scripts/generateMedia.mjs --dry-run",
+		"media": "node ./scripts/generateMedia.mjs",
 		"new": "node ./scripts/generateGig.mjs",
 		"audio": "docker compose up --build && node ./scripts/copyAudio.mjs"
 	},

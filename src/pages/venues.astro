@@ -84,7 +84,7 @@ const markers = groupedVenues.map((venueList) => ({
 											aspectRatio: '3/2'
 										}}
 									>
-										<Image2 responsiveImage={venue.extra.cover} />
+										<Image2 responsiveImage={venue.extra.cover?.[0]} />
 									</a>
 								)}
 								<div class="center" style={{ paddingTop: '5px' }}>

@@ -4,18 +4,21 @@ import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
 import GigsMenu from 'src/components/gig/GigsMenu.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
 import VirtualizedList from 'src/components/VirtualizedList.astro'
+import SeriesTile from 'src/components/gig/SeriesTile.astro'
 
 const gigs = await loadAndFormatCollection('gig')
+const series = await loadAndFormatCollection('series')
 ---
 
 <SidebarLayout
 	hasSubheaderBottomMobile={true}
-	poo={{ title: 'Gigs', image: gigs[0].extra.cover?.src }}
+	poo={{ title: 'Gigs', image: gigs[0].extra.cover?.[0]?.src }}
 	hideFooter={true}
 >
 	<GigsMenu slot="sidebarMenu" transition:persist />
 	<VirtualizedList slot="content" id="gigs" rowHeight={300} search={'Filter gigs by title, artist, venue'}>
 		{gigs.map((gig) => <GigTile gig={gig} responsiveImageSizes="full" />)}
+		{series.map((serie) => <SeriesTile series={serie} />)}
 	</VirtualizedList>
 </SidebarLayout>
 

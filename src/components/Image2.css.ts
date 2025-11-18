@@ -1,6 +1,7 @@
 import { createVar, style } from '@vanilla-extract/css'
 
-const objectFit = createVar()
+export const objectFit = createVar()
+export const objectPosition = createVar()
 
 export const ImageWrapper = style({
 	position: 'relative',
@@ -25,6 +26,7 @@ export const ImageStyle = style({
 	maxWidth: 'none',
 	padding: 0,
 	objectFit: objectFit,
+	objectPosition: objectPosition,
 	transition: 'transform 0.3s ease-in-out',
 	willChange: 'transform'
 })

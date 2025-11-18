@@ -24,6 +24,8 @@ Raw media for each entry should be stored in `media/[collection_id]/[entry_id]`,
 
 This media is then processed into `dist_media` via `scripts/generateMedia.mjs`.
 
+Cover images should be at `media/[collection_id]/[entry_id]/cover.jpg`, or `media/[collection_id]/[entry_id]/cover/[image].jpg` if there are multiple. These will automatically be processed as ResponsiveImage objects and put at `entry.extra.cover`.
+
 #### Generating media
 
 To generate responsive image aggregates for all entries, run `pnpm run media`.

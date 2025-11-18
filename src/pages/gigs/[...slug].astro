@@ -36,7 +36,7 @@ const entryExtra = entry.extra
 		title: entryData.title,
 		collection: entry.entry.collection,
 		description: entryExtra.metaDescription,
-		image: entryExtra.cover?.src,
+		image: entryExtra.cover?.[0]?.src,
 		date: entryData.date.toISOString()
 	}}
 >

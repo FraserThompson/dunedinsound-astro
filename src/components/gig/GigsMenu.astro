@@ -16,12 +16,14 @@ import { MenuLi } from '../Menu.css'
 import { MenuWrapper } from '../Menu.css'
 import ArtistsMenu from './ArtistsMenu.astro'
 import { artistsToString } from 'src/util/helpers'
+import SeriesIndicator from '../SeriesIndicator.astro'
 
 interface Props {
 	selected?: string
 }
 
 const gigs = await loadAndFormatCollection('gig')
+const series = await loadAndFormatCollection('series')
 const sortedGigs = sortGigs(gigs)
 
 const { selected } = Astro.props
@@ -49,13 +51,15 @@ const { selected } = Astro.props
 			.reverse()
 			.map(([yearName, yearObj]) => (
 				<li class={MenuLi['vertical']} id={makeHash(yearName)}>
-					<a class={yearLink} style={{ position: 'sticky' }}>
+					<a class={yearLink} title={yearName} style={{ position: 'sticky' }}>
 						{yearName} {`(${yearObj.count})`}
 					</a>
 					<ul class={`${MenuWrapper['vertical']} monthList`}>
 						{Object.entries(yearObj.gigs).map(([monthName, gigs]) => (
 							<li class={`${MenuLi['vertical']} monthItem`}>
-								<a class={monthLink}>{monthName}</a>
+								<a class={monthLink} title={monthName}>
+									{monthName}
+								</a>
 								<ul class={`${MenuWrapper['vertical']} gigList`}>
 									{gigs.map((gig) => (
 										<li
@@ -63,7 +67,11 @@ const { selected } = Astro.props
 											data-sidebarid={makeHash(gig.entry.id)}
 											data-searchable={`${gig.entry.data.venue.id.replace('_', ' ')},${artistsToString(gig.extra.artists)}`}
 										>
-											<a class={gigLink} href={!selected ? `#${makeHash(gig.entry.id)}` : gig.extra.absolutePath}>
+											<a
+												class={gigLink}
+												title={gig.entry.data.title}
+												href={!selected ? `#${makeHash(gig.entry.id)}` : gig.extra.absolutePath}
+											>
 												{gig.entry.data.title}
 											</a>
 											{gig.entry.id === selected && <ArtistsMenu artists={gig.extra.artists} transition:persist />}
@@ -76,6 +84,20 @@ const { selected } = Astro.props
 				</li>
 			))
 	}
+	<li class={MenuLi['vertical']}>
+		<a class={yearLink} style={{ position: 'sticky' }}> <SeriesIndicator hideText={true} color="black" /> Series </a>
+		<ul class={`${MenuWrapper['vertical']}`}>
+			{
+				series.map((entry) => (
+					<li class={`${MenuLi['vertical']} filter-item`} data-sidebarid={makeHash(entry.entry.id)}>
+						<a class={gigLink} title={entry.entry.data.title} href={entry.extra.absolutePath}>
+							{entry.entry.data.title}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</li>
 </ul>
 
 <slot />
@@ -138,18 +160,18 @@ const { selected } = Astro.props
 
 				const sidebarItem = this.querySelector(`[data-sidebarid="${gigId}"]`)
 
-				const gigList = sidebarItem?.closest('.gigList')
-				if (!gigList) return
-
-				const monthList = gigList.closest('.monthList')
-				if (!monthList) return
-
 				// Hide items filtered out by shuffle if they arent alreaedy
 				if (!filteredItems?.includes(item)) {
 					sidebarItem?.classList.add('hidden')
 				} else {
 					sidebarItem?.classList.remove('hidden')
 				}
+
+				const gigList = sidebarItem?.closest('.gigList')
+				if (!gigList) return
+
+				const monthList = gigList.closest('.monthList')
+				if (!monthList) return
 
 				// Hide months without any visible gigs
 				const gigsInGroup = gigList.childElementCount

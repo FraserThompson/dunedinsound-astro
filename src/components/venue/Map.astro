@@ -53,6 +53,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			[mapHeightMobile]: heightMobile
 		})}
 	>
+		<div class="spinner"></div>
 	</div>
 	<div style={{ display: 'none' }}>
 		<slot name="popups" />
@@ -68,6 +69,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 	import { scrollIntoView } from 'seamless-scroll-polyfill'
 
 	class MapWrapper extends HTMLElement {
+		loadingSpinner: HTMLElement | null
 		map: mapboxgl.Map
 		markers: mapboxgl.Marker[]
 		sidebar: SidebarWrapper | null
@@ -85,8 +87,9 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			const centerAttrib = this.getAttribute('data-center')
 			const center = centerAttrib ? JSON.parse(centerAttrib) : [170.5016047, -45.8745557]
 			const zoom = this.getAttribute('data-zoom') || '13'
-	
-			this.interactive  = this.getAttribute('data-nointeract') ? false : true
+
+			this.loadingSpinner = this.querySelector('.spinner')
+			this.interactive = this.getAttribute('data-nointeract') ? false : true
 
 			this.map = new mapboxgl.Map({
 				container: 'map',
@@ -103,6 +106,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			const markers = JSON.parse(this.getAttribute('data-markers') || '') as any
 			const popups: NodeListOf<HTMLElement> = this.querySelectorAll('.popup')
 
+			// Add markers to the map
 			for (const [i, markerInfo] of markers.entries()) {
 				let el
 				if (markerInfo.class) {
@@ -254,6 +258,10 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 
 		connectedCallback() {
 			this.sidebarLinks?.forEach((link) => link.addEventListener('mousedown', (e) => this.sidebarClick(e)))
+
+			this.map.on('load', () => {
+				this.loadingSpinner?.remove()
+			})
 
 			// Support for hiding markers on filter
 			window.addEventListener('react-window-filter', this.onFilter, false)

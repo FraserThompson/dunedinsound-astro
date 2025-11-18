@@ -5,7 +5,7 @@
  * Props:
  *  - href: the link
  *  - image (optional): the background image
- *  - responsiveImage (optional): the background image (responsive)
+ *  - responsiveImage (optional): one or more background images (responsive)
  *  - backgroundStyle (optional): Can be 'full', 'fulldesktop' (hidden on mobile), or 'center'.
  *    Pass full to make it span the entire tile.
  *  - title (optional): displayed at the top
@@ -44,7 +44,7 @@ export type BackgroundStyle = 'full' | 'center' | 'fulldesktop'
 interface Props {
 	href: string
 	image?: string
-	responsiveImage?: ResponsiveImage
+	responsiveImage?: ResponsiveImage[]
 	backgroundStyle?: BackgroundStyle
 	style?: Partial<CSSStyleDeclaration>
 	title?: string

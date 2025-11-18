@@ -27,8 +27,7 @@ const entryExtra = entry.extra
 		title: entryData.title,
 		collection: entry.entry.collection,
 		description: entryExtra.metaDescription,
-		image: entryExtra.cover?.src
-	}}
+		image: entryExtra.cover?.[0]?.src 	}}
 >
 	<ul class={`${MenuWrapper['vertical']}`} style={{ zIndex: 15 }} slot="sidebarMenu">
 		<li class={`${MenuLi['vertical']}`}>

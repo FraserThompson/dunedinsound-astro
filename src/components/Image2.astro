@@ -19,7 +19,7 @@
 */
 
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
-import { ImageStyle, ImageWrapper } from './Image2.css'
+import { ImageStyle, ImageWrapper, objectFit as objectFitVar, objectPosition as objectPositionVar } from './Image2.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 export type ResponsiveImageSizes = {
@@ -35,6 +35,7 @@ export interface Props {
 	className?: string
 	image?: string
 	objectFit?: string
+	objectPosition?: string
 	lightboxEnabled?: boolean
 	alt?: string
 	size?: keyof ResponsiveImageSizes
@@ -45,6 +46,7 @@ const {
 	responsiveImage,
 	image,
 	objectFit = 'cover',
+	objectPosition = 'center',
 	alt,
 	className = '',
 	size = 'grid',
@@ -89,7 +91,7 @@ const sizes: ResponsiveImageSizes = {
 			alt={responsiveImage?.alt || alt}
 			loading={loading}
 			decoding="async"
-			style={assignInlineVars({ objectFit })}
+			style={assignInlineVars({ [objectFitVar]: objectFit, [objectPositionVar]: objectPosition })}
 		/>
 	</picture>
 </div>

@@ -2,6 +2,7 @@ import { style, globalStyle } from '@vanilla-extract/css'
 
 export const backgroundImageWrapper = style({
 	position: 'static',
+	display: 'flex',
 	width: '100%',
 	height: 'auto',
 	aspectRatio: '3/2',

@@ -3,8 +3,8 @@
  * A responsive image displayed in the background.
  *
  * Props:
- *  - responsiveImage: the image to display
- *  - verticalImage (optional):  image to display on vertical screens.
+ *  - responsiveImage: one or more images to display
+ *  - verticalImage (optional): one or more images to display on vertical screens.
  *  - responsiveImageSizes (optional): By default it will assume full width. You can tell it otherwise.
  *  - hideMobile (optional): If true it will be hidden on mobile.
  */
@@ -13,11 +13,12 @@ import { backgroundImageWrapper } from './BackgroundImage.css'
 import Image2, { type ResponsiveImageSizes } from './Image2.astro'
 
 interface Props {
-	responsiveImage: ResponsiveImage
-	verticalImage?: ResponsiveImage
+	responsiveImage: ResponsiveImage[]
+	verticalImage?: ResponsiveImage[]
 	responsiveImageSizes?: keyof ResponsiveImageSizes
 	hideMobile?: boolean
 	objectFit?: string
+	objectPosition?: string
 	loading?: 'lazy' | 'eager'
 }
 
@@ -27,27 +28,34 @@ const {
 	responsiveImageSizes = 'full',
 	hideMobile,
 	objectFit = 'cover',
+	objectPosition = 'center',
 	loading = 'lazy'
 } = Astro.props
 ---
 
 <div class={`${backgroundImageWrapper} ${verticalImage ? 'hasVertical' : ''} ${hideMobile ? 'hideMobile' : ''}`}>
-	<Image2
-		size={responsiveImageSizes}
-		objectFit={objectFit}
-		responsiveImage={responsiveImage}
-		loading={loading}
-		className="backgroundImage"
-	/>
 	{
-		verticalImage && (
+		responsiveImage.map((image) => (
 			<Image2
 				size={responsiveImageSizes}
-				responsiveImage={verticalImage}
 				objectFit={objectFit}
+				objectPosition={objectPosition}
+				responsiveImage={image}
+				loading={loading}
+				className="backgroundImage"
+			/>
+		))
+	}
+	{
+		verticalImage?.map((image) => (
+			<Image2
+				size={responsiveImageSizes}
+				responsiveImage={image}
+				objectFit={objectFit}
+				objectPosition={objectPosition}
 				loading={loading}
 				className="backgroundImageVertical"
 			/>
-		)
+		))
 	}
 </div>

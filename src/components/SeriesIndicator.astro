@@ -7,23 +7,22 @@ import { theme } from '../Theme.css'
 
 interface Props {
 	hideText?: Boolean
+	color?: string
 }
 
-const { hideText } = Astro.props
+const { hideText, color = theme.color.lightSecondary } = Astro.props
 ---
 
 <h4
 	title="A series of gigs"
-	class={hideText ? "hiddenText" : ""}
+	class={hideText ? 'hiddenText' : ''}
 	style={{
-		color: theme.color.lightSecondary
+		color: color
 	}}
 >
 	<PlayListIcon />
 	{!hideText && 'A series of gigs'}
 </h4>
-
-
 
 <style>
 	h4.hiddenText svg {

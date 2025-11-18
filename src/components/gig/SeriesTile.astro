@@ -1,0 +1,63 @@
+---
+/**
+ * A regular tile but pre-filled with gig metadata.
+ */
+import { processEntry, type ProcessedEntry } from 'src/util/collection'
+import Tile, { type BackgroundStyle } from '../Tile.astro'
+import { artistsToString } from 'src/util/helpers'
+import { formattedDate, makeHash } from 'src/util/names'
+import type { ResponsiveImageSizes } from '../Image2.astro'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+	series: CollectionEntry<'series'> | ProcessedEntry<'series'>
+	containerHeight?: string
+	containerHeightMobile?: string
+	className?: string
+	style?: Partial<CSSStyleDeclaration>
+	responsiveImageSizes?: keyof ResponsiveImageSizes
+	backgroundStyle?: BackgroundStyle
+}
+
+const {
+	series,
+	containerHeight,
+	containerHeightMobile,
+	className = '',
+	style,
+	backgroundStyle,
+	responsiveImageSizes
+} = Astro.props
+
+// Type guard: ProcessedEntry has an 'extra' property, CollectionEntry doesn't
+const isProcessedEntry = (
+	entry: CollectionEntry<'series'> | ProcessedEntry<'series'>
+): entry is ProcessedEntry<'series'> => {
+	return 'extra' in entry
+}
+
+const processedEntry: ProcessedEntry<'series'> = isProcessedEntry(series) ? series : await processEntry(series)
+const seriesData = processedEntry.entry.data
+const seriesExtra = processedEntry.extra
+const id = processedEntry.entry.id
+---
+
+<Tile
+	style={style}
+	className={className}
+	href={seriesExtra.absolutePath}
+	responsiveImage={seriesExtra.cover}
+	responsiveImageSizes={responsiveImageSizes}
+	backgroundStyle={backgroundStyle}
+	id={makeHash(id)}
+	title={`SERIES: ${seriesData.title}`}
+	containerHeight={containerHeight}
+	containerHeightMobile={containerHeightMobile}
+	containerWidth={'100%'}
+	dataAttributes={{
+		'data-title': seriesData.title,
+		'data-sidebarid': makeHash(id)
+	}}
+>
+	{seriesExtra.gigCount} gigs in this series
+</Tile>

@@ -9,8 +9,8 @@
  *  - bottomMarginMobile (optional): margin from bottom on mobile
  *  - hideBackgroundMobile (optional): if true the background image is hidden on mobile
  *  - responsiveImageSizes (optional): responsive image sizes
- *  - backgroundImage (optional): image behind everything
- *  - backgroundImageVertical (optional): image behind everything
+ *  - backgroundImage (optional): one or more images behind everything
+ *  - backgroundImageVertical (optional): one or more image behind everything
  *
  * Slots:
  *  - title: content in the title bar
@@ -43,8 +43,8 @@ interface Props {
 	bottomMarginMobile?: string
 	hideBackgroundMobile?: boolean
 	responsiveImageSizes?: keyof ResponsiveImageSizes
-	backgroundImage?: ResponsiveImage
-	backgroundImageVertical?: ResponsiveImage
+	backgroundImage?: ResponsiveImage[]
+	backgroundImageVertical?: ResponsiveImage[]
 	loading?: 'eager' | 'lazy'
 }
 

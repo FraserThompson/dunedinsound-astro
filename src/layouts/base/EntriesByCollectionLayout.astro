@@ -45,7 +45,7 @@ const shufflers = collection in Shufflers ? Shufflers[collection] : null
 		title: entryData.title,
 		collection: entry.entry.collection,
 		description: entryExtra.metaDescription,
-		image: entryExtra.cover?.src,
+		image: entryExtra.cover?.[0]?.src,
 		date: 'date' in entryData ? entryData.date?.toISOString() : undefined
 	}}
 >

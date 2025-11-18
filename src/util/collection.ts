@@ -15,8 +15,8 @@ type EntryExtraCommon = {
 	slug: string
 	absolutePath: string
 	metaDescription?: string
-	cover?: ResponsiveImage
-	coverVertical?: ResponsiveImage
+	cover?: ResponsiveImage[]
+	coverVertical?: ResponsiveImage[]
 }
 
 interface Track {
@@ -308,7 +308,6 @@ export async function getGigExtra(
 	// Get associated series entry
 	const series = entry.data.series && (await loadAndFormatEntry('series', entry.data.series.id))
 
-
 	// Find gigs which mention related artists
 	const relatedBlogs = await getCollection('blog', (blog) =>
 		blog.data.relatedGigs?.find((gig) => gig.id === entry.id)
@@ -333,10 +332,16 @@ export async function getSeriesExtra(
 	entry: CollectionEntry<'series'>,
 	extra: EntryExtraCommon
 ): Promise<EntryExtraMap['series']> {
+
 	const seriesGigs = await getCollection('gig', (gig) => gig.data.series && gig.data.series.id === entry.id)
+
+	// Array of covers from last 4 gigs in this series
+	const cover = (await Promise.all(seriesGigs.slice(0, 4).map(async (gig) => await getCover(gig)))).filter((covers) => covers !== undefined).map((covers) => covers[0])
+
 	return {
 		...extra,
-		gigCount: seriesGigs.length
+		gigCount: seriesGigs.length,
+		cover
 	}
 }
 
@@ -466,7 +471,7 @@ function getLifetimeString(entry: CollectionEntry<'artist'> | CollectionEntry<'v
 
 /**
  * Extends extra fields for artists:
- * - cover: override the default cover with the latest gig cover.
+ * - cover: override the default cover with an image of the artist from a gig.
  * - gigCount: number of gigs featuring this artist.
  * - absolutePath: override path to latest gig if there's only 1.
  * @param entry: The artist entry.
@@ -482,15 +487,19 @@ export async function getArtistExtra(
 	const artistGigs = (await getCollection('gig', (gig) => gig.data.artists.find((gigArtist) => gigArtist.id.id === artistId))).sort(
 		(a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 	);
-	const latestGig = artistGigs.length ? artistGigs[0] : undefined
 
-	let cover: ResponsiveImage | undefined = undefined
-	// Resolve an image
-	if (latestGig) {
-		const dir = `${DIST_MEDIA_DIR}/gig/${latestGig.id}/${artistId}`
+	let cover: ResponsiveImage[] | undefined = undefined
+	// Find an image of the artist
+	for (const gig of artistGigs) {
+		const dir = `${DIST_MEDIA_DIR}/gig/${gig.id}/${artistId}`
 		const images = await getResponsiveImagesByDir(dir)
-		cover = images ? Object.values(images)[0] : undefined
+		if (images) {
+			cover = [Object.values(images)[0]]
+			break
+		}
 	}
+
+	const latestGig = artistGigs.length ? artistGigs?.[0] : undefined
 
 	return {
 		...extra,
@@ -524,20 +533,33 @@ export async function getVenueExtra(
 }
 
 /**
- * Gets the cover image srcset for an entry.
+ * Gets the cover(s) image srcset for an entry.
  * @param entry
  * @param name the name of the file (defualts to cover)
- * @returns ResponsiveImage object for cover image.
+ * @returns ResponsiveImage array of cover images.
  */
 export async function getCover(
 	entry: CollectionEntry<CollectionKey>,
 	name: string = 'cover'
-): Promise<ResponsiveImage | undefined> {
+): Promise<ResponsiveImage[] | undefined> {
 	const type = entry.collection
 	const dir = `${DIST_MEDIA_DIR}/${type}/${getEntryId(entry)}/${name}`
-	const image = await getResponsiveImage(dir)
-	if (image) image.alt = `Cover image for ${entry.data.title}`
-	return image
+
+	// Try just getting the cover.jpg
+	const singleImage = await getResponsiveImage(dir)
+	if (singleImage) {
+		return [singleImage]
+	}
+
+	// Otherwise, check for all images in 'cover' dir
+	const imagesByDir = await getResponsiveImagesByDir(dir)
+	if (imagesByDir) {
+		const images = Object.values(imagesByDir).map((image) => {
+			image.alt = `Cover image for ${entry.data.title}`
+			return image
+		})
+		return images
+	}
 }
 
 /**
