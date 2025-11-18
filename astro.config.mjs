@@ -6,7 +6,7 @@ import Icons from 'unplugin-icons/vite'
 import { remarkImagesPlugin } from './src/remark-images-plugin.ts'
 import sectionize from '@hbsnow/rehype-sectionize'
 
-const ignoredDirs = ["dist", "public", "media", "dist_media", "node_modules", "audio", "scripts", "docker"]
+const ignoredDirs = [".astro", "dist", "public", "media", "dist_media", "node_modules", "audio", "scripts", "docker"]
 
 // https://astro.build/config
 export default defineConfig({

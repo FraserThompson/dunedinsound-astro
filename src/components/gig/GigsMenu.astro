@@ -84,14 +84,16 @@ const { selected } = Astro.props
 				</li>
 			))
 	}
-	<li class={MenuLi['vertical']}>
-		<a class={yearLink} style={{ position: 'sticky' }}> <SeriesIndicator hideText={true} color="black" /> Series </a>
+	<li class={`${MenuLi['vertical']} seriesList`}>
+		<a class={yearLink} style={{ position: 'sticky' }}>
+			<SeriesIndicator hideText={true} color="black" /> Series
+		</a>
 		<ul class={`${MenuWrapper['vertical']}`}>
 			{
 				series.map((entry) => (
 					<li class={`${MenuLi['vertical']} filter-item`} data-sidebarid={makeHash(entry.entry.id)}>
 						<a class={gigLink} title={entry.entry.data.title} href={entry.extra.absolutePath}>
-							{entry.entry.data.title}
+							{entry.entry.data.title} ({entry.extra.gigCount} gigs)
 						</a>
 					</li>
 				))
@@ -123,7 +125,7 @@ const { selected } = Astro.props
 		}
 
 		get gigLinks() {
-			return this.querySelectorAll('[data-sidebarid]:not(.hidden)')
+			return this.querySelectorAll('.gigItem:not(.hidden)')
 		}
 
 		itemClick(e: MouseEvent) {
@@ -147,6 +149,15 @@ const { selected } = Astro.props
 		onFilter = (e: any) => {
 			const items = e.detail.items as HTMLElement[] | null
 			const filteredItems = e.detail.filteredItems as HTMLElement[] | null
+
+			// Show a series tile if there's exactly one match
+			const seriesTiles = filteredItems?.filter((item) => item.classList.contains('seriesTile'))
+
+			seriesTiles?.forEach((item) => (item.dataset.rowheight = '0'))
+
+			if (seriesTiles?.length === 1) {
+				seriesTiles[0].dataset.rowheight = '200'
+			}
 
 			// Hide the artists menu if we're shuffling
 			if (filteredItems?.length !== items?.length && this.selected) {

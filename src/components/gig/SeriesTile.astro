@@ -1,33 +1,21 @@
 ---
 /**
- * A regular tile but pre-filled with gig metadata.
+ * A regular tile but pre-filled with series metadata.
+ *
+ * Currently this is hidden and just used for filtering.
  */
 import { processEntry, type ProcessedEntry } from 'src/util/collection'
-import Tile, { type BackgroundStyle } from '../Tile.astro'
-import { artistsToString } from 'src/util/helpers'
-import { formattedDate, makeHash } from 'src/util/names'
-import type { ResponsiveImageSizes } from '../Image2.astro'
+import { makeHash } from 'src/util/names'
 import type { CollectionEntry } from 'astro:content'
+import FastArrowRight from '~icons/iconoir/fast-arrow-right'
+import { generateExcerpt } from 'src/util/helpers'
+import TextContainer from '../TextContainer.astro'
 
 interface Props {
 	series: CollectionEntry<'series'> | ProcessedEntry<'series'>
-	containerHeight?: string
-	containerHeightMobile?: string
-	className?: string
-	style?: Partial<CSSStyleDeclaration>
-	responsiveImageSizes?: keyof ResponsiveImageSizes
-	backgroundStyle?: BackgroundStyle
 }
 
-const {
-	series,
-	containerHeight,
-	containerHeightMobile,
-	className = '',
-	style,
-	backgroundStyle,
-	responsiveImageSizes
-} = Astro.props
+const { series } = Astro.props
 
 // Type guard: ProcessedEntry has an 'extra' property, CollectionEntry doesn't
 const isProcessedEntry = (
@@ -42,22 +30,25 @@ const seriesExtra = processedEntry.extra
 const id = processedEntry.entry.id
 ---
 
-<Tile
-	style={style}
-	className={className}
-	href={seriesExtra.absolutePath}
-	responsiveImage={seriesExtra.cover}
-	responsiveImageSizes={responsiveImageSizes}
-	backgroundStyle={backgroundStyle}
-	id={makeHash(id)}
-	title={`SERIES: ${seriesData.title}`}
-	containerHeight={containerHeight}
-	containerHeightMobile={containerHeightMobile}
-	containerWidth={'100%'}
-	dataAttributes={{
-		'data-title': seriesData.title,
-		'data-sidebarid': makeHash(id)
-	}}
+<div
+	id={id}
+	style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}
+	class={`seriesTile`}
+	data-sidebarid={makeHash(id)}
+	data-title={seriesData.title}
+	data-rowheight="0"
 >
-	{seriesExtra.gigCount} gigs in this series
-</Tile>
+	<TextContainer fontSize="16px" light={true} style={{ borderRadius: '10px' }}>
+		<h3 style={{ paddingBottom: 0 }}>
+			<a href={seriesExtra.absolutePath}>SERIES: {seriesData.title} ({seriesExtra.gigCount} gigs)</a>
+		</h3>
+		{
+			seriesData.description && (
+				<p style={{ maxHeight: '100px', overflow: 'hidden', textOverflow: 'ellipsis', paddingTop: 0 }}>
+					{generateExcerpt(seriesData.description, 50)}
+				</p>
+			)
+		}
+		<a href={seriesExtra.absolutePath}>More <FastArrowRight style={{ top: '3px', position: 'relative' }} /></a>
+	</TextContainer>
+</div>

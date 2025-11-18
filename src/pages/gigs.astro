@@ -17,8 +17,8 @@ const series = await loadAndFormatCollection('series')
 >
 	<GigsMenu slot="sidebarMenu" transition:persist />
 	<VirtualizedList slot="content" id="gigs" rowHeight={300} search={'Filter gigs by title, artist, venue'}>
-		{gigs.map((gig) => <GigTile gig={gig} responsiveImageSizes="full" />)}
 		{series.map((serie) => <SeriesTile series={serie} />)}
+		{gigs.map((gig) => <GigTile gig={gig} responsiveImageSizes="full" />)}
 	</VirtualizedList>
 </SidebarLayout>
 

@@ -19,6 +19,10 @@
  *  - className (optional)
  *  - id (optional)
  *
+ * Slots:
+ *  - default: Content stuck to bottom of tile.
+ *  - center: Content in middle of tile.
+ *
  */
 import BackgroundImage from './BackgroundImage.astro'
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
@@ -133,6 +137,7 @@ const hasDefault = Astro.slots.has('default')
 					</div>
 				)
 			}
+			<slot name="center" />
 		</div>
 	</a>
 </div>

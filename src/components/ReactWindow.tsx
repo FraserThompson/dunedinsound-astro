@@ -180,8 +180,17 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 
 	}, [searchValue, filters, selectFilters, sortValue])
 
-	// Column width calculation (on desktop needs to compensate for scrollbar)
-	const colWidth = useCallback((width: number, colCount: number) => Math.floor(width / colCount) - (window.innerWidth > 768 ? (16 / colCount) : 0), [])
+	/**
+	 * Row height can be overriden per item using data-rowheight attribute.
+	 */
+	const getRowHeight = useCallback((index: number) => {
+		const item = filteredItems[index]
+		if (item?.dataset?.rowheight) {
+			return parseInt(item.dataset.rowheight)
+		} else {
+			return rowHeight
+		}
+	}, [filteredItems])
 
 	// Row count calculation (plus bottom padding)
 	const rowCount = useCallback((colCount: number) => Math.round(filteredItems.length / colCount) + 2, [filteredItems])
@@ -265,7 +274,7 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 				cellComponent={CellComponent}
 				cellProps={{ colCount, filteredItems }}
 				rowCount={rowCount(colCount)}
-				rowHeight={rowHeight}
+				rowHeight={(index) => getRowHeight(index)}
 				columnCount={colCount}
 				columnWidth={`${100 / colCount}%`}
 				onScroll={() => onScroll()}

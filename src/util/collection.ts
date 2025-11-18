@@ -70,16 +70,14 @@ export interface ProcessedEntry<C extends CollectionKey> {
 }
 
 /**
- * Two-level cache for processed entries:
+ * Simple in-memory cache for processed entries.
  * 
+ * Two-level cache:
  * 1. cachedCollection[collection] = Full sorted array of all entries in a collection
- *    - Preserves prev/next relationships and sort order
- *    - Populated by loadAndFormatCollection()
- * 
  * 2. cachedIndividual[collection][id] = Individual processed entry lookup
- *    - Fast O(1) lookup for single entries
- *    - Populated by processEntry() and loadAndFormatCollection()
- *    - Prevents reprocessing when accessing entries via different code paths
+ * 
+ * Note: Collection data is computed from Astro content entries (not file-based like images),
+ * so in-memory caching is appropriate. Module will be reloaded on content changes anyway.
  */
 type CachedIndividual = {
 	[collection: string]: {
@@ -89,6 +87,15 @@ type CachedIndividual = {
 
 const cachedCollection: { [collection: string]: ProcessedEntry<any>[] } = {}
 const cachedIndividual: CachedIndividual = {}
+
+/**
+ * Clear collection caches. Useful for dev mode when content changes.
+ */
+export function clearCollectionCache() {
+	Object.keys(cachedCollection).forEach(key => delete cachedCollection[key])
+	Object.keys(cachedIndividual).forEach(key => delete cachedIndividual[key])
+	console.log('🔄 Collection cache cleared')
+}
 
 /**
  * Loads a collection and adds extra generated fields to each entry.
@@ -336,12 +343,11 @@ export async function getSeriesExtra(
 	const seriesGigs = await getCollection('gig', (gig) => gig.data.series && gig.data.series.id === entry.id)
 
 	// Array of covers from last 4 gigs in this series
-	const cover = (await Promise.all(seriesGigs.slice(0, 4).map(async (gig) => await getCover(gig)))).filter((covers) => covers !== undefined).map((covers) => covers[0])
+	//const cover = (await Promise.all(seriesGigs.slice(0, 4).map(async (gig) => await getCover(gig)))).filter((covers) => covers !== undefined).map((covers) => covers[0])
 
 	return {
 		...extra,
-		gigCount: seriesGigs.length,
-		cover
+		gigCount: seriesGigs.length
 	}
 }
 

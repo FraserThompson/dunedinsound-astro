@@ -166,7 +166,7 @@ export const artistsToString = (artistList: ProcessedEntry<'artist'>[]) => {
  * @param body
  * @returns excerpt
  */
-export const generateExcerpt = (body: string) => {
+export const generateExcerpt = (body: string, length?: number, suffix?: string) => {
 	const parser = new MarkdownIt()
 	const html = parser.render(body.replace(/^(import ).*['"]/gm, ''))
 	const options = {
@@ -182,9 +182,9 @@ export const generateExcerpt = (body: string) => {
 	const text = convert(html, options)
 	const distilled = convert(text, options)
 
-	const excerpt = distilled.split(' ').slice(0, 68).join(' ')
+	const excerpt = distilled.split(' ').slice(0, length || 68).join(' ')
 
-	return excerpt + '...'
+	return excerpt + (suffix !== undefined ? suffix : '...')
 }
 
 /**

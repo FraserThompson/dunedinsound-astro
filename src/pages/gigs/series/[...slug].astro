@@ -5,6 +5,7 @@ import Series from 'src/layouts/collection/Series.astro'
 import EntryMenu from 'src/components/EntryMenu.astro'
 import BackIcon from '~icons/iconoir/long-arrow-up-left'
 import { MenuLi, MenuLinkWrapper, MenuWrapper } from 'src/components/Menu.css'
+import SeriesIndicator from 'src/components/SeriesIndicator.astro'
 
 export async function getStaticPaths() {
 	const entries = await loadAndFormatCollection('series')
@@ -27,7 +28,8 @@ const entryExtra = entry.extra
 		title: entryData.title,
 		collection: entry.entry.collection,
 		description: entryExtra.metaDescription,
-		image: entryExtra.cover?.[0]?.src 	}}
+		image: entryExtra.cover?.[0]?.src
+	}}
 >
 	<ul class={`${MenuWrapper['vertical']}`} style={{ zIndex: 15 }} slot="sidebarMenu">
 		<li class={`${MenuLi['vertical']}`}>
@@ -36,7 +38,7 @@ const entryExtra = entry.extra
 				style={{ backgroundColor: 'white', color: 'black' }}
 				href="/gigs/series"
 			>
-				<strong>Series</strong>
+				<strong><SeriesIndicator hideText={true} color="black" /> Series</strong>
 			</a>
 		</li>
 	</ul>
