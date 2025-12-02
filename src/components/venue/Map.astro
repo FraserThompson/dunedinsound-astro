@@ -61,7 +61,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 </map-wrapper>
 
 <script>
-	import mapboxgl from 'mapbox-gl'
+	import mapboxgl, { Popup } from 'mapbox-gl'
 	import { elementIsVisibleInViewport } from 'src/util/helpers'
 	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
 	// Polyfilled because some mobile browsers seem to implement
@@ -131,7 +131,11 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 					const popup = new mapboxgl.Popup(popupOptions)
 
 					popup.setHTML(popupEl.innerHTML).setMaxWidth('400px')
-					popup.on('open', (e) => this.markerClick(e))
+					popup.on('open', (e) => {
+						const thisPopup = e.target
+						this.closeAllPopups(thisPopup)
+						this.markerClick(e)
+					})
 
 					marker.setPopup(popup)
 				}
@@ -144,6 +148,18 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 					marker?.togglePopup()
 				}
 			}
+		}
+
+		/**
+		 * Closes all popups (pass in a popup to exclude that one)
+		 * @param exclude
+		 */
+		closeAllPopups(exclude?: Popup) {
+			this.markers?.forEach((marker) => {
+				const popup = marker.getPopup()
+				if (exclude && exclude === popup) return
+				popup?.isOpen() && popup?.remove()
+			})
 		}
 
 		/**

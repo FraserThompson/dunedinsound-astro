@@ -7,6 +7,11 @@
  * It also supports searching, sorting, and filtering defined by props which
  * fit the same definition as those used by ShuffleFilters.astro
  * 
+ * Data params supported by items:
+ *  data-reactwindowhidden: "true" will hide it always, "singleOfClass" will
+ *   hide it unless there's exactly one singleOfClass element after filtering.
+ *  data-rowheight: Override height for an individual element.
+ * 
  * @param items String of HTML elements to display as grid items
  * @param rowHeight Row height in pixels
  * @param grid Grid object for responsively setting column count
@@ -82,7 +87,6 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 		window.scrollToRow = (rowIndex: number) => {
 			gridRef.current?.scrollToRow({
 				index: rowIndex,
-				behavior: "smooth",
 				align: "start"
 			});
 			onScroll()
@@ -90,10 +94,12 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 
 		// Works with the usual location hash stuff (but only on one axis)
 		if (window.location.hash) {
-			const matchingEl = htmlElements.findIndex((el) => el.id === window.location.hash.substring(1))
+			const matchingEl = filteredItems.findIndex((el) => el.id === window.location.hash.substring(1))
 			if (matchingEl && colCount === 1) {
-				// @ts-ignore
-				window.scrollToRow(matchingEl);
+				gridRef.current?.scrollToRow({
+					index: matchingEl,
+					align: "start"
+				});
 			}
 		}
 
@@ -107,12 +113,18 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 	}, [items])
 
 	// Combines the results of all filters and determines whether an item should be filtered
-	const filterItem = useCallback((item: HTMLElement, searchValue: string, filters: string[], selectFilters: {}) => {
+	const filterItem = useCallback((item: HTMLElement, searchValue: string, filters: string[], selectFilters: {}, override?: boolean) => {
+
+		if (override !== undefined) {
+			return false
+		}
+
 		const lowerSearch = searchValue.toLowerCase();
 		const searchResult = item.innerText.toLowerCase().includes(lowerSearch)
 		const itemCategories = item.dataset.category?.split(",")
 		const combinedFilters = [...filters, ...Object.values(selectFilters)] as string[]
 		const filterResult = combinedFilters.length > 0 ? combinedFilters.every((filter) => itemCategories && itemCategories.includes(filter)) : true
+
 		return searchResult && filterResult
 	}, [])
 
@@ -150,7 +162,17 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 	// Filter and sort items based on current filters and sorts
 	const filteredItems = useMemo(() => {
 
-		const filtered = htmlElements.filter((item) => filterItem(item, searchValue, filters, selectFilters))
+		const filtered = htmlElements.filter((item) => filterItem(item, searchValue, filters, selectFilters, item.dataset?.reactwindowhidden ? true : undefined))
+
+		// Second filtering pass for singleOfClass items
+		const singleOfClassItems = htmlElements.filter((item) => item.dataset?.reactwindowhidden == "singleOfClass")
+		if (singleOfClassItems.length) {
+			const singleOfClassFiltered = singleOfClassItems.filter((item) => filterItem(item, searchValue, filters, selectFilters))
+			// If there's one stick it on the front
+			if (singleOfClassFiltered.length === 1) {
+				filtered.unshift(singleOfClassFiltered[0])
+			}
+	}
 
 		// Scroll to top on filtering
 		gridRef.current?.scrollToCell({
@@ -178,7 +200,7 @@ const ReactWindow: FunctionalComponent<Props> = ({ items, search, sort, rowHeigh
 			return filtered
 		}
 
-	}, [searchValue, filters, selectFilters, sortValue])
+	}, [searchValue, filters, selectFilters, sortValue, htmlElements])
 
 	/**
 	 * Row height can be overriden per item using data-rowheight attribute.

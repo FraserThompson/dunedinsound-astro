@@ -76,20 +76,6 @@ const deleteOldVersionsStmt = db.prepare('DELETE FROM cache WHERE version != ?')
 // Clean up old cache versions on startup
 deleteOldVersionsStmt.run(CACHE_VERSION)
 
-// Cleanup handler for graceful shutdown
-if (typeof process !== 'undefined') {
-	const cleanup = () => {
-		try {
-			db.close()
-		} catch (e) {
-			// Ignore errors on cleanup
-		}
-	}
-	process.on('exit', cleanup)
-	process.on('SIGINT', cleanup)
-	process.on('SIGTERM', cleanup)
-}
-
 /**
  * Returns a responsive image object from a responsive image directory.
  *

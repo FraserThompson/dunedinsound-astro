@@ -84,14 +84,14 @@ const { selected } = Astro.props
 				</li>
 			))
 	}
-	<li class={`${MenuLi['vertical']} seriesList`}>
+	<li class={`${MenuLi['vertical']}`}>
 		<a class={yearLink} style={{ position: 'sticky' }}>
 			<SeriesIndicator hideText={true} color="black" /> Series
 		</a>
-		<ul class={`${MenuWrapper['vertical']}`}>
+		<ul class={`${MenuWrapper['vertical']} seriesList`}>
 			{
 				series.map((entry) => (
-					<li class={`${MenuLi['vertical']} filter-item`} data-sidebarid={makeHash(entry.entry.id)}>
+					<li class={`${MenuLi['vertical']} seriesItem filter-item`} data-sidebarid={makeHash(entry.entry.id)}>
 						<a class={gigLink} title={entry.entry.data.title} href={entry.extra.absolutePath}>
 							{entry.entry.data.title} ({entry.extra.gigCount} gigs)
 						</a>
@@ -108,7 +108,7 @@ const { selected } = Astro.props
 	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
 
 	/**
-	 * A menu of gigs.
+	 * A menu of gigs, with series at the bottom.
 	 *
 	 * Similar to EntryMenu.astro but with subcategories for year/month.
 	 */
@@ -128,18 +128,24 @@ const { selected } = Astro.props
 			return this.querySelectorAll('.gigItem:not(.hidden)')
 		}
 
+		get seriesLinks() {
+			return this.querySelectorAll('.seriesItem:not(.hidden)')
+		}
+
 		itemClick(e: MouseEvent) {
 			e.preventDefault()
 			// Close sidebar on mobile
 			// See: SidebarNav.astro
 			this.sidebar?.toggleSidebar()
 			// Find where the gig appears in the menu
+			// Take into account that there are hidden Series elements in the ReactWindow too
+			const numberOfseries = this.seriesLinks.length
 			const target = e.currentTarget as HTMLElement
 			const index = Array.from(this.gigLinks).indexOf(target)
 			// Scroll to it in the virtualized list
 			// See ReactWindow.tsx
 			// @ts-ignore
-			window.scrollToRow && window.scrollToRow(index)
+			window.scrollToRow && window.scrollToRow(index + numberOfseries)
 		}
 
 		/**
@@ -149,15 +155,6 @@ const { selected } = Astro.props
 		onFilter = (e: any) => {
 			const items = e.detail.items as HTMLElement[] | null
 			const filteredItems = e.detail.filteredItems as HTMLElement[] | null
-
-			// Show a series tile if there's exactly one match
-			const seriesTiles = filteredItems?.filter((item) => item.classList.contains('seriesTile'))
-
-			seriesTiles?.forEach((item) => (item.dataset.rowheight = '0'))
-
-			if (seriesTiles?.length === 1) {
-				seriesTiles[0].dataset.rowheight = '200'
-			}
 
 			// Hide the artists menu if we're shuffling
 			if (filteredItems?.length !== items?.length && this.selected) {
@@ -176,6 +173,18 @@ const { selected } = Astro.props
 					sidebarItem?.classList.add('hidden')
 				} else {
 					sidebarItem?.classList.remove('hidden')
+				}
+
+				// Hide series title if no series matches
+				const seriesList = sidebarItem?.closest('.seriesList')
+				if (seriesList) {
+					const seriesInGroup = seriesList.childElementCount
+					const hiddenSeriesInGroup = seriesList.querySelectorAll('li.hidden').length
+					if (seriesInGroup === hiddenSeriesInGroup) {
+						seriesList.parentElement?.classList.add('hidden')
+					} else {
+						seriesList.parentElement?.classList.remove('hidden')
+					}
 				}
 
 				const gigList = sidebarItem?.closest('.gigList')

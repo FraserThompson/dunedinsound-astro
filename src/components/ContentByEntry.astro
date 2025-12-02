@@ -124,7 +124,7 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 				)}
 				{!!allReferences.length && (
 					<div>
-						<strong>{collection === 'artist' ? 'Also performed as' : 'Other venues at this location'}</strong>
+						<strong>{collection === 'venue' ? 'Other venues at this location' : 'See also'}</strong>
 						<ul style={{ marginTop: '0px' }}>
 							{allReferences.map((thing, i, arr) => (
 								<li>
