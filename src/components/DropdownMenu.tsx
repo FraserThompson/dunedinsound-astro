@@ -6,6 +6,9 @@
  * If a list of DropdownItems is provided it will render that.
  * Otherwise for more complex needs you can just pass child <li> elements.
  * 
+ * Fires events:
+ *  dropdown-item-click: When an item is clicked.
+ * 
  * TODO: Refactor this into an Astro component?
  * 
  * @param param0 
@@ -21,25 +24,23 @@ import { assignInlineVars } from '@vanilla-extract/dynamic'
 import { replaceEventName } from "src/util/history"
 import { theme } from "../Theme.css"
 
+export const dropdownClickEventName = "dropdown-item-click"
+
+export interface DropdownClickEventDetails {
+	target: HTMLAnchorElement
+}
+
 export interface MenuLink {
 	title?: string
-	href: string
+	subtitle?: string
+	href: string // If it's a hash it'll scroll to it, otherwise a regular link
 	image?: string
 	id?: string
 	class?: string
 }
 
-interface DropdownItem {
-	title?: string
-	subtitle?: string
-	href?: string
-	image?: string
-	id?: string
-	hash?: string
-}
-
 interface Props {
-	list?: DropdownItem[]
+	list?: MenuLink[]
 	menuTitle?: string
 	direction: "up" | "down"
 	top?: string
@@ -56,6 +57,9 @@ const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, 
 	const [open, setOpen] = useState(false)
 	const dropdownRef: MutableRef<any> = useRef()
 
+	/**
+	 * Attach listeners
+	 */
 	useEffect(() => {
 		document.addEventListener(replaceEventName, (e: any) => handleURLChange(e.detail))
 		// We do this instead of onclick so we can handle custom menu children
@@ -64,8 +68,12 @@ const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, 
 		// Handle initial navigation on create
 		handleURLChange(new URL(window.location.href))
 		return () => document.removeEventListener(replaceEventName, (e: any) => handleURLChange(e.detail))
-	}, [])
+	}, [list])
 
+	/**
+	 * When the URL hash changes, scroll to the right thing.
+	 * @param url 
+	 */
 	const handleURLChange = (url: URL) => {
 		if (url.hash) {
 			// This is kinda mid.
@@ -79,6 +87,9 @@ const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, 
 		}
 	}
 
+	/**
+	 * Open and close this menu.
+	 */
 	const toggleMenu = useCallback(
 		(e: any) => {
 			e.stopPropagation()
@@ -88,12 +99,29 @@ const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, 
 		[open]
 	)
 
+	/**
+	 * Called when clicking a link in the dropdown.
+	 */
 	const select = useCallback((e: MouseEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+
 		const target = e.target as HTMLAnchorElement
-		if (target?.hash) {
-			scrollTo(e, target.hash)
+		const scrollTarget = target?.hash
+
+		if (scrollTarget) {
+			scrollTo(e, scrollTarget)
 			setOpen(false)
 		}
+
+		// Let everyone know
+		const detail: DropdownClickEventDetails = {
+			target
+		}
+		const event = new CustomEvent(dropdownClickEventName, {
+			detail
+		})
+		window.dispatchEvent(event)
 	}, [])
 
 	return (
@@ -126,7 +154,7 @@ const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, 
 						<a
 							className={`${dropdownLink} menuLink menu-title`}
 							title={item.title}
-							href={`${item.href ? item.href : item.hash ? ('#' + item.hash) : ''}`}
+							href={`${item.href}`}
 							style={assignInlineVars({
 								[background]: backgroundColor,
 								[color]: textColor

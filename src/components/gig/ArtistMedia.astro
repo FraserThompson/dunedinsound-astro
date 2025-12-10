@@ -14,6 +14,7 @@ import ImageGalleryLightbox from '../ImageGalleryLightbox.astro'
 import FlexGridContainer from '../FlexGridContainer.astro'
 import LiteYoutube from '../LiteYoutube.astro'
 import { theme } from '../../Theme.css'
+import TextContainer from '../TextContainer.astro'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -36,14 +37,19 @@ const entryData = entry.entry.data
 			>
 				{artist.entry.data.title}
 			</Divider>
+			{entryData.artists[i].description && (
+				<TextContainer light={true} style={{ fontSize: '16px' }}>
+					<p>
+						<Fragment set:html={entryData.artists[i].description} />
+					</p>
+				</TextContainer>
+			)}
 			<FlexGridContainer grid={{ xs: 12, md: 6 }} maxWidth="1080px" justifyContent="center">
 				{entryData.artists[i].vid?.map((vid) => (
 					<LiteYoutube videoid={vid.link} loadAPI={true} />
 				))}
 			</FlexGridContainer>
-			{artistImages[artist.entry.id] && (
-				<ImageGallery noLightbox={true} images={artistImages[artist.entry.id]} />
-			)}
+			{artistImages[artist.entry.id] && <ImageGallery noLightbox={true} images={artistImages[artist.entry.id]} />}
 		</div>
 	))
 }

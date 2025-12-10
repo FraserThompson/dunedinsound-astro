@@ -6,6 +6,7 @@ import SubheadersLayout from 'src/layouts/base/SubheadersLayout.astro'
 import { artistListItem, artistGigCount } from './Artists.css'
 import VirtualizedList from 'src/components/VirtualizedList.astro'
 import { makeHash } from 'src/util/names'
+import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 
 const artists = await loadAndFormatCollection('artist')
 
@@ -19,16 +20,19 @@ const artistShufflers = Shufflers['artist']
 ---
 
 <SubheadersLayout poo={{ title: 'Artists' }} hideFooter={true}>
-	<VirtualizedList
+	<ShuffleFilters
+		slot="subheaderTop"
 		search={'Filter artists by name'}
+		sort={artistShufflers['sort']}
+		filter={artistShufflers['filter']}
+	/>
+	<VirtualizedList
 		grid={{
 			xs: 12,
 			md: 4,
 			lg: 2
 		}}
-		sort={artistShufflers['sort']}
 		rowHeight={35}
-		filter={artistShufflers['filter']}
 	>
 		{
 			artists.map((artist) => (

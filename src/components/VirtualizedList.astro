@@ -1,37 +1,184 @@
 ---
 /**
- * Wraps the react-window component in an astro component.
- * 
- * This is so we can pass in the cells as HTML then use Astro.slots.render
- * to render to a string for the react component (JSX can't be passed via props)
- * to framework components in Astro.
- * 
- * See ReactWindow for more info.
+ * Wraps the Clusterize library in an Astro component.
+ * TODO more documentation.
  */
-import ReactWindow from 'src/components/ReactWindow'
 import type { Grid } from './GridChild.astro'
+import './VirtualizedList.css'
+import 'node_modules/clusterize.js/clusterize.css'
 
 interface Props {
-	search: string
-	rowHeight: number
+	rowHeight?: number
 	id?: string
 	grid?: Grid
 	sort?: any[]
 	filter?: any[]
 }
 
-const cells = await Astro.slots.render('default')
-
-const { id, search, sort, filter, grid, rowHeight } = Astro.props
+const { id, rowHeight = 300, grid = {} } = Astro.props
 ---
 
-<ReactWindow
-	id={id}
-	items={cells}
-	grid={grid}
-	rowHeight={rowHeight}
-	search={search}
-	sort={sort}
-	filter={filter}
-	client:only
-/>
+<div id={id}>
+	<slot name="outside" />
+	<div
+		id="scrollArea"
+		class="clusterize-scroll"
+		style={{ maxHeight: 'calc(100vh - 30px)' }}
+		data-rowheight={rowHeight}
+		data-grid={JSON.stringify(grid)}
+	>
+		<div id="contentArea" class="clusterize-content">
+			<slot name="default" />
+		</div>
+	</div>
+</div>
+
+<script>
+	import Clusterize from 'clusterize.js'
+	import { filterEventName, updateEventName, type FilterEventDetails, type UpdateEventDetails } from 'src/util/events'
+
+	const contentAreaId = 'contentArea'
+	const scrollAreaId = 'scrollArea'
+
+	document.addEventListener('astro:page-load', () => {
+		// Get initial list of cells before Clusterize mangles them
+		const allCells: HTMLElement[] = Array.from(document.querySelectorAll(`#${contentAreaId} > *`))
+
+		const scrollArea: HTMLElement | null = document.querySelector(`#${scrollAreaId}`)
+
+		// @ts-expect-error
+		const rowHeight = parseInt(scrollArea?.dataset.rowheight)
+
+		// Enough rows to fill up the screen
+		const rowsInBlock = Math.round(window.innerHeight / rowHeight)
+		const blocksInCluster = rowsInBlock * 3
+
+		// @ts-expect-error
+		const grid = JSON.parse(scrollArea?.dataset.grid)
+
+		/**
+		 * When a cluster is swapped let others know via an event.
+		 */
+		const onClusterChange = () => {
+			const visibleCells: NodeListOf<HTMLElement> = document.querySelectorAll(`#${contentAreaId} > div`)
+			const detail: UpdateEventDetails = {
+				visibleCells: Array.from(visibleCells),
+				allCells: allCells
+			}
+			const event = new CustomEvent(updateEventName, {
+				detail
+			})
+			window.dispatchEvent(event)
+		}
+
+		/**
+		 * Scroll to a row index.
+		 */
+
+		const scrollToRow = (rowIndex: number) => {
+			if (!scrollArea) return
+			scrollArea.scrollTop = rowIndex * rowHeight
+		}
+		// Expose to window to share it for now.
+		// @ts-ignore
+		window.scrollToRow = scrollToRow
+
+		/**
+		 * Construct the object.
+		 */
+		const clusterize = new Clusterize({
+			scrollId: scrollAreaId,
+			contentId: contentAreaId,
+			rows_in_block: rowsInBlock,
+			blocks_in_cluster: blocksInCluster,
+			callbacks: {
+				clusterChanged: onClusterChange
+			}
+		})
+
+		/**
+		 * Setup for grid cases.
+		 */
+		if (grid) {
+			const totalCols = 12
+
+			const processedGrid = {
+				xs: grid?.xs || totalCols,
+				md: grid?.md || grid?.xs || totalCols,
+				lg: grid?.lg || grid?.md || grid?.xs || totalCols
+			}
+
+			const windowWidth = window.innerWidth
+
+			const colCount =
+				windowWidth < 768
+					? totalCols / processedGrid.xs
+					: windowWidth < 992
+						? totalCols / processedGrid.md
+						: windowWidth < 1600
+							? totalCols / processedGrid.lg
+							: totalCols / processedGrid.lg
+
+			const buildGridRowElements = (cells: HTMLElement[], columns: number): HTMLElement[] => {
+				const rowElements: HTMLElement[] = []
+				let currentRow: HTMLElement[] = []
+
+				const style = `display: grid; grid-template-columns: repeat(${columns}, 1fr); height: ${rowHeight}px;`
+
+				for (let i = 0; i < cells.length; i++) {
+					currentRow.push(cells[i])
+
+					if (currentRow.length === columns) {
+						const rowDiv = document.createElement('div')
+						rowDiv.style = style
+						currentRow.forEach((el) => rowDiv.appendChild(el))
+						rowElements.push(rowDiv)
+						currentRow = []
+					}
+				}
+
+				if (currentRow.length > 0) {
+					const rowDiv = document.createElement('div')
+					rowDiv.className = style
+					currentRow.forEach((el) => rowDiv.appendChild(el))
+					rowElements.push(rowDiv)
+				}
+
+				return rowElements
+			}
+
+			const gridElements = buildGridRowElements(allCells, colCount)
+			clusterize.update(gridElements.map((cell) => cell.outerHTML))
+		}
+
+		/**
+		 * Respond to filter events fired by the ShuffleFilters to refresh the container.
+		 *
+		 * The filters shuffle the sidebar items, we respond to that filtering.
+		 *
+		 * @param e
+		 */
+		const onFilter = (e: any) => {
+			const detail: FilterEventDetails = e.detail
+			const filteredItems = detail.filteredItems
+
+			// Filter our gig elements to match the filtered sidebar elements
+			const filteredCells = Array.from(allCells).filter((el) => {
+				const thisCellsSidebarId = el.dataset.sidebarid
+				return filteredItems.find((el) => el.dataset.sidebarid === thisCellsSidebarId)
+			})
+
+			clusterize.update(filteredCells.map((cell) => cell.outerHTML))
+			if (scrollArea) scrollArea.scrollTop = 0
+		}
+
+		// Works with the usual location hash stuff (but only on one axis)
+		if (window.location.hash) {
+			const matchingEl = allCells.findIndex((el) => el.id === window.location.hash.substring(1))
+			if (matchingEl && !grid) {
+				scrollToRow(matchingEl)
+			}
+		}
+		window.addEventListener(filterEventName, onFilter)
+	})
+</script>

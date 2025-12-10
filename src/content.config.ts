@@ -35,6 +35,7 @@ const gigTrack = z.object({
 const gigArtistMedia = z.object({
 	id: reference('artist'),
 	vid: z.array(gigVid).optional(),
+	description: z.string().optional(),
 	tracklist: z.array(gigTrack).optional()
 })
 

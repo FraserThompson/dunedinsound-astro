@@ -10,7 +10,6 @@ import MarkdownIt from 'markdown-it'
 import { convert } from 'html-to-text'
 import type { MenuLink } from 'src/components/DropdownMenu'
 import type { ProcessedEntry } from './collection'
-import { scrollIntoView } from 'seamless-scroll-polyfill'
 
 /**
  * Turns a 00:00 timestring into total seconds.
@@ -50,7 +49,7 @@ export const calculateScrollHeaderOffset = (window: any, modifierDesktop = 0, mo
 
 /**
  * Click listener for an anchor element.
- * Scrolls to any anchor on the page. If no anchor supplied, scrolls to the clicked's href.
+ * Scrolls to any selector on the page. If no selector supplied, scrolls to the clicked's href.
  *
  * @param e
  * @param anchor
@@ -60,7 +59,7 @@ export const calculateScrollHeaderOffset = (window: any, modifierDesktop = 0, mo
  */
 export const scrollTo = (
 	e: MouseEvent,
-	anchor?: string,
+	selector?: string,
 	headerOffset?: number,
 	behavior: ScrollBehavior = 'smooth'
 ) => {
@@ -69,13 +68,15 @@ export const scrollTo = (
 	e.preventDefault()
 	e.stopPropagation()
 
-	const scrollTarget = anchor || e.target?.hash
+	const scrollTarget = selector || e.target?.hash
 
-	const element = document.querySelector(scrollTarget)
+	const elements = document.querySelectorAll(scrollTarget)
 
-	if (!element) return
+	if (!elements.length) return
 
-	scrollToElement(element, headerOffset, behavior)
+	elements.forEach((el) => {
+		scrollToElement(el, headerOffset, undefined, behavior)
+	})
 }
 
 /**
@@ -90,14 +91,18 @@ export const scrollTo = (
 export const scrollToElement = (
 	element: Element,
 	headerOffset?: number,
-	parent: any = window,
+	parent?: Element,
 	behavior: ScrollBehavior = 'smooth'
 ) => {
 	if (!headerOffset) {
-		scrollIntoView(element, { behavior })
+		element.scrollIntoView({ behavior, block: 'start', inline: 'start' })
 	} else {
-		const y = element.getBoundingClientRect().top + parent.scrollTop
-		parent.scrollTo(0, y - headerOffset)
+		const y = element.getBoundingClientRect().top + (parent ? parent.scrollTop : 0)
+		const scrollable = parent || window
+		scrollable.scrollTo({
+			top: y - headerOffset,
+			behavior: "smooth"
+		})
 	}
 }
 

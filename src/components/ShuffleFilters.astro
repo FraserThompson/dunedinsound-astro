@@ -6,8 +6,8 @@
  * If you want the items to also be sortable (eg. reorderable) their container
  * must have the class 'filter-container'.
  *
- * Other components can listen for the 'react-window-filter' event to respond when
- * this component filters stuff (same as ReactWindow.tsx)
+ * Other components can listen for the 'shuffle-filter' event to respond when
+ * this component filters stuff.
  *
  * Props:
  *  - search (optional): Supply a placeholder string to enable searching of the text inside elements.
@@ -142,6 +142,8 @@ const { openSearchWithSidebar, search, sort, filter, className = '', style } = A
 </shuffle-filters>
 
 <script>
+	import { filterEventName, type FilterEventDetails } from 'src/util/events'
+
 	class ShuffleFilters extends HTMLElement {
 		htmlElements: HTMLElement[]
 		filteredElements: HTMLElement[]
@@ -270,11 +272,13 @@ const { openSearchWithSidebar, search, sort, filter, className = '', style } = A
 
 		// When anything changes let everyone know
 		onChange = () => {
-			const event = new CustomEvent('react-window-filter', {
-				detail: {
-					items: this.htmlElements,
-					filteredItems: this.filteredElements
-				}
+			const detail: FilterEventDetails = {
+				items: this.htmlElements,
+				searchValue: this.searchValue,
+				filteredItems: this.filteredElements
+			}
+			const event = new CustomEvent(filterEventName, {
+				detail
 			})
 			window.dispatchEvent(event)
 		}

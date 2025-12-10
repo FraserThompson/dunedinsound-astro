@@ -5,6 +5,7 @@ import GigsMenu from 'src/components/gig/GigsMenu.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
 import VirtualizedList from 'src/components/VirtualizedList.astro'
 import SeriesTile from 'src/components/gig/SeriesTile.astro'
+import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 
 const gigs = await loadAndFormatCollection('gig')
 const series = await loadAndFormatCollection('series')
@@ -15,25 +16,26 @@ const series = await loadAndFormatCollection('series')
 	poo={{ title: 'Gigs', image: gigs[0].extra.cover?.[0]?.src }}
 	hideFooter={true}
 >
+	<ShuffleFilters slot="subheaderTop" search="Filter gigs by title, artist, venue" />
 	<GigsMenu slot="sidebarMenu" transition:persist />
-	<VirtualizedList slot="content" id="gigs" rowHeight={300} search={'Filter gigs by title, artist, venue'}>
-		{series.map((serie) => <SeriesTile series={serie} />)}
+	<VirtualizedList slot="content" id="gigs">
+		<div slot="outside">
+			{series.map((serie) => <SeriesTile series={serie} />)}
+		</div>
 		{gigs.map((gig) => <GigTile gig={gig} responsiveImageSizes="full" />)}
 	</VirtualizedList>
 </SidebarLayout>
 
 <script>
-	// Polyfilled because some mobile browsers seem to implement
-	// the spec differently.
-	import { scrollIntoView } from 'seamless-scroll-polyfill'
+	import { filterEventName, updateEventName, type FilterEventDetails } from 'src/util/events'
+	import { scrollToElement } from 'src/util/helpers'
 
 	document.addEventListener('astro:page-load', () => {
 		// See SidebarNav.astro
 		const sidebar = document.querySelector('sidebar-wrapper')
+		const sidebarMenu = sidebar?.querySelector('#sidebar-menu')
 
-		const options = {
-			rootMargin: '-5% 0px -95% 0px'
-		}
+		const seriesTiles: NodeListOf<HTMLElement> = document.querySelectorAll('.seriesTile')
 
 		/**
 		 * Highlights gig in the sidebar when its scrolled over on the main page.
@@ -43,21 +45,46 @@ const series = await loadAndFormatCollection('series')
 				const sidebarItem = sidebar?.querySelector<HTMLElement>(`[href="#${entry.target.id}"]`)
 				if (entry.isIntersecting && sidebarItem) {
 					sidebarItem?.classList.add('active')
-					scrollIntoView(sidebarItem, { behavior: 'smooth', block: 'center' })
+					scrollToElement(sidebarItem, 60, sidebarMenu || undefined)
 				} else {
 					sidebarItem?.classList.remove('active')
 				}
 			})
 		}
 
+		// Since Clusterize adds and removes elements from the DOM
+		// we have to add observers for new gigs when it changes.
+		// See VirtualizedList.tsx
+		const options = {
+			rootMargin: '-5% 0px -95% 0px'
+		}
 		const observer = new IntersectionObserver(callback, options)
+		const observeGigs = (elements?: HTMLElement[]) => {
+			const gigs: HTMLElement[] = elements || Array.from(document.querySelectorAll('#gigs .tile'))
+			gigs?.forEach((el) => {
+				observer.observe(el)
+			})
+		}
+		window.addEventListener(updateEventName, (e: any) => {
+			observeGigs()
+		})
+		// Observe loaded elements on page load
+		setTimeout(() => {
+			observeGigs()
+		}, 200)
 
-		// See ReactWindow.tsx
-		window.addEventListener('react-window-scroll', () => {
-			// Since react-window adds and removes elements from the DOM
-			// We have to query and watch on each scroll.
-			const gigs = document.querySelectorAll('#gigs .tile')
-			gigs?.forEach((el) => observer.observe(el))
+		// We want to show a series at the top if there's one, so check on filter.
+		window.addEventListener(filterEventName, (e: any) => {
+			// Hidden by default
+			seriesTiles.forEach((el) => el.classList.add('hidden'))
+			// Find if there's exactly one match
+			const detail: FilterEventDetails = e.detail
+			const query = detail.searchValue.toLowerCase()
+			const seriesMatches = Array.from(seriesTiles).filter((el) => el.dataset.title?.includes(query))
+			// Show that one match
+			if (seriesMatches.length === 1) {
+				seriesMatches[0].classList.remove('hidden')
+			}
 		})
 	})
 </script>

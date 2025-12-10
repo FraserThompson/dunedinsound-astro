@@ -33,7 +33,7 @@ const { selected } = Astro.props
 	list={Object.entries(sortedGigs)
 		.reverse()
 		.map(([yearName, yearObj]) => ({
-			hash: makeHash(yearName),
+			href: `#${makeHash(yearName)}`,
 			title: yearName,
 			subtitle: `(${yearObj.count})`
 		}))}
@@ -106,6 +106,8 @@ const { selected } = Astro.props
 
 <script>
 	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
+	import { filterEventName, type FilterEventDetails } from 'src/util/events'
+	import { dropdownClickEventName, type DropdownClickEventDetails } from '../DropdownMenu'
 
 	/**
 	 * A menu of gigs, with series at the bottom.
@@ -132,29 +134,44 @@ const { selected } = Astro.props
 			return this.querySelectorAll('.seriesItem:not(.hidden)')
 		}
 
-		itemClick(e: MouseEvent) {
+		/**
+		 * When a gig link is clicked.
+		 *
+		 * @param e
+		 */
+		gigClick(e: MouseEvent) {
 			e.preventDefault()
 			// Close sidebar on mobile
 			// See: SidebarNav.astro
 			this.sidebar?.toggleSidebar()
-			// Find where the gig appears in the menu
-			// Take into account that there are hidden Series elements in the ReactWindow too
-			const numberOfseries = this.seriesLinks.length
 			const target = e.currentTarget as HTMLElement
-			const index = Array.from(this.gigLinks).indexOf(target)
-			// Scroll to it in the virtualized list
-			// See ReactWindow.tsx
-			// @ts-ignore
-			window.scrollToRow && window.scrollToRow(index + numberOfseries)
+			this.scrollToGig(target)
 		}
 
 		/**
-		 * Respond to react-window filter events and hide gigs/years/months.
+		 * Scrolls to a gig in the corresponding virtualized list if there is one.
+		 *
+		 * @param target
+		 *   The gig which was clicked.
+		 */
+		scrollToGig(target: HTMLElement) {
+			// Find where the gig appears in the menu
+			const index = Array.from(this.gigLinks).indexOf(target)
+			// Scroll to it in the virtualized list
+			// See VirtualizedList.astro
+			// @ts-ignore
+			window.scrollToRow && window.scrollToRow(index)
+		}
+
+		/**
+		 * Respond to filter events and hide gigs/years/months.
+		 *
 		 * @param e
 		 */
 		onFilter = (e: any) => {
-			const items = e.detail.items as HTMLElement[] | null
-			const filteredItems = e.detail.filteredItems as HTMLElement[] | null
+			const detail: FilterEventDetails = e.detail
+			const items = detail.items
+			const filteredItems = detail.filteredItems
 
 			// Hide the artists menu if we're shuffling
 			if (filteredItems?.length !== items?.length && this.selected) {
@@ -215,16 +232,39 @@ const { selected } = Astro.props
 			})
 		}
 
-		connectedCallback() {
-			window.addEventListener('react-window-filter', this.onFilter, false)
-			!this.selected &&
-				this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e: MouseEvent) => this.itemClick(e)))
+		/**
+		 * When a year is clicked in the dropdown, this scrolls to the first gig in the list.
+		 *
+		 * @param e
+		 */
+		onDropdownClick = (e: any) => {
+			const detail: DropdownClickEventDetails = e.detail
+			const hash = detail.target.hash?.slice(1)
+			if (!hash) return
+			const firstGig: HTMLElement | null = this.querySelector(`[data-sidebarid^="${hash}"]`)
+			if (firstGig) {
+				this.scrollToGig(firstGig)
+			}
 		}
 
-		disconnectedCallback() {
-			window.removeEventListener('react-window-filter', this.onFilter, false)
+		/**
+		 * Attach listeners.
+		 */
+		connectedCallback() {
+			window.addEventListener(filterEventName, this.onFilter)
+			window.addEventListener(dropdownClickEventName, this.onDropdownClick)
 			!this.selected &&
-				this.gigLinks?.forEach((gigLink) => gigLink.removeEventListener('click', (e: MouseEvent) => this.itemClick(e)))
+				this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e: MouseEvent) => this.gigClick(e)))
+		}
+
+		/**
+		 * Detach listeners.
+		 */
+		disconnectedCallback() {
+			window.removeEventListener(filterEventName, this.onFilter)
+			window.removeEventListener(dropdownClickEventName, this.onDropdownClick)
+			!this.selected &&
+				this.gigLinks?.forEach((gigLink) => gigLink.removeEventListener('click', (e: MouseEvent) => this.gigClick(e)))
 		}
 	}
 

@@ -89,7 +89,6 @@ const { hideFooter, hasSidebar, style, className = '', poo } = Astro.props
 </style>
 
 <script>
-	import { scrollIntoView } from 'seamless-scroll-polyfill'
 	import { navigate } from 'astro:transitions/client'
 	import { elementIsVisibleInViewport } from 'src/util/helpers'
 
@@ -108,7 +107,7 @@ const { hideFooter, hasSidebar, style, className = '', poo } = Astro.props
 			const sidebarMenu = document.querySelector('#sidebar-menu')
 			const activeElement = sidebarMenu?.querySelector('.active')
 			if (activeElement) {
-				scrollIntoView(activeElement, { behavior: 'instant', block: 'center' })
+				activeElement.scrollIntoView({ behavior: 'instant', block: 'center' })
 			}
 			sessionStorage.removeItem(`scrollPosition`)
 		},
@@ -156,7 +155,7 @@ const { hideFooter, hasSidebar, style, className = '', poo } = Astro.props
 
 			// Ensure active element is visible (handles edge cases where scroll was interrupted)
 			if (activeElement && !elementIsVisibleInViewport(activeElement, sidebarMenu)) {
-				scrollIntoView(activeElement, { behavior: 'instant', block: 'center' })
+				activeElement.scrollIntoView({ behavior: 'instant', block: 'center' })
 			}
 
 			// If navigating back to collection list page (depth <= 3), scroll body to element too
@@ -165,7 +164,7 @@ const { hideFooter, hasSidebar, style, className = '', poo } = Astro.props
 			}
 		} else if (activeElement) {
 			// Different collection or first visit - scroll to active element
-			scrollIntoView(activeElement, { behavior: 'instant', block: 'center' })
+			activeElement.scrollIntoView({ behavior: 'instant', block: 'center' })
 		}
 
 		sessionStorage.removeItem(`scrollPosition`)

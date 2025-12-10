@@ -175,7 +175,7 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 			list={gigsYearDropdownItems.map((item) => ({
 				title: item.year,
 				subtitle: `(${item.count})`,
-				hash: `y${item.year}`
+				href: `#y${item.year}`
 			}))}
 			client:load
 		/>

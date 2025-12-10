@@ -33,10 +33,9 @@ const id = processedEntry.entry.id
 <div
 	id={id}
 	style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}
-	class={`seriesTile`}
+	class={`seriesTile hidden`}
 	data-sidebarid={makeHash(id)}
-	data-title={seriesData.title}
-	data-reactwindowhidden={'singleOfClass'}
+	data-title={seriesData.title.toLowerCase()}
 >
 	<TextContainer fontSize="16px" light={true} style={{ borderRadius: '10px' }}>
 		<h3 style={{ paddingBottom: 0 }}>
