@@ -159,8 +159,9 @@ const { selected } = Astro.props
 			const index = Array.from(this.gigLinks).indexOf(target)
 			// Scroll to it in the virtualized list
 			// See VirtualizedList.astro
+			const virtualizedList = document.querySelector('virtualized-list')
 			// @ts-ignore
-			window.scrollToRow && window.scrollToRow(index)
+			virtualizedList?.scrollToRow(index)
 		}
 
 		/**

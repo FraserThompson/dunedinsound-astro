@@ -10,6 +10,22 @@ import MarkdownIt from 'markdown-it'
 import { convert } from 'html-to-text'
 import type { MenuLink } from 'src/components/DropdownMenu'
 import type { ProcessedEntry } from './collection'
+import { breakpoints } from 'src/Theme.css'
+
+/**
+ * Gets the current screensize we're on based on breakpoints.
+ * @returns the current screen size
+ */
+export const getCurrentScreensize = (): "xs" | "md" | "lg" => {
+	const windowWidth = window.innerWidth;
+	return windowWidth < breakpoints.xs
+		? "xs"
+		: windowWidth < breakpoints.md
+			? "md"
+			: windowWidth < breakpoints.lg
+				? "lg"
+				: "lg"
+}
 
 /**
  * Turns a 00:00 timestring into total seconds.
@@ -225,12 +241,6 @@ export const speak = (text: string) => {
 export function getRandom(min: number, max: number, floor?: boolean) {
 	const randomFloat = Math.random() * (max - min + 1) + min
 	return floor ? Math.floor(randomFloat) : randomFloat
-}
-
-interface StoredScrollPosition {
-	collection: string
-	position: string
-	elDataset?: any
 }
 
 /**

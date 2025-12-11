@@ -68,9 +68,6 @@ export const theme = createThemeContract({
 	}
 })
 
-const headerHeight = '30px'
-const headerHeightMobile = '40px'
-const subheaderHeight = '30px'
 const basePadding = '0.86558rem'
 
 const backgroundColor = 'rgb(8, 9, 12)'
@@ -81,6 +78,19 @@ const contrastColor = 'rgb(250, 249, 249)'
 const contrastColor2 = 'rgb(150, 255, 125)'
 const contrastColor3 = 'rgb(130, 9, 51)'
 const textColor = '#ccc'
+
+export const headerHeight = 30
+export const headerHeightMobile = 40
+export const subheaderHeight = 30
+
+export const breakpoints = {
+	xs: 768,
+	md: 992,
+	lg: 1600
+}
+const breakpointsPx: any = Object.fromEntries(
+	Object.entries(breakpoints).map(([k, v]) => [k, `${v}px`])
+);
 
 createGlobalTheme(':root', theme, {
 	color: {
@@ -114,11 +124,7 @@ createGlobalTheme(':root', theme, {
 		headerWeight: '700',
 		boldWeight: '700'
 	},
-	breakpoints: {
-		xs: '768px',
-		md: '992px',
-		lg: '1600px'
-	},
+	breakpoints: breakpointsPx,
 	borders: {
 		primary: `1px solid ${darken(0.025, primaryColor)}`,
 		secondary: `1px solid ${secondaryColor}`,
@@ -133,16 +139,16 @@ createGlobalTheme(':root', theme, {
 	dimensions: {
 		basePadding: basePadding,
 		basePaddingMobile: `calc(${basePadding} / 2)`,
-		headerHeight: headerHeight,
-		headerHeightMobile: headerHeightMobile,
-		headerHeightNegative: `-${headerHeight}`,
-		headerHeightMobileNegative: `-${headerHeightMobile}`,
-		headerHeightWithSubheader: `calc(${headerHeight} + ${subheaderHeight})`,
-		headerHeightMobileWithSubheader: `calc(${headerHeightMobile} + ${subheaderHeight})`,
-		subheaderHeight: subheaderHeight,
-		subheaderHeightNegative: `-${subheaderHeight}`,
+		headerHeight: `${headerHeight}px`,
+		headerHeightMobile: `${headerHeightMobile}px`,
+		headerHeightNegative: `-${headerHeight}px`,
+		headerHeightMobileNegative: `-${headerHeightMobile}px`,
+		headerHeightWithSubheader: `${headerHeight + subheaderHeight}px`,
+		headerHeightMobileWithSubheader: `${headerHeightMobile + subheaderHeight}px`,
+		subheaderHeight: `${subheaderHeight}px`,
+		subheaderHeightNegative: `-${subheaderHeight}px`,
 		sidebarWidth: '320px',
-		viewportHeight: `calc(100% - ${headerHeight})`,
+		viewportHeight: `calc(100% - ${headerHeight}px)`,
 		footerHeight: '280px',
 		contentContainerWidth: '740px',
 		defaultBannerHeight: '60vh'

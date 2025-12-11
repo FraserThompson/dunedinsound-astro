@@ -32,6 +32,8 @@ const artistShufflers = Shufflers['artist']
 			md: 4,
 			lg: 2
 		}}
+		bottomMargin="0px"
+		bottomMarginMobile="80px"
 		rowHeight={35}
 	>
 		{
@@ -39,7 +41,7 @@ const artistShufflers = Shufflers['artist']
 				<a
 					href={artist.extra.absolutePath}
 					id={makeHash(artist.entry.id)}
-					class={`${artistListItem} ${artist.entry.data.died ? 'dead' : ''}`}
+					class={`${artistListItem} filter-item ${artist.entry.data.died ? 'dead' : ''}`}
 					data-category={`${artist.entry.data.origin || 'Dunedin'},${!artist.entry.data.died ? 'active' : ''}`}
 					data-title={artist.entry.data.title}
 					data-lastgig={artist.extra.lastGig}

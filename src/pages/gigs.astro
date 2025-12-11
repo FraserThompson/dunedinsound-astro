@@ -16,9 +16,13 @@ const series = await loadAndFormatCollection('series')
 	poo={{ title: 'Gigs', image: gigs[0].extra.cover?.[0]?.src }}
 	hideFooter={true}
 >
-	<ShuffleFilters slot="subheaderTop" search="Filter gigs by title, artist, venue" />
+	<ShuffleFilters
+		slot="subheaderTopDesktop"
+		openSearchWithSidebar={true}
+		search="Filter gigs by title, artist, venue"
+	/>
 	<GigsMenu slot="sidebarMenu" transition:persist />
-	<VirtualizedList slot="content" id="gigs">
+	<VirtualizedList slot="content" id="gigs" filterOnSidebar={true}>
 		<div slot="outside">
 			{series.map((serie) => <SeriesTile series={serie} />)}
 		</div>
@@ -28,12 +32,16 @@ const series = await loadAndFormatCollection('series')
 
 <script>
 	import { filterEventName, updateEventName, type FilterEventDetails } from 'src/util/events'
-	import { scrollToElement } from 'src/util/helpers'
+	import { scrollToElement, getCurrentScreensize } from 'src/util/helpers'
+	import { headerHeightMobile, headerHeight, subheaderHeight } from 'src/Theme.css'
 
 	document.addEventListener('astro:page-load', () => {
 		// See SidebarNav.astro
 		const sidebar = document.querySelector('sidebar-wrapper')
 		const sidebarMenu = sidebar?.querySelector('#sidebar-menu')
+
+		const screensize = getCurrentScreensize()
+		const scrollMarginTop = screensize === 'xs' ? headerHeightMobile : headerHeight + subheaderHeight
 
 		const seriesTiles: NodeListOf<HTMLElement> = document.querySelectorAll('.seriesTile')
 
@@ -45,7 +53,7 @@ const series = await loadAndFormatCollection('series')
 				const sidebarItem = sidebar?.querySelector<HTMLElement>(`[href="#${entry.target.id}"]`)
 				if (entry.isIntersecting && sidebarItem) {
 					sidebarItem?.classList.add('active')
-					scrollToElement(sidebarItem, 60, sidebarMenu || undefined)
+					scrollToElement(sidebarItem, scrollMarginTop, sidebarMenu || undefined)
 				} else {
 					sidebarItem?.classList.remove('active')
 				}
@@ -58,16 +66,20 @@ const series = await loadAndFormatCollection('series')
 		const options = {
 			rootMargin: '-5% 0px -95% 0px'
 		}
+
 		const observer = new IntersectionObserver(callback, options)
+
 		const observeGigs = (elements?: HTMLElement[]) => {
 			const gigs: HTMLElement[] = elements || Array.from(document.querySelectorAll('#gigs .tile'))
 			gigs?.forEach((el) => {
 				observer.observe(el)
 			})
 		}
+
 		window.addEventListener(updateEventName, (e: any) => {
 			observeGigs()
 		})
+		
 		// Observe loaded elements on page load
 		setTimeout(() => {
 			observeGigs()
