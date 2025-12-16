@@ -62,7 +62,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 
 <script>
 	import mapboxgl, { Popup } from 'mapbox-gl'
-	import { elementIsVisibleInViewport } from 'src/util/helpers'
+	import { elementIsVisibleInViewport, getCurrentScreensize } from 'src/util/helpers'
 	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
 	import { filterEventName, type FilterEventDetails } from 'src/util/events'
 
@@ -257,7 +257,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 					bounds.extend(this.markers[marker].getLngLat())
 
 					// If there's one result open the popup for ease of use (ON DESKTOP)
-					if (window.innerWidth > 768) {
+					if (getCurrentScreensize() !== 'xs') {
 						if (filteredItems?.length === 1) {
 							!this.markers[marker].getPopup()?.isOpen() && this.markers[marker].togglePopup()
 						} else {

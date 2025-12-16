@@ -16,11 +16,7 @@ const series = await loadAndFormatCollection('series')
 	poo={{ title: 'Gigs', image: gigs[0].extra.cover?.[0]?.src }}
 	hideFooter={true}
 >
-	<ShuffleFilters
-		slot="subheaderTopDesktop"
-		openSearchWithSidebar={true}
-		search="Filter gigs by title, artist, venue"
-	/>
+	<ShuffleFilters slot="subheaderTopDesktop" search="Filter gigs by title, artist, venue" />
 	<GigsMenu slot="sidebarMenu" transition:persist />
 	<VirtualizedList slot="content" id="gigs" filterOnSidebar={true}>
 		<div slot="outside">
@@ -34,11 +30,15 @@ const series = await loadAndFormatCollection('series')
 	import { filterEventName, updateEventName, type FilterEventDetails } from 'src/util/events'
 	import { scrollToElement, getCurrentScreensize } from 'src/util/helpers'
 	import { headerHeightMobile, headerHeight, subheaderHeight } from 'src/Theme.css'
+import { stringNormalize } from 'src/util/names'
 
 	document.addEventListener('astro:page-load', () => {
 		// See SidebarNav.astro
 		const sidebar = document.querySelector('sidebar-wrapper')
 		const sidebarMenu = sidebar?.querySelector('#sidebar-menu')
+
+		// See VirtualizedList.astro
+		const virtualizedList = document.querySelector('virtualized-list')
 
 		const screensize = getCurrentScreensize()
 		const scrollMarginTop = screensize === 'xs' ? headerHeightMobile : headerHeight + subheaderHeight
@@ -79,7 +79,7 @@ const series = await loadAndFormatCollection('series')
 		window.addEventListener(updateEventName, (e: any) => {
 			observeGigs()
 		})
-		
+
 		// Observe loaded elements on page load
 		setTimeout(() => {
 			observeGigs()
@@ -91,12 +91,17 @@ const series = await loadAndFormatCollection('series')
 			seriesTiles.forEach((el) => el.classList.add('hidden'))
 			// Find if there's exactly one match
 			const detail: FilterEventDetails = e.detail
-			const query = detail.searchValue.toLowerCase()
-			const seriesMatches = Array.from(seriesTiles).filter((el) => el.dataset.title?.includes(query))
+			const query = stringNormalize(detail.searchValue)
+			const seriesMatches = Array.from(seriesTiles).filter((el) => stringNormalize(el.dataset.title)?.includes(query))
 			// Show that one match
 			if (seriesMatches.length === 1) {
 				seriesMatches[0].classList.remove('hidden')
 			}
 		})
+
+		if (window.location.hash) {
+			// @ts-expect-error
+			virtualizedList?.scrollToId(window.location.hash.substring(1))
+		}
 	})
 </script>

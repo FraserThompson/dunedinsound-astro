@@ -1,3 +1,5 @@
+import type { ProcessedEntry } from "./collection"
+
 /**
  * Machineifies a string.
  *
@@ -31,10 +33,35 @@ export const stringNormalize = (string?: string | null) => {
 }
 
 /**
+ * Turns a birth and death (optional) date into a human readable string. 
+ * @param born 
+ * @param died 
+ * @returns 
+ */
+export const timespanString = (born?: Date, died?: Date) => {
+	if (!born) return ''
+	return `${born.getFullYear()}${died ? ' to ' + died.getFullYear() : ' to present'}`
+}
+/**
+ * 
+ * @param references 
+ * @returns 
+ */
+export const referencesTimespanString = (references: ProcessedEntry<'venue' | 'artist'>[]) => {
+	return references.length &&
+		`${references[references.length - 1].entry.data.date?.getFullYear()} - ${references[0].entry.data.died?.getFullYear() ? references[0].entry.data.died.getFullYear() : new Date().getFullYear()}`
+}
+
+/**
  * Takes a string and encodes it into a hash.
  * @param string
  * @returns
  */
 export const makeHash = (string: string) => 'h' + encodeURIComponent(toMachineName(string))
 
+/**
+ * Takes a date and returns something human readable.
+ * @param date 
+ * @returns 
+ */
 export const formattedDate = (date: Date) => date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })

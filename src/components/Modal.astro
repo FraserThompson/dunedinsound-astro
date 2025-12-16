@@ -35,6 +35,8 @@ const { className = '' } = Astro.props
 </modal-wrapper>
 
 <script>
+	import { getCurrentScreensize } from 'src/util/helpers'
+
 	class Modal extends HTMLElement {
 		modalButton: HTMLElement | null
 		modalContent: HTMLElement | null
@@ -66,7 +68,7 @@ const { className = '' } = Astro.props
 			// Move modal to body
 			document.body.appendChild(this.modalContent)
 
-			const isMobile = window.innerWidth <= 768
+			const isMobile = getCurrentScreensize() === 'xs'
 
 			// Position modal absolutely
 			Object.assign(this.modalContent.style, {

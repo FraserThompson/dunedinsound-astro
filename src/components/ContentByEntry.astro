@@ -24,7 +24,7 @@ import ImageGallery from 'src/components/ImageGallery.astro'
 import BlogTile from 'src/components/blog/BlogTile.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
 import { contentByEntryActiveWrapper, spacer } from './ContentByEntry.css'
-import { formattedDate } from 'src/util/names'
+import { formattedDate, timespanString, referencesTimespanString } from 'src/util/names'
 import { socialLinksWrapper } from './ContentByEntry.css'
 
 interface Props {
@@ -182,7 +182,7 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 		{
 			collection === 'venue' && !!thisReferences.length && (
 				<Divider sticky={true} top={theme.dimensions.subheaderHeight} smoothScroll={true}>
-					Future
+					{referencesTimespanString(thisReferences)}
 				</Divider>
 			)
 		}
@@ -196,10 +196,7 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 						containerHeight="30vh"
 					>
 						<h4 class="center" style={{ marginBottom: 0, color: 'white' }}>
-							At this location from {'date' in thing.entry.data && thing.entry.data.date?.getFullYear()}
-							{'died' in thing.entry.data && thing.entry.data.died
-								? ` to ${thing.entry.data.died?.getFullYear()}`
-								: ' to present'}
+							At this location from {timespanString(thing.entry.data.date, thing.entry.data.died)}
 						</h4>
 						<h3 class="center" style={{ marginBottom: 0 }}>
 							{thing.entry.data.title}
@@ -227,7 +224,7 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 		{
 			collection === 'venue' && !!referencesThis.length && (
 				<Divider sticky={true} top={theme.dimensions.subheaderHeight} smoothScroll={true}>
-					Past
+					{referencesTimespanString(referencesThis)}
 				</Divider>
 			)
 		}

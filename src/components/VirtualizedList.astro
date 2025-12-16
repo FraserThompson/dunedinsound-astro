@@ -41,7 +41,7 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 	<slot name="outside" />
 	<div
 		id="scrollArea"
-		class={`clusterize-scroll ${clusterizeScroll}`}
+		class={`${clusterizeScroll}`}
 		style={assignInlineVars({
 			[marginBottom]: bottomMargin,
 			[marginBottomMobile]: bottomMarginMobile
@@ -57,6 +57,7 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 	import Clusterize from 'clusterize.js'
 	import type { Grid } from './GridChild.astro'
 	import { filterEventName, updateEventName, type FilterEventDetails, type UpdateEventDetails } from 'src/util/events'
+	import { breakpoints } from 'src/Theme.css'
 
 	class VirtualizedList extends HTMLElement {
 		contentAreaId = 'contentArea'
@@ -116,11 +117,11 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 
 			const windowWidth = window.innerWidth
 
-			return windowWidth < 768
+			return windowWidth < breakpoints.xs
 				? this.totalCols / processedGrid.xs
-				: windowWidth < 992
+				: windowWidth < breakpoints.md
 					? this.totalCols / processedGrid.md
-					: windowWidth < 1600
+					: windowWidth < breakpoints.lg
 						? this.totalCols / processedGrid.lg
 						: this.totalCols / processedGrid.lg
 		}
@@ -141,10 +142,22 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 
 		/**
 		 * Scroll to a row index.
+		 * @param rowIndex 
 		 */
 		public scrollToRow = (rowIndex: number) => {
 			if (!this.scrollArea) return
 			this.scrollArea.scrollTop = rowIndex * this.rowHeight
+		}
+
+		/**
+		 * Scrolls to a row by element ID.
+		 * @param id id of element to scroll to.
+		 */
+		public scrollToId = (id: string) => {
+			const matchingEl = this.allCells.findIndex((el) => el.id === id)
+			if (matchingEl) {
+				this.scrollToRow(matchingEl)
+			}
 		}
 
 		/**
@@ -223,6 +236,7 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 				contentId: this.contentAreaId,
 				rows_in_block: this.rowsInBlock,
 				blocks_in_cluster: this.blocksInCluster,
+				no_data_text: 'No results match these filters.',
 				callbacks: {
 					clusterChanged: this.onClusterChange
 				}
@@ -231,14 +245,6 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 			// If there's more than one column we need to initizialize it as a grid.
 			if (this.colCount > 1) {
 				this.updateGrid(this.allCells)
-			}
-
-			// Works with the usual location hash stuff (but only if not a grid)
-			if (this.colCount === 1 && window.location.hash) {
-				const matchingEl = this.allCells.findIndex((el) => el.id === window.location.hash.substring(1))
-				if (matchingEl) {
-					this.scrollToRow(matchingEl)
-				}
 			}
 
 			window.addEventListener(filterEventName, this.onFilter)

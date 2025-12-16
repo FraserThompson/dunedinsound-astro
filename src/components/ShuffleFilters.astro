@@ -143,6 +143,7 @@ const { openSearchWithSidebar, search, sort, filter, className = '', style } = A
 
 <script>
 	import { filterEventName, type FilterEventDetails } from 'src/util/events'
+import { stringNormalize } from 'src/util/names'
 
 	class ShuffleFilters extends HTMLElement {
 		htmlElements: HTMLElement[]
@@ -189,9 +190,9 @@ const { openSearchWithSidebar, search, sort, filter, className = '', style } = A
 
 		// Combines the results of all filters and determines whether an item should be filtered
 		filterItem = (item: HTMLElement) => {
-			const lowerSearch = this.searchValue.toLowerCase()
+			const lowerSearch = stringNormalize(this.searchValue)
 			const elementSearchableText = `${item.innerText}${item.dataset.searchable || ''}`
-			const searchResult = elementSearchableText.toLowerCase().includes(lowerSearch)
+			const searchResult = stringNormalize(elementSearchableText).includes(lowerSearch)
 			const itemCategories = item.dataset.category?.split(',')
 			const combinedFilters = [...this.filters, ...Object.values(this.selectFilters)] as string[]
 			const filterResult =

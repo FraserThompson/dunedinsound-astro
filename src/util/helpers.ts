@@ -48,7 +48,7 @@ export const calculateScrollHeaderOffset = (window: any, modifierDesktop = 0, mo
 	const bannerEl = document.querySelector<HTMLElement>('#top')
 	const bannerHeight = 60 / 100
 	const mobileHeaderHeight = 0
-	if (window.innerWidth < 768) {
+	if (getCurrentScreensize() === "xs") {
 		if (bannerEl) {
 			return bannerEl.offsetHeight - mobileHeaderHeight + modifierMobile
 		} else {
@@ -107,19 +107,35 @@ export const scrollTo = (
 export const scrollToElement = (
 	element: Element,
 	headerOffset?: number,
-	parent?: Element,
+	parent?: Element | Window,
 	behavior: ScrollBehavior = 'smooth'
 ) => {
-	if (!headerOffset) {
+	// If no headerOffset is provided (null or undefined), fall back to native scrollIntoView.
+	// We check for null/undefined explicitly so a headerOffset of 0 is honoured.
+	if (headerOffset == null) {
 		element.scrollIntoView({ behavior, block: 'start', inline: 'start' })
-	} else {
-		const y = element.getBoundingClientRect().top + (parent ? parent.scrollTop : 0)
-		const scrollable = parent || window
-		scrollable.scrollTo({
-			top: y - headerOffset,
-			behavior: "smooth"
-		})
+		return
 	}
+
+	// If scrolling the window/document
+	if (!parent || parent === window) {
+		const win = window
+		const currentScroll = win.scrollY || win.pageYOffset || document.documentElement.scrollTop || 0
+		const y = currentScroll + element.getBoundingClientRect().top
+		const top = Math.max(0, y - headerOffset)
+		win.scrollTo({ top, behavior })
+		return
+	}
+
+	// Scrolling a scrollable container element
+	const parentEl = parent as HTMLElement
+	const parentRect = parentEl.getBoundingClientRect()
+	const elRect = element.getBoundingClientRect()
+
+	// Compute element's offset relative to the parent, then add the parent's current scrollTop
+	const y = parentEl.scrollTop + (elRect.top - parentRect.top)
+	const top = Math.max(0, y - headerOffset)
+	parentEl.scrollTo({ top, behavior })
 }
 
 /**

@@ -7,6 +7,7 @@ import { artistListItem, artistGigCount } from './Artists.css'
 import VirtualizedList from 'src/components/VirtualizedList.astro'
 import { makeHash } from 'src/util/names'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
+import { headerHeightMobile } from 'src/Theme.css'
 
 const artists = await loadAndFormatCollection('artist')
 
@@ -33,7 +34,7 @@ const artistShufflers = Shufflers['artist']
 			lg: 2
 		}}
 		bottomMargin="0px"
-		bottomMarginMobile="80px"
+		bottomMarginMobile={`${headerHeightMobile * 2}px`}
 		rowHeight={35}
 	>
 		{
