@@ -142,7 +142,7 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 
 		/**
 		 * Scroll to a row index.
-		 * @param rowIndex 
+		 * @param rowIndex
 		 */
 		public scrollToRow = (rowIndex: number) => {
 			if (!this.scrollArea) return
@@ -211,6 +211,7 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 
 				currentRow.push(cells[i])
 
+				// If we've filled it up with the desired number of columns, move to a new row.
 				if (currentRow.length === this.colCount) {
 					const rowDiv = document.createElement('div')
 					rowDiv.style = style
@@ -220,9 +221,10 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 				}
 			}
 
+			// If there's anything left in the last row.
 			if (currentRow.length > 0) {
 				const rowDiv = document.createElement('div')
-				rowDiv.className = style
+				rowDiv.style = `display: grid; grid-template-columns: repeat(${currentRow.length}, 1fr); height: ${this.rowHeight}px;`
 				currentRow.forEach((el) => rowDiv.appendChild(el))
 				rowElements.push(rowDiv)
 			}

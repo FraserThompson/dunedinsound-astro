@@ -83,28 +83,23 @@ const entryExtra = entry.extra
 	</SidebarNav>
 </div>
 {entryData.gallery && images && <ImageGallery images={Object.values(images)} />}
-<div class="padding">
-	<hr />
-	<ul>
+<div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+	<div style={{ display: 'flex', paddingBottom: '15px' }}>
 		{
 			entry.prev && (
-				<li>
-					<a href={getEntryPath(entry.prev.data.title, 'blog')} rel="prev">
-						← {entry.prev.data.title}
-					</a>
-				</li>
+				<a href={getEntryPath(entry.prev.data.title, 'blog')} rel="prev">
+					← {entry.prev.data.title}
+				</a>
 			)
 		}
 		{
 			entry.next && (
-				<li>
-					<a href={getEntryPath(entry.next.data.title, 'blog')} rel="next">
-						{entry.next.data.title} →
-					</a>
-				</li>
+				<a href={getEntryPath(entry.next.data.title, 'blog')} style={{ marginLeft: 'auto' }} rel="next">
+					{entry.next.data.title} →
+				</a>
 			)
 		}
-	</ul>
+	</div>
 	{!!entryExtra.relatedGigs?.length && <h2>Related gigs...</h2>}
 </div>
 {

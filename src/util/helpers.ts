@@ -64,38 +64,6 @@ export const calculateScrollHeaderOffset = (window: any, modifierDesktop = 0, mo
 }
 
 /**
- * Click listener for an anchor element.
- * Scrolls to any selector on the page. If no selector supplied, scrolls to the clicked's href.
- *
- * @param e
- * @param anchor
- * @param headerOffset
- * @param behavior
- * @returns
- */
-export const scrollTo = (
-	e: MouseEvent,
-	selector?: string,
-	headerOffset?: number,
-	behavior: ScrollBehavior = 'smooth'
-) => {
-	if (!(e.target instanceof HTMLAnchorElement)) return
-
-	e.preventDefault()
-	e.stopPropagation()
-
-	const scrollTarget = selector || e.target?.hash
-
-	const elements = document.querySelectorAll(scrollTarget)
-
-	if (!elements.length) return
-
-	elements.forEach((el) => {
-		scrollToElement(el, headerOffset, undefined, behavior)
-	})
-}
-
-/**
  * Scroll to any element.
  *
  * @param element
@@ -108,12 +76,13 @@ export const scrollToElement = (
 	element: Element,
 	headerOffset?: number,
 	parent?: Element | Window,
-	behavior: ScrollBehavior = 'smooth'
+	behavior: ScrollBehavior = 'smooth',
+	block: ScrollLogicalPosition = 'start'
 ) => {
 	// If no headerOffset is provided (null or undefined), fall back to native scrollIntoView.
 	// We check for null/undefined explicitly so a headerOffset of 0 is honoured.
 	if (headerOffset == null) {
-		element.scrollIntoView({ behavior, block: 'start', inline: 'start' })
+		element.scrollIntoView({ behavior, block: block, inline: block })
 		return
 	}
 

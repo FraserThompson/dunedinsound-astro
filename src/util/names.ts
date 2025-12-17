@@ -49,7 +49,7 @@ export const timespanString = (born?: Date, died?: Date) => {
  */
 export const referencesTimespanString = (references: ProcessedEntry<'venue' | 'artist'>[]) => {
 	return references.length &&
-		`${references[references.length - 1].entry.data.date?.getFullYear()} - ${references[0].entry.data.died?.getFullYear() ? references[0].entry.data.died.getFullYear() : new Date().getFullYear()}`
+		`${references[references.length - 1].entry.data.date?.getFullYear()} to ${references[0].entry.data.died?.getFullYear() ? references[0].entry.data.died.getFullYear() : "Present"}`
 }
 
 /**

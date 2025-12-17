@@ -8,6 +8,7 @@
  */
 import type { ProcessedEntry } from 'src/util/collection'
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
+import { artistWrapper } from './ArtistMedia.css'
 import Divider from '../Divider.astro'
 import ImageGallery from '../ImageGallery.astro'
 import ImageGalleryLightbox from '../ImageGalleryLightbox.astro'
@@ -28,7 +29,7 @@ const entryData = entry.entry.data
 
 {
 	entryExtra.artists.map((artist, i) => (
-		<div class="artist" id={artist.entry.id}>
+		<div class={`artist ${artistWrapper}`} id={artist.entry.id}>
 			<Divider
 				href={`#${artist.entry.id}`}
 				sticky={true}

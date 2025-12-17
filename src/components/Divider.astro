@@ -61,9 +61,9 @@ const { href, color, backgroundColor, className = '', sticky, top, topMobile, sm
 </div>
 
 <script>
-	import { scrollTo } from 'src/util/helpers'
+	import { scrollToElement } from 'src/util/helpers'
 	const dividers = document.querySelectorAll<HTMLElement>('.dividerLink')
 	dividers.forEach(
-		(divider) => divider.dataset.smoothscroll && divider.addEventListener('click', (e: any) => scrollTo(e))
+		(divider) => divider.dataset.smoothscroll && divider.addEventListener('click', (e: any) => scrollToElement(e.target))
 	)
 </script>

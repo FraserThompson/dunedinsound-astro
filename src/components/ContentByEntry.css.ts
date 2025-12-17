@@ -25,6 +25,15 @@ export const spacer = style({
 	}
 })
 
+export const yearWrapper = style({
+	scrollMarginTop: theme.dimensions.headerHeightMobile,
+	'@media': {
+		'screen and (--md)': {
+			scrollMarginTop: theme.dimensions.headerHeight,
+		}
+	}
+})
+
 export const socialLinksWrapper = style({
 	position: 'absolute',
 	right: theme.dimensions.basePaddingMobile,

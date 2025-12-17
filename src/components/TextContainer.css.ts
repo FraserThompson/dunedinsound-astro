@@ -51,7 +51,7 @@ globalStyle(`${textContainer}.light a:hover`, {
 })
 
 // Shadows look bad on white background
-globalStyle(`${textContainer}.light h2, h3, h4, h5, a`, {
+globalStyle(`${textContainer}.light h2, ${textContainer}.light h3, ${textContainer}.light h4, ${textContainer}.light h5, ${textContainer}.light a`, {
 	textShadow: 'none'
 })
 

@@ -28,9 +28,8 @@ const series = await loadAndFormatCollection('series')
 
 <script>
 	import { filterEventName, updateEventName, type FilterEventDetails } from 'src/util/events'
-	import { scrollToElement, getCurrentScreensize } from 'src/util/helpers'
-	import { headerHeightMobile, headerHeight, subheaderHeight } from 'src/Theme.css'
-import { stringNormalize } from 'src/util/names'
+	import { scrollToElement } from 'src/util/helpers'
+	import { stringNormalize } from 'src/util/names'
 
 	document.addEventListener('astro:page-load', () => {
 		// See SidebarNav.astro
@@ -39,9 +38,6 @@ import { stringNormalize } from 'src/util/names'
 
 		// See VirtualizedList.astro
 		const virtualizedList = document.querySelector('virtualized-list')
-
-		const screensize = getCurrentScreensize()
-		const scrollMarginTop = screensize === 'xs' ? headerHeightMobile : headerHeight + subheaderHeight
 
 		const seriesTiles: NodeListOf<HTMLElement> = document.querySelectorAll('.seriesTile')
 
@@ -53,7 +49,7 @@ import { stringNormalize } from 'src/util/names'
 				const sidebarItem = sidebar?.querySelector<HTMLElement>(`[href="#${entry.target.id}"]`)
 				if (entry.isIntersecting && sidebarItem) {
 					sidebarItem?.classList.add('active')
-					scrollToElement(sidebarItem, scrollMarginTop, sidebarMenu || undefined)
+					scrollToElement(sidebarItem, undefined, sidebarMenu || undefined, 'smooth', 'center')
 				} else {
 					sidebarItem?.classList.remove('active')
 				}
@@ -77,7 +73,23 @@ import { stringNormalize } from 'src/util/names'
 		}
 
 		window.addEventListener(updateEventName, (e: any) => {
-			observeGigs()
+			// Stop observing if we've started scrolling to a year.
+			// This is to avoid it being centered. Also kinda bad, should improve.
+			// @ts-expect-error
+			if (!window.scrollingToYear) {
+				observeGigs()
+			} else {
+				setTimeout(() => {
+					// @ts-expect-error
+					virtualizedList?.scrollArea.addEventListener(
+						'scroll',
+						() => {
+							observeGigs()
+						},
+						{ once: true }
+					)
+				}, 3000)
+			}
 		})
 
 		// Observe loaded elements on page load

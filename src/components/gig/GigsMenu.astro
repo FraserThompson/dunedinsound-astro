@@ -135,7 +135,7 @@ const { selected } = Astro.props
 		}
 
 		/**
-		 * When a gig link is clicked.
+		 * Listener for gig clicks.
 		 *
 		 * @param e
 		 */
@@ -235,6 +235,8 @@ const { selected } = Astro.props
 
 		/**
 		 * When a year is clicked in the dropdown, this scrolls to the first gig in the list.
+		 * 
+		 * We set a window variable to fix scrolling stuff. Todo make this less bad.
 		 *
 		 * @param e
 		 */
@@ -242,10 +244,19 @@ const { selected } = Astro.props
 			const detail: DropdownClickEventDetails = e.detail
 			const hash = detail.target.hash?.slice(1)
 			if (!hash) return
+			
+			// @ts-expect-error
+			window.scrollingToYear = true
+			
 			const firstGig: HTMLElement | null = this.querySelector(`[data-sidebarid^="${hash}"]`)
 			if (firstGig) {
 				this.scrollToGig(firstGig)
 			}
+
+			setTimeout(() => {
+				// @ts-expect-error
+				window.scrollingToYear = false
+			}, 3000)
 		}
 
 		/**

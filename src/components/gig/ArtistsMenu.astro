@@ -31,7 +31,7 @@ const { artists } = Astro.props
 </ul>
 
 <script>
-	import { scrollTo } from 'src/util/helpers'
+	import { scrollToElement } from 'src/util/helpers'
 	import { replaceEventName } from 'src/util/history'
 	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
 
@@ -85,7 +85,15 @@ const { artists } = Astro.props
 		 * Scroll to an artist smoothly and hide the sidebar if it's open.
 		 */
 		itemClick(e: MouseEvent) {
-			scrollTo(e)
+			e.preventDefault()
+			e.stopPropagation()
+
+			if (!(e.target instanceof HTMLAnchorElement)) return
+
+			const scrollTarget = e.target?.hash
+			const element = document.querySelector(scrollTarget)
+			element && scrollToElement(element)
+
 			// Close sidebar on mobile
 			// See: SidebarNav.astro
 			this.sidebar?.toggleSidebar()
@@ -96,7 +104,7 @@ const { artists } = Astro.props
 		 */
 		connectedCallback() {
 			document.addEventListener(replaceEventName, (e: any) => this.handleArtistChange(e.detail.hash))
-			this.handleArtistChange(window.location.hash);
+			this.handleArtistChange(window.location.hash)
 			this.links?.forEach((link) => {
 				link.addEventListener('click', (e) => this.itemClick(e))
 			})

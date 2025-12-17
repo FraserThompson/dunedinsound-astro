@@ -23,7 +23,7 @@ import SocialLinks from 'src/components/SocialLinks.astro'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import BlogTile from 'src/components/blog/BlogTile.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
-import { contentByEntryActiveWrapper, spacer } from './ContentByEntry.css'
+import { contentByEntryActiveWrapper, spacer, yearWrapper } from './ContentByEntry.css'
 import { formattedDate, timespanString, referencesTimespanString } from 'src/util/names'
 import { socialLinksWrapper } from './ContentByEntry.css'
 
@@ -209,7 +209,7 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 			Object.entries(gigsByYear)
 				.reverse()
 				.map(([year, gigs]) => (
-					<div id={`y${year}`}>
+					<div class={`${yearWrapper}`} id={`y${year}`}>
 						<Divider href={`#y${year}`} sticky={true} top={theme.dimensions.subheaderHeight} smoothScroll={true}>
 							{year} ({gigs?.length})
 						</Divider>
