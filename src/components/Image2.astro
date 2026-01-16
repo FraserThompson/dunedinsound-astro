@@ -13,13 +13,20 @@
 	    If not supplied it will assume the image array to the lightbox is the same order
 			as images on the page.
 	 - alt (optional) : alt text
+	 - caption (optional) : caption displayed below image
 	 - size (optional): specifies how it will be displayed, so the browser
 		  can select the optional image. Defaults to a grid.
 	 - loading (optional): how to load. defaults to lazy.
 */
 
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
-import { ImageStyle, ImageWrapper, objectFit as objectFitVar, objectPosition as objectPositionVar } from './Image2.css'
+import {
+	ImageStyle,
+	ImageWrapper,
+	Caption,
+	objectFit as objectFitVar,
+	objectPosition as objectPositionVar
+} from './Image2.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 export type ResponsiveImageSizes = {
@@ -38,6 +45,7 @@ export interface Props {
 	objectPosition?: string
 	lightboxEnabled?: boolean
 	alt?: string
+	caption?: string
 	size?: keyof ResponsiveImageSizes
 	loading?: 'lazy' | 'eager'
 }
@@ -48,6 +56,7 @@ const {
 	objectFit = 'cover',
 	objectPosition = 'center',
 	alt,
+	caption,
 	className = '',
 	size = 'grid',
 	loading = 'lazy'
@@ -94,4 +103,5 @@ const sizes: ResponsiveImageSizes = {
 			style={assignInlineVars({ [objectFitVar]: objectFit, [objectPositionVar]: objectPosition })}
 		/>
 	</picture>
+	{caption && <p class={Caption}>{caption}</p>}
 </div>

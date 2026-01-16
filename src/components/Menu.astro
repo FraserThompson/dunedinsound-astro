@@ -9,6 +9,8 @@
  * Menu links:
  *  - can specify a title or an image. if both are present it will prefer the image.
  *  - also can use a number of preset icons.
+ *  - highlightOnActive (optional): If partial, highlights when partially active. If true, highlights
+ *    only when fully active. If false, never highlights. Defaults to partial.
  *  - sidebarOnActive (optional): If true, this link will open a sidebar on mobile when active.
  *    If 'partial', will only open a sidebar when partially, not fully, active.
  *
@@ -31,6 +33,7 @@ export interface MenuLink {
 	id?: string
 	class?: string
 	icon?: PresetIcons
+	highlightOnActive?: true | false | 'partial'
 	sidebarOnActive?: true | false | 'partial'
 }
 
@@ -47,7 +50,9 @@ const { links, menuType = 'horizontal' } = Astro.props
 <ul class={MenuWrapper[menuType]}>
 	{
 		links.map((link) => {
+			const highlightBehavior = link.highlightOnActive || 'partial'
 			const partiallyActive = isPartiallyActive(link.href, currentPath)
+			const fullyActive = currentPath === link.href
 			const sidebarButtonClass =
 				(link.sidebarOnActive === true && partiallyActive) ||
 				(link.sidebarOnActive === 'partial' && isPartiallyActive(link.href, currentPath, true))
@@ -58,7 +63,15 @@ const { links, menuType = 'horizontal' } = Astro.props
 					<a
 						class:list={[
 							MenuLinkWrapper[menuType],
-							{ active: partiallyActive, [sidebarButtonWrapper['base']]: sidebarButtonClass }
+							{
+								active:
+									highlightBehavior === 'partial' && partiallyActive
+										? true
+										: highlightBehavior === true && fullyActive
+											? true
+											: false,
+								[sidebarButtonWrapper['base']]: sidebarButtonClass
+							}
 						]}
 						href={sidebarButtonClass ? undefined : link.href}
 						title={link.title}

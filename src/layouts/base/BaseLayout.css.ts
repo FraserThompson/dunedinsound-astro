@@ -108,6 +108,19 @@ globalStyle('blockquote > p', {
 	lineHeight: '1.1'
 })
 
+globalStyle('.nerdBlock', {
+	backgroundColor: "lightgray",
+	fontFamily: "monospace",
+	fontSize: "13px !important"
+})
+
+globalStyle('.nerdBlock > *', {
+	paddingTop: 0,
+	paddingBottom: 0,
+	marginTop: 0,
+	marginBottom: 0
+})
+
 globalStyle('button', {
 	boxSizing: 'border-box',
 	display: 'inline-block',
@@ -160,7 +173,7 @@ globalStyle('a.button', {
 	fontWeight: 'bold'
 })
 
-globalStyle('a:hover', {
+globalStyle('a:hover, a.active', {
 	color: theme.color.lightContrast2
 })
 

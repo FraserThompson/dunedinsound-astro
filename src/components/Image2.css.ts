@@ -30,3 +30,9 @@ export const ImageStyle = style({
 	transition: 'transform 0.3s ease-in-out',
 	willChange: 'transform'
 })
+
+export const Caption = style({
+	paddingTop: 0,
+	marginTop: 0,
+	fontStyle: 'italic'
+})

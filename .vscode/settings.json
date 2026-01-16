@@ -7,5 +7,6 @@
 		"media": true,
 		"dist_media": true,
 		"node_modules": true
-	}
+	},
+	"typescript.tsdk": "node_modules\\typescript\\lib"
 }

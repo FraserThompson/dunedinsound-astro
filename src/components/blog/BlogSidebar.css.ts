@@ -17,6 +17,9 @@ export const sidebarBox = style([
 	textContainer,
 	{
 		border: '1px solid white',
+		color: 'white',
+		maxHeight: "100vh",
+		overflow: "auto",
 		backgroundColor: 'black',
 		margin: theme.dimensions.basePadding,
 		padding: theme.dimensions.basePadding

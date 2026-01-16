@@ -5,7 +5,7 @@ import Database from 'better-sqlite3'
 import { ResponsiveImage } from './ResponsiveImage'
 
 const CACHE_DB = '.astro/image-cache.db'
-const CACHE_VERSION = 1 // Increment to invalidate all caches
+const CACHE_VERSION = 2 // Increment to invalidate all caches
 
 // Simple stats tracking
 type CacheStats = {

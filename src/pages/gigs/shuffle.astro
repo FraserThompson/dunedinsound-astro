@@ -4,6 +4,7 @@ import { loadAndFormatCollection } from 'src/util/collection'
 import GigsShuffle from 'src/components/gig/GigsShuffle.tsx'
 import SubheadersLayout from 'src/layouts/base/SubheadersLayout.astro'
 import fs from 'fs-extra'
+import Menu from 'src/components/Menu.astro'
 
 const gigs = await loadAndFormatCollection('gig')
 
@@ -20,33 +21,27 @@ const gigs = await loadAndFormatCollection('gig')
  */
 const minimalGigs = JSON.parse(JSON.stringify(gigs)).map((gig: any) => {
 	const minimalArtists = gig.extra.artists.map((artist: any) => {
-		delete artist.entry.collection
-		delete artist.entry.data.date
-		delete artist.entry.data.description
-		delete artist.entry.data.died
-		delete artist.extra.lastGig
-		delete artist.extra.cover
-		delete artist.extra.images
-		delete artist.extra.metaDescription
-		return artist
+		return {
+			id: artist.entry.id,
+			title: artist.entry.data.title,
+			links: artist.entry.data.links,
+			origin: artist.entry.data.origin,
+			extra: {
+				gigCount: artist.extra.gigCount,
+				absolutePath: artist.extra.absolutePath
+			}
+		}
 	})
-	delete gig.extra.images
-	delete gig.extra.cover
-	delete gig.extra.metaDescription
-	delete gig.next
-	delete gig.prev
-	delete gig.entry.collection
-	delete gig.entry.data.description
-	delete gig.entry.data.intro
-	delete gig.extra.venue.data.date
-	delete gig.extra.venue.data.description
-	delete gig.extra.venue.data.links
-	delete gig.extra.venue.collection
-	delete gig.extra.venue.data.lat
-	delete gig.extra.venue.data.lng
 	const minimalGig = {
-		entry: gig.entry,
-		extra: { ...gig.extra, artistImages: [], artists: minimalArtists }
+		id: gig.entry.id,
+		title: gig.entry.data.title,
+		date: gig.entry.data.date,
+		artists: gig.entry.data.artists,
+		extra: {
+			artists: minimalArtists,
+			venue: gig.extra.venue,
+			absolutePath: gig.extra.absolutePath
+		}
 	}
 	return minimalGig
 })
@@ -71,27 +66,14 @@ fs.writeFileSync(path, gigsJSON)
 			</div>
 		</div>
 	</ShuffleFilters>
+	<div style={{ marginLeft: 'auto' }} slot="subheaderTopDesktop">
+		<Menu
+			links={[
+				{ title: 'Timeline', href: '/gigs/', highlightOnActive: true },
+				{ title: 'Shuffle', href: '/gigs/shuffle' }
+			]}
+			menuType={'horizontal'}
+		/>
+	</div>
 	<GigsShuffle client:load />
 </SubheadersLayout>
-
-<script>
-	document.addEventListener('astro:page-load', (ev) => {
-		// We use the vanilla YouTube API in this section coz its quicker
-		function onPlayerReady(event: any) {
-			event.target.playVideo()
-		}
-
-		// @ts-ignore
-		window.player = null
-
-		// @ts-ignore
-		window.onYouTubeIframeAPIReady = () => {
-			// @ts-ignore
-			window.player = new YT.Player('player', {
-				events: {
-					onReady: onPlayerReady
-				}
-			})
-		}
-	})
-</script>

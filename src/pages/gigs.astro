@@ -6,6 +6,7 @@ import GigTile from 'src/components/gig/GigTile.astro'
 import VirtualizedList from 'src/components/VirtualizedList.astro'
 import SeriesTile from 'src/components/gig/SeriesTile.astro'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
+import Menu from 'src/components/Menu.astro'
 
 const gigs = await loadAndFormatCollection('gig')
 const series = await loadAndFormatCollection('series')
@@ -17,6 +18,15 @@ const series = await loadAndFormatCollection('series')
 	hideFooter={true}
 >
 	<ShuffleFilters slot="subheaderTopDesktop" search="Filter gigs by title, artist, venue" />
+	<div style={{ marginLeft: 'auto' }} slot="subheaderTopDesktop">
+		<Menu
+			links={[
+				{ title: 'Timeline', href: '/gigs/', highlightOnActive: true },
+				{ title: 'Shuffle', href: '/gigs/shuffle' }
+			]}
+			menuType={'horizontal'}
+		/>
+	</div>
 	<GigsMenu slot="sidebarMenu" transition:persist />
 	<VirtualizedList slot="content" id="gigs" filterOnSidebar={true}>
 		<div slot="outside">

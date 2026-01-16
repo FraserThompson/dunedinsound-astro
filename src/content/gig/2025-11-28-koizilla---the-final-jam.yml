@@ -1,8 +1,13 @@
 title: "Koizilla - the final jam"
 date: 2025-11-28 08:30:00+13:00
 venue: crown_hotel
-description: Slick multi-cam videos coming soon(ish).
 artists:
   - id: little_happy
+    vid:
+      - link: djwJ5ySi1Sw
   - id: uno_juno
+    vid:
+      - link: 6V3An_itQmA
   - id: koizilla
+    vid:
+      - link: mhqd1bki2XQ
