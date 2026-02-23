@@ -23,7 +23,7 @@ const { artists } = Astro.props
 		artists.map((artist) => (
 			<li class={MenuLi['vertical']}>
 				<a class={`${artistLink}`} href={`#${artist.entry.id}`}>
-					{artist.entry.data.title}
+					{artist.entry.data.title} {artist.entry.data.origin ? '(' + artist.entry.data.origin + ')' : ''}
 				</a>
 			</li>
 		))
@@ -31,7 +31,6 @@ const { artists } = Astro.props
 </ul>
 
 <script>
-	import { scrollToElement } from 'src/util/helpers'
 	import { replaceEventName } from 'src/util/history'
 	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
 
@@ -85,15 +84,8 @@ const { artists } = Astro.props
 		 * Scroll to an artist smoothly and hide the sidebar if it's open.
 		 */
 		itemClick(e: MouseEvent) {
-			e.preventDefault()
-			e.stopPropagation()
-
 			if (!(e.target instanceof HTMLAnchorElement)) return
-
-			const scrollTarget = e.target?.hash
-			const element = document.querySelector(scrollTarget)
-			element && scrollToElement(element)
-
+			this.handleArtistChange(e.target.hash)
 			// Close sidebar on mobile
 			// See: SidebarNav.astro
 			this.sidebar?.toggleSidebar()

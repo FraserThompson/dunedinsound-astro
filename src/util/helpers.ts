@@ -10,7 +10,7 @@ import MarkdownIt from 'markdown-it'
 import { convert } from 'html-to-text'
 import type { MenuLink } from 'src/components/DropdownMenu'
 import type { ProcessedEntry } from './collection'
-import { breakpoints } from 'src/Theme.css'
+import { breakpoints, headerHeight, headerHeightMobile } from 'src/Theme.css'
 
 /**
  * Gets the current screensize we're on based on breakpoints.
@@ -37,8 +37,20 @@ export const timeToSeconds = (str: string) => {
 	return a.length == 2 ? +a[0] * 60 + +a[1] : +a[0] * 60 * 60 + +a[1] * 60 + +a[2]
 }
 
+/**
+ * For if we want the current header height in JS.
+ */
+export const getHeaderHeight = () => {
+	if (getCurrentScreensize() === "xs") {
+		return headerHeight
+	} else {
+		return headerHeightMobile
+	}
+}
+
 /*
-	Decides when the header should change.
+	Decides when the header should change on pages with a top banner.
+
 	If the banner element is on the page, just use the height of it.
 	Otherwise do a calculation:
 	- On mobile this is the window minus the headerheight * the banner height as a decimal.
@@ -249,4 +261,19 @@ export const isPartiallyActive = (href: string, currentPath: string, strict?: bo
 	}
 
 	return isItActive
+}
+
+/**
+ * Debounces a function.
+ * 
+ * @param fn 
+ * @param delay 
+ * @returns 
+ */
+export const debounce = (fn, delay) => {
+	let timeout
+	return (...args) => {
+		clearTimeout(timeout)
+		timeout = setTimeout(() => fn(...args), delay)
+	}
 }

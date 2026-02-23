@@ -30,36 +30,50 @@ export type ArtistAudio = {
 	tracklist?: Track[]
 }
 
-export type EntryExtraMap = {
-	gig: EntryExtraCommon & {
+type CollectionExtraMap = {
+	gig: {
 		artists: ProcessedEntry<'artist'>[]
 		series?: ProcessedEntry<'series'>
 		venue?: CollectionEntry<'venue'>
 		relatedBlogs?: CollectionEntry<'blog'>[]
 	}
-	series: EntryExtraCommon & {
+	series: {
 		gigCount: number
 	}
-	artist: EntryExtraCommon & {
+	artist: {
 		gigCount: number
 		lastGig?: number
 		lifetimeString?: string
+		absolutePath?: string
+		cover?: ResponsiveImage[]
 	}
-	venue: EntryExtraCommon & {
+	venue: {
 		gigCount: number
 		lifetimeString?: string
+		absolutePath?: string
 	}
-	vaultsession: EntryExtraCommon & {
+	vaultsession: {
 		artist?: CollectionEntry<'artist'>
 		audio: ArtistAudio
 	}
-	blog: EntryExtraCommon & {
+	blog: {
 		coverVid?: string
 		relatedGigs?: CollectionEntry<'gig'>[]
 		relatedArtists?: CollectionEntry<'artist'>[]
 		relatedVenues?: CollectionEntry<'venue'>[]
 	}
-	page: EntryExtraCommon
+	page: Record<never, never>
+}
+
+export type EntryExtraMap = {
+	[K in CollectionKey]: EntryExtraCommon & CollectionExtraMap[K]
+}
+
+export type ProcessedEntryBase<C extends CollectionKey> = {
+	entry: CollectionEntry<C>
+	extra: CollectionExtraMap[C]
+	next?: CollectionEntry<C>
+	prev?: CollectionEntry<C>
 }
 
 export interface ProcessedEntry<C extends CollectionKey> {
@@ -196,69 +210,46 @@ export async function processEntry<C extends CollectionKey>(
 		return cachedIndividual[entry.collection][entry.id]
 	}
 
-	const extraCommon: EntryExtraCommon = await getCommonExtra(entry)
-
 	const prev = i === undefined || i + 1 === entries.length ? undefined : entries[i + 1]
 	const next = i === undefined || i === 0 ? undefined : entries[i - 1]
 
-	let processedEntry: ProcessedEntry<C>
+	let collectionExtra: CollectionExtraMap[C]
 
+	// Get the extra properties for each entry
 	switch (entry.collection) {
 		case 'gig':
-			processedEntry = {
-				entry,
-				prev,
-				next,
-				extra: (await getGigExtra(entry, extraCommon)) as EntryExtraMap[C]
-			}
+			collectionExtra = (await getGigExtra(entry)) as CollectionExtraMap[C]
 			break
 		case 'series':
-			processedEntry = {
-				entry,
-				prev,
-				next,
-				extra: (await getSeriesExtra(entry, extraCommon)) as EntryExtraMap[C]
-			}
+			collectionExtra = (await getSeriesExtra(entry)) as CollectionExtraMap[C]
 			break
 		case 'blog':
-			processedEntry = {
-				entry,
-				prev,
-				next,
-				extra: (await getBlogExtra(entry, extraCommon)) as EntryExtraMap[C]
-			}
+			collectionExtra = (await getBlogExtra(entry)) as CollectionExtraMap[C]
 			break
 		case 'vaultsession':
-			processedEntry = {
-				entry,
-				prev,
-				next,
-				extra: (await getVaultSessionExtra(entry, extraCommon)) as EntryExtraMap[C]
-			}
+			collectionExtra = (await getVaultSessionExtra(entry)) as CollectionExtraMap[C]
 			break
 		case 'artist':
-			processedEntry = {
-				entry,
-				prev,
-				next,
-				extra: (await getArtistExtra(entry, extraCommon)) as EntryExtraMap[C]
-			}
+			collectionExtra = (await getArtistExtra(entry)) as CollectionExtraMap[C]
 			break
 		case 'venue':
-			processedEntry = {
-				entry,
-				prev,
-				next,
-				extra: (await getVenueExtra(entry, extraCommon)) as EntryExtraMap[C]
-			}
+			collectionExtra = (await getVenueExtra(entry)) as CollectionExtraMap[C]
 			break
 		default:
-			processedEntry = {
-				entry,
-				prev,
-				next,
-				extra: extraCommon as EntryExtraMap[C]
-			}
+			collectionExtra = {} as CollectionExtraMap[C]
+	}
+
+	// Combine base entry with extra properties
+	const baseEntry: ProcessedEntryBase<C> = {
+		entry,
+		prev,
+		next,
+		extra: collectionExtra
+	}
+	const commonExtra = await getCommonExtra(baseEntry)
+	const processedEntry: ProcessedEntry<C> = {
+		...baseEntry,
+		extra: { ...commonExtra, ...collectionExtra } as EntryExtraMap[C]
 	}
 
 	// Cache the processed entry
@@ -276,20 +267,20 @@ export async function processEntry<C extends CollectionKey>(
  * @param entry
  * @returns
  */
-async function getCommonExtra<C extends CollectionKey>(entry: CollectionEntry<C>): Promise<EntryExtraCommon> {
-	const title = entry.data.title
+async function getCommonExtra<C extends CollectionKey>(entry: ProcessedEntryBase<C>): Promise<EntryExtraCommon> {
+	const title = entry.entry.data.title
 
-	const metaDescription = getCollectionMetaDescription(entry)
+	const metaDescription = await getCollectionMetaDescription(entry)
 
 	// To preserve URLs from old site
-	const postSlug = getEntrySlug(title, entry.collection)
+	const postSlug = getEntrySlug(title, entry.entry.collection)
 
 	return {
 		slug: postSlug,
 		metaDescription,
-		absolutePath: getEntryPath(postSlug, entry.collection),
-		cover: await getCover(entry),
-		coverVertical: await getCover(entry, 'cover_vertical')
+		absolutePath: getEntryPath(postSlug, entry.entry.collection),
+		cover: await getCover(entry.entry),
+		coverVertical: await getCover(entry.entry, 'cover_vertical')
 	}
 }
 
@@ -302,9 +293,8 @@ async function getCommonExtra<C extends CollectionKey>(entry: CollectionEntry<C>
  * @returns extras with gig fields.
  */
 export async function getGigExtra(
-	entry: CollectionEntry<'gig'>,
-	extra: EntryExtraCommon
-): Promise<EntryExtraMap['gig']> {
+	entry: CollectionEntry<'gig'>
+): Promise<CollectionExtraMap['gig']> {
 	const artists = await Promise.all(
 		entry.data.artists.map(async (artist) => await loadAndFormatEntry('artist', artist.id.id))
 	)
@@ -321,7 +311,6 @@ export async function getGigExtra(
 	)
 
 	return {
-		...extra,
 		relatedBlogs,
 		artists,
 		venue,
@@ -336,9 +325,8 @@ export async function getGigExtra(
  * @returns extras with series fields.
  */
 export async function getSeriesExtra(
-	entry: CollectionEntry<'series'>,
-	extra: EntryExtraCommon
-): Promise<EntryExtraMap['series']> {
+	entry: CollectionEntry<'series'>
+): Promise<CollectionExtraMap['series']> {
 
 	const seriesGigs = await getCollection('gig', (gig) => gig.data.series && gig.data.series.id === entry.id)
 
@@ -346,7 +334,6 @@ export async function getSeriesExtra(
 	//const cover = (await Promise.all(seriesGigs.slice(0, 4).map(async (gig) => await getCover(gig)))).filter((covers) => covers !== undefined).map((covers) => covers[0])
 
 	return {
-		...extra,
 		gigCount: seriesGigs.length
 	}
 }
@@ -360,9 +347,8 @@ export async function getSeriesExtra(
  * @returns extras with blog fields.
  */
 export async function getBlogExtra(
-	entry: CollectionEntry<'blog'>,
-	extra: EntryExtraCommon
-): Promise<EntryExtraMap['blog']> {
+	entry: CollectionEntry<'blog'>
+): Promise<CollectionExtraMap['blog']> {
 	const relatedArtists = entry.data.relatedArtists
 		? (
 			await Promise.all(entry.data.relatedArtists.map(async (artist: any) => await getEntry('artist', artist.id)))
@@ -404,7 +390,6 @@ export async function getBlogExtra(
 	}
 
 	return {
-		...extra,
 		coverVid,
 		relatedGigs: relatedGigs.length ? relatedGigs : undefined,
 		relatedArtists,
@@ -419,9 +404,8 @@ export async function getBlogExtra(
  * @returns extras with vault session fields.
  */
 export async function getVaultSessionExtra(
-	entry: CollectionEntry<'vaultsession'>,
-	extra: EntryExtraCommon
-): Promise<EntryExtraMap['vaultsession']> {
+	entry: CollectionEntry<'vaultsession'>
+): Promise<CollectionExtraMap['vaultsession']> {
 	const artist = await getEntry('artist', entry.data.artist.id)
 
 	const type = entry.collection
@@ -445,7 +429,6 @@ export async function getVaultSessionExtra(
 	}
 
 	return {
-		...extra,
 		audio,
 		artist
 	}
@@ -484,9 +467,8 @@ function getLifetimeString(entry: CollectionEntry<'artist'> | CollectionEntry<'v
  * @returns extras with artist fields.
  */
 export async function getArtistExtra(
-	entry: CollectionEntry<'artist'>,
-	extra: EntryExtraCommon
-): Promise<EntryExtraMap['artist']> {
+	entry: CollectionEntry<'artist'>
+): Promise<CollectionExtraMap['artist']> {
 	const artistId = entry.id
 
 	// Get the latest gig featuring this artist
@@ -507,10 +489,11 @@ export async function getArtistExtra(
 
 	const latestGig = artistGigs.length ? artistGigs?.[0] : undefined
 
+	const defaultPath = getEntryPath(entry.data.title, entry.collection)
+
 	return {
-		...extra,
 		lifetimeString: getLifetimeString(entry),
-		absolutePath: artistGigs.length <= 1 && latestGig ? `${getEntryPath(latestGig.data.title, 'gig')}#${entry.id}` : extra.absolutePath,
+		absolutePath: artistGigs.length <= 1 && latestGig ? `${getEntryPath(latestGig.data.title, 'gig')}#${entry.id}` : defaultPath,
 		gigCount: artistGigs.length,
 		lastGig: latestGig?.data.date.getTime(),
 		cover
@@ -524,16 +507,15 @@ export async function getArtistExtra(
  * @returns extras with venue fields.
  */
 export async function getVenueExtra(
-	entry: CollectionEntry<'venue'>,
-	extra: EntryExtraCommon
-): Promise<EntryExtraMap['venue']> {
+	entry: CollectionEntry<'venue'>
+): Promise<CollectionExtraMap['venue']> {
 	const venueId = entry.id
 	const venueGigs = await getCollection('gig', (gig) => gig.data.venue.id === venueId)
+	const defaultPath = getEntryPath(entry.data.title, entry.collection)
 
 	return {
-		...extra,
 		lifetimeString: getLifetimeString(entry),
-		absolutePath: entry.data.series ? getEntryPath(entry.data.series.id, 'series') : extra.absolutePath,
+		absolutePath: entry.data.series ? getEntryPath(entry.data.series.id, 'series') : defaultPath,
 		gigCount: venueGigs.length
 	}
 }

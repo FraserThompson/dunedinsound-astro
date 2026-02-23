@@ -1,6 +1,6 @@
 FROM realies/audiowaveform
 
-RUN apk add --no-cache --update ffmpeg bash
+RUN apk add --no-cache --update ffmpeg bash sox
 
 COPY convert.sh /root/convert.sh
 

@@ -19,6 +19,7 @@ import 'lightgallery/css/lightgallery.css'
 import { Content, SiteContainer } from 'src/components/UtilClasses.css'
 import { ClientRouter } from 'astro:transitions'
 import siteIcon from 'src/assets/site-icon.jpg'
+import { siteTitle } from 'src/util/seo'
 
 interface Props {
 	hideFooter?: boolean
@@ -38,6 +39,7 @@ const { hideFooter, hasSidebar, style, className = '', poo } = Astro.props
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
 		<meta name="theme-color" content="#08090C" />
 		<meta name="generator" content={Astro.generator} />
+		<link rel="alternate" type="application/rss+xml" title={siteTitle} href={new URL('rss.xml', Astro.site)} />
 		<SEO poo={poo} />
 		<ClientRouter />
 		<script type="application/javascript" is:inline>
@@ -122,7 +124,7 @@ const { hideFooter, hasSidebar, style, className = '', poo } = Astro.props
 		const sidebarMenu = document.querySelector<HTMLElement>('#sidebar-menu')
 		const scrollPosition = sidebarMenu?.scrollTop
 		const activeElementId = sidebarMenu?.querySelector<HTMLElement>('.active')?.dataset?.sidebarid
-		
+
 		if (scrollPosition !== undefined && collection) {
 			const storedScroll: StoredScrollPosition = {
 				position: scrollPosition,

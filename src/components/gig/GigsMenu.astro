@@ -32,14 +32,23 @@ const { selected } = Astro.props
 <DropdownMenu
 	list={Object.entries(sortedGigs)
 		.reverse()
-		.map(([yearName, yearObj]) => ({
-			href: `#${makeHash(yearName)}`,
-			title: yearName,
-			subtitle: `(${yearObj.count})`
-		}))}
+		.map(([yearName, yearObj]) => {
+			const maxBars = 10;
+			const maxCount = Math.max(...Object.values(sortedGigs).map(y => y.count), 1);
+			const bars = Math.round((yearObj.count / maxCount) * maxBars) || 1;
+			const barStr = '▇'.repeat(bars).padEnd(maxBars, ' ');
+			// Format count as two digits
+			const countStr = yearObj.count.toString().padStart(2, '0');
+			return {
+				href: `#${makeHash(yearName)}`,
+				title: yearName,
+				subtitle: `${barStr} ${countStr}`
+			};
+		})}
 	direction="down"
 	backgroundColor="white"
 	textColor="black"
+	width="100%"
 	heightMobile={theme.dimensions.headerHeightMobile}
 	top={'0px'}
 	client:load

@@ -2,38 +2,27 @@
 /**
  * Indicator used site-wide to indicate all-agedness of a venue.
  */
-import UniversalAccessIcon from '~icons/iconoir/accessibility'
 import { theme } from '../Theme.css'
-
-interface Props {
-	hideText?: Boolean
-}
-
-const { hideText } = Astro.props
 ---
 
-<h4
-	title="All Ages"
-	class={hideText ? "hiddenText" : ""}
-	style={{
-		color: theme.color.lightForeground
-	}}
->
-	<UniversalAccessIcon />
-	{!hideText && 'All ages'}
-</h4>
-
-
-
+<div>
+	<span
+		title="All Ages"
+		style={{
+			color: theme.color.lightForeground
+		}}
+	>
+		{'ALL AGES'}
+	</span>
+</div>
 <style>
-	h4.hiddenText svg {
-		position: relative;
-		top: 4px;
+	div {
+		display: inline-block;
 	}
-	h4 {
-		margin-bottom: 0;
-		display: inline-flex;
-		align-items: center;
-		gap: 5px;
+	span {
+		border: 1px solid;
+		border-radius: 3px;
+		text-align: center;
+		font-size: 10px;
 	}
 </style>

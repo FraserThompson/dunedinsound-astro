@@ -31,7 +31,8 @@ const isDied = (entry) => 'died' in entry.entry.data && entry.entry.data.died !=
 const isAllAges = (entry) => 'allAges' in entry.entry.data && entry.entry.data.allAges
 const hasOrigin = (entry) => 'origin' in entry.entry.data
 
-const getCategory = (entry) => `${hasOrigin(entry) ? entry.entry.data.origin : 'Dunedin'},${isDied(entry) ? 'dead' : 'active'},${isAllAges(entry) ? 'allages' : ''}`
+const getCategory = (entry) =>
+	`${hasOrigin(entry) ? entry.entry.data.origin : 'Dunedin'},${isDied(entry) ? 'dead' : 'active'},${isAllAges(entry) ? 'allages' : ''}`
 
 const entries = collection ? await loadAndFormatCollection(collection) : collectionEntries
 ---
@@ -62,7 +63,7 @@ const entries = collection ? await loadAndFormatCollection(collection) : collect
 						href={selected ? entry.extra.absolutePath : undefined}
 					>
 						{entry.entry.data.title}
-						{isAllAges(entry) && <AllAgesIndicator hideText={true} />}
+						{isAllAges(entry) && <AllAgesIndicator />}
 						{'series' in entry.entry.data && <SeriesIndicator hideText={true} />}
 						{'gigCount' in entry.extra && (
 							<small

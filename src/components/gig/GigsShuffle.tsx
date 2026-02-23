@@ -6,6 +6,7 @@ import { getRandom } from 'src/util/helpers'
 import { shuffler } from 'src/util/shuffling.ts'
 import { GigsPlayerWrapper, GigsShuffleBottom, GigsShuffleWrapper, GigsTitlebar } from "./GigsShuffle.css"
 import HeavyYoutube from "../HeavyYoutube"
+import { formattedDate } from "src/util/names"
 
 
 /**
@@ -42,11 +43,11 @@ const GigsJukebox: FunctionalComponent = () => {
 	// Once we've fetched the blob, find a gig and get going
 	useEffect(() => {
 		if (!shuffledGigs || !shuffledGigs.length) return
-		selectNextGig()
+		selectGig(shuffleIndex)
 	}, [shuffledGigs])
 
 	// Selects the next gig to play
-	const selectNextGig = () => {
+	const selectGig = (shuffleIndex: number) => {
 		const currentGig = shuffledGigs[shuffleIndex]
 
 		// Filter to only the artists who have videos
@@ -55,8 +56,7 @@ const GigsJukebox: FunctionalComponent = () => {
 		// We only want gigs with videos
 		if (!artistsWithVids.length) {
 			// Skip to next if none of them have videos
-			setShuffleIndex(shuffleIndex + 1)
-			return
+			return selectGig(shuffleIndex + 1)
 		}
 
 		// Get a random artist from this gig
@@ -73,8 +73,8 @@ const GigsJukebox: FunctionalComponent = () => {
 		setCurrentVideo(currentVideo)
 		setCurrentGig(currentGig)
 
-		// Prepare for the next one
-		setShuffleIndex(shuffleIndex + 1)
+		// Update the index with the one we're on
+		setShuffleIndex(shuffleIndex)
 	}
 
 	return (
@@ -83,11 +83,11 @@ const GigsJukebox: FunctionalComponent = () => {
 				<div className={`${PlayerWrapper} player`}>
 					<div className={`${GigsTitlebar}`}></div>
 					<div style={{ margin: '5px', border: '3px groove #585662', aspectRatio: "16/9" }}>
-						{mode === 'video' && currentGig && currentVideo && <HeavyYoutube videoid={currentVideo} autoplay={true} onEnded={selectNextGig}/>}
+						{mode === 'video' && currentGig && currentVideo && <HeavyYoutube videoid={currentVideo} autoplay={true} onEnded={() => selectGig(shuffleIndex + 1)} />}
 					</div>
 					<div className={`${AudioWrapper}`}>
-						<button className={`${TransportButton} left`} disabled={shuffleIndex - 1 < 0} onClick={() => setShuffleIndex(shuffleIndex - 1)}></button>
-						<button className={`${TransportButton} right`} onClick={() => setShuffleIndex(shuffleIndex + 1)}>	</button>
+						<button className={`${TransportButton} left`} disabled={shuffleIndex - 1 < 0} onClick={() => selectGig(shuffleIndex - 1)}></button>
+						<button className={`${TransportButton} right`} onClick={() => selectGig(shuffleIndex + 1)}>	</button>
 						<div style={{ marginLeft: 'auto' }}>
 							<div className={`${mode === 'video' ? 'active' : ''} ${ToggleButton}`} onClick={() => setMode('video')} style={{ paddingLeft: '5px' }}>
 								Video
@@ -96,7 +96,7 @@ const GigsJukebox: FunctionalComponent = () => {
 					</div>
 					{currentGig && (
 						<ul className={`${TracklistWrapper}`}>
-							<li className={`${TracklistTrack} noHover`}>Date: {new Date(currentGig.date).toLocaleDateString()}</li>
+							<li className={`${TracklistTrack} noHover`}>Date: {formattedDate(new Date(currentGig.date))}</li>
 							<li className={`${TracklistTrack} noHover`}>
 								Gig: {currentGig.title}
 								<div>

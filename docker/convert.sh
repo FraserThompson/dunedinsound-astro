@@ -35,5 +35,15 @@ do
     filename=$(basename "$file" .$extension)
     echo "Working on $filename"
 		echo "Converting to 24bit WAV..."
-		ffmpeg -y -i "$file" -af "loudnorm=I=-16:TP=-1" -c:a pcm_s24le -ar 96000 $filename.24.wav
+		
+		# Detect max sample level (take only the first occurrence)
+		max_level=$(ffmpeg -i "$file" -af "astats" -f null - 2>&1 | grep "Max level:" | head -n1 | awk '{print $NF}')
+		echo "Detected max level: $max_level"
+		
+		# Calculate scaling factor to reach -1dB (0.891 in linear)
+		scale=$(echo "scale=10; 0.891 / $max_level" | bc)
+		echo "Scaling by: $scale"
+		
+		# Apply scaling and convert
+		ffmpeg -y -i "$file" -af "volume=${scale}:precision=float" -c:a pcm_s24le -ar 96000 "$filename.24.wav"
 done

@@ -1,19 +1,35 @@
-import type { CollectionEntry, CollectionKey } from 'astro:content'
+import type { CollectionKey } from 'astro:content'
+import type { ProcessedEntryBase } from './collection'
+import { artistsToString } from './helpers'
 
-export const siteTitle = 'dunedinsound.com'
+export const siteTitle = 'dunedinsound.com gig archive'
 
 export const defaultMetaDescription =
 	'A permanent and non-commercial media archive for gigs happening right now in Ōtepoti, Aotearoa.'
 
-export function getCollectionMetaDescription<C extends CollectionKey>(entry: CollectionEntry<C>): any {
-	const descriptions = {
-		artist: `Discover media from live gigs featuring ${entry.data.title} and heaps of other local artists.`,
-		venue: `Discover media from live gigs at ${entry.data.title} and heaps of other local venues.`,
-		gig: `Gig media from ${entry.data.title}.`,
-		blog: 'description' in entry.data ? entry.data.description : undefined,
-		vaultsession: 'description' in entry.data ? entry.data.description : undefined,
-		page: 'description' in entry.data ? entry.data.description : undefined
-	}
+type MetaHandlerMap = {
+	[K in CollectionKey]: (entry: ProcessedEntryBase<K>) => Promise<string>
+}
 
-	return descriptions[entry.collection]
+const metaHandlers = {
+	artist: async (entry) => `Media from gigs featuring ${entry.entry.data.title}.`,
+	venue: async (entry) => `Media from gigs at ${entry.entry.data.title}.`,
+	gig: async (entry) => {
+		const artists = entry.extra.artists ?? []
+		const venueTitle = entry.extra.venue?.data.title ?? entry.entry.data.venue.id
+		return `"${entry.entry.data.title}" at ${venueTitle} featuring ${artistsToString(artists)}.`
+	},
+	blog: async (entry) => entry.entry.data.description ?? defaultMetaDescription,
+	vaultsession: async (entry) => entry.entry.data.description ?? defaultMetaDescription,
+	page: async () => defaultMetaDescription,
+	series: async (entry) => entry.entry.data.description ?? defaultMetaDescription
+} satisfies MetaHandlerMap
+
+export async function getCollectionMetaDescription<C extends CollectionKey>(
+	entry: ProcessedEntryBase<C>
+): Promise<string> {
+	const handler = metaHandlers[entry.entry.collection] as (
+		entry: ProcessedEntryBase<C>
+	) => Promise<string>
+	return handler(entry)
 }

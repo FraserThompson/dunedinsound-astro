@@ -18,11 +18,14 @@ const HeavyYoutube: FunctionalComponent<Props> = ({ videoid, onEnded = null, aut
 	const [started, setStarted] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const shouldAutoplayRef = useRef(false)
+	const previousStateRef = useRef<number | null>(null)
 
 	useEffect(() => {
 		let cancelled = false
 		const id = idRef.current
 		let player: any = null
+		let stateCheckInterval: any = null
+		
 		const onAPIReady = () => {
 			if (cancelled) return
 			const YT = (window as any).YT
@@ -32,22 +35,29 @@ const HeavyYoutube: FunctionalComponent<Props> = ({ videoid, onEnded = null, aut
 				events: {
 					onReady: (event: any) => {
 						playerRef.current = event.target
-					},
-					onStateChange: (e: any) => {
-						const YT = (window as any).YT
-						if (shouldAutoplayRef.current && e.data === YT.PlayerState.CUED) {
-							shouldAutoplayRef.current = false
-							setLoading(true);
-							setTimeout(() => {
-								playerRef.current?.unMute?.()
-								playerRef.current?.playVideo?.()
-								setLoading(false);
-							}, 2000)
-						}
-						const ended = (YT && YT.PlayerState && e.data === YT.PlayerState.ENDED) || e.data === 0
-						if (ended) {
-							onEnded?.()
-						}
+
+						// Start polling for state changes since event handlers don't persist
+						stateCheckInterval = setInterval(() => {
+							const currentState = playerRef.current?.getPlayerState()
+							if (currentState !== previousStateRef.current) {
+								previousStateRef.current = currentState
+								console.log('State change (polled):', currentState, 'ENDED:', YT.PlayerState.ENDED, 'CUED:', YT.PlayerState.CUED)
+								
+								if (shouldAutoplayRef.current && currentState === YT.PlayerState.CUED) {
+									shouldAutoplayRef.current = false
+									setLoading(true);
+									setTimeout(() => {
+										playerRef.current?.unMute?.()
+										playerRef.current?.playVideo?.()
+										setLoading(false);
+									}, 2000)
+								}
+								if (currentState === YT.PlayerState.ENDED) {
+									console.log('Video ended, calling callback')
+									onEnded?.()
+								}
+							}
+						}, 100)
 					}
 				}
 			})
@@ -66,7 +76,14 @@ const HeavyYoutube: FunctionalComponent<Props> = ({ videoid, onEnded = null, aut
 
 		return () => {
 			cancelled = true
-			try { if (playerRef.current && playerRef.current.destroy) playerRef.current.destroy() } catch (e) { }
+			if (stateCheckInterval) {
+				clearInterval(stateCheckInterval)
+			}
+			try {
+				if (playerRef.current) {
+					playerRef.current.destroy()
+				}
+			} catch (e) { }
 			if ((window as any).onYouTubeIframeAPIReady === onAPIReady) {
 				; (window as any).onYouTubeIframeAPIReady = undefined
 			}
