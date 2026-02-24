@@ -1,6 +1,7 @@
 ---
 import instaIcon from '../assets/instagram-icon.png'
 import youtubeIcon from '../assets/youtube-icon.png'
+import RssIcon from '~icons/iconoir/rss-feed-tag-solid'
 import { footerContent, footerWrapper } from './SiteFooter.css'
 
 interface Props {
@@ -29,6 +30,9 @@ const { hasSidebar, className, style } = Astro.props
 			</a>
 			<a title="YouTube" target="_blank" rel="noopener" href="https://www.youtube.com/@dunedinsound">
 				<img src={youtubeIcon.src} width="50" height="50" alt="YouTube" />
+			</a>
+			<a title="Subscribe to RSS feed" href="/rss.xml">
+				<RssIcon width="50px" height="50px" aria-label="Subscribe to RSS feed" />
 			</a>
 		</div>
 	</div>

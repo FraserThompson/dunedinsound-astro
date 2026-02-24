@@ -3,23 +3,23 @@
  * Displays metadata about all content on the website by counting content.
  */
 import { getCollection } from 'astro:content'
-import { fdir } from 'fdir'
 import { infoHeader, infoTitle, infoContent } from './WebsiteInfo.css'
-import { DIST_MEDIA_DIR } from 'src/util/constants'
+import { loadAndFormatCollection } from 'src/util/collection'
 
 const currentYear = new Date().getFullYear()
 
-const gigs = await getCollection('gig')
+const gigs = await loadAndFormatCollection('gig')
 const artists = await getCollection('artist')
 const venues = await getCollection('venue')
 
-const imagesCount = await new fdir()
-	.onlyCounts()
-	.onlyDirs()
-	.glob('**/**/*')
-	.crawl(`${DIST_MEDIA_DIR}/gig`)
-	.withPromise()
-const audioCount = await new fdir().onlyCounts().glob('*.mp3').crawl(`${DIST_MEDIA_DIR}/gig`).withPromise()
+const counts = gigs.reduce(
+	(acc, gig) => {
+		acc[0] += gig.extra.media.imageCount
+		acc[1] += gig.extra.media.audio.length
+		return acc
+	},
+	[0, 0]
+)
 ---
 
 <div class={infoHeader}>
@@ -43,11 +43,11 @@ const audioCount = await new fdir().onlyCounts().glob('*.mp3').crawl(`${DIST_MED
 				</tr>
 				<tr>
 					<td>photos</td>
-					<td>{imagesCount.directories}</td>
+					<td>{counts[0]}</td>
 				</tr>
 				<tr>
 					<td>audio</td>
-					<td>{audioCount.files}</td>
+					<td>{counts[1]}</td>
 				</tr>
 				<tr>
 					<td>years in operation</td>

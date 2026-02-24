@@ -30,9 +30,16 @@ export type ArtistAudio = {
 	tracklist?: Track[]
 }
 
+interface GigMedia {
+	artistImages: { [id: string]: ResponsiveImage[] }
+	audio: ArtistAudio[]
+	imageCount: number
+}
+
 type CollectionExtraMap = {
 	gig: {
 		artists: ProcessedEntry<'artist'>[]
+		media: GigMedia
 		series?: ProcessedEntry<'series'>
 		venue?: CollectionEntry<'venue'>
 		relatedBlogs?: CollectionEntry<'blog'>[]
@@ -310,11 +317,14 @@ export async function getGigExtra(
 		blog.data.relatedGigs?.find((gig) => gig.id === entry.id)
 	)
 
+	const media = await getGigMedia(entry)
+
 	return {
 		relatedBlogs,
 		artists,
 		venue,
-		series
+		series,
+		media
 	}
 }
 
@@ -664,8 +674,8 @@ export async function getEntryImages<C extends CollectionKey>(
  * @param entry 
  * @returns Array of [images, audio]
  */
-export async function getGigMedia(entry: ProcessedEntry<'gig'>): Promise<[{ [id: string]: ResponsiveImage[] }, ArtistAudio[]]> {
-	const entryData = entry.entry.data
+export async function getGigMedia(entry: CollectionEntry<'gig'>): Promise<GigMedia> {
+	const entryData = entry.data
 
 	// This is used for sorting media into the correct order
 	const artistIds: string[] = entryData.artists.map((artist) => artist.id.id)
@@ -677,7 +687,7 @@ export async function getGigMedia(entry: ProcessedEntry<'gig'>): Promise<[{ [id:
 		maxDepth: 1
 	})
 		.onlyDirs()
-		.crawl(`${DIST_MEDIA_DIR}/gig/${entry.entry.id}`)
+		.crawl(`${DIST_MEDIA_DIR}/gig/${entry.id}`)
 		.withPromise()
 
 	// We initialize this so they're in the right order.
@@ -692,15 +702,19 @@ export async function getGigMedia(entry: ProcessedEntry<'gig'>): Promise<[{ [id:
 
 	artistDirs.sort((a, b) => artistIds.indexOf(path.basename(a)) - artistIds.indexOf(path.basename(b)))
 
+	let imageCount = 0
+
 	// Get all media from each subdirectory
 	for (const artistDir of artistDirs) {
 		const artistId = path.basename(artistDir)
 
-		if (artistId === 'cover' || artistId === entry.entry.id) continue
+		if (artistId === 'cover' || artistId === entry.id) continue
 
 		// Get all image paths in each responsive image dir
 		const responsiveImages = await getResponsiveImagesByDir(artistDir, artistId)
 		artistImages[artistId] = responsiveImages ? Object.values(responsiveImages) : []
+
+		imageCount += artistImages[artistId].length
 
 		// Get the audio
 		const audioFiles = (
@@ -726,5 +740,5 @@ export async function getGigMedia(entry: ProcessedEntry<'gig'>): Promise<[{ [id:
 		audio.sort((a, b) => artistIds.indexOf(a.title) - artistIds.indexOf(b.title))
 	}
 
-	return [artistImages, audio]
+	return { artistImages, audio, imageCount }
 }

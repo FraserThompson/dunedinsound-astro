@@ -12,17 +12,17 @@ type MetaHandlerMap = {
 }
 
 const metaHandlers = {
-	artist: async (entry) => `Media from gigs featuring ${entry.entry.data.title}.`,
-	venue: async (entry) => `Media from gigs at ${entry.entry.data.title}.`,
+	artist: async (entry) => `There are ${entry.extra.gigCount} entries featuring ${entry.entry.data.title} in the gig archive.`,
+	venue: async (entry) => `There are ${entry.extra.gigCount} entries at ${entry.entry.data.title} in the gig archive.`,
 	gig: async (entry) => {
 		const artists = entry.extra.artists ?? []
 		const venueTitle = entry.extra.venue?.data.title ?? entry.entry.data.venue.id
-		return `"${entry.entry.data.title}" at ${venueTitle} featuring ${artistsToString(artists)}.`
+		return `GIG "${entry.entry.data.title}" at ${venueTitle} featuring ${artistsToString(artists)}. ${entry.extra.media.imageCount} images, ${entry.extra.media.audio.length} audio, ${entry.entry.data.artists.filter((entry) => entry.vid).length} videos.`
 	},
-	blog: async (entry) => entry.entry.data.description ?? defaultMetaDescription,
+	blog: async (entry) => `ARTICLE "${entry.entry.data.title}": ${entry.entry.data.description ?? defaultMetaDescription}`,
 	vaultsession: async (entry) => entry.entry.data.description ?? defaultMetaDescription,
 	page: async () => defaultMetaDescription,
-	series: async (entry) => entry.entry.data.description ?? defaultMetaDescription
+	series: async (entry) => `SERIES "${entry.entry.data.title}": ${entry.entry.data.description ?? defaultMetaDescription}`
 } satisfies MetaHandlerMap
 
 export async function getCollectionMetaDescription<C extends CollectionKey>(

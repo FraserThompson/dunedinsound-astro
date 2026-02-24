@@ -39,6 +39,7 @@ const { hideFooter, hasSidebar, style, className = '', poo } = Astro.props
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
 		<meta name="theme-color" content="#08090C" />
 		<meta name="generator" content={Astro.generator} />
+		<link rel="self" href="https://dunedinsound.com" />
 		<link rel="alternate" type="application/rss+xml" title={siteTitle} href={new URL('rss.xml', Astro.site)} />
 		<SEO poo={poo} />
 		<ClientRouter />

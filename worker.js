@@ -62,6 +62,16 @@ export default {
 			return new Response("Invalid URI", { status: 400 });
 		}
 
+		// Redirect well-known WebFinger endpoints to Bridgy Fed
+		if (/^\/.well-known\/(host-meta|webfinger)/.test(url.pathname)) {
+			return new Response(null, {
+				status: 302,
+				headers: {
+					Location: `https://fed.brid.gy${url.pathname}${url.search}`
+				}
+			});
+		}
+
 		// Only GET and HEAD allowed
 		if (request.method !== 'GET' && request.method !== 'HEAD') {
 			return new Response("Method Not Allowed", {
