@@ -283,8 +283,14 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 			{!barebones && (
 				<ul className={TracklistWrapper}>
 					{artistAudio.map((item, index) => (
-						<li key={item.title} className={selectedArtist == index ? TracklistTrack + ' active' : TracklistTrack}>
-							<span style={{ flexGrow: 1 }}>
+						<li key={`${index}. ${item.title}`} className={selectedArtist == index ? TracklistTrack + ' active' : TracklistTrack}>
+							<span style={{
+								flexGrow: 1,
+								textOverflow: "ellipsis",
+								overflow: "hidden",
+								maxWidth: "95%",
+								whiteSpace: "nowrap",
+							}}>
 								<a role="button" onClick={() => selectArtist(index)} style={{ cursor: "pointer", display: 'block' }}>
 									{index + 1}. {item.title}
 								</a>

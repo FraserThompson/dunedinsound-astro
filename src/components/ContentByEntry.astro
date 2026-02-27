@@ -33,7 +33,11 @@ interface Props {
 }
 
 const { entry, images } = Astro.props
+const entryData = entry.entry.data
+const entryExtra = entry.extra
+const collection = entry.entry.collection
 
+// Find related gigs and sort them
 const gigs = await loadAndFormatCollection('gig', (thing) => {
 	const matchByArtist = thing.entry.data.artists?.find((artist) => artist.id.id === entry.entry.id)
 	const matchByVenue = thing.entry.data.venue.id === entry.entry.id
@@ -49,6 +53,13 @@ const gigsYearDropdownItems = Object.entries(gigsByYear)
 		count: gigs?.length || 0
 	}))
 
+const audioFromGigs = gigs.reduce((acc, gig) => {
+	const audio = gig.extra.media.audio
+		.filter((audio) => audio.title === entry.entry.id)
+		.map((audio) => ({ ...audio, title: gig.entry.id }))
+	return [...acc, ...audio]
+}, [])
+
 // Find related blogs
 const blogs = await loadAndFormatCollection('blog', (thing) => {
 	const matchByArtist = thing.entry.data.relatedArtists?.find((artist) => artist.id === entry.entry.id)
@@ -61,15 +72,6 @@ const vaultSessions = await loadAndFormatCollection('vaultsession', (thing) => {
 	const matchByArtist = thing.entry.data.artist.id === entry.entry.id
 	return matchByArtist
 })
-
-const entryData = entry.entry.data
-const entryExtra = entry.extra
-const collection = entry.entry.collection
-
-let tabs = [{ title: `Gigs (${gigs.length})`, id: 'gigs' }]
-blogs.length > 0 && tabs.push({ title: `Articles (${blogs.length})`, id: 'blogs' })
-images && Object.keys(images).length > 0 && tabs.push({ title: `Images (${Object.keys(images).length})`, id: 'images' })
-vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessions' })
 
 // Find other entries which reference this one as an alias
 const referencesThis = await loadAndFormatCollection(
@@ -86,6 +88,12 @@ const thisReferences =
 		: []
 // All references to or by this entry
 const allReferences = [...new Set([...Array.from(thisReferences), ...referencesThis])]
+
+// The tabs displayed on the page
+let tabs = [{ title: `Gigs (${gigs.length})`, id: 'gigs' }]
+blogs.length > 0 && tabs.push({ title: `Articles (${blogs.length})`, id: 'blogs' })
+images && Object.keys(images).length > 0 && tabs.push({ title: `Images (${Object.keys(images).length})`, id: 'images' })
+vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessions' })
 
 const hasBanner = Astro.slots.has('banner')
 const hasAudioculture = entryData.links && 'audioculture' in entryData.links
@@ -111,7 +119,7 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 					</p>
 				)}
 				{hasAudioculture && (
-					<blockquote cite={entryData.links?.audioculture?.link}>
+					<blockquote style={{fontSize: "16px"}} cite={entryData.links?.audioculture?.link}>
 						"{entryData.links?.audioculture?.snippet}" -{' '}
 						<a
 							href={entryData.links?.audioculture?.link}
