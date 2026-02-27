@@ -1,0 +1,33 @@
+---
+title: Subscribe
+---
+import RssIcon from '~icons/iconoir/rss-feed-tag-solid'
+import TextContainer from 'src/components/TextContainer.astro'
+
+<TextContainer>
+## How to subscribe
+
+dunedinsound.com practices [POSSE](https://indieweb.org/POSSE) (Publish Own Site, Syndicate Elsewhere).
+
+If you want to receive notifications when new gigs are added while avoiding corporate social media there's a few ways you can do this.
+
+### RSS
+
+You can subscribe to this sites RSS feed by installing a [feed reader](https://indieweb.org/feed_reader). These are useful for keeping up with things like podcasts and blogs without having to sign-up for anything.
+
+[Feeder](https://play.google.com/store/apps/details?id=com.nononsenseapps.feeder.play) is a good choice for Android, but many options exist.
+
+After that, clicking here should add it to your feed reader:
+
+<a title="Subscribe to RSS feed" href="/rss.xml">
+  <RssIcon width="50px" height="50px" aria-label="Subscribe to RSS feed" />
+</a>
+
+### Fediverse
+
+This site is bridged to the [fediverse](https://indieweb.org/federation). This means updates are spat out into various federated services such as [Mastodon](https://mastodon.social/).
+
+You can follow dunedinsound.com on ActivityPub compatible services (Mastodon) with this handle: `@dunedinsound.com@dunedinsound.com`
+
+Or on ATProto compatible services (Bluesky) with this handle: `dunedinsound.com.web.brid.gy`
+</TextContainer>

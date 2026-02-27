@@ -2,7 +2,7 @@ import type { CollectionKey } from 'astro:content'
 import type { ProcessedEntryBase } from './collection'
 import { artistsToString } from './helpers'
 
-export const siteTitle = 'dunedinsound.com gig archive'
+export const siteTitle = 'Dunedin gig archive'
 
 export const defaultMetaDescription =
 	'A permanent and non-commercial media archive for gigs happening right now in Ōtepoti, Aotearoa.'
