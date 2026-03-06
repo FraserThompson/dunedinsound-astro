@@ -1,0 +1,130 @@
+---
+/**
+ * A layout with a player for playing one artists audio.
+ *
+ * Props:
+ *  - entry: The entry.
+ */
+import EntryMenu from 'src/components/EntryMenu.astro'
+import ShuffleFilters from 'src/components/ShuffleFilters.astro'
+import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
+import { Shufflers } from 'src/util/shufflers'
+import SidebarLayout from '../base/SidebarLayout.astro'
+import ChevronLeftIcon from '~icons/iconoir/nav-arrow-left'
+import { backButton } from 'src/components/gig/GigsMenu.css'
+import SidebarPlayer from 'src/components/gig/SidebarPlayer'
+import ImageGallery from 'src/components/ImageGallery.astro'
+import TextContainer from 'src/components/TextContainer.astro'
+
+interface Props {
+	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
+}
+
+const { entry } = Astro.props
+const collection = entry.entry.collection
+
+const entryData = entry.entry.data
+const entryExtra = entry.extra
+
+// Find related gigs and sort them
+const gigs = await loadAndFormatCollection('gig', (thing) => {
+	const matchByArtist = thing.entry.data.artists?.find((artist) => artist.id.id === entry.entry.id)
+	const matchByVenue = thing.entry.data.venue.id === entry.entry.id
+	return !!(matchByArtist || matchByVenue)
+})
+
+const audioFromGigs = gigs.reduce((acc, gig) => {
+	const audio = gig.extra.media.audio
+		.filter((audio) => audio.title === entry.entry.id)
+		.map((audio) => ({ ...audio, title: gig.entry.id }))
+	return [...acc, ...audio]
+}, [])
+
+const shufflers = collection in Shufflers ? Shufflers[collection] : null
+---
+
+<SidebarLayout
+	contentOverTopSubheader={true}
+	hideFooter={true}
+	poo={{
+		title: entryData.title,
+		collection: entry.entry.collection,
+		description: entryExtra.metaDescription,
+		image: entryExtra.cover?.[0]?.src,
+		date: 'date' in entryData ? entryData.date?.toISOString() : undefined
+	}}
+>
+	<ShuffleFilters
+		slot="subheaderTopDesktop"
+		search={`Filter ${collection}s`}
+		sort={shufflers?.sort}
+		filter={shufflers?.filter}
+		openSearchWithSidebar={true}
+	/>
+	<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href=`/${collection}s`>
+		<ChevronLeftIcon /> Go to {collection}s home
+	</a>
+	<EntryMenu slot="sidebarMenu" collection={collection} selected={entry.entry.id} transition:persist />
+	<div slot="content" transition:persist>
+		<SidebarPlayer artistTitle={entry.entry.id} artistAudio={audioFromGigs} client:load>
+			<div id="gig-meta" style={{ fontSize: '16px', fontFamily: 'monospace' }}></div>
+			<ImageGallery thumbnailWidthDesktop="200px" />
+		</SidebarPlayer>
+	</div>
+</SidebarLayout>
+
+<script>
+	import {
+		imageGalleryUpdateEventName,
+		playerTrackChange,
+		type ImageGalleryUpdateEventDetails,
+		type PlayerTrackChangeEventDetails
+	} from 'src/util/events'
+
+	import { type ArtistGigResponse } from 'src/util/helpers'
+
+	const metaContainer = document.querySelector('#gig-meta')
+
+	/**
+	 * When the track changes, grab data about the gig.
+	 */
+	window.addEventListener(playerTrackChange, async (e: any) => {
+		const detail: PlayerTrackChangeEventDetails = e.detail
+		const artist = document.querySelector<HTMLElement>('#player-title')?.dataset.title?.toLowerCase()
+		const req = await fetch(`/data/artists/${artist}/${detail.track.title}.json`)
+
+		if (req.ok) {
+			const json: ArtistGigResponse = await req.json()
+
+			if (json.images) {
+				// Give images to the image gallery
+				const detail: ImageGalleryUpdateEventDetails = {
+					images: json.images
+				}
+				const event = new CustomEvent(imageGalleryUpdateEventName, {
+					detail
+				})
+				window.dispatchEvent(event)
+			}
+
+			const texts: Node[] = []
+			// Update metadata section
+			for (const field in json.data) {
+				const text = document.createElement('p')
+				text.setAttribute('style', 'padding:0;margin:0;')
+				const value = json.data[field]
+				if (typeof value === 'string') {
+					text.innerText = `${field}: ${value}`
+				} else if (Array.isArray(value)) {
+					const valueTexts = value.map((thing) => thing.id.id)
+					text.innerText = `${field}: ${valueTexts.join(',')}`
+				} else if (typeof value === 'object') {
+					text.innerText = `${field}: ${value.id}`
+				}
+				texts.push(text)
+			}
+
+			metaContainer?.replaceChildren(...texts)
+		}
+	})
+</script>

@@ -2,7 +2,6 @@
 import Banner from 'src/components/Banner.astro'
 import { type ProcessedEntry } from 'src/util/collection'
 import ImageGallery from 'src/components/ImageGallery.astro'
-import Player from 'src/components/gig/Player'
 import PlayerContainer from 'src/components/gig/PlayerContainer.astro'
 import MapIcon from '~icons/iconoir/map-pin'
 import CornerLabel from 'src/components/gig/CornerLabel.astro'
@@ -15,6 +14,7 @@ import { GigBannerPlayer, GigFeatureVid } from './Gig.css'
 import ArtistDropdown from 'src/components/gig/ArtistDropdown.astro'
 import { formattedDate } from 'src/util/names'
 import TextContainer from 'src/components/TextContainer.astro'
+import WinampPlayer from 'src/components/gig/WinampPlayer'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -99,7 +99,7 @@ const hasArtistMedia = galleryCount === 1 ? !uncategorizedImages.length : galler
 				{!!entryMedia.audio?.length && (
 					<div class={GigBannerPlayer}>
 						<PlayerContainer>
-							<Player artistAudio={entryMedia.audio} hideNextPrevOnMobile={true} client:load />
+							<WinampPlayer artistAudio={entryMedia.audio} client:load />
 						</PlayerContainer>
 					</div>
 				)}

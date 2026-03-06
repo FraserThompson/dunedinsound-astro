@@ -11,6 +11,52 @@ import { convert } from 'html-to-text'
 import type { MenuLink } from 'src/components/DropdownMenu'
 import type { ProcessedEntry } from './collection'
 import { breakpoints, headerHeight, headerHeightMobile } from 'src/Theme.css'
+import type { ResponsiveImage } from './ResponsiveImage'
+
+export interface ArtistGigResponse {
+	images?: { [id: string]: ResponsiveImage }
+	data: any
+}
+
+export type ResponsiveImageSizesKey = 'full' | 'textContainer' | 'grid' | 'smallGrid' | 'largeGrid'
+
+/**
+ * Map of sizes for each screen size.
+ */
+export const responsiveImageSizes: Record<ResponsiveImageSizesKey, string> = {
+	full: '50vw',
+	textContainer: '(min-width: 768px) 740px, 50vw',
+	grid: '(min-width: 1600px) 25vw, (min-width: 992px) 33vw, (min-width: 768px) 50vw, 25vw',
+	smallGrid: '(min-width: 1600px) 12vw, (min-width: 992px) 16vw, (min-width: 768px) 25vw, 50vw',
+	largeGrid: '(min-width: 1600px) 33vw, (min-width: 992px) 33vw, (min-width: 768px) 50vw, 100vw'
+}
+
+/**
+ * Gets attributes to give to a picture element.
+ * 
+ * @param args 
+ * @returns src, srcset, sizes, alt html attributes
+ */
+export function getResponsiveImageAttrs(args: {
+	responsiveImage?: ResponsiveImage
+	image?: string
+	alt?: string
+	size?: ResponsiveImageSizesKey
+}) {
+	const { responsiveImage, image, alt, size = 'grid' } = args
+	const firstSrc =
+		responsiveImage?.images?.[0 as unknown as keyof typeof responsiveImage.images] ??
+		Object.values(responsiveImage?.images ?? {})[0] ??
+		image ??
+		''
+
+	return {
+		src: firstSrc,
+		srcset: responsiveImage?.srcset ?? '',
+		sizes: responsiveImage ? responsiveImageSizes[size] : undefined,
+		alt: responsiveImage?.alt || alt || ''
+	}
+}
 
 /**
  * Gets the current screensize we're on based on breakpoints.

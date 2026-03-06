@@ -1,7 +1,7 @@
 ---
 /**
  * Width restricted container for readable text.
- * 
+ *
  * Props:
  *  - style (optional)
  *  - fontSize (optional): Override default font size.
@@ -17,13 +17,15 @@ interface Props {
 	fontSize?: string
 	containerWidth?: string
 	className?: string
+	id?: string
 	light?: boolean
 }
 
-const { style, fontSize, containerWidth, className = '', light } = Astro.props
+const { style, fontSize, containerWidth, className = '', id, light } = Astro.props
 ---
 
 <article
+	id={id}
 	class={`${textContainer} ${light ? 'light' : ''} ${className}`}
 	style={{
 		...style,

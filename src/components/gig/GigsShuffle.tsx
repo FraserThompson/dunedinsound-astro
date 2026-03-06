@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from "preact/hooks"
 import type { FunctionalComponent } from "preact"
-import { AudioWrapper, PlayerWrapper, ToggleButton, TracklistTrack, TracklistWrapper, TransportButton } from 'src/components/gig/Player.css'
 import CloudBackground from 'src/components/gig/CloudBackground'
 import { getRandom } from 'src/util/helpers'
 import { shuffler } from 'src/util/shuffling.ts'
-import { GigsPlayerWrapper, GigsShuffleBottom, GigsShuffleWrapper, GigsTitlebar } from "./GigsShuffle.css"
+import { ShufflePlayerWrapper, ShuffleBottom, ShuffleWrapper, ToggleButton } from "./GigsShuffle.css"
 import HeavyYoutube from "../HeavyYoutube"
 import { formattedDate } from "src/util/names"
-
+import { AudioWrapper, WinampPlayerWrapper, WinampTitlebar } from "./WinampPlayer.css"
+import { TransportButton } from "../player/PlayerTransport.css"
+import { TracklistTrack, TracklistWrapper } from "../player/PlayerTracklist.css"
 
 /**
  * A shufflable jukebox for playing random videos from random gigs.
@@ -78,10 +79,10 @@ const GigsJukebox: FunctionalComponent = () => {
 	}
 
 	return (
-		<div className={`${GigsShuffleWrapper}`}>
-			<div className={`${GigsPlayerWrapper}`}>
-				<div className={`${PlayerWrapper} player`}>
-					<div className={`${GigsTitlebar}`}></div>
+		<div className={`${ShuffleWrapper}`}>
+			<div className={`${ShufflePlayerWrapper}`}>
+				<div className={`${WinampPlayerWrapper} player`}>
+					<div className={`${WinampTitlebar}`} data-title="GIG JUKEBOX"></div>
 					<div style={{ margin: '5px', border: '3px groove #585662', aspectRatio: "16/9" }}>
 						{mode === 'video' && currentGig && currentVideo && <HeavyYoutube videoid={currentVideo} autoplay={true} onEnded={() => selectGig(shuffleIndex + 1)} />}
 					</div>
@@ -127,7 +128,7 @@ const GigsJukebox: FunctionalComponent = () => {
 				</div>
 			</div>
 			<CloudBackground></CloudBackground>
-			<div className={`${GigsShuffleBottom}`}></div>
+			<div className={`${ShuffleBottom}`}></div>
 		</div>
 	)
 }

@@ -130,7 +130,7 @@ export function clearCollectionCache() {
  */
 export async function loadAndFormatCollection<C extends CollectionKey>(
 	name: C,
-	filter?: (arg: ProcessedEntry<C>) => void
+	filter?: (arg: ProcessedEntry<C>) => boolean
 ): Promise<ProcessedEntry<C>[]> {
 	if (!cachedCollection[name]) {
 		const entries = await getCollection(name)
@@ -655,12 +655,15 @@ export function getEntryId<C extends CollectionKey>(entry: CollectionEntry<C>) {
  * @returns Object mapping image names to ResponsiveImage objects
  */
 export async function getEntryImages<C extends CollectionKey>(
-	entry: CollectionEntry<C>
+	entry: CollectionEntry<C>,
+	subDir: string = ""
 ): Promise<{ [id: string]: ResponsiveImage } | undefined> {
+
 	const images = await getResponsiveImagesByDir(
-		`${DIST_MEDIA_DIR}/${entry.collection}/${getEntryId(entry)}`,
+		`${DIST_MEDIA_DIR}/${entry.collection}/${getEntryId(entry)}/${subDir}`,
 		entry.data.title
 	)
+
 	if (images) {
 		delete images['cover']
 		delete images['cover_vertical']

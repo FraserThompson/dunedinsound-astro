@@ -3,6 +3,8 @@
  * We use lightgallery pretty much as is, this component just
  * updates the URL on image change, and opens the corresponding
  * image so people can link directly to images.
+ * 
+ * Also responds to {imageGalleryUpdatedEventName} to trigger a refresh.
  */
 import 'lightgallery/css/lightgallery.css'
 import 'lightgallery/css/lg-zoom.css'
@@ -12,16 +14,19 @@ import 'lightgallery/css/lg-zoom.css'
 	import lightGallery from 'lightgallery'
 	import lgZoom from 'lightgallery/plugins/zoom'
 	import { navigate } from 'astro:transitions/client'
+	import { imageGalleryUpdatedEventName } from 'src/util/events'
 
-	document.addEventListener('astro:page-load', () => {
+	let lightbox
+
+	const initLightbox = () => {
 		const options = {
 			selector: '.lightboxImage',
 			plugins: [lgZoom],
 			hideScrollbar: true,
 			speed: 300,
-			mobileSettings: { controls: false, showCloseIcon: true, download: true}
+			mobileSettings: { controls: false, showCloseIcon: true, download: true }
 		}
-		const lightbox = lightGallery(document.body, { ...options })
+		lightbox = lightGallery(document.body, { ...options })
 
 		const hash = window.location.hash
 
@@ -49,7 +54,6 @@ import 'lightgallery/css/lg-zoom.css'
 		})
 
 		document.body?.addEventListener('lgAfterClose', (e) => {
-
 			// If the lightbox was closed by the back button, we don't
 			// need to do anything to the URL. Just get out.
 			if (lightboxClosedByBack) {
@@ -69,11 +73,18 @@ import 'lightgallery/css/lg-zoom.css'
 
 		// Close the image gallery on back button
 		window.addEventListener('popstate', (e) => {
-			if (!location.hash.includes("image") && lightbox.lgOpened) {
+			if (!location.hash.includes('image') && lightbox.lgOpened) {
 				lightboxClosedByBack = true
 				lightbox.closeGallery()
 			}
-		});
-	})
+		})
+	}
 
+	// Init lightbox on page load
+	document.addEventListener('astro:page-load', initLightbox)
+
+	// Refresh lightbox when gallery updates
+	window.addEventListener(imageGalleryUpdatedEventName, () => {
+		lightbox.refresh()
+	})
 </script>

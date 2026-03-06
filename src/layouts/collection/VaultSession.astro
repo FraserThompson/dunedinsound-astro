@@ -5,7 +5,7 @@ import { socialLinksToMenuItems } from 'src/util/helpers'
 import LiteYoutube from 'src/components/LiteYoutube.astro'
 import { ArtistMetadata, VaultTracklist, VaultTrackLink } from './VaultSession.css'
 import PlayerContainer from 'src/components/gig/PlayerContainer.astro'
-import Player from 'src/components/gig/Player'
+import WinampPlayer from 'src/components/gig/WinampPlayer'
 
 interface Props {
 	entry: ProcessedEntry<'vaultsession'>
@@ -60,7 +60,7 @@ const entryExtra = entry.extra
 	{
 		entryExtra.audio && (
 			<PlayerContainer minimizedAlways={true}>
-				<Player artistAudio={[entryExtra.audio]} client:load />
+				<WinampPlayer artistAudio={[entryExtra.audio]} client:load />
 			</PlayerContainer>
 		)
 	}

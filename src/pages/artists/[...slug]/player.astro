@@ -1,0 +1,24 @@
+---
+import { loadAndFormatCollection } from 'src/util/collection.ts'
+import ArtistPlayer from 'src/layouts/collection/ArtistPlayer.astro'
+
+export async function getStaticPaths() {
+	const entries = await loadAndFormatCollection('artist')
+	return Promise.all(
+		entries
+			.filter((entry) => entry.extra.gigCount > 5)
+			.map(async (entry) => {
+				return {
+					params: { slug: entry.extra.slug },
+					props: {
+						entry
+					}
+				}
+			})
+	)
+}
+
+const { entry } = Astro.props
+---
+
+<ArtistPlayer entry={entry} />

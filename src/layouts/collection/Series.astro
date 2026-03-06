@@ -17,10 +17,10 @@ interface Props {
 const { entry } = Astro.props
 
 const gigs = await loadAndFormatCollection('gig', (thing) => {
-	return thing.entry.data.series?.id === entry.entry.id
+	return !!(thing.entry.data.series?.id === entry.entry.id)
 })
 const articles = await loadAndFormatCollection('blog', (thing) => {
-	return thing.entry.data.relatedSeries?.find((series) => series.id === entry.entry.id)
+	return !!(thing.entry.data.relatedSeries?.find((series) => series.id === entry.entry.id))
 })
 
 const gigsByYear = Object.groupBy(gigs, (gig) => gig.entry.data.date.getFullYear())

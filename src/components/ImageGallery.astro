@@ -5,25 +5,148 @@
  * If you are using multiple gallerys in one page you shuld pass noLightbox=true
  * and use your own lightbox outside of this component.
  *
+ * Clientside updates:
+ * You can provide a new batch of ResponsiveImage elements on the client via an
+ * event and it will update the gallery.
+ *
+ * Fire the "{imageGalleryUpdateEventName}" event with "{ImageGalleryUpdateEventDetails}"
+ * and this component will respond by updating the gallery.
+ *
  */
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import ImageGalleryLightbox from './ImageGalleryLightbox.astro'
-import { gridWrapper } from './GridContainer.css'
+import { gridWrapper, childWidthDesktop, childWidthMobile } from './GridContainer.css'
 import LightboxImage from './LightboxImage.astro'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
-	images: ResponsiveImage[]
+	images?: ResponsiveImage[]
 	noLightbox?: boolean
+	thumbnailWidthDesktop?: string
+	thumbnailWidthMobile?: string
 }
 
-const { images, noLightbox } = Astro.props
+const { images, noLightbox, thumbnailWidthDesktop = '450px', thumbnailWidthMobile = '180px' } = Astro.props
 ---
 
-<div class={gridWrapper['autoflow']}>
-	{images.map((responsiveImage) => 
-	<div style={{aspectRatio: "3/2" }}>
-		<LightboxImage responsiveImage={responsiveImage} />
-	</div>)}
-</div>
+<image-gallery
+	class={gridWrapper['autoflow']}
+	style={assignInlineVars({
+		[childWidthDesktop]: thumbnailWidthDesktop,
+		[childWidthMobile]: thumbnailWidthMobile
+	})}
+>
+	{images?.map((responsiveImage) => <LightboxImage responsiveImage={responsiveImage} />)}
+</image-gallery>
 
 {!noLightbox && <ImageGalleryLightbox />}
+
+<script>
+	import {
+		imageGalleryUpdatedEventName,
+		imageGalleryUpdateEventName,
+		type ImageGalleryUpdateEventDetails
+	} from 'src/util/events'
+	import { getResponsiveImageAttrs, responsiveImageSizes } from 'src/util/helpers'
+	import type { ResponsiveImage } from 'src/util/ResponsiveImage'
+
+	export class ImageGallery extends HTMLElement {
+		observer: MutationObserver
+
+		constructor() {
+			super()
+		}
+
+		/**
+		 * Creates a responsive image element.
+		 * This duplicates most of the markup from Image2.astro and LightBoxImage.astro
+		 * Maybe there's a nicer way to do this...
+		 * @param responsiveImage
+		 */
+		private createResponsiveImageEl = (responsiveImage: ResponsiveImage) => {
+			const attrs = getResponsiveImageAttrs({ responsiveImage })
+			const sizes = responsiveImageSizes['grid']
+
+			const anchor = document.createElement('a')
+			anchor.setAttribute('class', 'lightboxImage')
+			anchor.setAttribute('href', responsiveImage.images['3200'])
+			anchor.setAttribute('data-download-url', responsiveImage.src)
+			anchor.setAttribute('data-lg-size', '3200-2134')
+			anchor.setAttribute('data-alt', responsiveImage.alt || 'image')
+
+			const wrapper = document.createElement('div')
+			wrapper.setAttribute('class', 'image2')
+
+			const picture = document.createElement('picture')
+
+			const source = document.createElement('source')
+			source.setAttribute('type', 'image/webp')
+			source.setAttribute('srcset', responsiveImage.srcset)
+			source.setAttribute('sizes', sizes)
+
+			const img = document.createElement('img')
+			for (const attr in attrs) {
+				img.setAttribute(attr, attrs[attr])
+			}
+			img.setAttribute('loading', 'lazy')
+			img.setAttribute('decoding', 'async')
+
+			picture.append(source, img)
+			wrapper.append(picture)
+			anchor.append(wrapper)
+
+			return anchor
+		}
+
+		/**
+		 * Create responsive image elements from an array of them.
+		 * @param responsiveImages
+		 */
+		private createElements = (responsiveImages: ResponsiveImage[]) => {
+			return responsiveImages.map((responsiveImage) => this.createResponsiveImageEl(responsiveImage))
+		}
+
+		/**
+		 * Respond to update trigger events
+		 * @param e
+		 */
+		onTriggerUpdate = (e: any) => {
+			const detail: ImageGalleryUpdateEventDetails = e.detail
+			const elements = this.createElements(Object.values(detail.images))
+			this.replaceChildren(...elements)
+		}
+
+		/**
+		 * Respond to DOM updates and send an event (eg. so the lightbox can refresh)
+		 * 
+		 * @param mutationList
+		 * @param observer
+		 */
+		onDomChange = (mutationList, observer) => {
+			for (const mutation of mutationList) {
+				if (mutation.type === 'childList') {
+					const updatedEvent = new CustomEvent(imageGalleryUpdatedEventName)
+					window.dispatchEvent(updatedEvent)
+				}
+			}
+		}
+
+		connectedCallback() {
+			// Listen for update events
+			window.addEventListener(imageGalleryUpdateEventName, this.onTriggerUpdate)
+
+			// Watch for DOM changes so we can tell others (ie. the lightbox)
+			const targetNode = this
+			const config = { attributes: false, childList: true, subtree: true }
+			this.observer = new MutationObserver(this.onDomChange)
+			this.observer.observe(targetNode, config)
+		}
+
+		disconnectedCallback() {
+			window.removeEventListener(imageGalleryUpdateEventName, this.onTriggerUpdate)
+			this.observer.disconnect()
+		}
+	}
+
+	customElements.define('image-gallery', ImageGallery)
+</script>

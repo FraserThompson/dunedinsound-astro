@@ -27,8 +27,10 @@ import { contentByEntryActiveWrapper, spacer, yearWrapper } from './ContentByEnt
 import { formattedDate, timespanString, referencesTimespanString } from 'src/util/names'
 import { socialLinksWrapper } from './ContentByEntry.css'
 
+type AliasReference = ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
+
 interface Props {
-	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
+	entry: AliasReference
 	images?: { [id: string]: ResponsiveImage }
 }
 
@@ -41,7 +43,7 @@ const collection = entry.entry.collection
 const gigs = await loadAndFormatCollection('gig', (thing) => {
 	const matchByArtist = thing.entry.data.artists?.find((artist) => artist.id.id === entry.entry.id)
 	const matchByVenue = thing.entry.data.venue.id === entry.entry.id
-	return matchByArtist || matchByVenue
+	return !!(matchByArtist || matchByVenue)
 })
 
 const gigsByYear = Object.groupBy(gigs, (gig) => gig.entry.data.date.getFullYear())
@@ -53,18 +55,11 @@ const gigsYearDropdownItems = Object.entries(gigsByYear)
 		count: gigs?.length || 0
 	}))
 
-const audioFromGigs = gigs.reduce((acc, gig) => {
-	const audio = gig.extra.media.audio
-		.filter((audio) => audio.title === entry.entry.id)
-		.map((audio) => ({ ...audio, title: gig.entry.id }))
-	return [...acc, ...audio]
-}, [])
-
 // Find related blogs
 const blogs = await loadAndFormatCollection('blog', (thing) => {
 	const matchByArtist = thing.entry.data.relatedArtists?.find((artist) => artist.id === entry.entry.id)
 	const matchByVenue = thing.entry.data.relatedVenues?.find((venue) => venue.id === entry.entry.id)
-	return matchByArtist || matchByVenue
+	return !!(matchByArtist || matchByVenue)
 })
 
 // Find related vaultsessions
@@ -76,15 +71,17 @@ const vaultSessions = await loadAndFormatCollection('vaultsession', (thing) => {
 // Find other entries which reference this one as an alias
 const referencesThis = await loadAndFormatCollection(
 	collection,
-	(thing) => 'aliases' in thing.entry.data && thing.entry.data.aliases?.find((alias) => alias.id === entry.entry.id)
+	(thing) => !!('aliases' in thing.entry.data && thing.entry.data.aliases?.find((alias) => alias.id === entry.entry.id))
 )
 
 // Load this entries aliases
-const thisReferences =
+const thisReferences: AliasReference[] =
 	'aliases' in entryData && entryData.aliases
-		? Array.from(
-				await Promise.all(entryData.aliases.map(async (thing) => await loadAndFormatEntry(collection, thing.id)))
-			).sort((a, b) => (a.entry.data.date && b.entry.data.date && a.entry.data.date > b.entry.data.date ? -1 : 1))
+		? (
+				await Promise.all(
+					entryData.aliases.map((thing) => loadAndFormatEntry(collection, thing.id) as Promise<AliasReference>)
+				)
+			).sort((a, b) => ((a.entry.data.date?.getTime() ?? 0) > (b.entry.data.date?.getTime() ?? 0) ? -1 : 1))
 		: []
 // All references to or by this entry
 const allReferences = [...new Set([...Array.from(thisReferences), ...referencesThis])]
@@ -119,7 +116,7 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 					</p>
 				)}
 				{hasAudioculture && (
-					<blockquote style={{fontSize: "16px"}} cite={entryData.links?.audioculture?.link}>
+					<blockquote style={{ fontSize: '16px' }} cite={entryData.links?.audioculture?.link}>
 						"{entryData.links?.audioculture?.snippet}" -{' '}
 						<a
 							href={entryData.links?.audioculture?.link}

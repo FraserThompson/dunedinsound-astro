@@ -20,14 +20,9 @@
 */
 
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
-import {
-	ImageStyle,
-	ImageWrapper,
-	Caption,
-	objectFit as objectFitVar,
-	objectPosition as objectPositionVar
-} from './Image2.css'
+import { objectFit as objectFitVar, objectPosition as objectPositionVar } from './Image2.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
+import { getResponsiveImageAttrs, responsiveImageSizes } from 'src/util/helpers'
 
 export type ResponsiveImageSizes = {
 	full: string
@@ -62,46 +57,21 @@ const {
 	loading = 'lazy'
 } = Astro.props
 
-const sizes: ResponsiveImageSizes = {
-	full: '50vw',
-	textContainer: `
-				(min-width: 768px) 740px,
-				50vw
-				`,
-	grid: `
-					(min-width: 1600px) 25vw,
-					(min-width: 992px) 33vw,
-					(min-width: 768px) 50vw, 
-					25vw
-					`,
-	smallGrid: `
-					(min-width: 1600px) 12vw,
-					(min-width: 992px) 16vw,
-					(min-width: 768px) 25vw, 
-					50vw
-					`,
-	largeGrid: `
-					(min-width: 1600px) 33vw,
-					(min-width: 992px) 33vw,
-					(min-width: 768px) 50vw, 
-					100vw
-					`
-}
+const attrs = getResponsiveImageAttrs({ responsiveImage, image, alt, size })
 ---
 
-<div class={`${ImageWrapper} ${className}`}>
+<div class={`image2 ${className}`}>
 	<picture>
-		<source type="image/webp" srcset={responsiveImage && responsiveImage.srcset} sizes={sizes[size]} />
+		<source type="image/webp" srcset={responsiveImage && responsiveImage.srcset} sizes={responsiveImageSizes[size]} />
 		<img
-			class={ImageStyle}
-			src={responsiveImage ? responsiveImage.images[0] : image}
-			srcset={responsiveImage && responsiveImage.srcset}
-			sizes={sizes[size]}
-			alt={responsiveImage?.alt || alt}
+			src={attrs.src}
+			srcset={attrs.srcset}
+			sizes={attrs.sizes}
+			alt={attrs.alt}
 			loading={loading}
 			decoding="async"
 			style={assignInlineVars({ [objectFitVar]: objectFit, [objectPositionVar]: objectPosition })}
 		/>
 	</picture>
-	{caption && <p class={Caption}>{caption}</p>}
+	{caption && <p>{caption}</p>}
 </div>

@@ -3,21 +3,19 @@ import { loadAndFormatCollection, getEntryImages } from 'src/util/collection.ts'
 import EntriesByCollectionLayout from 'src/layouts/base/EntriesByCollectionLayout.astro'
 
 export async function getStaticPaths() {
-	const entries = await loadAndFormatCollection('artist')
+	const entries = await loadAndFormatCollection('artist', (entry) => entry.extra.gigCount > 1)
 	// We don't want artist pages for artists with only 1 gig (these redirect to gig see collection.ts)
 	return Promise.all(
-		entries
-			.filter((entry) => entry.extra.gigCount > 1)
-			.map(async (entry) => {
-				const images = await getEntryImages(entry.entry)
-				return {
-					params: { slug: entry.extra.slug },
-					props: {
-						entry,
-						images
-					}
+		entries.map(async (entry) => {
+			const images = await getEntryImages(entry.entry)
+			return {
+				params: { slug: entry.extra.slug },
+				props: {
+					entry,
+					images
 				}
-			})
+			}
+		})
 	)
 }
 

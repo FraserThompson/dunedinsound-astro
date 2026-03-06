@@ -1,7 +1,6 @@
 import { createVar, fallbackVar, globalStyle, style, styleVariants } from '@vanilla-extract/css'
 import { theme } from '../Theme.css'
 import { backgroundImageWrapper } from './BackgroundImage.css'
-import { ImageWrapper } from './Image2.css'
 
 export const background = createVar()
 export const height = createVar()
@@ -88,7 +87,7 @@ export const tileContent = style({
 	}
 })
 
-globalStyle(`${tileInner} > ${backgroundImageWrapper}, ${tileInner} > ${ImageWrapper}`, {
+globalStyle(`${tileInner} > ${backgroundImageWrapper}, ${tileInner} > .image2`, {
 	position: 'absolute',
 	width: '100%',
 	height: '100%',

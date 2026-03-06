@@ -3,7 +3,7 @@ import TextContainer from 'src/components/TextContainer.astro'
 import BaseLayout from '../layouts/base/BaseLayout.astro'
 import CloudBackground from 'src/components/gig/CloudBackground'
 import SiteFooter from 'src/components/SiteFooter.astro'
-import { GigsShuffleBottom } from 'src/components/gig/GigsShuffle.css'
+import { ShuffleBottom } from 'src/components/gig/GigsShuffle.css'
 ---
 
 <BaseLayout
@@ -26,7 +26,7 @@ import { GigsShuffleBottom } from 'src/components/gig/GigsShuffle.css'
 		<p>This page doesn't exist :(</p>
 		<p>Maybe you were looking for a particular <a href="/gigs">gig</a>?</p>
 	</TextContainer>
-	<div class={`${GigsShuffleBottom}`}>
+	<div class={`${ShuffleBottom}`}>
 		<SiteFooter style={{ background: 'none', zIndex: '5', minHeight: 'auto' }} />
 	</div>
 	<CloudBackground />

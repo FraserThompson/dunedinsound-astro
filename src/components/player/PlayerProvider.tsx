@@ -1,33 +1,36 @@
 /*
-* Player.js
+* PlayerProvider
+*
 * An audio player for playing media from one or more artists.
+*
+* This uses the provider/context pattern so we can decouple its visual components and
+* have more control over how they're displayed.
+*  
+* See WinampPlayer.tsx for an example of implementation.
+* 
 * Parameters:
 *  - artistAudio: Media to be displayed. An array of artistMedia objects.
-	 - barebones (optional): If true it will just render the waveform without tracklist/transport.
-	 - hideNextPrevOnMobile (optional): If true next/prev buttons hidden on mobile.
-	 - playOnLoad (optional): If true it will play the track once it loads.
-	 - setWaveSurferCallback (optional): Used to access the Wavesurfer object from outside.
+*  - playOnLoad (optional): If true it will play the track once it loads.
+* 
+* Events:
+*  - {playerTrackChange} (see events.ts): Fired when track changes.
 */
 
-import { useRef, useState, useEffect, useCallback } from "preact/hooks"
+import { useRef, useState, useEffect, useCallback, useMemo } from "preact/hooks"
 import type { FunctionalComponent } from "preact"
-import DownloadIcon from '~icons/iconoir/download'
-import LoadingSpinner from '../LoadingSpinner.tsx'
 import { timeToSeconds } from '../../util/helpers.ts'
-import { AudioWrapper, LengthWrapper, PlayerWrapper, Titlebar, TracklistTrack, TracklistWrapper, TransportButton, WaveWrapper } from './Player.css.ts'
 import WaveSurfer from 'wavesurfer.js'
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.esm.js'
 import type { ArtistAudio } from "src/util/collection.ts"
+import { PlayerContext } from "./PlayerContext.tsx"
+import { playerTrackChange, type PlayerTrackChangeEventDetails } from "src/util/events.ts"
 
 interface Props {
 	artistAudio: ArtistAudio[]
-	barebones?: boolean
 	playOnLoad?: boolean
-	hideNextPrevOnMobile?: boolean
-	setWaveSurferCallback?: (wavesurfer: WaveSurfer | undefined) => any
 }
 
-const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad, hideNextPrevOnMobile, setWaveSurferCallback }) => {
+const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, children }) => {
 	const waveformRef = useRef(null)
 
 	const [playing, setPlaying] = useState(false)
@@ -35,7 +38,7 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 	const [loading, setLoading] = useState(true)
 	const [currentTime, setCurrentTime] = useState(undefined as number | undefined)
 	const [duration, setDuration] = useState(undefined as number | undefined)
-	const [selectedArtist, setSelectedArtist] = useState(0)
+	const [selectedTrack, setselectedTrack] = useState(0)
 	const [queuePlay, setQueuePlay] = useState(false)
 	const [queueSeek, setQueueSeek] = useState(undefined as string | undefined)
 
@@ -92,7 +95,7 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 		return () => wavesurfer && wavesurfer.destroy()
 	}, [wavesurfer])
 
-	// Update UI when ready
+	// On wavesurfer ready
 	useEffect(() => {
 		if (!wavesurfer || !regionsPlugin) return
 
@@ -116,11 +119,11 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 		}
 
 		if (queueSeek) {
-			seekToTime(queueSeek, selectedArtist, true)
+			seekToTime(queueSeek, selectedTrack, true)
 			setQueueSeek(undefined)
 		}
 
-		artistAudio[selectedArtist].tracklist?.forEach((track) => {
+		artistAudio[selectedTrack].tracklist?.forEach((track) => {
 			const region = {
 				content: track.title,
 				start: timeToSeconds(track.time),
@@ -132,6 +135,7 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 		})
 	}, [ready])
 
+	// On playing state change
 	useEffect(() => {
 		if (playing) {
 			const event = new Event('wavesurfer_play')
@@ -142,14 +146,23 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 		}
 	}, [playing])
 
-	// Load media if selected artist changes
+	// On selected track change
 	useEffect(() => {
-		wavesurfer && load(artistAudio[selectedArtist].files[0], artistAudio[selectedArtist].files[1])
-	}, [artistAudio, selectedArtist, wavesurfer])
+		const track = artistAudio[selectedTrack]
 
-	useEffect(() => {
-		setWaveSurferCallback && setWaveSurferCallback(wavesurfer)
-	}, [wavesurfer])
+		// Send an event
+		const detail: PlayerTrackChangeEventDetails = {
+			track
+		}
+
+		const event = new CustomEvent(playerTrackChange, {
+			detail
+		})
+
+		window.dispatchEvent(event)
+
+		wavesurfer && load(track.files[0], track.files[1])
+	}, [artistAudio, selectedTrack, wavesurfer])
 
 	// Fetches the file and loads it into wavesurfer
 	const load = useCallback(
@@ -184,8 +197,8 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 			if (!wavesurfer) return;
 
 			// If we haven't loaded it we need to load THEN seek
-			if (artistIndex !== selectedArtist) {
-				selectArtist(artistIndex, play, time)
+			if (artistIndex !== selectedTrack) {
+				selectTrack(artistIndex, play, time)
 				return
 			}
 
@@ -199,38 +212,32 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 		[wavesurfer]
 	)
 
-	const formatTime = useCallback((time: number) => {
-		const mins = ~~(time / 60)
-		const secs = ('0' + ~~(time % 60)).slice(-2)
-		return mins + ':' + secs
-	}, [])
-
 	const playPause = useCallback(() => {
 		if (!wavesurfer) return
 		wavesurfer.playPause()
 	}, [wavesurfer])
 
 	const previous = useCallback(() => {
-		const newSelectedArtist = Math.max(selectedArtist - 1, 0)
-		selectArtist(newSelectedArtist)
-	}, [selectedArtist])
+		const newselectedTrack = Math.max(selectedTrack - 1, 0)
+		selectTrack(newselectedTrack)
+	}, [selectedTrack])
 
 	const next = useCallback(
 		(play?: boolean) => {
-			const newSelectedArtist = Math.min(selectedArtist + 1, artistAudio.length - 1)
-			selectArtist(newSelectedArtist, play)
+			const newselectedTrack = Math.min(selectedTrack + 1, artistAudio.length - 1)
+			selectTrack(newselectedTrack, play)
 		},
-		[selectedArtist, artistAudio]
+		[selectedTrack, artistAudio]
 	)
 
-	const selectArtist = useCallback(
-		(newSelectedArtist: number, play?: boolean, seek?: string) => {
+	const selectTrack = useCallback(
+		(newselectedTrack: number, play?: boolean, seek?: string) => {
 			setQueuePlay(!!play)
 			setQueueSeek(seek)
-			setSelectedArtist(newSelectedArtist)
+			setselectedTrack(newselectedTrack)
 
 			// If we're trying to select an artist we already have loaded and we want to play then just do it
-			if (selectedArtist === newSelectedArtist && wavesurfer) {
+			if (selectedTrack === newselectedTrack && wavesurfer) {
 				if (play) wavesurfer.playPause()
 				return
 			}
@@ -238,86 +245,29 @@ const Player: FunctionalComponent<Props> = ({ artistAudio, barebones, playOnLoad
 			wavesurfer && wavesurfer.stop()
 			wavesurfer && wavesurfer.empty()
 		},
-		[selectedArtist, wavesurfer]
+		[selectedTrack, wavesurfer]
 	)
 
-	return (
-		<div className={PlayerWrapper}>
-			{!barebones && <div className={Titlebar} />}
-			<div className={AudioWrapper}>
-				{!barebones && (
-					<div>
-						<button
-							className={`${TransportButton} left ${hideNextPrevOnMobile ? 'hideMobile' : ''}`}
-							disabled={!ready}
-							id="prev"
-							onClick={() => previous()}
-							aria-label="Previous track">
-						</button>
-						<button
-							disabled={!ready}
-							className={playing ? `${TransportButton} pause` : `${TransportButton} play`}
-							onClick={() => playPause()}
-							aria-label="Play/Pause">
-						</button>
-						<button
-							className={`${TransportButton} right ${hideNextPrevOnMobile ? 'hideMobile' : ''}`}
-							disabled={!ready}
-							id="next"
-							onClick={() => next()}
-							aria-label="Next track">
-						</button>
-					</div>
-				)}
-				<div className={WaveWrapper} id="waveform" ref={waveformRef}>
-					{ready && <div className={LengthWrapper} style={{ left: '0px' }}>{currentTime ? formatTime(currentTime) : "00:00"}</div>}
-					{ready && <div className={LengthWrapper} style={{ right: '0px' }}>{duration && formatTime(duration)}</div>}
-				</div>
-				{loading && (
-					<div style={{ position: 'absolute', zIndex: '10' }}>
-						<LoadingSpinner />
-					</div>
-				)}
-			</div>
-
-			{!barebones && (
-				<ul className={TracklistWrapper}>
-					{artistAudio.map((item, index) => (
-						<li key={`${index}. ${item.title}`} className={selectedArtist == index ? TracklistTrack + ' active' : TracklistTrack}>
-							<span style={{
-								flexGrow: 1,
-								textOverflow: "ellipsis",
-								overflow: "hidden",
-								maxWidth: "95%",
-								whiteSpace: "nowrap",
-							}}>
-								<a role="button" onClick={() => selectArtist(index)} style={{ cursor: "pointer", display: 'block' }}>
-									{index + 1}. {item.title}
-								</a>
-								{item.tracklist && (
-									<ul className="tracklist">
-										{item.tracklist.map((item) => (
-											<li key={item.title}>
-												<a onClick={() => seekToTime(item.time, index, true)} style={{ cursor: "pointer" }} role="button">
-													{item.title} ({item.time})
-												</a>
-											</li>
-										)
-										)}
-									</ul>
-								)}
-							</span>
-							<span style={{ marginLeft: "auto" }}>
-								<a title={'Download MP3: ' + item.title} href={item.files[0]} target="_blank">
-									<DownloadIcon />
-								</a>
-							</span>
-						</li>
-					))}
-				</ul>
-			)}
-		</div>
+	const value = useMemo(
+		() => ({
+			artistAudio,
+			waveformRef,
+			playing,
+			ready,
+			loading,
+			currentTime,
+			duration,
+			selectedTrack,
+			playPause,
+			next,
+			previous,
+			selectTrack,
+			seekToTime,
+		}),
+		[artistAudio, playing, ready, loading, currentTime, duration, selectedTrack, playPause, next, previous, selectTrack, seekToTime]
 	)
+
+	return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>
 }
 
-export default Player
+export default PlayerProvider

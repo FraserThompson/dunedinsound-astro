@@ -3,6 +3,8 @@ import { theme } from '../Theme.css'
 
 const defaultWidth = '100vw'
 
+export const leftOffset = createVar()
+
 export const offsetTop = createVar()
 export const offsetTopMobile = createVar()
 
@@ -17,7 +19,7 @@ export const sidebarWrapper = style({
 	bottom: `calc(${fallbackVar(offsetBottomMobile, '0px')} + ${theme.dimensions.headerHeightMobile})`,
 	height: `calc(100% - ${fallbackVar(offsetTopMobile, '0px')} - ${fallbackVar(offsetBottomMobile, '0px')} - ${theme.dimensions.headerHeightMobile
 		})`,
-	left: 0,
+	left: fallbackVar(leftOffset, '0px'),
 	width: defaultWidth,
 	zIndex: '10',
 	boxShadow: theme.borders.shadow,

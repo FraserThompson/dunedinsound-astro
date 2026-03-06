@@ -28,19 +28,21 @@ import {
 	offsetTop,
 	offsetTopMobile,
 	offsetBottom,
-	offsetBottomMobile
+	offsetBottomMobile,
+	leftOffset
 } from './SidebarNav.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
 	top?: string
+	left?: string
 	topMobile?: string
 	bottom?: string
 	bottomMobile?: string
 	customButton?: boolean
 }
 
-const { top, topMobile, bottom, bottomMobile, customButton } = Astro.props
+const { top, left, topMobile, bottom, bottomMobile, customButton } = Astro.props
 
 const hasSidebarSubheaderBottomMobile = Astro.slots.has('sidebarSubheaderBottomMobile')
 const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile')
@@ -54,7 +56,8 @@ const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile'
 			[offsetTop]: top,
 			[offsetTopMobile]: topMobile,
 			[offsetBottom]: bottom,
-			[offsetBottomMobile]: bottomMobile
+			[offsetBottomMobile]: bottomMobile,
+			[leftOffset]: left
 		})}
 	>
 		<slot name="sidebarSubheaderTopMobile" />
