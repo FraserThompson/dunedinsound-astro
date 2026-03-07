@@ -6,6 +6,7 @@ export interface PlayerState {
   playing: boolean
   ready: boolean
   selectedTrack: number
+	currentTrackTitle: string
   currentTime?: number
   duration?: number
 }

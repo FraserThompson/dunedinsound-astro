@@ -24,7 +24,7 @@ const PlayerTracklist: FunctionalComponent<Props> = ({ maxHeight }) => {
 						maxWidth: "92%",
 					}}>
 						<a role="button" className={TrackButton} onClick={() => selectTrack(index)}>
-							{index + 1}. {item.title}
+							{item.title}
 						</a>
 						{item.tracklist && (
 							<ul className="tracklist">

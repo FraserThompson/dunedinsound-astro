@@ -1,14 +1,12 @@
 import { style, globalStyle } from '@vanilla-extract/css'
 import { theme } from '../../Theme.css'
+import { WinampInset } from './PlayerTracklist.css'
 
-export const WaveWrapper = style({
+export const WaveWrapper = style([WinampInset, {
 	flexGrow: 1,
-	border: theme.borders.groove,
-	borderRadius: '3px',
-	backgroundColor: 'black',
 	minHeight: '65px',
 	position: 'relative'
-})
+}])
 
 globalStyle(`${WaveWrapper} div::part(marker)`, {
 	cursor: 'pointer !important',

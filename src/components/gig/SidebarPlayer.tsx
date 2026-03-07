@@ -9,21 +9,27 @@ import PlayerTransport from "../player/PlayerTransport"
 import PlayerWaveform from "../player/PlayerWaveform"
 import PlayerTracklist from "../player/PlayerTracklist"
 import { PlayerSidebarTracklist, PlayerSidebarWrapper, PlayerSidebarWaveWrapper, PlayerSidebarContentWrapper, PlayerSidebarBottomWrapper, PlayerSidebarChildrenWrapper } from "./SidebarPlayer.css"
-import { WinampTitlebar } from "./WinampPlayer.css"
+import { WinampTitlebar } from "./CompactPlayer.css"
+import PlayerCurrentTrack from "../player/PlayerCurrentTrack"
 
 interface Props {
-	artistTitle: string
+	title: string
 	artistAudio: ArtistAudio[]
 	playOnLoad?: boolean
 }
 
-const PlayerSidebar: FunctionalComponent<Props> = ({ artistTitle, artistAudio, playOnLoad, children }) => (
+const PlayerSidebar: FunctionalComponent<Props> = ({ title, artistAudio, playOnLoad, children }) => (
 	<PlayerProvider artistAudio={artistAudio} playOnLoad={playOnLoad}>
 		<div class={PlayerSidebarWrapper}>
-			<div id="player-title" className={WinampTitlebar} data-title={artistTitle.toLocaleUpperCase()} />
+			<div className={WinampTitlebar} data-title={title.toLocaleUpperCase()} />
 			<div class={PlayerSidebarWaveWrapper}>
 				<PlayerWaveform />
-				<PlayerTransport />
+				<div style={{ display: "flex", marginTop: "5px" }}>
+					<PlayerTransport />
+					<div style={{ marginLeft: "5px" }}>
+						<PlayerCurrentTrack />
+					</div>
+				</div>
 			</div>
 			<div class={PlayerSidebarBottomWrapper}>
 				<div class={PlayerSidebarTracklist}>

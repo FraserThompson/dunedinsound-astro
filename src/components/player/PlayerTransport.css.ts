@@ -11,9 +11,8 @@ export const TransportButton = style({
 	fontSize: '1.5em',
 	backgroundSize: 'cover',
 	backgroundRepeat: 'no-repeat',
-	width: '23px',
-	height: '18px',
-	marginTop: '3px',
+	width: '28px',
+	height: '23px',
 	selectors: {
 		'&:hover:enabled': {
 			filter: 'brightness(0.8)'

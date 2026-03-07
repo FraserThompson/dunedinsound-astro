@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css'
 import { theme } from '../../Theme.css'
+import { WinampInset } from '../player/PlayerTracklist.css'
 
 export const PlayerSidebarWrapper = style({
 	height: "100vh",
@@ -15,28 +16,33 @@ export const PlayerSidebarWrapper = style({
 
 export const PlayerSidebarBottomWrapper = style({
 	display: 'flex',
+	flexDirection: 'column',
 	minHeight: 0,
 	flex: 1,
+	'@media': {
+		'screen and (--md)': {
+			flexDirection: 'row'
+		}
+	}
 })
 
 export const PlayerSidebarContentWrapper = style({
+	display: 'flex',
+	flexDirection: 'column',
 	border: theme.borders.groove,
 	borderRadius: '3px',
-	overflow: 'auto',
 	minHeight: 0,
 	flex: 1,
 	margin: '0 5px 5px 0',
-	paddingLeft: '5px',
-	paddingRight: '5px',
+	padding: '0 5px 5px 5px'
 })
 
-export const PlayerSidebarChildrenWrapper = style({
-	border: theme.borders.groove,
-	backgroundColor: 'black',
-	borderRadius: '3px',
-	margin: '0px 5px 5px 5px',
-	padding: '0px 5px 5px 5px',
-})
+export const PlayerSidebarChildrenWrapper = style([WinampInset, {
+	padding: '0px',
+	minHeight: 0,
+	flex: 1,
+	overflow: 'auto',
+}])
 
 export const PlayerSidebarTracklist = style({
 	display: 'flex',
@@ -46,7 +52,7 @@ export const PlayerSidebarTracklist = style({
 	borderRadius: '3px',
 	margin: '0px 5px 5px 5px',
 	padding: '0px 5px 5px 5px',
-	width: theme.dimensions.sidebarWidth
+	maxWidth: `420px`
 })
 
 export const PlayerSidebarWaveWrapper = style({

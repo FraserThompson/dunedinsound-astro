@@ -14,7 +14,7 @@ import { GigBannerPlayer, GigFeatureVid } from './Gig.css'
 import ArtistDropdown from 'src/components/gig/ArtistDropdown.astro'
 import { formattedDate } from 'src/util/names'
 import TextContainer from 'src/components/TextContainer.astro'
-import WinampPlayer from 'src/components/gig/WinampPlayer'
+import CompactPlayer from 'src/components/gig/CompactPlayer'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -99,7 +99,7 @@ const hasArtistMedia = galleryCount === 1 ? !uncategorizedImages.length : galler
 				{!!entryMedia.audio?.length && (
 					<div class={GigBannerPlayer}>
 						<PlayerContainer>
-							<WinampPlayer artistAudio={entryMedia.audio} client:load />
+							<CompactPlayer artistAudio={entryMedia.audio} client:load />
 						</PlayerContainer>
 					</div>
 				)}

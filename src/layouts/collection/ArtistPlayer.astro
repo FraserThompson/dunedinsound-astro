@@ -66,8 +66,8 @@ const shufflers = collection in Shufflers ? Shufflers[collection] : null
 	</a>
 	<EntryMenu slot="sidebarMenu" collection={collection} selected={entry.entry.id} transition:persist />
 	<div slot="content" transition:persist>
-		<SidebarPlayer artistTitle={entry.entry.id} artistAudio={audioFromGigs} client:load>
-			<div id="gig-meta" style={{ fontSize: '16px', fontFamily: 'monospace' }}></div>
+		<SidebarPlayer title={`${entry.entry.id} PLAYER`} artistAudio={audioFromGigs} client:load>
+			<div id="gig-meta" style={{ padding: '5px' }} data-artist={entry.entry.id}></div>
 			<ImageGallery thumbnailWidthDesktop="200px" />
 		</SidebarPlayer>
 	</div>
@@ -90,7 +90,7 @@ const shufflers = collection in Shufflers ? Shufflers[collection] : null
 	 */
 	window.addEventListener(playerTrackChange, async (e: any) => {
 		const detail: PlayerTrackChangeEventDetails = e.detail
-		const artist = document.querySelector<HTMLElement>('#player-title')?.dataset.title?.toLowerCase()
+		const artist = document.querySelector<HTMLElement>('#gig-meta')?.dataset.artist
 		const req = await fetch(`/data/artists/${artist}/${detail.track.title}.json`)
 
 		if (req.ok) {

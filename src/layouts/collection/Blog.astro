@@ -6,7 +6,7 @@ import Banner from 'src/components/Banner.astro'
 import BlogSidebar from 'src/components/blog/BlogSidebar.astro'
 import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
-import WinampPlayer from 'src/components/gig/WinampPlayer'
+import CompactPlayer from 'src/components/gig/CompactPlayer'
 import Image from 'src/components/LightboxImage.astro'
 import SidebarNav from 'src/components/SidebarNav.astro'
 import ChevronLeftIcon from '~icons/iconoir/nav-arrow-left'
@@ -69,7 +69,7 @@ const entryExtra = entry.extra
 		<BlogSidebar className="hideMobile" entry={entry} headings={headings} />
 		<div class={BlogTextContainer}>
 			<TextContainer light={true}>
-				<Content components={{ WinampPlayer, Image }} />
+				<Content components={{ CompactPlayer, Image }} />
 			</TextContainer>
 		</div>
 	</div>

@@ -8,17 +8,17 @@ import PlayerProvider from "../player/PlayerProvider"
 import PlayerTransport from "../player/PlayerTransport"
 import PlayerWaveform from "../player/PlayerWaveform"
 import PlayerTracklist from "../player/PlayerTracklist"
-import { AudioWrapper, WinampPlayerWrapper, WinampTitlebar } from "./WinampPlayer.css"
+import { AudioWrapper, CompactPlayerWrapper, WinampTitlebar } from "./CompactPlayer.css"
 
 interface Props {
 	artistAudio: ArtistAudio[]
 	playOnLoad?: boolean
 }
 
-const WinampPlayer: FunctionalComponent<Props> = ({ artistAudio, playOnLoad }) => {
+const CompactPlayer: FunctionalComponent<Props> = ({ artistAudio, playOnLoad }) => {
 	return (
 		<PlayerProvider artistAudio={artistAudio} playOnLoad={playOnLoad}>
-			<div className={WinampPlayerWrapper}>
+			<div className={CompactPlayerWrapper}>
 				<div className={WinampTitlebar} data-title="AUDIO PLAYER"/>
 				<div className={AudioWrapper}>
 					<PlayerTransport />
@@ -32,4 +32,4 @@ const WinampPlayer: FunctionalComponent<Props> = ({ artistAudio, playOnLoad }) =
 	)
 }
 
-export default WinampPlayer
+export default CompactPlayer

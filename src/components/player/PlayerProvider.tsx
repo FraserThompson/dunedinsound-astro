@@ -6,7 +6,7 @@
 * This uses the provider/context pattern so we can decouple its visual components and
 * have more control over how they're displayed.
 *  
-* See WinampPlayer.tsx for an example of implementation.
+* See CompactPlayer.tsx for an example of implementation.
 * 
 * Parameters:
 *  - artistAudio: Media to be displayed. An array of artistMedia objects.
@@ -36,9 +36,12 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 	const [playing, setPlaying] = useState(false)
 	const [ready, setReady] = useState(false) // used only on initial load
 	const [loading, setLoading] = useState(true)
+
 	const [currentTime, setCurrentTime] = useState(undefined as number | undefined)
 	const [duration, setDuration] = useState(undefined as number | undefined)
 	const [selectedTrack, setselectedTrack] = useState(0)
+	const [currentTrackTitle, setCurrentTrackTitle] = useState("")
+
 	const [queuePlay, setQueuePlay] = useState(false)
 	const [queueSeek, setQueueSeek] = useState(undefined as string | undefined)
 
@@ -48,7 +51,9 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 	const waveformColor = '#bfced9'
 	const waveformProgressColor = '#fffadf'
 
-	// Create instance on mount
+	/**
+	 * On component mount.
+	 */
 	useEffect(() => {
 		if (window) {
 			(window as any).cached_json = (window as any).cached_json || {}
@@ -72,7 +77,9 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 		setRegionsPlugin(wsRegions)
 	}, [])
 
-	// Attach callbacks when we have the instance
+	/**
+	 * On wavesurfer instance available.
+	 */
 	useEffect(() => {
 		if (!wavesurfer) return
 		wavesurfer.on('ready', (duration) => {
@@ -95,7 +102,9 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 		return () => wavesurfer && wavesurfer.destroy()
 	}, [wavesurfer])
 
-	// On wavesurfer ready
+	/**
+	 * On wavesurfer ready.
+	 */
 	useEffect(() => {
 		if (!wavesurfer || !regionsPlugin) return
 
@@ -135,7 +144,9 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 		})
 	}, [ready])
 
-	// On playing state change
+	/**
+	 * On play state change.
+	 */
 	useEffect(() => {
 		if (playing) {
 			const event = new Event('wavesurfer_play')
@@ -146,9 +157,12 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 		}
 	}, [playing])
 
-	// On selected track change
+	/**
+	 * On selected track change.
+	 */
 	useEffect(() => {
 		const track = artistAudio[selectedTrack]
+		const title = track.title
 
 		// Send an event
 		const detail: PlayerTrackChangeEventDetails = {
@@ -160,6 +174,8 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 		})
 
 		window.dispatchEvent(event)
+
+		setCurrentTrackTitle(title)
 
 		wavesurfer && load(track.files[0], track.files[1])
 	}, [artistAudio, selectedTrack, wavesurfer])
@@ -258,6 +274,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 			currentTime,
 			duration,
 			selectedTrack,
+			currentTrackTitle,
 			playPause,
 			next,
 			previous,

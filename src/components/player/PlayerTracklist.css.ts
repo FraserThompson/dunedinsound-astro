@@ -1,18 +1,23 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 import { theme } from "../../Theme.css"
 
-export const TracklistWrapper = style({
-	flex: 1,
+export const WinampInset = style({
 	backgroundColor: 'black',
-	margin: '0px',
 	border: theme.borders.groove,
 	borderRadius: '3px',
+	scrollbarWidth: 'thin',
+	scrollbarColor: '#d5ceb1 black',
+	fontFamily: 'monospace',
+	fontSize: "16px"
+})
+
+export const TracklistWrapper = style([WinampInset, {
+	flex: 1,
+	margin: '0px',
 	paddingLeft: '0px',
 	paddingRight: '0px',
 	overflowY: 'auto',
-	scrollbarWidth: 'thin',
-	scrollbarColor: '#d5ceb1 black',
-})
+}])
 
 export const TracklistTrack = style({
 	lineHeight: '1.5rem',
