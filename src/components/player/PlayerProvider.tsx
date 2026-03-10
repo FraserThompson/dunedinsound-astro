@@ -36,6 +36,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 	const [playing, setPlaying] = useState(false)
 	const [ready, setReady] = useState(false) // used only on initial load
 	const [loading, setLoading] = useState(true)
+	const [shuffle, setShuffle] = useState(false)
 
 	const [currentTime, setCurrentTime] = useState(undefined as number | undefined)
 	const [duration, setDuration] = useState(undefined as number | undefined)
@@ -240,7 +241,8 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 
 	const next = useCallback(
 		(play?: boolean) => {
-			const newselectedTrack = Math.min(selectedTrack + 1, artistAudio.length - 1)
+			const lastTrackIndex = artistAudio.length - 1
+			const newselectedTrack = !shuffle ? Math.min(selectedTrack + 1, lastTrackIndex) : Math.floor(Math.random() * ((lastTrackIndex) + 1));
 			selectTrack(newselectedTrack, play)
 		},
 		[selectedTrack, artistAudio]
@@ -264,6 +266,13 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 		[selectedTrack, wavesurfer]
 	)
 
+	const toggleShuffle = useCallback(
+		() => {
+			setShuffle(!shuffle)
+		},
+		[shuffle]
+	)
+
 	const value = useMemo(
 		() => ({
 			artistAudio,
@@ -271,6 +280,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 			playing,
 			ready,
 			loading,
+			shuffle,
 			currentTime,
 			duration,
 			selectedTrack,
@@ -280,8 +290,9 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 			previous,
 			selectTrack,
 			seekToTime,
+			toggleShuffle
 		}),
-		[artistAudio, playing, ready, loading, currentTime, duration, selectedTrack, playPause, next, previous, selectTrack, seekToTime]
+		[artistAudio, playing, ready, loading, shuffle, currentTime, duration, selectedTrack, currentTrackTitle, playPause, next, previous, selectTrack, seekToTime, toggleShuffle]
 	)
 
 	return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>

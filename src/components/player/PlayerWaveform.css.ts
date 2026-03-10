@@ -45,7 +45,6 @@ globalStyle(`${WaveWrapper} wave`, {
 	zIndex: 10
 })
 
-
 export const LengthWrapper = style({
 	lineHeight: '1em',
 	color: '#28da1d',

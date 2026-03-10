@@ -14,7 +14,6 @@ import ChevronLeftIcon from '~icons/iconoir/nav-arrow-left'
 import { backButton } from 'src/components/gig/GigsMenu.css'
 import SidebarPlayer from 'src/components/gig/SidebarPlayer'
 import ImageGallery from 'src/components/ImageGallery.astro'
-import TextContainer from 'src/components/TextContainer.astro'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
@@ -81,50 +80,63 @@ const shufflers = collection in Shufflers ? Shufflers[collection] : null
 		type PlayerTrackChangeEventDetails
 	} from 'src/util/events'
 
-	import { type ArtistGigResponse } from 'src/util/helpers'
+	import { getEntryPath, type ArtistGigResponse } from 'src/util/helpers'
 
-	const metaContainer = document.querySelector('#gig-meta')
+	document.addEventListener('astro:page-load', () => {
+		const metaContainer = document.querySelector('#gig-meta')
 
-	/**
-	 * When the track changes, grab data about the gig.
-	 */
-	window.addEventListener(playerTrackChange, async (e: any) => {
-		const detail: PlayerTrackChangeEventDetails = e.detail
-		const artist = document.querySelector<HTMLElement>('#gig-meta')?.dataset.artist
-		const req = await fetch(`/data/artists/${artist}/${detail.track.title}.json`)
+		/**
+		 * When the track changes, grab data about the gig.
+		 */
+		window.addEventListener(playerTrackChange, async (e: any) => {
+			const detail: PlayerTrackChangeEventDetails = e.detail
+			const artist = document.querySelector<HTMLElement>('#gig-meta')?.dataset.artist
+			const req = await fetch(`/data/artists/${artist}/${detail.track.title}.json`)
 
-		if (req.ok) {
-			const json: ArtistGigResponse = await req.json()
+			if (req.ok) {
+				const json: ArtistGigResponse = await req.json()
 
-			if (json.images) {
-				// Give images to the image gallery
-				const detail: ImageGalleryUpdateEventDetails = {
-					images: json.images
+				if (json.images) {
+					// Give images to the image gallery
+					const detail: ImageGalleryUpdateEventDetails = {
+						images: json.images
+					}
+					const event = new CustomEvent(imageGalleryUpdateEventName, {
+						detail
+					})
+					window.dispatchEvent(event)
 				}
-				const event = new CustomEvent(imageGalleryUpdateEventName, {
-					detail
-				})
-				window.dispatchEvent(event)
-			}
 
-			const texts: Node[] = []
-			// Update metadata section
-			for (const field in json.data) {
+				const gig = json.data
+
+				const texts: Node[] = []
+
 				const text = document.createElement('p')
 				text.setAttribute('style', 'padding:0;margin:0;')
-				const value = json.data[field]
-				if (typeof value === 'string') {
-					text.innerText = `${field}: ${value}`
-				} else if (Array.isArray(value)) {
-					const valueTexts = value.map((thing) => thing.id.id)
-					text.innerText = `${field}: ${valueTexts.join(',')}`
-				} else if (typeof value === 'object') {
-					text.innerText = `${field}: ${value.id}`
-				}
+				text.innerHTML = `title: <a href="${getEntryPath(gig.data.title, 'gig')}">${gig.data.title}</a>`
 				texts.push(text)
-			}
 
-			metaContainer?.replaceChildren(...texts)
-		}
+				// Update metadata section
+				for (const field in gig.data) {
+					const text = document.createElement('p')
+					text.setAttribute('style', 'padding:0;margin:0;')
+					const value = gig.data[field]
+
+					if (field === 'title') {
+						continue
+					} else if (typeof value === 'string') {
+						text.innerHTML = `${field}: ${value}`
+					} else if (Array.isArray(value)) {
+						const valueTexts = value.map((thing) => `${thing.id.id}`)
+						text.innerHTML = `${field}: ${valueTexts.join(',')}`
+					} else if (typeof value === 'object') {
+						text.innerHTML = `${field}: ${value.id}`
+					}
+					texts.push(text)
+				}
+
+				metaContainer?.replaceChildren(...texts)
+			}
+		})
 	})
 </script>

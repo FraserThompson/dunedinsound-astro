@@ -1,5 +1,8 @@
-import { globalStyle, style } from "@vanilla-extract/css"
+import { createVar, fallbackVar, globalStyle, style } from "@vanilla-extract/css"
 import { theme } from "../../Theme.css"
+
+export const maxHeightVar = createVar()
+export const maxHeightDesktopVar = createVar()
 
 export const WinampInset = style({
 	backgroundColor: 'black',
@@ -17,6 +20,12 @@ export const TracklistWrapper = style([WinampInset, {
 	paddingLeft: '0px',
 	paddingRight: '0px',
 	overflowY: 'auto',
+	maxHeight: fallbackVar(maxHeightVar, '100%'),
+	'@media': {
+		'screen and (--md)': {
+			maxHeight: fallbackVar(maxHeightDesktopVar, maxHeightVar, '100%'),
+		}
+	}
 }])
 
 export const TracklistTrack = style({

@@ -23,9 +23,10 @@ import SocialLinks from 'src/components/SocialLinks.astro'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import BlogTile from 'src/components/blog/BlogTile.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
-import { contentByEntryActiveWrapper, spacer, yearWrapper } from './ContentByEntry.css'
+import { artistPlayerThreshold } from 'src/util/constants'
+import { contentByEntryActiveWrapper, yearWrapper, artistPlaylistWrapper } from './ContentByEntry.css'
 import { formattedDate, timespanString, referencesTimespanString } from 'src/util/names'
-import { socialLinksWrapper } from './ContentByEntry.css'
+import ShortcutIcon from './ShortcutIcon.astro'
 
 type AliasReference = ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
 
@@ -94,7 +95,8 @@ vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessio
 
 const hasBanner = Astro.slots.has('banner')
 const hasAudioculture = entryData.links && 'audioculture' in entryData.links
-const hasInfo = entryData.description || hasAudioculture || !!referencesThis.length || !!thisReferences.length
+const hasInfo =
+	entryData.description || hasAudioculture || !!referencesThis.length || !!thisReferences.length || entryData.links
 ---
 
 <Banner
@@ -107,7 +109,6 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 	{
 		(
 			<Fragment slot={hasInfo ? 'subtitle' : ''}>
-				<div class={`${entryData.links ? spacer : ''} noCenter`} />
 				{entryData.description && (
 					<p>
 						<strong>Summary</strong>
@@ -115,6 +116,7 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 						<Fragment set:html={entryData.description} />
 					</p>
 				)}
+				{entryData.links && <SocialLinks links={entryData.links} />}
 				{hasAudioculture && (
 					<blockquote style={{ fontSize: '16px' }} cite={entryData.links?.audioculture?.link}>
 						"{entryData.links?.audioculture?.snippet}" -{' '}
@@ -146,17 +148,17 @@ const hasInfo = entryData.description || hasAudioculture || !!referencesThis.len
 			</Fragment>
 		)
 	}
-	{
-		entryData.links && (
-			<div slot="customContent" class={socialLinksWrapper}>
-				<SocialLinks links={entryData.links} />
-			</div>
-		)
-	}
 	<!-- active indicator -->
 	<div slot="customContent" class={contentByEntryActiveWrapper}>
 		<ActiveIndicator entry={entry} />
 	</div>
+	{
+		entryExtra.gigCount > artistPlayerThreshold && collection === 'artist' && (
+			<div slot="customContent" class={artistPlaylistWrapper}>
+				<ShortcutIcon title="ARTIST PLAYLIST" href={`${entryExtra.absolutePath}/player`} />
+			</div>
+		)
+	}
 	<slot name="banner" slot={hasBanner ? 'background' : ''} />
 </Banner>
 <Divider

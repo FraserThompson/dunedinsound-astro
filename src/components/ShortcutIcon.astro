@@ -1,0 +1,21 @@
+---
+/**
+ */
+import MusicIcon from '~icons/iconoir/music-note-solid'
+import ShortcutSquareIcon from '~icons/iconoir/shortcut-square'
+import { shortcutIconWrapper } from './ShortcutIcon.css'
+
+interface Props {
+	href: string
+	title: string
+}
+
+const { href, title } = Astro.props
+---
+
+<a class={shortcutIconWrapper} title={title} href={href}>
+	<MusicIcon class="musicIcon" />
+	<div class="square"></div>
+	<span class="text">{title}</span>
+	<ShortcutSquareIcon class="shortcutIcon" />
+</a>

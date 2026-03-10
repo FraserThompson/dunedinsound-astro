@@ -23,11 +23,10 @@ export const GET = (async ({ params, request }) => {
 	}
 
 	const images = await getEntryImages(gig, artistSlug)
-	const data = gig.data
 
 	const resJson: ArtistGigResponse = {
 		images,
-		data
+		data: gig
 	}
 
 	return new Response(

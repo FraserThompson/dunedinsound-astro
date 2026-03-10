@@ -1,6 +1,5 @@
 import { getCollection } from 'astro:content'
 import type { CollectionEntry, CollectionKey, DataEntryMap } from 'astro:content'
-import { toMachineName } from 'src/util/names'
 import { fdir } from 'fdir'
 import { getEntry } from 'astro:content'
 import * as path from 'node:path'
@@ -10,6 +9,7 @@ import { epochYear, monthMap, type Month } from './constants'
 import { getCollectionMetaDescription } from './seo'
 import { DIST_MEDIA_DIR } from './constants'
 import { existsSync } from 'node:fs'
+import { getEntryPath, getEntrySlug } from './helpers'
 
 type EntryExtraCommon = {
 	slug: string
@@ -557,34 +557,6 @@ export async function getCover(
 			return image
 		})
 		return images
-	}
-}
-
-/**
- * Gets the slug for an entry (preserving URLs from old site)
- * @param title
- * @param collection
- * @returns the slug
- */
-function getEntrySlug(title: string, collection?: string): string {
-	return !collection || collection === 'gig' ? toMachineName(title, '-') : toMachineName(title, '_')
-}
-
-/**
- * Gets the full path for an entry.
- * @param title
- * @param collection
- * @returns The path.
- */
-export function getEntryPath(title: string, collection: CollectionKey): string {
-	const slug = getEntrySlug(title, collection)
-	switch (collection) {
-		case "blog":
-			return '/' + collection + '/' + slug
-		case "series":
-			return '/gigs/' + collection + '/' + slug
-		default:
-			return '/' + collection + 's/' + slug
 	}
 }
 

@@ -15,16 +15,6 @@ export const contentByEntryActiveWrapper = style({
 	}
 })
 
-export const spacer = style({
-	padding: '0px',
-	paddingTop: '0px',
-	'@media': {
-		'screen and (--md)': {
-			paddingTop: theme.dimensions.headerHeight
-		}
-	}
-})
-
 export const yearWrapper = style({
 	scrollMarginTop: theme.dimensions.headerHeightMobile,
 	'@media': {
@@ -34,17 +24,8 @@ export const yearWrapper = style({
 	}
 })
 
-export const socialLinksWrapper = style({
+export const artistPlaylistWrapper = style({
 	position: 'absolute',
-	right: theme.dimensions.basePaddingMobile,
-	top: '4px',
-	zIndex: 3,
-	'@media': {
-		'screen and (--md)': {
-			top: theme.dimensions.headerHeight,
-			paddingTop: theme.dimensions.basePaddingMobile,
-			right: 'auto',
-			left: theme.dimensions.basePaddingMobile
-		}
-	}
+	left: '5px',
+	bottom: '40px'
 })

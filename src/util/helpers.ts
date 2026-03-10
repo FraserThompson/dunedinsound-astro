@@ -12,10 +12,12 @@ import type { MenuLink } from 'src/components/DropdownMenu'
 import type { ProcessedEntry } from './collection'
 import { breakpoints, headerHeight, headerHeightMobile } from 'src/Theme.css'
 import type { ResponsiveImage } from './ResponsiveImage'
+import type { CollectionEntry, CollectionKey } from 'astro:content'
+import { toMachineName } from 'src/util/names'
 
 export interface ArtistGigResponse {
 	images?: { [id: string]: ResponsiveImage }
-	data: any
+	data: CollectionEntry<'gig'>
 }
 
 export type ResponsiveImageSizesKey = 'full' | 'textContainer' | 'grid' | 'smallGrid' | 'largeGrid'
@@ -321,5 +323,33 @@ export const debounce = (fn, delay) => {
 	return (...args) => {
 		clearTimeout(timeout)
 		timeout = setTimeout(() => fn(...args), delay)
+	}
+}
+
+/**
+ * Gets the slug for an entry (preserving URLs from old site)
+ * @param title
+ * @param collection
+ * @returns the slug
+ */
+export function getEntrySlug(title: string, collection?: string): string {
+	return !collection || collection === 'gig' ? toMachineName(title, '-') : toMachineName(title, '_')
+}
+
+/**
+ * Gets the full path for an entry.
+ * @param title
+ * @param collection
+ * @returns The path.
+ */
+export function getEntryPath(title: string, collection: CollectionKey): string {
+	const slug = getEntrySlug(title, collection)
+	switch (collection) {
+		case "blog":
+			return '/' + collection + '/' + slug
+		case "series":
+			return '/gigs/' + collection + '/' + slug
+		default:
+			return '/' + collection + 's/' + slug
 	}
 }

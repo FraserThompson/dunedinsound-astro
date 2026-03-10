@@ -25,7 +25,7 @@ const PlayerSidebar: FunctionalComponent<Props> = ({ title, artistAudio, playOnL
 			<div class={PlayerSidebarWaveWrapper}>
 				<PlayerWaveform />
 				<div style={{ display: "flex", marginTop: "5px" }}>
-					<PlayerTransport />
+					<PlayerTransport showShuffle={true} />
 					<div style={{ marginLeft: "5px" }}>
 						<PlayerCurrentTrack />
 					</div>
@@ -34,9 +34,9 @@ const PlayerSidebar: FunctionalComponent<Props> = ({ title, artistAudio, playOnL
 			<div class={PlayerSidebarBottomWrapper}>
 				<div class={PlayerSidebarTracklist}>
 					<div className={WinampTitlebar} data-title="PLAYLIST" />
-					<PlayerTracklist />
+					<PlayerTracklist maxHeight="35svh" maxHeightDesktop="100%" />
 				</div>
-				<div class={PlayerSidebarContentWrapper}>
+				<div class={`${PlayerSidebarContentWrapper} flex`}>
 					<div className={WinampTitlebar} data-title="CONTENT" />
 					<div className={PlayerSidebarChildrenWrapper}>
 						{children}

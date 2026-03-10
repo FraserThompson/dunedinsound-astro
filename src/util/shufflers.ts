@@ -29,7 +29,7 @@ export const Shufflers: CollectionShufflersMap = {
 	'venue': {
 		'sort': [
 			{ value: 'title', order: 'asc', title: 'Title' },
-			{ value: 'numbergigs', order: 'desc', title: 'Most gigs' }
+			{ value: 'numbergigs', order: 'desc', title: 'Number of gigs' }
 		],
 		'filter': [
 			{
@@ -64,7 +64,7 @@ export const Shufflers: CollectionShufflersMap = {
 			{
 				value: 'numbergigs',
 				order: 'desc',
-				title: 'Most gigs',
+				title: 'Number of gigs',
 			}
 		],
 		'filter': [

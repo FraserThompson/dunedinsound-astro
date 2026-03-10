@@ -7,22 +7,25 @@
 import type { FunctionalComponent } from "preact"
 import { usePlayer } from "./PlayerContext"
 import DownloadIcon from '~icons/iconoir/download'
-import { TracklistTrack, TracklistWrapper, TrackButton } from "./PlayerTracklist.css"
+import { TracklistTrack, TracklistWrapper, TrackButton, maxHeightVar, maxHeightDesktopVar } from "./PlayerTracklist.css"
+import { assignInlineVars } from "@vanilla-extract/dynamic"
 
 interface Props {
-	maxHeight?: string | number
+	maxHeight?: string
+	maxHeightDesktop?: string
 }
 
-const PlayerTracklist: FunctionalComponent<Props> = ({ maxHeight }) => {
+const PlayerTracklist: FunctionalComponent<Props> = ({ maxHeight, maxHeightDesktop }) => {
 	const { artistAudio, selectedTrack, selectTrack, seekToTime } = usePlayer()
 
 	return (
-		<ul className={TracklistWrapper} style={{ maxHeight: maxHeight || '100%' }}>
+		<ul className={TracklistWrapper} style={assignInlineVars({
+			[maxHeightVar]: maxHeight,
+			[maxHeightDesktopVar]: maxHeightDesktop,
+		})}>
 			{artistAudio.map((item, index) => (
 				<li key={`${index}. ${item.title}`} className={selectedTrack == index ? TracklistTrack + ' active' : TracklistTrack}>
-					<span style={{
-						maxWidth: "92%",
-					}}>
+					<span style={{ width: "92%" }}>
 						<a role="button" className={TrackButton} onClick={() => selectTrack(index)}>
 							{item.title}
 						</a>
