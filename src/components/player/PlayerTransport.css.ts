@@ -1,5 +1,4 @@
 import { style } from "@vanilla-extract/css";
-import { theme } from "src/Theme.css";
 
 export const TransportButton = style({
 	display: 'inline-flex',
