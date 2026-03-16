@@ -106,7 +106,7 @@ const DropdownMenu: FunctionalComponent<Props> = ({ list, menuTitle, direction, 
 		e.preventDefault();
 		e.stopPropagation();
 
-		const target = e.target as HTMLAnchorElement
+		const target = e.currentTarget as HTMLAnchorElement
 		const scrollTarget = target?.hash
 
 		if (scrollTarget) {

@@ -57,7 +57,7 @@ const shufflers = collection in Shufflers ? Shufflers[collection] : null
 		openSearchWithSidebar={true}
 	/>
 	<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href=`/${collection}s`>
-		<ChevronLeftIcon /> Go to {collection}s home
+		<ChevronLeftIcon /> Go to all {collection}s
 	</a>
 	<EntryMenu slot="sidebarMenu" collection={collection} selected={entry.entry.id} transition:persist />
 	<ContentByEntry entry={entry} images={images} slot="content">

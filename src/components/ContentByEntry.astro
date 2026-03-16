@@ -10,7 +10,7 @@
  *  - banner: Content to put in the banner instead of the cover image.
  */
 import FlexGridContainer from 'src/components/FlexGridContainer.astro'
-import { loadAndFormatCollection, loadAndFormatEntry, type ProcessedEntry } from 'src/util/collection'
+import { loadAndFormatCollection, loadAndFormatEntry, sortGigs, type ProcessedEntry } from 'src/util/collection'
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import Tile from 'src/components/Tile.astro'
 import DropdownMenu from 'src/components/DropdownMenu'
@@ -27,6 +27,8 @@ import { artistPlayerThreshold } from 'src/util/constants'
 import { contentByEntryActiveWrapper, yearWrapper, artistPlaylistWrapper } from './ContentByEntry.css'
 import { formattedDate, timespanString, referencesTimespanString } from 'src/util/names'
 import ShortcutIcon from './ShortcutIcon.astro'
+import AllAgesIndicator from './AllAgesIndicator.astro'
+import { getGigYearDropdownItems } from 'src/util/helpers'
 
 type AliasReference = ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
 
@@ -47,14 +49,7 @@ const gigs = await loadAndFormatCollection('gig', (thing) => {
 	return !!(matchByArtist || matchByVenue)
 })
 
-const gigsByYear = Object.groupBy(gigs, (gig) => gig.entry.data.date.getFullYear())
-
-const gigsYearDropdownItems = Object.entries(gigsByYear)
-	.reverse()
-	.map(([year, gigs]) => ({
-		year: year,
-		count: gigs?.length || 0
-	}))
+const sortedGigs = sortGigs(gigs)
 
 // Find related blogs
 const blogs = await loadAndFormatCollection('blog', (thing) => {
@@ -96,7 +91,12 @@ vaultSessions.length > 0 && tabs.push({ title: `VAULT SESSION`, id: 'vaultsessio
 const hasBanner = Astro.slots.has('banner')
 const hasAudioculture = entryData.links && 'audioculture' in entryData.links
 const hasInfo =
-	entryData.description || hasAudioculture || !!referencesThis.length || !!thisReferences.length || entryData.links
+	entryData.description ||
+	hasAudioculture ||
+	!!referencesThis.length ||
+	!!thisReferences.length ||
+	entryData.links ||
+	('allAges' in entryData && entryData.allAges)
 ---
 
 <Banner
@@ -116,7 +116,6 @@ const hasInfo =
 						<Fragment set:html={entryData.description} />
 					</p>
 				)}
-				{entryData.links && <SocialLinks links={entryData.links} />}
 				{hasAudioculture && (
 					<blockquote style={{ fontSize: '16px' }} cite={entryData.links?.audioculture?.link}>
 						"{entryData.links?.audioculture?.snippet}" -{' '}
@@ -129,6 +128,10 @@ const hasInfo =
 						</a>
 					</blockquote>
 				)}
+				<div>
+					{entryData.links && <SocialLinks links={entryData.links} />}
+					{'allAges' in entryData && entryData.allAges && <AllAgesIndicator />}
+				</div>
 				{!!allReferences.length && (
 					<div>
 						<strong>{collection === 'venue' ? 'Other venues at this location' : 'See also'}</strong>
@@ -152,13 +155,13 @@ const hasInfo =
 	<div slot="customContent" class={contentByEntryActiveWrapper}>
 		<ActiveIndicator entry={entry} />
 	</div>
-	{
+	<!-- {
 		entryExtra.gigCount > artistPlayerThreshold && collection === 'artist' && (
 			<div slot="customContent" class={artistPlaylistWrapper}>
-				<ShortcutIcon title="ARTIST PLAYLIST" href={`${entryExtra.absolutePath}/player`} />
+				<ShortcutIcon title={`PLAYER`} href={`/player/artists/${entry.entry.id}`} />
 			</div>
 		)
-	}
+	} -->
 	<slot name="banner" slot={hasBanner ? 'background' : ''} />
 </Banner>
 <Divider
@@ -179,11 +182,7 @@ const hasInfo =
 			backgroundColor="white"
 			textColor="black"
 			top={theme.dimensions.subheaderHeight}
-			list={gigsYearDropdownItems.map((item) => ({
-				title: item.year,
-				subtitle: `(${item.count})`,
-				href: `#y${item.year}`
-			}))}
+			list={getGigYearDropdownItems(sortedGigs)}
 			client:load
 		/>
 		{
@@ -213,17 +212,21 @@ const hasInfo =
 				))
 		}
 		{
-			Object.entries(gigsByYear)
+			Object.entries(sortedGigs)
 				.reverse()
 				.map(([year, gigs]) => (
-					<div class={`${yearWrapper}`} id={`y${year}`}>
+					<div class={`${yearWrapper}`} id={`h${year}`}>
 						<Divider href={`#y${year}`} sticky={true} top={theme.dimensions.subheaderHeight} smoothScroll={true}>
-							{year} ({gigs?.length})
+							{year} ({gigs?.count})
 						</Divider>
-						<FlexGridContainer grid={gigs && gigs.length <= 4 ? { xs: 12, md: 6 } : { xs: 12, md: 6, lg: 3 }}>
-							{gigs?.map((gig) => (
-								<GigTile gig={gig} backgroundStyle="center" responsiveImageSizes={'smallGrid'} />
-							))}
+						<FlexGridContainer grid={gigs && gigs.count <= 4 ? { xs: 12, md: 6 } : { xs: 12, md: 6, lg: 3 }}>
+							{Object.values(gigs?.gigs)
+								.reduce((acc, monthGroup) => {
+									return [...acc, ...Object.values(monthGroup)]
+								}, [])
+								.map((gig) => (
+									<GigTile gig={gig} backgroundStyle="center" responsiveImageSizes={'smallGrid'} />
+								))}
 						</FlexGridContainer>
 					</div>
 				))

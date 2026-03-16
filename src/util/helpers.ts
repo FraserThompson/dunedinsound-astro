@@ -9,11 +9,11 @@ import type { webLinks } from 'src/content.config'
 import MarkdownIt from 'markdown-it'
 import { convert } from 'html-to-text'
 import type { MenuLink } from 'src/components/DropdownMenu'
-import type { ProcessedEntry } from './collection'
+import type { ProcessedEntry, SortedGigs } from './collection'
 import { breakpoints, headerHeight, headerHeightMobile } from 'src/Theme.css'
 import type { ResponsiveImage } from './ResponsiveImage'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
-import { toMachineName } from 'src/util/names'
+import { makeHash, toMachineName } from 'src/util/names'
 
 export interface ArtistGigResponse {
 	images?: { [id: string]: ResponsiveImage }
@@ -352,4 +352,22 @@ export function getEntryPath(title: string, collection: CollectionKey): string {
 		default:
 			return '/' + collection + 's/' + slug
 	}
+}
+
+export function getGigYearDropdownItems(sortedGigs: SortedGigs): MenuLink[] {
+	return Object.entries(sortedGigs)
+		.reverse()
+		.map(([yearName, yearObj]) => {
+			const maxBars = 10
+			const maxCount = Math.max(...Object.values(sortedGigs).map((y) => y.count), 1)
+			const bars = Math.round((yearObj.count / maxCount) * maxBars) || 1
+			const barStr = '▇'.repeat(bars).padEnd(maxBars, ' ')
+			// Format count as two digits
+			const countStr = yearObj.count.toString().padStart(2, '0')
+			return {
+				href: `#${makeHash(yearName)}`,
+				title: yearName,
+				subtitle: `${barStr} ${countStr}`
+			}
+		})
 }

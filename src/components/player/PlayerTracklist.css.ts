@@ -30,6 +30,7 @@ export const TracklistWrapper = style([WinampInset, {
 
 export const TracklistTrack = style({
 	lineHeight: '1.5rem',
+	height: '24px',
 	paddingLeft: '3px',
 	paddingRight: '3px',
 	listStyle: 'none',

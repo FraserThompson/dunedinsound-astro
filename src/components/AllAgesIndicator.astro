@@ -3,13 +3,19 @@
  * Indicator used site-wide to indicate all-agedness of a venue.
  */
 import { theme } from '../Theme.css'
+
+interface Props {
+	style?: Partial<CSSStyleDeclaration>
+}
+const { style } = Astro.props
 ---
 
-<div>
+<div style={style}>
 	<span
 		title="All Ages"
 		style={{
-			color: theme.color.lightForeground
+			color: theme.color.lightForeground,
+			backgroundColor: 'black'
 		}}
 	>
 		{'ALL AGES'}
@@ -20,6 +26,8 @@ import { theme } from '../Theme.css'
 		display: inline-block;
 	}
 	span {
+		bottom: 1px;
+    position: relative;
 		border: 1px solid;
 		border-radius: 3px;
 		text-align: center;

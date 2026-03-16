@@ -19,6 +19,11 @@ export const PlayerSidebarWrapper = style({
 	}
 })
 
+export const PlayerSidebarSidebarWrapper = style({
+	display: "flex",
+	flexDirection: "column"
+})
+
 export const PlayerSidebarBottomWrapper = style({
 	display: 'flex',
 	flexDirection: 'column',
@@ -39,8 +44,25 @@ export const PlayerSidebarContentWrapper = style({
 	minHeight: 0,
 	minWidth: 0,
 	flex: 1,
-	margin: '0 5px 5px 0',
-	padding: '0 5px 5px 5px'
+	margin: '0 5px 5px',
+	padding: '0px 5px 5px 5px',
+	position: 'fixed',
+	maxHeight: '75vh',
+	zIndex: 10,
+	transform: 'translateY(76vh)',
+	transition: 'transform 150ms ease-in-out',
+	'selectors': {
+		'&.maximized': {
+			transform: 'translateY(0px)',
+		}
+	},
+	'@media': {
+		'screen and (--md)': {
+			position: 'static',
+			maxHeight: '100vh',
+			transform: 'none'
+		}
+	}
 })
 
 export const PlayerSidebarChildrenWrapper = style([WinampInset, {

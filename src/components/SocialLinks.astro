@@ -3,9 +3,9 @@
  * List of links from an entries links field.
  */
 import { socialLinksToMenuItems } from 'src/util/helpers'
-import type { z } from 'astro:content'
 import type { webLinks } from 'src/content.config'
 import { SocialLinkWrapper, SocialLinkImage } from './SocialLinks.css'
+import { z } from "astro/zod";
 
 interface Props {
 	links?: z.infer<typeof webLinks>

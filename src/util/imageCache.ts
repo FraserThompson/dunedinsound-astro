@@ -4,7 +4,7 @@ import Database from 'better-sqlite3'
 
 const CACHE_DB = '.astro/image-cache.db'
 const CACHE_VERSION = 2
-const STATS_LOG_INTERVAL = 100
+const STATS_LOG_INTERVAL = 1000
 
 type CacheType = 'responsiveImage' | 'responsiveImages' | 'images'
 

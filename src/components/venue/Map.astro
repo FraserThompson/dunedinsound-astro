@@ -192,9 +192,9 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 		 * Popup marker when sidebar item is clicked.
 		 */
 		sidebarClick(e: MouseEvent) {
-			if (!(e.target instanceof HTMLElement)) return
+			if (!(e.currentTarget instanceof HTMLElement)) return
 
-			const key = e.target?.getAttribute('data-markerkey')
+			const key = e.currentTarget?.getAttribute('data-markerkey')
 
 			if (!key) return
 
@@ -208,7 +208,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			this.selectedSidebar?.classList.remove('active')
 
 			// Select new sidebar item
-			this.selectedSidebar = e.target
+			this.selectedSidebar = e.currentTarget
 			this.selectedSidebar?.classList.add('active')
 
 			// Close old popup

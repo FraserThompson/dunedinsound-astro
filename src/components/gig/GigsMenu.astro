@@ -10,13 +10,12 @@
 import { loadAndFormatCollection, sortGigs } from 'src/util/collection.ts'
 import { gigLink, yearLink, monthLink, yearsMenuWrapper } from './GigsMenu.css'
 import { makeHash } from 'src/util/names'
-import DropdownMenu from '../DropdownMenu'
-import { theme } from '../../Theme.css'
 import { MenuLi } from '../Menu.css'
 import { MenuWrapper } from '../Menu.css'
 import ArtistsMenu from './ArtistsMenu.astro'
 import { artistsToString } from 'src/util/helpers'
 import SeriesIndicator from '../SeriesIndicator.astro'
+import GigsYearDropdown from './GigsYearDropdown.astro'
 
 interface Props {
 	selected?: string
@@ -29,30 +28,7 @@ const sortedGigs = sortGigs(gigs)
 const { selected } = Astro.props
 ---
 
-<DropdownMenu
-	list={Object.entries(sortedGigs)
-		.reverse()
-		.map(([yearName, yearObj]) => {
-			const maxBars = 10;
-			const maxCount = Math.max(...Object.values(sortedGigs).map(y => y.count), 1);
-			const bars = Math.round((yearObj.count / maxCount) * maxBars) || 1;
-			const barStr = '▇'.repeat(bars).padEnd(maxBars, ' ');
-			// Format count as two digits
-			const countStr = yearObj.count.toString().padStart(2, '0');
-			return {
-				href: `#${makeHash(yearName)}`,
-				title: yearName,
-				subtitle: `${barStr} ${countStr}`
-			};
-		})}
-	direction="down"
-	backgroundColor="white"
-	textColor="black"
-	width="100%"
-	heightMobile={theme.dimensions.headerHeightMobile}
-	top={'0px'}
-	client:load
-/>
+<GigsYearDropdown sortedGigs={sortedGigs} />
 
 <ul is="gigs-menu" data-selected={selected} class={`${yearsMenuWrapper} yearList`} style={{ overflow: 'clip' }}>
 	{
@@ -244,7 +220,7 @@ const { selected } = Astro.props
 
 		/**
 		 * When a year is clicked in the dropdown, this scrolls to the first gig in the list.
-		 * 
+		 *
 		 * We set a window variable to fix scrolling stuff. Todo make this less bad.
 		 *
 		 * @param e
@@ -253,10 +229,10 @@ const { selected } = Astro.props
 			const detail: DropdownClickEventDetails = e.detail
 			const hash = detail.target.hash?.slice(1)
 			if (!hash) return
-			
+
 			// @ts-expect-error
 			window.scrollingToYear = true
-			
+
 			const firstGig: HTMLElement | null = this.querySelector(`[data-sidebarid^="${hash}"]`)
 			if (firstGig) {
 				this.scrollToGig(firstGig)

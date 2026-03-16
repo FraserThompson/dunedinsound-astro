@@ -98,7 +98,8 @@ globalStyle(`.yearList > *:nth-child(odd)`, {
 	borderLeft: `6px solid ${oddColor}`
 })
 globalStyle(`.yearList > *:nth-child(odd) > ${yearLink}`, {
-	backgroundColor: `${oddColor}`
+	backgroundColor: `${oddColor}`,
+	borderBottom: `1px solid ${theme.color.darkContrast}`,
 })
 globalStyle(`.yearList > *:nth-child(odd) ${monthLink}`, {
 	background: `linear-gradient(90deg, ${oddColor}, ${theme.color.lightPrimary})`
@@ -109,6 +110,7 @@ globalStyle(`.yearList > *:nth-child(even)`, {
 })
 globalStyle(`.yearList > *:nth-child(even) ${yearLink}`, {
 	backgroundColor: `${evenColor}`,
+	borderBottom: `1px solid ${theme.color.darkSecondary}`,
 })
 globalStyle(`.yearList > *:nth-child(even) ${monthLink}`, {
 	background: `linear-gradient(90deg, ${evenColor}, ${theme.color.lightPrimary})`

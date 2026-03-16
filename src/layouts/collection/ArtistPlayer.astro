@@ -5,22 +5,19 @@
  * Props:
  *  - entry: The entry.
  */
-import EntryMenu from 'src/components/EntryMenu.astro'
-import ShuffleFilters from 'src/components/ShuffleFilters.astro'
 import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
-import { Shufflers } from 'src/util/shufflers'
-import SidebarLayout from '../base/SidebarLayout.astro'
-import ChevronLeftIcon from '~icons/iconoir/nav-arrow-left'
-import { backButton } from 'src/components/gig/GigsMenu.css'
 import SidebarPlayer from 'src/components/gig/SidebarPlayer'
 import ImageGallery from 'src/components/ImageGallery.astro'
+import BaseLayout from '../base/BaseLayout.astro'
+import EntryMenuChildren from 'src/components/EntryMenuChildren.astro'
+import { TracklistTrack, TracklistWrapper } from 'src/components/player/PlayerTracklist.css'
+import { artistPlayerThreshold } from 'src/util/constants'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>
 }
 
 const { entry } = Astro.props
-const collection = entry.entry.collection
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
@@ -39,11 +36,10 @@ const audioFromGigs = gigs.reduce((acc, gig) => {
 	return [...acc, ...audio]
 }, [])
 
-const shufflers = collection in Shufflers ? Shufflers[collection] : null
+const entries = await loadAndFormatCollection('artist', (entry) => entry.extra.gigCount > artistPlayerThreshold)
 ---
 
-<SidebarLayout
-	contentOverTopSubheader={true}
+<BaseLayout
 	hideFooter={true}
 	poo={{
 		title: entryData.title,
@@ -53,24 +49,20 @@ const shufflers = collection in Shufflers ? Shufflers[collection] : null
 		date: 'date' in entryData ? entryData.date?.toISOString() : undefined
 	}}
 >
-	<ShuffleFilters
-		slot="subheaderTopDesktop"
-		search={`Filter ${collection}s`}
-		sort={shufflers?.sort}
-		filter={shufflers?.filter}
-		openSearchWithSidebar={true}
-	/>
-	<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href=`/${collection}s`>
-		<ChevronLeftIcon /> Go to {collection}s home
-	</a>
-	<EntryMenu slot="sidebarMenu" collection={collection} selected={entry.entry.id} transition:persist />
-	<div slot="content" transition:persist>
-		<SidebarPlayer title={`${entry.entry.id} PLAYER`} artistAudio={audioFromGigs} client:load>
-			<div id="gig-meta" style={{ padding: '5px' }} data-artist={entry.entry.id}></div>
-			<ImageGallery thumbnailWidthDesktop="200px" />
-		</SidebarPlayer>
-	</div>
-</SidebarLayout>
+	<SidebarPlayer title={`${entry.entry.id} PLAYER`} artistAudio={audioFromGigs} client:load>
+		<ul id="artists-list" slot="sidebar" class={TracklistWrapper} style={{ maxHeight: '300px' }}>
+			<EntryMenuChildren
+				itemClass={TracklistTrack}
+				linkClass={'fullWidth'}
+				linksTo="/player/artists/"
+				collectionEntries={entries}
+				selected={entry.entry.id}
+			/>
+		</ul>
+		<div id="gig-meta" style={{ padding: '3px' }} data-artist={entry.entry.id}></div>
+		<ImageGallery thumbnailWidthDesktop="200px" />
+	</SidebarPlayer>
+</BaseLayout>
 
 <script>
 	import {
@@ -80,10 +72,18 @@ const shufflers = collection in Shufflers ? Shufflers[collection] : null
 		type PlayerTrackChangeEventDetails
 	} from 'src/util/events'
 
-	import { getEntryPath, type ArtistGigResponse } from 'src/util/helpers'
+	import { getEntryPath, scrollToElement, type ArtistGigResponse } from 'src/util/helpers'
 
 	document.addEventListener('astro:page-load', () => {
 		const metaContainer = document.querySelector('#gig-meta')
+		const artistList = document.querySelector('#artists-list')
+
+		if (artistList) {
+			const activeArtist = artistList?.querySelector('.active')
+			if (activeArtist) {
+				scrollToElement(activeArtist, 50, artistList)
+			}
+		}
 
 		/**
 		 * When the track changes, grab data about the gig.
