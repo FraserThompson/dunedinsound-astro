@@ -14,7 +14,11 @@ const PlayerCurrentTrack: FunctionalComponent = () => {
 
 	return (
 		<div className={WinampInset}>
-			<p className={CurrentTrackText}><marquee> *** {currentTrackTitle} *** </marquee></p>
+			<p className={CurrentTrackText}>
+				<marquee>
+					{currentTrackTitle ? <>*** {currentTrackTitle} ***</> : "Load a playlist to begin"}
+				</marquee>
+			</p>
 		</div>
 	)
 }

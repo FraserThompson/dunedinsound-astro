@@ -22,7 +22,7 @@ export interface PlayerActions {
 }
 
 export type PlayerContextValue = PlayerState & PlayerActions & {
-	artistAudio: ArtistAudio[]
+	artistAudio?: ArtistAudio[]
 	waveformRef: preact.RefObject<HTMLDivElement>
 	loading: boolean
 }

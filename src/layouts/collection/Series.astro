@@ -8,7 +8,7 @@ import { gigsWrapper, sideTextWrapper } from './Series.css'
 import SocialLinks from 'src/components/SocialLinks.astro'
 import Divider from 'src/components/Divider.astro'
 import { theme } from 'src/Theme.css'
-import DropdownMenu from 'src/components/DropdownMenu'
+import DropdownMenu from 'src/components/DropdownMenu.astro'
 
 interface Props {
 	entry: ProcessedEntry<'series'>
@@ -101,7 +101,6 @@ const resources = Array.isArray(entryData.resources)
 			subtitle: `(${item.count})`,
 			href: `#y${item.year}`
 		}))}
-		client:load
 	/>}
 	{
 		Object.entries(gigsByYear)

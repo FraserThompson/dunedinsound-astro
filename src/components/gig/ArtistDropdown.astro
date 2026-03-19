@@ -1,6 +1,6 @@
 ---
 import type { ProcessedEntry } from 'src/util/collection'
-import DropdownMenu from '../DropdownMenu'
+import DropdownMenu from '../DropdownMenu.astro'
 import { socialLinksToMenuItems } from 'src/util/helpers'
 import { artistDropdownLink, artistDropdownLi, artistExtraWrapper } from './ArtistDropdown.css'
 import { theme } from '../../Theme.css'
@@ -17,13 +17,13 @@ const entryExtra = entry.extra
 
 <DropdownMenu
 	direction="down"
+	buttonWidth="100%"
 	heightMobile={theme.dimensions.subheaderHeight}
 	height={theme.dimensions.headerHeight}
 	top={theme.dimensions.headerHeight}
 	topMobile={theme.dimensions.headerHeightMobile}
 	backgroundColor="white"
 	textColor="black"
-	client:load
 >
 	{
 		entryExtra.artists.map((artist) => (

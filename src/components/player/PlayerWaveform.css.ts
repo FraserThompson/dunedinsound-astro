@@ -49,7 +49,7 @@ export const LengthWrapper = style({
 	lineHeight: '1em',
 	color: '#28da1d',
 	pointerEvents: 'none',
-	zIndex: '11',
+	zIndex: '5',
 	position: 'absolute',
 	top: '50%',
 	transform: 'translateY(-50%)',

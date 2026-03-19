@@ -1,0 +1,330 @@
+---
+import { assignInlineVars } from '@vanilla-extract/dynamic'
+import MenuIcon from '~icons/iconoir/menu'
+import NavArrowRight from '~icons/iconoir/nav-arrow-right'
+import {
+	dropdownWrapper,
+	dropdownButtonWrapper,
+	dropdownMenu,
+	dropdownSubmenu,
+	dropdownLink,
+	dropdownLi,
+	background,
+	color,
+	dropdownTop,
+	buttonAlign,
+	menuLeft,
+	menuRight,
+	dropdownTopMobile,
+	dropdownHeight,
+	dropdownHeightMobile,
+	menuWidth
+} from './DropdownMenu.css'
+
+interface MenuLink {
+	title?: string
+	subtitle?: string
+	href?: string
+	submenu?: MenuLink[]
+}
+
+export interface Props {
+	menuTitle?: string
+	direction: 'up' | 'down'
+	list?: MenuLink[]
+	top?: string
+	buttonPosition?: 'left' | 'right'
+	topMobile?: string
+	width?: string
+	buttonWidth?: string
+	height?: string
+	heightMobile?: string
+	backgroundColor?: string
+	textColor?: string
+}
+
+const {
+	menuTitle,
+	direction,
+	list = [],
+	top,
+	buttonPosition,
+	topMobile,
+	width,
+	buttonWidth = 'auto',
+	height,
+	heightMobile,
+	backgroundColor,
+	textColor
+} = Astro.props
+
+const wrapperVars = assignInlineVars({
+	[dropdownTop]: top,
+	[dropdownTopMobile]: topMobile,
+	[buttonAlign]: buttonPosition === 'left' ? 'start' : 'end',
+	[dropdownHeight]: height,
+	[dropdownHeightMobile]: heightMobile
+})
+const buttonVars = assignInlineVars({
+	[color]: textColor,
+	[background]: backgroundColor
+})
+const menuVars = assignInlineVars({
+	[menuWidth]: width,
+	[menuLeft]: buttonPosition === 'left' ? '0' : 'unset',
+	[menuRight]: buttonPosition === 'right' ? '0' : 'unset',
+	[background]: backgroundColor,
+	[color]: textColor
+})
+---
+
+<dropdown-menu class={dropdownWrapper} data-direction={direction} style={wrapperVars}>
+	<button
+		data-main-button
+		class={dropdownButtonWrapper}
+		aria-haspopup="true"
+		aria-expanded="false"
+		style={{ width: buttonWidth, ...buttonVars }}
+	>
+		<slot name="button">
+			{menuTitle}
+			{!menuTitle && <MenuIcon />}
+		</slot>
+	</button>
+
+	<ul data-main-menu class={`${dropdownMenu} ${direction}`} style={menuVars}>
+		{
+			list.map((item) => {
+				const hasSubmenu = item.submenu && item.submenu.length > 0
+
+				return (
+					<li class={dropdownLi} style={buttonVars}>
+						<a
+							class={`${dropdownLink} menuLink menu-title`}
+							style={buttonVars}
+							href={hasSubmenu ? '#' : item.href || '#'}
+							data-has-submenu={hasSubmenu ? 'true' : undefined}
+							data-submenu-button={hasSubmenu ? 'true' : undefined}
+							aria-expanded={hasSubmenu ? 'false' : undefined}
+						>
+							{item.title}
+							{item.subtitle && <span style="margin-left:auto; color:#888">{item.subtitle}</span>}
+							{hasSubmenu && (
+								<NavArrowRight
+									class="submenu-arrow"
+									style={item.subtitle ? 'padding-left:0.5em;' : 'margin-left:auto; padding-left:0.5em;'}
+								/>
+							)}
+						</a>
+
+						{hasSubmenu && (
+							<ul class={dropdownSubmenu} data-submenu style={menuVars}>
+								{item.submenu!.map((subItem) => (
+									<li class={dropdownLi} style={buttonVars}>
+										<a class={`${dropdownLink} menuLink menu-title`} href={subItem.href || '#'} style={buttonVars}>
+											{subItem.title}
+											{subItem.subtitle && <span style="margin-left:auto; color:#888">{subItem.subtitle}</span>}
+										</a>
+									</li>
+								))}
+							</ul>
+						)}
+					</li>
+				)
+			})
+		}
+		<slot />
+	</ul>
+</dropdown-menu>
+
+<script>
+	import { dropdownClickEventName } from 'src/util/events'
+	import { scrollToElement } from 'src/util/helpers'
+	import { replaceEventName } from 'src/util/history'
+
+	class DropdownMenu extends HTMLElement {
+		mainButton: HTMLButtonElement | null
+		mainMenu: HTMLUListElement | null
+		menuLinks: NodeListOf<HTMLAnchorElement>
+		menuLinksWithSubmenu: NodeListOf<HTMLAnchorElement>
+
+		// State Tracking
+		submenus: HTMLUListElement[] = []
+		hoverTimeouts = new Map<HTMLElement, ReturnType<typeof setTimeout>>()
+
+		constructor() {
+			super()
+			this.mainButton = this.querySelector<HTMLButtonElement>('[data-main-button]')
+			this.mainMenu = this.querySelector<HTMLUListElement>('[data-main-menu]')
+			this.menuLinks = this.querySelectorAll<HTMLAnchorElement>('.menuLink:not([data-has-submenu="true"])')
+			this.menuLinksWithSubmenu = this.querySelectorAll<HTMLAnchorElement>('.menuLink[data-has-submenu="true"]')
+		}
+
+		connectedCallback() {
+			// Setup Main Menu
+			this.mainButton?.addEventListener('click', this.handleMainButtonClick)
+
+			// Setup Submenus
+			this.menuLinksWithSubmenu.forEach((link) => {
+				const li = link.closest('li')
+				if (!li) return
+
+				const submenu = li.querySelector<HTMLUListElement>('[data-submenu]')
+
+				if (!submenu) return
+
+				// Portal behavior
+				document.body.appendChild(submenu)
+				this.submenus.push(submenu)
+
+				// Bind events
+				li.addEventListener('mouseenter', () => this.handleSubmenuOpen(li, submenu, link))
+				li.addEventListener('mouseleave', () => this.handleSubmenuClose(submenu, link))
+				submenu.addEventListener('mouseenter', () => this.handleSubmenuOpen(li, submenu, link))
+				submenu.addEventListener('mouseleave', () => this.handleSubmenuClose(submenu, link))
+
+				link.addEventListener('click', (e) => this.handleSubmenuToggle(e, li, submenu, link))
+			})
+
+			// Setup Standard Links
+			this.menuLinks.forEach((link) => {
+				link.addEventListener('click', this.handleMenuItemClick)
+			})
+
+			// Setup Global Listeners
+			document.addEventListener('click', this.handleDocumentClick)
+			document.addEventListener(replaceEventName, this.handleURLChange as EventListener)
+			window.addEventListener('scroll', this.handleScroll, { passive: true })
+			this.handleURLChange(new CustomEvent('init', { detail: new URL(window.location.href) }))
+		}
+
+		disconnectedCallback() {
+			document.removeEventListener('click', this.handleDocumentClick)
+			document.removeEventListener(replaceEventName, this.handleURLChange as EventListener)
+			window.removeEventListener('scroll', this.handleScroll)
+			this.submenus.forEach((sub) => sub.remove())
+		}
+
+		handleMainButtonClick = (e: MouseEvent) => {
+			e.stopPropagation()
+			if (!this.mainButton || !this.mainMenu) return
+
+			const isExpanded = this.mainButton.getAttribute('aria-expanded') === 'true'
+			this.mainButton.setAttribute('aria-expanded', String(!isExpanded))
+
+			if (isExpanded) {
+				this.mainMenu.classList.remove('open')
+				this.closeAllSubmenus()
+			} else {
+				this.mainMenu.classList.add('open')
+			}
+		}
+
+		handleMenuItemClick = (e: MouseEvent) => {
+			const target = e.currentTarget as HTMLAnchorElement
+			const scrollTarget = target.hash
+
+			if (scrollTarget && scrollTarget.startsWith('#')) {
+				const scrollTargetElement = document.querySelector(scrollTarget)
+				if (scrollTargetElement) {
+					e.preventDefault()
+					e.stopPropagation()
+					scrollToElement(scrollTargetElement)
+				}
+			}
+
+			this.mainButton?.setAttribute('aria-expanded', 'false')
+			this.mainMenu?.classList.remove('open')
+			this.closeAllSubmenus()
+
+			window.dispatchEvent(
+				new CustomEvent(dropdownClickEventName, {
+					detail: { target },
+					bubbles: true,
+					composed: true
+				})
+			)
+		}
+
+		handleSubmenuOpen = (li: HTMLElement, submenu: HTMLUListElement, toggleBtn: HTMLAnchorElement) => {
+			const existingTimeout = this.hoverTimeouts.get(submenu)
+			if (existingTimeout) clearTimeout(existingTimeout)
+
+			this.closeAllSubmenus(submenu)
+
+			const rect = li.getBoundingClientRect()
+
+			submenu.style.setProperty('--dyn-submenu-top', `${rect.top}px`)
+			submenu.style.setProperty('--dyn-submenu-left', `${rect.right}px`)
+
+			toggleBtn.setAttribute('aria-expanded', 'true')
+			submenu.classList.add('submenu-open')
+		}
+
+		handleSubmenuClose = (submenu: HTMLUListElement, toggleBtn: HTMLAnchorElement) => {
+			const timeout = setTimeout(() => {
+				toggleBtn.setAttribute('aria-expanded', 'false')
+				submenu.classList.remove('submenu-open')
+			}, 150)
+
+			this.hoverTimeouts.set(submenu, timeout)
+		}
+
+		handleSubmenuToggle = (e: Event, li: HTMLElement, submenu: HTMLUListElement, toggleBtn: HTMLAnchorElement) => {
+			e.stopPropagation()
+			e.preventDefault()
+
+			if (submenu.classList.contains('submenu-open')) {
+				const existingTimeout = this.hoverTimeouts.get(submenu)
+				if (existingTimeout) clearTimeout(existingTimeout)
+
+				toggleBtn.setAttribute('aria-expanded', 'false')
+				submenu.classList.remove('submenu-open')
+			} else {
+				this.handleSubmenuOpen(li, submenu, toggleBtn)
+			}
+		}
+
+		handleDocumentClick = (e: MouseEvent) => {
+			const clickedInsideSubmenu = this.submenus.some((sub) => sub.contains(e.target as Node))
+			if (!this.contains(e.target as Node) && !clickedInsideSubmenu) {
+				this.mainButton?.setAttribute('aria-expanded', 'false')
+				this.mainMenu?.classList.remove('open')
+				this.closeAllSubmenus()
+			}
+		}
+
+		handleScroll = () => {
+			this.closeAllSubmenus()
+		}
+
+		handleURLChange = (e: CustomEvent<URL>) => {
+			const url = e.detail
+			if (url && url.hash) {
+				this.menuLinks.forEach((link) => {
+					const parentLi = link.closest('li')
+					if (!parentLi) return
+					parentLi.classList.remove('active')
+					if (link.hash === url.hash) {
+						parentLi.classList.add('active')
+					}
+				})
+			}
+		}
+
+		closeAllSubmenus = (exceptSubmenu: HTMLUListElement | null = null) => {
+			this.querySelectorAll<HTMLAnchorElement>('[data-submenu-button]').forEach((btn) => {
+				btn.setAttribute('aria-expanded', 'false')
+			})
+			this.submenus.forEach((sub) => {
+				if (sub !== exceptSubmenu) {
+					sub.classList.remove('submenu-open')
+				}
+			})
+		}
+	}
+
+	if (!customElements.get('dropdown-menu')) {
+		customElements.define('dropdown-menu', DropdownMenu)
+	}
+</script>

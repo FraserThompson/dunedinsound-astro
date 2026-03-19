@@ -8,7 +8,7 @@ import type { z } from 'astro/zod'
 import type { webLinks } from 'src/content.config'
 import MarkdownIt from 'markdown-it'
 import { convert } from 'html-to-text'
-import type { MenuLink } from 'src/components/DropdownMenu'
+import type { MenuLink } from 'src/components/Menu.astro'
 import type { ProcessedEntry, SortedGigs } from './collection'
 import { breakpoints, headerHeight, headerHeightMobile } from 'src/Theme.css'
 import type { ResponsiveImage } from './ResponsiveImage'
@@ -302,7 +302,7 @@ export const isPartiallyActive = (href: string, currentPath: string, strict?: bo
 		return ''
 	}
 
-	const isItActive = href == '/' ? currentPath == href : currentPath.includes(href.replace(/\/$/, ''))
+	const isItActive = href == '/' ? currentPath == href : currentPath.startsWith(href.replace(/\/$/, ''))
 
 	if (strict) {
 		return isItActive && currentPath !== href

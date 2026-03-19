@@ -91,9 +91,7 @@ const { selected } = Astro.props
 
 <script>
 	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
-	import { filterEventName, type FilterEventDetails } from 'src/util/events'
-	import { dropdownClickEventName, type DropdownClickEventDetails } from '../DropdownMenu'
-
+	import { dropdownClickEventName, filterEventName, type FilterEventDetails } from 'src/util/events'
 	/**
 	 * A menu of gigs, with series at the bottom.
 	 *
@@ -226,7 +224,7 @@ const { selected } = Astro.props
 		 * @param e
 		 */
 		onDropdownClick = (e: any) => {
-			const detail: DropdownClickEventDetails = e.detail
+			const detail = e.detail
 			const hash = detail.target.hash?.slice(1)
 			if (!hash) return
 

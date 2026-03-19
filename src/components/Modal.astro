@@ -96,7 +96,7 @@ const { className = '' } = Astro.props
 			}
 		}
 
-		public toggleModal() {
+		public toggleModal = () => {
 			if (!this.modalContent) return
 
 			// If already open, close and restore
@@ -109,17 +109,17 @@ const { className = '' } = Astro.props
 
 		connectedCallback() {
 			// Attach callback for showing/hiding modal content
-			this.modalButton?.addEventListener('mousedown', () => this.toggleModal())
+			this.modalButton?.addEventListener('mousedown', this.toggleModal)
 			// If there's a sidebar and it opens or closes the modal should also close
-			window.addEventListener('sidebar_close', () => this.closeModal())
-			window.addEventListener('sidebar_open', () => this.closeModal())
+			window.addEventListener('sidebar_close', this.closeModal)
+			window.addEventListener('sidebar_open', this.closeModal)
 		}
 
 		disconnectedCallback() {
 			// detach callbacks
-			this.modalButton?.removeEventListener('mousedown', () => this.toggleModal())
-			window.removeEventListener('sidebar_close', () => this.closeModal())
-			window.removeEventListener('sidebar_open', () => this.closeModal())
+			this.modalButton?.removeEventListener('mousedown', this.toggleModal)
+			window.removeEventListener('sidebar_close', this.closeModal)
+			window.removeEventListener('sidebar_open', this.closeModal)
 		}
 	}
 

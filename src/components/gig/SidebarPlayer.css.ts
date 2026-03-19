@@ -1,27 +1,30 @@
 import { style } from '@vanilla-extract/css'
 import { theme } from '../../Theme.css'
-import { WinampInset } from '../player/PlayerTracklist.css'
+import { WinampBackground, WinampInset } from '../player/PlayerTracklist.css'
 
-export const PlayerSidebarWrapper = style({
+export const PlayerSidebarWrapper = style([WinampBackground, {
 	height: [`calc(100vh - ${theme.dimensions.headerHeightMobile})`, `calc(100svh - ${theme.dimensions.headerHeightMobile})`],
 	position: "relative",
 	zIndex: 6,
 	boxSizing: "border-box",
 	display: "flex",
 	flexDirection: "column",
-	background: 'linear-gradient(to left, #1a1927 0%, #353551 53%, #21212d 100%)',
-	border: theme.borders.groove,
-	borderRadius: '3px',
 	'@media': {
 		'screen and (--md)': {
 			height: "100vh",
 		}
 	}
-})
+}])
 
 export const PlayerSidebarSidebarWrapper = style({
 	display: "flex",
 	flexDirection: "column"
+})
+
+export const PlayerSiderMenubar = style({
+	marginLeft: "8px",
+	marginRight: "8px",
+	height: "24px"
 })
 
 export const PlayerSidebarBottomWrapper = style({
@@ -46,23 +49,6 @@ export const PlayerSidebarContentWrapper = style({
 	flex: 1,
 	margin: '0 5px 5px',
 	padding: '0px 5px 5px 5px',
-	position: 'fixed',
-	maxHeight: '75vh',
-	zIndex: 10,
-	transform: 'translateY(76vh)',
-	transition: 'transform 150ms ease-in-out',
-	'selectors': {
-		'&.maximized': {
-			transform: 'translateY(0px)',
-		}
-	},
-	'@media': {
-		'screen and (--md)': {
-			position: 'static',
-			maxHeight: '100vh',
-			transform: 'none'
-		}
-	}
 })
 
 export const PlayerSidebarChildrenWrapper = style([WinampInset, {

@@ -1,13 +1,11 @@
 import { style } from '@vanilla-extract/css'
 import { theme } from '../../Theme.css'
+import { WinampBackground } from '../player/PlayerTracklist.css'
 
-export const CompactPlayerWrapper = style({
+export const CompactPlayerWrapper = style([ WinampBackground, {
 	transition: 'all 150ms ease-in-out',
-	background: 'linear-gradient(to left, #1a1927 0%, #353551 53%, #21212d 100%)',
-	border: theme.borders.groove,
-	borderRadius: '3px',
 	boxShadow: theme.borders.shadowTop
-})
+}])
 
 export const AudioWrapper = style({
 	display: 'flex',

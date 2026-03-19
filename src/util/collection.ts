@@ -96,9 +96,6 @@ export interface ProcessedEntry<C extends CollectionKey> {
  * Two-level cache:
  * 1. cachedCollection[collection] = Full sorted array of all entries in a collection
  * 2. cachedIndividual[collection][id] = Individual processed entry lookup
- * 
- * Note: Collection data is computed from Astro content entries (not file-based like images),
- * so in-memory caching is appropriate. Module will be reloaded on content changes anyway.
  */
 type CachedIndividual = {
 	[collection: string]: {
@@ -106,8 +103,20 @@ type CachedIndividual = {
 	}
 }
 
-const cachedCollection: { [collection: string]: ProcessedEntry<any>[] } = {}
-const cachedIndividual: CachedIndividual = {}
+declare global {
+	var __astro_collection_cache: { [collection: string]: ProcessedEntry<any>[] } | undefined;
+	var __astro_individual_cache: CachedIndividual | undefined;
+}
+
+// Initialize them on the global scope ONLY if they don't exist yet
+if (!globalThis.__astro_collection_cache) {
+	globalThis.__astro_collection_cache = {};
+	globalThis.__astro_individual_cache = {};
+}
+
+// Point your local variables to the invincible global cache
+const cachedCollection = globalThis.__astro_collection_cache;
+const cachedIndividual = globalThis.__astro_individual_cache!;
 
 /**
  * Clear collection caches. Useful for dev mode when content changes.
@@ -680,36 +689,34 @@ export async function getGigMedia(entry: CollectionEntry<'gig'>): Promise<GigMed
 	let imageCount = 0
 
 	// Get all media from each subdirectory
-	for (const artistDir of artistDirs) {
-		const artistId = path.basename(artistDir)
+	await Promise.all(
+		artistDirs.map(async (artistDir) => {
+			const artistId = path.basename(artistDir);
 
-		if (artistId === 'cover' || artistId === entry.id) continue
+			if (artistId === 'cover' || artistId === entry.id) return;
 
-		// Get all image paths in each responsive image dir
-		const responsiveImages = await getResponsiveImagesByDir(artistDir, artistId)
-		artistImages[artistId] = responsiveImages ? Object.values(responsiveImages) : []
+			const responsiveImages = await getResponsiveImagesByDir(artistDir, artistId);
+			artistImages[artistId] = responsiveImages ? Object.values(responsiveImages) : [];
 
-		imageCount += artistImages[artistId].length
+			const audioFiles = (
+				await new fdir({
+					pathSeparator: '/',
+					includeBasePath: true
+				})
+					.glob(`**@(mp3|json)`)
+					.crawl(artistDir)
+					.withPromise()
+			).map((src) => `/${src}`);
 
-		// Get the audio
-		const audioFiles = (
-			await new fdir({
-				pathSeparator: '/',
-				includeBasePath: true
-			})
-				.glob(`**@(mp3|json)`)
-				.crawl(artistDir)
-				.withPromise()
-		).map((src) => `/${src}`)
-
-		if (audioFiles.length) {
-			audio.push({
-				title: artistId,
-				files: audioFiles,
-				tracklist: entryData.artists.find((artist) => artist.id.id === artistId)?.tracklist
-			})
-		}
-	}
+			if (audioFiles.length) {
+				audio.push({
+					title: artistId,
+					files: audioFiles,
+					tracklist: entryData.artists.find((artist) => artist.id.id === artistId)?.tracklist
+				});
+			}
+		})
+	);
 
 	if (audio.length) {
 		audio.sort((a, b) => artistIds.indexOf(a.title) - artistIds.indexOf(b.title))

@@ -26,7 +26,7 @@ import { PlayerContext } from "./PlayerContext.tsx"
 import { playerTrackChange, type PlayerTrackChangeEventDetails } from "src/util/events.ts"
 
 interface Props {
-	artistAudio: ArtistAudio[]
+	artistAudio?: ArtistAudio[]
 	playOnLoad?: boolean
 }
 
@@ -76,6 +76,10 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 
 		setWaveSurfer(ws)
 		setRegionsPlugin(wsRegions)
+
+		if (!artistAudio) {
+			setLoading(false)
+		}
 	}, [])
 
 	/**
@@ -107,7 +111,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 	 * On wavesurfer ready.
 	 */
 	useEffect(() => {
-		if (!wavesurfer || !regionsPlugin) return
+		if (!wavesurfer || !regionsPlugin || !artistAudio) return
 
 		// So other components can respond to Wavesurfer being ready
 		const event = new Event('wavesurfer_ready')
@@ -162,6 +166,8 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 	 * On selected track change.
 	 */
 	useEffect(() => {
+		if (!artistAudio) return
+
 		const track = artistAudio[selectedTrack]
 		const title = track.title
 
@@ -241,6 +247,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 
 	const next = useCallback(
 		(play?: boolean) => {
+			if (!artistAudio) return
 			const lastTrackIndex = artistAudio.length - 1
 			const newselectedTrack = !shuffle ? Math.min(selectedTrack + 1, lastTrackIndex) : Math.floor(Math.random() * ((lastTrackIndex) + 1));
 			selectTrack(newselectedTrack, play)

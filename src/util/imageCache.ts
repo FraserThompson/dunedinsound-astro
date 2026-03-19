@@ -4,9 +4,15 @@ import Database from 'better-sqlite3'
 
 const CACHE_DB = '.astro/image-cache.db'
 const CACHE_VERSION = 2
-const STATS_LOG_INTERVAL = 1000
+const STATS_LOG_INTERVAL = 10000
 
 type CacheType = 'responsiveImage' | 'responsiveImages' | 'images'
+
+type CacheItem<T = any> = {
+	path: string;
+	type: CacheType;
+	data: T;
+};
 
 type CacheStats = {
 	hits: number
@@ -32,8 +38,8 @@ const imageValidationState: GlobalImageValidationState = globalState ?? {
 	validatedKeys: new Set<string>()
 }
 
-;(globalThis as { __imageValidationState?: GlobalImageValidationState }).__imageValidationState =
-	imageValidationState
+	; (globalThis as { __imageValidationState?: GlobalImageValidationState }).__imageValidationState =
+		imageValidationState
 
 const cacheDir = path.dirname(CACHE_DB)
 if (!existsSync(cacheDir)) {
@@ -41,6 +47,8 @@ if (!existsSync(cacheDir)) {
 }
 
 const db = new Database(CACHE_DB)
+
+db.pragma('journal_mode = WAL')
 
 db.exec(`
 	CREATE TABLE IF NOT EXISTS cache (
@@ -127,6 +135,25 @@ export function getImageCache<CachedData>(cachePath: string, cacheType: CacheTyp
 	return JSON.parse(cached.data) as CachedData
 }
 
-export function setImageCache<CachedData>(cachePath: string, cacheType: CacheType, data: CachedData) {
-	setStmt.run(cachePath, cacheType, JSON.stringify(data), CACHE_VERSION)
+// Create a transaction function that loops over an array of items
+const insertMany = db.transaction((items: CacheItem[]) => {
+	for (const item of items) {
+		setStmt.run(item.path, item.type, JSON.stringify(item.data), CACHE_VERSION);
+	}
+});
+
+// Export a single, flexible function that handles both single items and arrays!
+export function setImageCache<CachedData>(
+	pathOrItems: string | CacheItem<CachedData>[],
+	cacheType?: CacheType,
+	data?: CachedData
+) {
+	// If an array was passed, pass it directly to the transaction
+	if (Array.isArray(pathOrItems)) {
+		insertMany(pathOrItems);
+	}
+	// If standard individual arguments were passed, wrap them in an array for the transaction
+	else if (cacheType && data !== undefined) {
+		insertMany([{ path: pathOrItems, type: cacheType, data }]);
+	}
 }

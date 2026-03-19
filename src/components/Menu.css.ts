@@ -48,6 +48,7 @@ export const MenuLi = styleVariants({
 			alignItems: 'center',
 			textAlign: 'center',
 			borderRadius: '10px 10px 0px 0px',
+			border: `1px solid black`,
 			width: '100%'
 		}
 	],
@@ -67,6 +68,7 @@ export const MenuLi = styleVariants({
 		{
 			textOverflow: 'clip',
 			borderRadius: '0px 10px 10px 0px',
+			border: `1px solid black`,
 			overflow: 'hidden',
 			display: 'flex',
 			alignItems: 'center',

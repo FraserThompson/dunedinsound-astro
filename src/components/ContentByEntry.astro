@@ -13,7 +13,7 @@ import FlexGridContainer from 'src/components/FlexGridContainer.astro'
 import { loadAndFormatCollection, loadAndFormatEntry, sortGigs, type ProcessedEntry } from 'src/util/collection'
 import type { ResponsiveImage } from 'src/util/ResponsiveImage'
 import Tile from 'src/components/Tile.astro'
-import DropdownMenu from 'src/components/DropdownMenu'
+import DropdownMenu from 'src/components/DropdownMenu.astro'
 import Divider from 'src/components/Divider.astro'
 import ContentTabs from 'src/components/ContentTabs.astro'
 import Banner from 'src/components/Banner.astro'
@@ -181,9 +181,9 @@ const hasInfo =
 			direction="down"
 			backgroundColor="white"
 			textColor="black"
+			buttonWidth="100%"
 			top={theme.dimensions.subheaderHeight}
 			list={getGigYearDropdownItems(sortedGigs)}
-			client:load
 		/>
 		{
 			collection === 'venue' && !!thisReferences.length && (

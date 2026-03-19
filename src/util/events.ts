@@ -3,6 +3,7 @@ import type { ResponsiveImage } from "./ResponsiveImage"
 
 export const updateEventName = 'virtual-window:update'
 export const filterEventName = 'shuffle:filter'
+export const dropdownClickEventName = 'dropdown-item-click'
 export const imageGalleryUpdateEventName = 'gallery:update-triggered'
 export const imageGalleryUpdatedEventName = 'gallery:update-finished'
 export const playerTrackChange = 'player:select'

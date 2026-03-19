@@ -14,6 +14,12 @@ export const WinampInset = style({
 	fontSize: "16px"
 })
 
+export const WinampBackground = style({
+	background: 'linear-gradient(to left, #1a1927 0%, #353551 53%, #21212d 100%)',
+	border: theme.borders.groove,
+	borderRadius: '3px',
+})
+
 export const TracklistWrapper = style([WinampInset, {
 	flex: 1,
 	margin: '0px',
