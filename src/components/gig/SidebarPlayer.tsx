@@ -54,7 +54,7 @@ const PlayerSidebar: FunctionalComponent<Props> = ({ title, artistAudio, playOnL
 					}
 					<div class={PlayerSidebarTracklist} style={{ flexGrow: 1 }}>
 						<div className={WinampTitlebar} data-title="PLAYLIST" />
-						<PlayerTracklist maxHeight="35svh" maxHeightDesktop="100%" />
+						<PlayerTracklist maxHeight="30svh" maxHeightDesktop="100%" />
 					</div>
 				</div>
 				{children && <div class={`${PlayerSidebarContentWrapper} flex`}>

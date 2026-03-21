@@ -73,7 +73,7 @@ export const dropdownMenu = style([
 				visibility: 'visible',
 				opacity: 1,
 				pointerEvents: 'auto',
-				transform: 'translateY(-4px)'
+				transform: 'translateY(0px)'
 			},
 			'&.up': {
 				transform: `translateY(${theme.dimensions.subheaderHeight})`

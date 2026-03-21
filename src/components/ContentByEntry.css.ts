@@ -15,6 +15,22 @@ export const contentByEntryActiveWrapper = style({
 	}
 })
 
+export const allAgesWrapper = style({
+	position: 'absolute',
+	right: theme.dimensions.basePaddingMobile,
+	zIndex: '2',
+	height: theme.dimensions.headerHeightMobile,
+	top: '0px',
+	display: 'flex !important',
+	alignItems: 'center',
+	'@media': {
+		'screen and (--md)': {
+			right: theme.dimensions.basePadding,
+			height: theme.dimensions.headerHeight,
+		}
+	}
+})
+
 export const yearWrapper = style({
 	scrollMarginTop: theme.dimensions.headerHeightMobile,
 	'@media': {

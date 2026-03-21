@@ -96,7 +96,7 @@ export const contentWrapper = style({
 })
 
 const fade = keyframes({
-	to: { opacity: '1' }
+	to: { width: '32px', opacity: 0.5 }
 })
 
 const sidebarButtonBase = style({
@@ -111,21 +111,20 @@ const sidebarButtonBase = style({
 		},
 		'&::after': {
 			opacity: 0,
-			animation: `${fade} 1s forwards`,
-			transform: 'rotate(0deg)',
-			transformOrigin: 'center 12px',
-			transition: 'transform 0.2s ease-in-out',
-			willChange: 'transform',
-			height: "24px",
-			width: "24px",
-			content:
-				"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24px' height='24px' class='up-icon'%3E%3Cpath fill='white' d='m6.293 13.293l1.414 1.414L12 10.414l4.293 4.293l1.414-1.414L12 7.586z'%3E%3C/path%3E%3C/svg%3E\")"
-		},
-		'&.open::after': {
-			transform: 'rotate(180deg)'
+			position: 'absolute',
+			top: '4px',
+			animation: `${fade} 0.4s forwards`,
+			borderRadius: '5px',
+			height: '3px',
+			width: '0px',
+			backgroundColor: 'white',
+			content: ''
 		},
 		'&:active, &:focus': {
-			backgroundColor: theme.color.darkContrast3
+			backgroundColor: theme.color.darkContrast3,
+		},
+		'&.open::after': {
+			opacity: '0.8 !important'
 		}
 	},
 	'@media': {

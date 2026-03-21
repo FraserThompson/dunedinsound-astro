@@ -1,7 +1,8 @@
 ---
-import { loadAndFormatCollection } from 'src/util/collection.ts'
-import ArtistPlayer from 'src/layouts/collection/ArtistPlayer.astro'
+import { loadAndFormatCollection, type ArtistAudio } from 'src/util/collection.ts'
+import PlayerLayout from 'src/layouts/base/PlayerLayout.astro'
 import { artistPlayerThreshold } from 'src/util/constants'
+import path from 'path'
 
 export async function getStaticPaths() {
 	const entries = await loadAndFormatCollection('artist')
@@ -19,7 +20,39 @@ export async function getStaticPaths() {
 	)
 }
 
+let audioFromGigs: ArtistAudio[] | undefined = undefined
+
 const { entry } = Astro.props
+
+if (entry) {
+	// Find related gigs and sort them
+	const gigs = await loadAndFormatCollection('gig', (thing) => {
+		const matchByArtist = thing.entry.data.artists?.find((artist) => artist.id.id === entry.entry.id)
+		const matchByVenue = thing.entry.data.venue.id === entry.entry.id
+		return !!(matchByArtist || matchByVenue)
+	})
+
+	audioFromGigs = gigs.reduce((acc, gig) => {
+		const audio = gig.extra.media.audio
+			.filter((audio) => audio.title === entry.entry.id)
+			.map((audio) => ({
+				...audio,
+				title: path.basename(audio.files[0]),
+				dataAttributes: { 'data-gig': gig.entry.id }
+			}))
+		return [...acc, ...audio]
+	}, [])
+
+	const vaultsessions = await loadAndFormatCollection(
+		'vaultsession',
+		(thing) => thing.entry.data.artist.id === entry.entry.id
+	)
+
+	if (vaultsessions.length) {
+		const vaultSeshAudio = vaultsessions[0].extra.audio
+		audioFromGigs.push({ ...vaultSeshAudio, title: path.basename(vaultSeshAudio.files[0]) })
+	}
+}
 ---
 
-<ArtistPlayer entry={entry} />
+<PlayerLayout audioFromGigs={audioFromGigs} gigsFromEntry={entry} />

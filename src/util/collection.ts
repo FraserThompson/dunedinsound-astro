@@ -28,6 +28,7 @@ export type ArtistAudio = {
 	title: string
 	files: string[]
 	tracklist?: Track[]
+	dataAttributes?: { [id: string]: string }
 }
 
 interface GigMedia {

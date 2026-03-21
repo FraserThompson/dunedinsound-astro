@@ -24,7 +24,7 @@ const PlayerTracklist: FunctionalComponent<Props> = ({ maxHeight, maxHeightDeskt
 			[maxHeightDesktopVar]: maxHeightDesktop,
 		})}>
 			{artistAudio?.map((item, index) => (
-				<li key={`${index}. ${item.title}`} className={selectedTrack == index ? TracklistTrack + ' active' : TracklistTrack}>
+				<li key={`${index}. ${item.title}`} className={selectedTrack == index ? TracklistTrack + ' active' : TracklistTrack} {...item.dataAttributes}>
 					<span style={{ width: "92%" }}>
 						<a role="button" className={TrackButton} onClick={() => selectTrack(index)}>
 							{item.title}

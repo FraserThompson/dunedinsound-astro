@@ -6,11 +6,12 @@ import { theme } from '../Theme.css'
 
 interface Props {
 	style?: Partial<CSSStyleDeclaration>
+	className?: string
 }
-const { style } = Astro.props
+const { style, className } = Astro.props
 ---
 
-<div style={style}>
+<div style={style} class={className}>
 	<span
 		title="All Ages"
 		style={{
@@ -27,7 +28,7 @@ const { style } = Astro.props
 	}
 	span {
 		bottom: 1px;
-    position: relative;
+		position: relative;
 		border: 1px solid;
 		border-radius: 3px;
 		text-align: center;

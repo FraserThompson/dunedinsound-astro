@@ -24,7 +24,7 @@ import ImageGallery from 'src/components/ImageGallery.astro'
 import BlogTile from 'src/components/blog/BlogTile.astro'
 import GigTile from 'src/components/gig/GigTile.astro'
 import { artistPlayerThreshold } from 'src/util/constants'
-import { contentByEntryActiveWrapper, yearWrapper, artistPlaylistWrapper } from './ContentByEntry.css'
+import { contentByEntryActiveWrapper, yearWrapper, artistPlaylistWrapper, allAgesWrapper } from './ContentByEntry.css'
 import { formattedDate, timespanString, referencesTimespanString } from 'src/util/names'
 import ShortcutIcon from './ShortcutIcon.astro'
 import AllAgesIndicator from './AllAgesIndicator.astro'
@@ -105,6 +105,7 @@ const hasInfo =
 	backgroundImage={entryExtra.cover}
 	bottomMargin={`calc(${theme.dimensions.subheaderHeightNegative} * 2)`}
 >
+	{'allAges' in entryData && entryData.allAges && <AllAgesIndicator slot="customContent" className={allAgesWrapper} />}
 	<!-- description/audioculture quote and link to references of this -->
 	{
 		(
@@ -128,10 +129,7 @@ const hasInfo =
 						</a>
 					</blockquote>
 				)}
-				<div>
-					{entryData.links && <SocialLinks links={entryData.links} />}
-					{'allAges' in entryData && entryData.allAges && <AllAgesIndicator />}
-				</div>
+				<div>{entryData.links && <SocialLinks links={entryData.links} />}</div>
 				{!!allReferences.length && (
 					<div>
 						<strong>{collection === 'venue' ? 'Other venues at this location' : 'See also'}</strong>

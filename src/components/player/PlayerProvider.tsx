@@ -284,6 +284,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 		() => ({
 			artistAudio,
 			waveformRef,
+			wavesurfer,
 			playing,
 			ready,
 			loading,
@@ -299,7 +300,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 			seekToTime,
 			toggleShuffle
 		}),
-		[artistAudio, playing, ready, loading, shuffle, currentTime, duration, selectedTrack, currentTrackTitle, playPause, next, previous, selectTrack, seekToTime, toggleShuffle]
+		[artistAudio, wavesurfer, playing, ready, loading, shuffle, currentTime, duration, selectedTrack, currentTrackTitle, playPause, next, previous, selectTrack, seekToTime, toggleShuffle]
 	)
 
 	return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>

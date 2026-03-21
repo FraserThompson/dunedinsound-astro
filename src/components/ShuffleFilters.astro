@@ -16,7 +16,7 @@
  *  - filter (optional): Array of Filters
  *  - className (optional): Class to add to the wrapper
  *  - openSearchWithSidebar(optional): If true, all filters will be hidden on mobile until the
- *    sidebar is opened. This will also hide filters/sorters inside a button which pops a modal.
+ *    sidebar is opened. This will also hide filters/sorters inside a button which pops a Popover.
  */
 
 import { shuffleFilter, modalFiltersWrapper, dropdownButton } from './ShuffleFilters.css'
@@ -25,7 +25,7 @@ import SortIcon from '~icons/iconoir/sort'
 import SearchIcon from '~icons/iconoir/search'
 import FilterIcon from '~icons/iconoir/filter'
 import GlobeIcon from '~icons/iconoir/globe'
-import Modal from './Modal.astro'
+import Popover from './Popover.astro'
 
 export interface Sorter {
 	value: string
@@ -102,7 +102,7 @@ const { openSearchWithSidebar, search, sort, filter, className = '', style } = A
 	}
 	{
 		openSearchWithSidebar && (sort || filter) && (
-			<Modal className={`${openSearchWithSidebar ? dropdownButton + ' openWithSidebar top' : ''}`}>
+			<Popover className={`${openSearchWithSidebar ? dropdownButton + ' openWithSidebar top' : ''}`}>
 				<FilterIcon slot="button" />
 				<div slot="content" class={`${modalFiltersWrapper}`}>
 					{sort && (
@@ -136,7 +136,7 @@ const { openSearchWithSidebar, search, sort, filter, className = '', style } = A
 						)
 					)}
 				</div>
-			</Modal>
+			</Popover>
 		)
 	}
 </shuffle-filters>

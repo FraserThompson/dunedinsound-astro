@@ -1,37 +1,25 @@
 import { style } from '@vanilla-extract/css'
 import { theme } from '../Theme.css'
 
-export const modalContent = style({
-	position: 'absolute',
-	visibility: 'hidden',
-	opacity: 0,
-	pointerEvents: 'none',
+export const popoverContent = style({
 	top: theme.dimensions.headerHeightMobile,
-	left: '0px',
+	margin: '0',
 	backgroundColor: theme.color.background,
+	color: theme.color.text,
 	borderRadius: '4px',
 	border: theme.borders.contrast,
 	boxShadow: theme.borders.shadow,
 	padding: theme.dimensions.basePaddingMobile,
-	transitionProperty: 'visibility, opacity',
-	transitionDuration: '0.3s',
 	'@media': {
 		'screen and (--md)': {
 			top: theme.dimensions.headerHeight,
 			left: 'auto',
 			padding: theme.dimensions.basePadding,
 		}
-	},
-	selectors: {
-		'&.open': {
-			visibility: 'visible',
-			opacity: 1,
-			pointerEvents: 'auto',
-		}
 	}
 })
 
-export const modalButton = style({
+export const popoverButton = style({
 	height: theme.dimensions.headerHeightMobile,
 	width: theme.dimensions.headerHeightMobile,
 	padding: 0,

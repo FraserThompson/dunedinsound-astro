@@ -3,39 +3,23 @@
  * A layout with a player for playing one artists audio.
  *
  * Props:
- *  - entry: The entry.
+ *  - audioFromGigs: Array of ArtistAudio elements to put in the playlist
+ *  - gigsFromEntry: The Entry which the gigs are from (optional)
  */
-import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
+import { loadAndFormatCollection, type ArtistAudio, type ProcessedEntry } from 'src/util/collection'
 import SidebarPlayer from 'src/components/gig/SidebarPlayer'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import BaseLayout from '../base/BaseLayout.astro'
 import { artistPlayerThreshold } from 'src/util/constants'
 import DropdownMenu from 'src/components/DropdownMenu.astro'
-import { fileButton } from 'src/layouts/collection/ArtistPlayer.css'
+import { fileButton, gigMetaWrapper } from 'src/layouts/base/PlayerLayout.css'
 
 interface Props {
-	entry?: ProcessedEntry<'artist'>
+	audioFromGigs?: ArtistAudio[] | undefined
+	gigsFromEntry?: ProcessedEntry<'artist'>
 }
 
-const { entry } = Astro.props
-
-let audioFromGigs
-
-if (entry) {
-	// Find related gigs and sort them
-	const gigs = await loadAndFormatCollection('gig', (thing) => {
-		const matchByArtist = thing.entry.data.artists?.find((artist) => artist.id.id === entry.entry.id)
-		const matchByVenue = thing.entry.data.venue.id === entry.entry.id
-		return !!(matchByArtist || matchByVenue)
-	})
-
-	audioFromGigs = gigs.reduce((acc, gig) => {
-		const audio = gig.extra.media.audio
-			.filter((audio) => audio.title === entry.entry.id)
-			.map((audio) => ({ ...audio, title: gig.entry.id }))
-		return [...acc, ...audio]
-	}, [])
-}
+const { gigsFromEntry, audioFromGigs } = Astro.props
 
 const entries = await loadAndFormatCollection('artist', (entry) => entry.extra.gigCount > artistPlayerThreshold)
 const artistList = entries.map((entry) => ({ title: entry.entry.id, href: `/player/artists/${entry.entry.id}` }))
@@ -44,14 +28,21 @@ const artistList = entries.map((entry) => ({ title: entry.entry.id, href: `/play
 <BaseLayout
 	hideFooter={true}
 	poo={{
-		title: entry ? entry.entry.data.title : 'Player',
-		description: 'Player'
+		title: gigsFromEntry ? `${gigsFromEntry.entry.data.title} Player` : 'Player',
+		description: gigsFromEntry ? `Play audio bootlages from ${gigsFromEntry.entry.data.title}.` : 'Audio player'
 	}}
 >
-	<SidebarPlayer title={`${entry ? entry.entry.id : ''} PLAYER`} artistAudio={audioFromGigs} client:load>
+	<SidebarPlayer
+		title={`${gigsFromEntry ? gigsFromEntry.entry.id : ''} PLAYER`}
+		artistAudio={audioFromGigs}
+		client:load
+	>
 		<DropdownMenu
 			slot="menu"
-			list={[{ title: 'Load an artist', submenu: artistList }]}
+			list={[
+				{ title: 'Load an artist', submenu: artistList },
+				{ title: 'Load all', href: '/player/gigs' }
+			]}
 			direction="down"
 			width="200px"
 			buttonPosition="left"
@@ -59,7 +50,13 @@ const artistList = entries.map((entry) => ({ title: entry.entry.id, href: `/play
 		>
 			<div class={fileButton} slot="button">File</div>
 		</DropdownMenu>
-		{entry && <div id="gig-meta" style={{ padding: '3px' }} data-artist={entry.entry.id} />}
+		<div
+			id="gig-meta"
+			class={gigMetaWrapper}
+			data-artist={gigsFromEntry ? gigsFromEntry.entry.id : 'index'}
+			data-gig={''}
+		>
+		</div>
 		<ImageGallery thumbnailWidthDesktop="200px" />
 	</SidebarPlayer>
 </BaseLayout>
@@ -74,16 +71,22 @@ const artistList = entries.map((entry) => ({ title: entry.entry.id, href: `/play
 
 	import { getEntryPath, type ArtistGigResponse } from 'src/util/helpers'
 
-	document.addEventListener('astro:page-load', () => {
-		const metaContainer = document.querySelector('#gig-meta')
+	const init = () => {
+		const metaContainer: HTMLElement | null = document.querySelector('#gig-meta')
 
 		/**
 		 * When the track changes, grab data about the gig.
 		 */
 		window.addEventListener(playerTrackChange, async (e: any) => {
 			const detail: PlayerTrackChangeEventDetails = e.detail
-			const artist = document.querySelector<HTMLElement>('#gig-meta')?.dataset.artist
-			const req = await fetch(`/data/artists/${artist}/${detail.track.title}.json`)
+
+			const artistId = document.querySelector<HTMLElement>('#gig-meta')?.dataset.artist ?? 'index'
+			const gigId = detail.track.dataAttributes?.['data-gig']
+
+			// Do nothing if nothing changed
+			if (!gigId || gigId == metaContainer?.dataset.gig) return
+
+			const req = await fetch(`/data/gigs/${gigId}/${artistId}.json`)
 
 			if (req.ok) {
 				const json: ArtistGigResponse = await req.json()
@@ -98,6 +101,8 @@ const artistList = entries.map((entry) => ({ title: entry.entry.id, href: `/play
 					})
 					window.dispatchEvent(event)
 				}
+
+				if (!metaContainer) return
 
 				const gig = json.data
 
@@ -126,9 +131,12 @@ const artistList = entries.map((entry) => ({ title: entry.entry.id, href: `/play
 					}
 					texts.push(text)
 				}
-
-				metaContainer?.replaceChildren(...texts)
+				metaContainer.dataset.gig = gigId
+				metaContainer.replaceChildren(...texts)
 			}
 		})
-	})
+	}
+
+	document.addEventListener('astro:page-load', init)
+	document.addEventListener('astro:after-swap', init)
 </script>

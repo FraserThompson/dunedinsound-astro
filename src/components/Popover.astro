@@ -1,0 +1,87 @@
+---
+/**
+ *
+ * Provides an element for displaying a button which opens content in a popover
+ * positioned above all other elements. Uses Native HTML dialog element.
+ *
+ * TODO: Options for where popover is positioned.
+ *
+ * Props:
+ *  - className (optional): Class to add to the wrapper
+ *
+ * Slots:
+ *  - content: The content inside the popover.
+ *  - button: The content inside the button.
+ */
+
+import { popoverContent, popoverButton } from './Popover.css'
+
+interface Props {
+	className?: string
+}
+
+const uniqueID = `id${Math.random().toString().slice(2)}`
+
+const { className = '' } = Astro.props
+---
+
+<popover-wrapper>
+	<button class={`${popoverButton} ${className}`} popovertarget={uniqueID} aria-haspopup="true">
+		<slot name="button" />
+	</button>
+	<dialog id={uniqueID} class={popoverContent} popover>
+		<slot name="content" />
+	</dialog>
+</popover-wrapper>
+
+<script>
+	import { getCurrentScreensize } from 'src/util/helpers'
+
+	class Popover extends HTMLElement {
+		dialogEl: HTMLDialogElement | null
+
+		constructor() {
+			super()
+			this.dialogEl = this.querySelector('dialog')
+		}
+
+		public onToggle = (e: any) => {
+			const dialog = e.target
+			const button = e.source
+			const open = e.newState === "open"
+
+			if (open) {
+				// Get button position
+				const rect = button.getBoundingClientRect()
+
+				const isMobile = getCurrentScreensize() === 'xs'
+
+				// Position popover below the button
+				Object.assign(dialog.style, {
+					top: `${rect.bottom + window.scrollY}px`,
+					left: `${!isMobile ? rect.left + window.scrollX + 'px' : 'auto'}`,
+					right: `${isMobile ? '0px' : 'auto'}`,
+					minWidth: `${rect.width}px`
+				})
+			}
+		}
+
+		public closePopover = () => this.dialogEl?.close()
+
+		connectedCallback() {
+			this.dialogEl?.addEventListener('beforetoggle', this.onToggle)
+			// If there's a sidebar and it opens or closes the popover should also close
+			window.addEventListener('sidebar_close', this.closePopover)
+			window.addEventListener('sidebar_open', this.closePopover)
+		}
+
+		disconnectedCallback() {
+			// detach callbacks
+			this.dialogEl?.removeEventListener('beforetoggle', this.onToggle)
+			window.removeEventListener('sidebar_close', this.closePopover)
+			window.removeEventListener('sidebar_open', this.closePopover)
+		}
+	}
+
+	customElements.define('popover-wrapper', Popover)
+</script>

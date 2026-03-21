@@ -177,13 +177,22 @@ const menuVars = assignInlineVars({
 				document.body.appendChild(submenu)
 				this.submenus.push(submenu)
 
-				// Bind events
-				li.addEventListener('mouseenter', () => this.handleSubmenuOpen(li, submenu, link))
-				li.addEventListener('mouseleave', () => this.handleSubmenuClose(submenu, link))
-				submenu.addEventListener('mouseenter', () => this.handleSubmenuOpen(li, submenu, link))
-				submenu.addEventListener('mouseleave', () => this.handleSubmenuClose(submenu, link))
+				// Bind events (Only trigger hover logic if the user is actually using a mouse)
+				li.addEventListener('pointerenter', (e) => {
+					if (e.pointerType === 'mouse') this.handleSubmenuOpen(li, submenu, link)
+				})
+				li.addEventListener('pointerleave', (e) => {
+					if (e.pointerType === 'mouse') this.handleSubmenuClose(submenu, link)
+				})
+				submenu.addEventListener('pointerenter', (e) => {
+					if (e.pointerType === 'mouse') this.handleSubmenuOpen(li, submenu, link)
+				})
+				submenu.addEventListener('pointerleave', (e) => {
+					if (e.pointerType === 'mouse') this.handleSubmenuClose(submenu, link)
+				})
 
-				link.addEventListener('click', (e) => this.handleSubmenuToggle(e, li, submenu, link))
+				// The click event handles both mobile taps AND desktop keyboard/mouse clicks
+				li.addEventListener('click', (e) => this.handleSubmenuToggle(e, li, submenu, link))
 			})
 
 			// Setup Standard Links
