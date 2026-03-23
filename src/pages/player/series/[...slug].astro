@@ -1,0 +1,41 @@
+---
+import { loadAndFormatCollection, type ArtistAudio } from 'src/util/collection.ts'
+import PlayerLayout from 'src/layouts/base/PlayerLayout.astro'
+import { seriesVenuePlayerThreshold } from 'src/util/constants'
+import path from 'path'
+
+export async function getStaticPaths() {
+	const entries = await loadAndFormatCollection('series')
+	return Promise.all(
+		entries
+			.filter((entry) => entry.extra.gigCount > seriesVenuePlayerThreshold)
+			.map(async (entry) => {
+				return {
+					params: { slug: entry.extra.slug },
+					props: {
+						entry
+					}
+				}
+			})
+	)
+}
+
+let audioFromGigs: ArtistAudio[] | undefined = undefined
+
+const { entry } = Astro.props
+
+if (entry) {
+	// Find related gigs and sort them
+	const gigs = await loadAndFormatCollection('gig', (thing) => !!(thing.entry.data.series?.id === entry.entry.id))
+	audioFromGigs = gigs.reduce((acc, gig) => {
+		const audio = gig.extra.media.audio.map((audio) => ({
+			...audio,
+			title: path.basename(audio.files[0]),
+			dataAttributes: { 'data-gig': gig.entry.id }
+		}))
+		return [...acc, ...audio]
+	}, [])
+}
+---
+
+<PlayerLayout audioFromGigs={audioFromGigs} gigsFromEntry={entry} />

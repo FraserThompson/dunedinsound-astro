@@ -9,6 +9,8 @@ import SocialLinks from 'src/components/SocialLinks.astro'
 import Divider from 'src/components/Divider.astro'
 import { theme } from 'src/Theme.css'
 import DropdownMenu from 'src/components/DropdownMenu.astro'
+import { seriesVenuePlayerThreshold } from 'src/util/constants'
+import ShortcutIcon from 'src/components/ShortcutIcon.astro'
 
 interface Props {
 	entry: ProcessedEntry<'series'>
@@ -87,6 +89,11 @@ const resources = Array.isArray(entryData.resources)
 			</ul>
 			<SocialLinks style={{ paddingTop: '0' }} links={entryData.links} />
 		)}
+		{
+			entryExtra.gigCount > seriesVenuePlayerThreshold && (
+				<ShortcutIcon title={`PLAYER`} href={`/player/series/${entry.entry.id}`} />
+			)
+		}
 	</TextContainer>
 </div>
 <div class={gigsWrapper}>
@@ -97,6 +104,7 @@ const resources = Array.isArray(entryData.resources)
 		topMobile={theme.dimensions.headerHeightMobile}
 		top={theme.dimensions.headerHeight}
 		buttonPosition="right"
+		buttonWidth="100%"
 		list={gigsYearDropdownItems.map((item) => ({
 			title: item.year,
 			subtitle: `(${item.count})`,

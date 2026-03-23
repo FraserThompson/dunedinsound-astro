@@ -18,7 +18,7 @@
 
 import { useRef, useState, useEffect, useCallback, useMemo } from "preact/hooks"
 import type { FunctionalComponent } from "preact"
-import { timeToSeconds } from '../../util/helpers.ts'
+import { shuffleArray, timeToSeconds } from '../../util/helpers.ts'
 import WaveSurfer from 'wavesurfer.js'
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.esm.js'
 import type { ArtistAudio } from "src/util/collection.ts"
@@ -33,10 +33,11 @@ interface Props {
 const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, children }) => {
 	const waveformRef = useRef(null)
 
+	const [playlist, setPlaylist] = useState(undefined as ArtistAudio[] | undefined)
+
 	const [playing, setPlaying] = useState(false)
 	const [ready, setReady] = useState(false) // used only on initial load
 	const [loading, setLoading] = useState(true)
-	const [shuffle, setShuffle] = useState(false)
 
 	const [currentTime, setCurrentTime] = useState(undefined as number | undefined)
 	const [duration, setDuration] = useState(undefined as number | undefined)
@@ -60,27 +61,33 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 			(window as any).cached_json = (window as any).cached_json || {}
 		}
 
-		if (!waveformRef.current) return;
-
-		const ws = WaveSurfer.create({
-			container: waveformRef.current,
-			waveColor: waveformColor,
-			height: 60,
-			hideScrollbar: true,
-			normalize: true,
-			progressColor: waveformProgressColor,
-			barWidth: 2,
-		})
-
-		const wsRegions = ws.registerPlugin(RegionsPlugin.create())
-
-		setWaveSurfer(ws)
-		setRegionsPlugin(wsRegions)
-
 		if (!artistAudio) {
 			setLoading(false)
 		}
-	}, [])
+	
+		if (!waveformRef.current || !artistAudio) return;
+
+		// Only create wavesurfer if we haven't already got one
+		if (!wavesurfer) {
+			const ws = WaveSurfer.create({
+				container: waveformRef.current,
+				waveColor: waveformColor,
+				height: 60,
+				hideScrollbar: true,
+				normalize: true,
+				progressColor: waveformProgressColor,
+				barWidth: 2,
+			})
+
+			const wsRegions = ws.registerPlugin(RegionsPlugin.create())
+
+			setWaveSurfer(ws)
+			setRegionsPlugin(wsRegions)
+		}
+
+		setPlaylist(artistAudio)
+
+	}, [artistAudio])
 
 	/**
 	 * On wavesurfer instance available.
@@ -111,7 +118,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 	 * On wavesurfer ready.
 	 */
 	useEffect(() => {
-		if (!wavesurfer || !regionsPlugin || !artistAudio) return
+		if (!wavesurfer || !regionsPlugin || !playlist) return
 
 		// So other components can respond to Wavesurfer being ready
 		const event = new Event('wavesurfer_ready')
@@ -137,7 +144,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 			setQueueSeek(undefined)
 		}
 
-		artistAudio[selectedTrack].tracklist?.forEach((track) => {
+		playlist[selectedTrack].tracklist?.forEach((track) => {
 			const region = {
 				content: track.title,
 				start: timeToSeconds(track.time),
@@ -166,9 +173,9 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 	 * On selected track change.
 	 */
 	useEffect(() => {
-		if (!artistAudio) return
+		if (!playlist) return
 
-		const track = artistAudio[selectedTrack]
+		const track = playlist[selectedTrack]
 		const title = track.title
 
 		// Send an event
@@ -185,7 +192,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 		setCurrentTrackTitle(title)
 
 		wavesurfer && load(track.files[0], track.files[1])
-	}, [artistAudio, selectedTrack, wavesurfer])
+	}, [playlist, selectedTrack, wavesurfer])
 
 	// Fetches the file and loads it into wavesurfer
 	const load = useCallback(
@@ -247,12 +254,12 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 
 	const next = useCallback(
 		(play?: boolean) => {
-			if (!artistAudio) return
-			const lastTrackIndex = artistAudio.length - 1
-			const newselectedTrack = !shuffle ? Math.min(selectedTrack + 1, lastTrackIndex) : Math.floor(Math.random() * ((lastTrackIndex) + 1));
+			if (!playlist) return
+			const lastTrackIndex = playlist.length - 1
+			const newselectedTrack = Math.min(selectedTrack + 1, lastTrackIndex)
 			selectTrack(newselectedTrack, play)
 		},
-		[selectedTrack, artistAudio]
+		[selectedTrack, playlist]
 	)
 
 	const selectTrack = useCallback(
@@ -275,20 +282,24 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 
 	const toggleShuffle = useCallback(
 		() => {
-			setShuffle(!shuffle)
+			if (!playlist) return
+			const oldSelectedTrackTitle = playlist[selectedTrack].title
+			const shuffled = shuffleArray(playlist)
+			const newSelectedTrack = shuffled.findIndex((thing) => thing.title == oldSelectedTrackTitle);
+			setPlaylist(shuffled)
+			setselectedTrack(newSelectedTrack)
 		},
-		[shuffle]
+		[playlist, selectedTrack]
 	)
 
 	const value = useMemo(
 		() => ({
-			artistAudio,
+			playlist,
 			waveformRef,
 			wavesurfer,
 			playing,
 			ready,
 			loading,
-			shuffle,
 			currentTime,
 			duration,
 			selectedTrack,
@@ -300,7 +311,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 			seekToTime,
 			toggleShuffle
 		}),
-		[artistAudio, wavesurfer, playing, ready, loading, shuffle, currentTime, duration, selectedTrack, currentTrackTitle, playPause, next, previous, selectTrack, seekToTime, toggleShuffle]
+		[playlist, wavesurfer, playing, ready, loading, currentTime, duration, selectedTrack, currentTrackTitle, playPause, next, previous, selectTrack, seekToTime, toggleShuffle]
 	)
 
 	return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>

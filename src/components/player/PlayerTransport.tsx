@@ -13,7 +13,7 @@ interface Props {
 }
 
 const PlayerTransport: FunctionalComponent<Props> = ({ showShuffle }) => {
-	const { playing, playPause, previous, next, ready, shuffle, toggleShuffle } = usePlayer()
+	const { playing, playPause, previous, next, ready, toggleShuffle } = usePlayer()
 
 	return (
 		<div>
@@ -41,7 +41,7 @@ const PlayerTransport: FunctionalComponent<Props> = ({ showShuffle }) => {
 			>
 			</button>
 			{showShuffle && <button
-				className={`${TransportButton} shuffle ${shuffle ? 'selected' : ''}`}
+				className={`${TransportButton} shuffle`}
 				disabled={!ready}
 				id="shuffle"
 				onClick={() => toggleShuffle()}

@@ -16,14 +16,14 @@ interface Props {
 }
 
 const PlayerTracklist: FunctionalComponent<Props> = ({ maxHeight, maxHeightDesktop }) => {
-	const { artistAudio, selectedTrack, selectTrack, seekToTime } = usePlayer()
+	const { playlist, selectedTrack, selectTrack, seekToTime } = usePlayer()
 
 	return (
 		<ul className={TracklistWrapper} style={assignInlineVars({
 			[maxHeightVar]: maxHeight,
 			[maxHeightDesktopVar]: maxHeightDesktop,
 		})}>
-			{artistAudio?.map((item, index) => (
+			{playlist?.map((item, index) => (
 				<li key={`${index}. ${item.title}`} className={selectedTrack == index ? TracklistTrack + ' active' : TracklistTrack} {...item.dataAttributes}>
 					<span style={{ width: "92%" }}>
 						<a role="button" className={TrackButton} onClick={() => selectTrack(index)}>
@@ -49,7 +49,7 @@ const PlayerTracklist: FunctionalComponent<Props> = ({ maxHeight, maxHeightDeskt
 					</span>
 				</li>
 			))}
-			{!artistAudio && <li className={TracklistTrack}>Tracks will appear here</li>}
+			{!playlist && <li className={TracklistTrack}>Tracks will appear here</li>}
 		</ul>
 	)
 }

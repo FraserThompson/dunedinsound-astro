@@ -10,19 +10,26 @@ import { loadAndFormatCollection, type ArtistAudio, type ProcessedEntry } from '
 import SidebarPlayer from 'src/components/gig/SidebarPlayer'
 import ImageGallery from 'src/components/ImageGallery.astro'
 import BaseLayout from '../base/BaseLayout.astro'
-import { artistPlayerThreshold } from 'src/util/constants'
+import { artistPlayerThreshold, seriesVenuePlayerThreshold } from 'src/util/constants'
 import DropdownMenu from 'src/components/DropdownMenu.astro'
 import { fileButton, gigMetaWrapper } from 'src/layouts/base/PlayerLayout.css'
 
 interface Props {
 	audioFromGigs?: ArtistAudio[] | undefined
-	gigsFromEntry?: ProcessedEntry<'artist'>
+	gigsFromEntry?: ProcessedEntry<'artist'> | ProcessedEntry<'venue'> | ProcessedEntry<'series'>
 }
 
 const { gigsFromEntry, audioFromGigs } = Astro.props
 
-const entries = await loadAndFormatCollection('artist', (entry) => entry.extra.gigCount > artistPlayerThreshold)
-const artistList = entries.map((entry) => ({ title: entry.entry.id, href: `/player/artists/${entry.entry.id}` }))
+const artists = await loadAndFormatCollection('artist', (entry) => entry.extra.gigCount > artistPlayerThreshold)
+const venues = await loadAndFormatCollection('venue', (entry) => entry.extra.gigCount > seriesVenuePlayerThreshold)
+const series = await loadAndFormatCollection('series', (entry) => entry.extra.gigCount > seriesVenuePlayerThreshold)
+const artistList = artists.map((entry) => ({
+	title: entry.entry.data.title,
+	href: `/player/artist/${entry.entry.id}`
+}))
+const venuesList = venues.map((entry) => ({ title: entry.entry.data.title, href: `/player/venue/${entry.entry.id}` }))
+const seriesList = series.map((entry) => ({ title: entry.entry.data.title, href: `/player/series/${entry.entry.id}` }))
 ---
 
 <BaseLayout
@@ -41,7 +48,9 @@ const artistList = entries.map((entry) => ({ title: entry.entry.id, href: `/play
 			slot="menu"
 			list={[
 				{ title: 'Load an artist', submenu: artistList },
-				{ title: 'Load all', href: '/player/gigs' }
+				{ title: 'Load a venue', submenu: venuesList },
+				{ title: 'Load a series', submenu: seriesList },
+				{ title: 'Load all', href: '/player/gig' }
 			]}
 			direction="down"
 			width="200px"
@@ -53,7 +62,7 @@ const artistList = entries.map((entry) => ({ title: entry.entry.id, href: `/play
 		<div
 			id="gig-meta"
 			class={gigMetaWrapper}
-			data-artist={gigsFromEntry ? gigsFromEntry.entry.id : 'index'}
+			data-artist={gigsFromEntry && gigsFromEntry.entry.collection === 'artist' ? gigsFromEntry.entry.id : 'index'}
 			data-gig={''}
 		>
 		</div>

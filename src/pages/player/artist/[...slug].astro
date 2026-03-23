@@ -26,11 +26,10 @@ const { entry } = Astro.props
 
 if (entry) {
 	// Find related gigs and sort them
-	const gigs = await loadAndFormatCollection('gig', (thing) => {
-		const matchByArtist = thing.entry.data.artists?.find((artist) => artist.id.id === entry.entry.id)
-		const matchByVenue = thing.entry.data.venue.id === entry.entry.id
-		return !!(matchByArtist || matchByVenue)
-	})
+	const gigs = await loadAndFormatCollection(
+		'gig',
+		(thing) => !!thing.entry.data.artists?.find((artist) => artist.id.id === entry.entry.id)
+	)
 
 	audioFromGigs = gigs.reduce((acc, gig) => {
 		const audio = gig.extra.media.audio

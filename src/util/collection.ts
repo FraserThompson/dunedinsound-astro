@@ -710,6 +710,7 @@ export async function getGigMedia(entry: CollectionEntry<'gig'>): Promise<GigMed
 			).map((src) => `/${src}`);
 
 			if (audioFiles.length) {
+				imageCount += audioFiles.length
 				audio.push({
 					title: artistId,
 					files: audioFiles,

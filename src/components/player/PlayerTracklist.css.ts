@@ -35,8 +35,7 @@ export const TracklistWrapper = style([WinampInset, {
 }])
 
 export const TracklistTrack = style({
-	lineHeight: '1.5rem',
-	height: '24px',
+	lineHeight: '1.2rem',
 	paddingLeft: '3px',
 	paddingRight: '3px',
 	listStyle: 'none',
@@ -61,6 +60,8 @@ export const TrackButton = style({
 })
 
 globalStyle(`${TracklistTrack} a`, {
+	lineHeight: '1.2rem',
+	height: '100%',
 	color: '#28da1d'
 })
 

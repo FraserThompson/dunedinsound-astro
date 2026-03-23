@@ -6,7 +6,7 @@ import type WaveSurfer from "wavesurfer.js"
 export interface PlayerState {
 	playing: boolean
 	ready: boolean
-	shuffle: boolean
+	playlist?: ArtistAudio[]
 	selectedTrack: number
 	currentTrackTitle: string
 	currentTime?: number
@@ -23,7 +23,6 @@ export interface PlayerActions {
 }
 
 export type PlayerContextValue = PlayerState & PlayerActions & {
-	artistAudio?: ArtistAudio[]
 	waveformRef: preact.RefObject<HTMLDivElement>
 	wavesurfer?: WaveSurfer
 	loading: boolean

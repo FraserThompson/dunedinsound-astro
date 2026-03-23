@@ -17,6 +17,7 @@ import PlayerTracklist from "../player/PlayerTracklist"
 import { PlayerSidebarTracklist, PlayerSidebarWrapper, PlayerSidebarSidebarWrapper, PlayerSidebarWaveWrapper, PlayerSidebarContentWrapper, PlayerSidebarBottomWrapper, PlayerSidebarChildrenWrapper, PlayerSiderMenubar } from "./SidebarPlayer.css"
 import { WinampTitlebar } from "./CompactPlayer.css"
 import PlayerCurrentTrack from "../player/PlayerCurrentTrack"
+import PlayerVisualizer from "../player/PlayerVisualizer"
 
 interface Props {
 	title: string
@@ -30,7 +31,7 @@ const PlayerSidebar: FunctionalComponent<Props> = ({ title, artistAudio, playOnL
 	<PlayerProvider artistAudio={artistAudio} playOnLoad={playOnLoad}>
 		<div class={PlayerSidebarWrapper}>
 			<div className={WinampTitlebar} data-title={title.toLocaleUpperCase()} />
-			{menu && 
+			{menu &&
 				<div className={PlayerSiderMenubar}>
 					{menu}
 				</div>

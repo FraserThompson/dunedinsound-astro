@@ -129,7 +129,11 @@ const hasInfo =
 						</a>
 					</blockquote>
 				)}
-				<div>{entryData.links && <SocialLinks links={entryData.links} />}</div>
+				{entryData.links && (
+					<div>
+						<SocialLinks links={entryData.links} />
+					</div>
+				)}
 				{!!allReferences.length && (
 					<div>
 						<strong>{collection === 'venue' ? 'Other venues at this location' : 'See also'}</strong>
@@ -153,13 +157,13 @@ const hasInfo =
 	<div slot="customContent" class={contentByEntryActiveWrapper}>
 		<ActiveIndicator entry={entry} />
 	</div>
-	<!-- {
-		entryExtra.gigCount > artistPlayerThreshold && collection === 'artist' && (
+	{
+		entryExtra.gigCount > artistPlayerThreshold && (
 			<div slot="customContent" class={artistPlaylistWrapper}>
-				<ShortcutIcon title={`PLAYER`} href={`/player/artists/${entry.entry.id}`} />
+				<ShortcutIcon title={`PLAYER`} href={`/player/${collection}/${entry.entry.id}`} />
 			</div>
 		)
-	} -->
+	}
 	<slot name="banner" slot={hasBanner ? 'background' : ''} />
 </Banner>
 <Divider

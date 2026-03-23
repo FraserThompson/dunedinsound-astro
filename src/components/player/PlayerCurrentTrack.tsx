@@ -7,18 +7,22 @@
 import type { FunctionalComponent } from "preact"
 import { usePlayer } from "./PlayerContext"
 import { WinampInset } from "./PlayerTracklist.css"
-import { CurrentTrackText } from "./PlayerCurrentTrack.css"
+import { CurrentTrackMarquee, CurrentTrackText } from "./PlayerCurrentTrack.css"
+import PlayerVisualizer from "./PlayerVisualizer"
 
 const PlayerCurrentTrack: FunctionalComponent = () => {
 	const { currentTrackTitle } = usePlayer()
 
 	return (
 		<div className={WinampInset}>
-			<p className={CurrentTrackText}>
-				<marquee>
+			<div style={{ position: 'absolute' }}>
+				<PlayerVisualizer width={230} height={18} />
+			</div>
+			<div className={CurrentTrackMarquee}>
+				<p className={CurrentTrackText}>
 					{currentTrackTitle ? <>*** {currentTrackTitle} ***</> : "Load a playlist to begin"}
-				</marquee>
-			</p>
+				</p>
+			</div>
 		</div>
 	)
 }
