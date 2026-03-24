@@ -10,11 +10,11 @@ export const menuLeft = createVar()
 export const menuRight = createVar()
 export const dropdownTopMobile = createVar()
 export const buttonWidth = createVar()
+export const buttonHeight = createVar()
+export const buttonHeightMobile = createVar()
 export const menuWidth = createVar()
 export const background = createVar()
 export const color = createVar()
-export const dropdownHeight = createVar()
-export const dropdownHeightMobile = createVar()
 
 export const dropdownWrapper = style({
 	position: 'sticky',
@@ -32,7 +32,8 @@ export const dropdownWrapper = style({
 
 export const dropdownButtonWrapper = style({
 	display: 'flex',
-	height: theme.dimensions.subheaderHeight,
+	height: fallbackVar(buttonHeightMobile, buttonHeight, theme.dimensions.headerHeightMobile),
+	width: fallbackVar(buttonWidth, 'auto'),
 	flexDirection: 'column',
 	alignItems: fallbackVar(buttonAlign, 'end'),
 	color: fallbackVar(color, 'black'),
@@ -46,6 +47,11 @@ export const dropdownButtonWrapper = style({
 		'&:hover, &:active': {
 			backgroundColor: 'unset !important',
 			color: 'black'
+		}
+	},
+	'@media': {
+		'screen and (--md)': {
+			height: fallbackVar(buttonHeight, theme.dimensions.headerHeight),
 		}
 	}
 })

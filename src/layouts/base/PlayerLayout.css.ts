@@ -13,7 +13,7 @@ export const gigMetaWrapper = style({
 	border: "1px solid white",
 	boxShadow: theme.borders.shadow,
 	selectors: {
-		'&:not([data-artist=""])': {
+		'&:not([data-gig=""])': {
 			display: 'block'
 		},
 	}

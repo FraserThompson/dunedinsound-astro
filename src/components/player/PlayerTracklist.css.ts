@@ -43,6 +43,7 @@ export const TracklistTrack = style({
 	fontFamily: 'monospace',
 	color: '#28da1d',
 	display: 'flex',
+	flexWrap: 'wrap',
 	flexDirection: 'row',
 	selectors: {
 		'&.active': {
@@ -53,6 +54,7 @@ export const TracklistTrack = style({
 
 export const TrackButton = style({
 	cursor: "pointer",
+	width: "100%",
 	display: "block",
 	textOverflow: "ellipsis",
 	overflow: "hidden",
@@ -61,7 +63,6 @@ export const TrackButton = style({
 
 globalStyle(`${TracklistTrack} a`, {
 	lineHeight: '1.2rem',
-	height: '100%',
 	color: '#28da1d'
 })
 

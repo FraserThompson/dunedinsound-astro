@@ -1,14 +1,14 @@
 ---
 import { loadAndFormatCollection, type ArtistAudio } from 'src/util/collection.ts'
 import PlayerLayout from 'src/layouts/base/PlayerLayout.astro'
-import { artistPlayerThreshold } from 'src/util/constants'
+import { seriesVenuePlayerThreshold } from 'src/util/constants'
 import path from 'path'
 
 export async function getStaticPaths() {
 	const entries = await loadAndFormatCollection('venue')
 	return Promise.all(
 		entries
-			.filter((entry) => entry.extra.gigCount > artistPlayerThreshold)
+			.filter((entry) => entry.extra.gigCount > seriesVenuePlayerThreshold)
 			.map(async (entry) => {
 				return {
 					params: { slug: entry.extra.slug },

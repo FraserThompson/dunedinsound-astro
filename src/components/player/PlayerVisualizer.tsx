@@ -29,7 +29,6 @@ const PlayerVisualizer: FunctionalComponent<Props> = ({
 		let animationFrameId: number;
 
 		const initAudioAndDraw = () => {
-
 			// If we already set this up, don't do it again
 			if (isInitialized.current || !wavesurfer) return;
 			isInitialized.current = true;
@@ -43,7 +42,7 @@ const PlayerVisualizer: FunctionalComponent<Props> = ({
 			const mediaElementSource = audioContext.createMediaElementSource(audio);
 			const analyser = audioContext.createAnalyser();
 
-			analyser.fftSize = 512;
+			analyser.fftSize = 128;
 			mediaElementSource.connect(analyser);
 			analyser.connect(audioContext.destination);
 
@@ -57,21 +56,31 @@ const PlayerVisualizer: FunctionalComponent<Props> = ({
 				const canvasCtx = canvas?.getContext('2d');
 				if (!canvas || !canvasCtx) return;
 
-				canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-
 				analyser.getByteTimeDomainData(dataArray);
 
+				canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 				canvasCtx.fillStyle = backgroundColor;
 				canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+				let isSilent = true;
+				for (let i = 0; i < bufferLength; i++) {
+					if (dataArray[i] !== 128) {
+						isSilent = false;
+						break;
+					}
+				}
+
+				if (isSilent) return;
 
 				canvasCtx.lineWidth = 2;
 				canvasCtx.strokeStyle = lineColor;
 				canvasCtx.beginPath();
 
+				const step = 3;
 				const sliceWidth = canvas.width * 1.0 / bufferLength;
 				let x = 0;
 
-				for (let i = 0; i < bufferLength; i++) {
+				for (let i = 0; i < bufferLength; i += step) {
 					const v = dataArray[i] / 128.0;
 					const y = v * (canvas.height / 2);
 
@@ -81,7 +90,8 @@ const PlayerVisualizer: FunctionalComponent<Props> = ({
 						canvasCtx.lineTo(x, y);
 					}
 
-					x += sliceWidth;
+					// Multiply sliceWidth by step so the waveform still stretches across the whole canvas!
+					x += sliceWidth * step;
 				}
 
 				canvasCtx.lineTo(canvas.width, canvas.height / 2);

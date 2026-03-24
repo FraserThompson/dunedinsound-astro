@@ -16,9 +16,10 @@ import {
 	menuLeft,
 	menuRight,
 	dropdownTopMobile,
-	dropdownHeight,
-	dropdownHeightMobile,
-	menuWidth
+	menuWidth,
+	buttonWidth as buttonWidthVar,
+	buttonHeight as buttonHeightVar,
+	buttonHeightMobile as buttonHeightMobileVar
 } from './DropdownMenu.css'
 
 interface MenuLink {
@@ -37,8 +38,8 @@ export interface Props {
 	topMobile?: string
 	width?: string
 	buttonWidth?: string
-	height?: string
-	heightMobile?: string
+	buttonHeight?: string
+	buttonHeightMobile?: string
 	backgroundColor?: string
 	textColor?: string
 }
@@ -51,9 +52,9 @@ const {
 	buttonPosition,
 	topMobile,
 	width,
-	buttonWidth = 'auto',
-	height,
-	heightMobile,
+	buttonWidth,
+	buttonHeight,
+	buttonHeightMobile,
 	backgroundColor,
 	textColor
 } = Astro.props
@@ -61,13 +62,14 @@ const {
 const wrapperVars = assignInlineVars({
 	[dropdownTop]: top,
 	[dropdownTopMobile]: topMobile,
-	[buttonAlign]: buttonPosition === 'left' ? 'start' : 'end',
-	[dropdownHeight]: height,
-	[dropdownHeightMobile]: heightMobile
+	[buttonAlign]: buttonPosition === 'left' ? 'start' : 'end'
 })
 const buttonVars = assignInlineVars({
 	[color]: textColor,
-	[background]: backgroundColor
+	[background]: backgroundColor,
+	[buttonWidthVar]: buttonWidth,
+	[buttonHeightVar]: buttonHeight,
+	[buttonHeightMobileVar]: buttonHeightMobile
 })
 const menuVars = assignInlineVars({
 	[menuWidth]: width,
@@ -84,7 +86,7 @@ const menuVars = assignInlineVars({
 		class={dropdownButtonWrapper}
 		aria-haspopup="true"
 		aria-expanded="false"
-		style={{ width: buttonWidth, ...buttonVars }}
+		style={{ ...buttonVars }}
 	>
 		<slot name="button">
 			{menuTitle}

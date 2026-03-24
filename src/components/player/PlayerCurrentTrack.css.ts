@@ -7,6 +7,7 @@ const marquee = keyframes({
 
 export const CurrentTrackMarquee = style({
 	width: "230px",
+	height: "16px",
 	margin: 0,
 	padding: 0,
 	color: '#28da1d',

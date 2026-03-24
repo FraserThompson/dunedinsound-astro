@@ -14,7 +14,7 @@
  *  - bottomMobile: Offset from bottom on mobile (xs).
  *  - customButton: If true, it will not render its own button.
  *    You will need to put a button with id 'sidebar-button' somewhere on the page.
- * 
+ *
  * Events:
  *  - sidebar_open: Fired when sidebar opens.
  *  - sidebar_close: Fired when sidebar closes.
@@ -46,20 +46,25 @@ const { top, left, topMobile, bottom, bottomMobile, customButton } = Astro.props
 
 const hasSidebarSubheaderBottomMobile = Astro.slots.has('sidebarSubheaderBottomMobile')
 const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile')
+
+const wrapperVars = assignInlineVars({
+	[offsetTop]: top,
+	[offsetTopMobile]: topMobile,
+	[offsetBottom]: bottom,
+	[offsetBottomMobile]: bottomMobile,
+	[leftOffset]: left
+})
+
+const contentVars = assignInlineVars({
+	[offsetTop]: top,
+	[offsetTopMobile]: topMobile,
+	[offsetBottom]: bottom,
+	[offsetBottomMobile]: bottomMobile
+})
 ---
 
 <sidebar-wrapper>
-	<div
-		id="sidebar"
-		class={`${sidebarWrapper}`}
-		style={assignInlineVars({
-			[offsetTop]: top,
-			[offsetTopMobile]: topMobile,
-			[offsetBottom]: bottom,
-			[offsetBottomMobile]: bottomMobile,
-			[leftOffset]: left
-		})}
-	>
+	<div id="sidebar" class={`${sidebarWrapper}`} style={wrapperVars}>
 		<slot name="sidebarSubheaderTopMobile" />
 		<div
 			id="sidebar-menu"
@@ -71,15 +76,7 @@ const hasSidebarSubheaderTopMobile = Astro.slots.has('sidebarSubheaderTopMobile'
 	</div>
 </sidebar-wrapper>
 {!customButton && <button id="sidebar-button" class={sidebarButtonWrapper['bar']} />}
-<div
-	class={contentWrapper}
-	style={assignInlineVars({
-		[offsetTop]: top,
-		[offsetTopMobile]: topMobile,
-		[offsetBottom]: bottom,
-		[offsetBottomMobile]: bottomMobile
-	})}
->
+<div class={contentWrapper} style={contentVars}>
 	<slot name="content" />
 </div>
 

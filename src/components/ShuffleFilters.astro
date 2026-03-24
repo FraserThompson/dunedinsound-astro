@@ -10,13 +10,15 @@
  * this component filters stuff.
  *
  * Props:
- *  - search (optional): Supply a placeholder string to enable searching of the text inside elements.
- *    (additional searchable text can be defined with data-searchable on elements)
- *  - sort (optional): Array of Sorters
- *  - filter (optional): Array of Filters
- *  - className (optional): Class to add to the wrapper
- *  - openSearchWithSidebar(optional): If true, all filters will be hidden on mobile until the
- *    sidebar is opened. This will also hide filters/sorters inside a button which pops a Popover.
+ * - search (optional): Supply a placeholder string to enable searching of the text inside elements.
+ * - sort (optional): Array of Sorters
+ * - filter (optional): Array of Filters
+ * - className (optional): Class to add to the wrapper
+ * - openSearchWithSidebar(optional): If true, search will be hidden and only opened with the sidebar on mobile.
+ * - openSortWithSidebar(optional): If true, sort will be hidden and only opened with the sidebar on mobile.
+ * - openFilterWithSidebar(optional): If true, filter will be hidden and only opened with the sidebar on mobile.
+ * - inPopover(optional): If true, sorts and filters will be put in a popover in all device sizes.
+ * sidebar is opened. This will also hide filters/sorters inside a button which pops a Popover.
  */
 
 import { shuffleFilter, modalFiltersWrapper, dropdownButton } from './ShuffleFilters.css'
@@ -49,12 +51,26 @@ interface Props {
 	className?: string
 	style?: Partial<CSSStyleDeclaration>
 	openSearchWithSidebar?: boolean
+	openSortWithSidebar?: boolean
+	openFilterWithSidebar?: boolean
+	inPopover?: boolean
 }
 
-const { openSearchWithSidebar, search, sort, filter, className = '', style } = Astro.props
+const {
+	openSearchWithSidebar,
+	openSortWithSidebar,
+	openFilterWithSidebar,
+	inPopover,
+	search,
+	sort,
+	filter,
+	className = '',
+	style
+} = Astro.props
 ---
 
 <shuffle-filters class:list={[shuffleFilter, className]} style={style}>
+	{/* SEARCH */}
 	{
 		search && (
 			<label
@@ -65,34 +81,37 @@ const { openSearchWithSidebar, search, sort, filter, className = '', style } = A
 			</label>
 		)
 	}
+
+	{/* INLINE ELEMENTS (Hidden on mobile if assigned to sidebar) */}
 	{
-		!openSearchWithSidebar && sort && (
-			<label>
+		sort && !inPopover && (
+			<label class={openSortWithSidebar ? 'hideMobile' : undefined}>
 				<SortIcon aria-label="Sort by" />
 				<select data-sort>
-					{sort.map((sort) => (
-						<option value={sort.value} data-order={sort.order}>
-							{sort.title}
+					{sort.map((s) => (
+						<option value={s.value} data-order={s.order}>
+							{s.title}
 						</option>
 					))}
 				</select>
 			</label>
 		)
 	}
+
 	{
-		!openSearchWithSidebar &&
-			filter?.map((filter) =>
-				filter.type !== 'select' ? (
-					<label>
-						<input name={filter.value} value={filter.value} type={filter.type} />
-						{!filter.icon ? filter.title : filter.icon === 'globe' && <GlobeIcon />}
+		!inPopover &&
+			filter?.map((f) =>
+				f.type !== 'select' ? (
+					<label class={openFilterWithSidebar ? 'hideMobile' : undefined}>
+						<input name={f.value} value={f.value} type={f.type} />
+						{!f.icon ? f.title : f.icon === 'globe' && <GlobeIcon />}
 					</label>
 				) : (
-					<label class="flex">
-						{!filter.icon ? filter.title : filter.icon === 'globe' && <GlobeIcon />}
-						<select name={filter.title} data-filter>
+					<label class:list={['flex', { hideMobile: openFilterWithSidebar }]}>
+						{!f.icon ? f.title : f.icon === 'globe' && <GlobeIcon />}
+						<select name={f.title} data-filter>
 							<option value="">All</option>
-							{filter.values?.map(([title, value]) => (
+							{f.values?.map(([title, value]) => (
 								<option value={value}>{title}</option>
 							))}
 						</select>
@@ -100,41 +119,45 @@ const { openSearchWithSidebar, search, sort, filter, className = '', style } = A
 				)
 			)
 	}
+
+	{/* MODAL / POPOVER ELEMENTS (Hidden on desktop, only renders if sidebar features are active) */}
 	{
-		openSearchWithSidebar && (sort || filter) && (
-			<Popover className={`${openSearchWithSidebar ? dropdownButton + ' openWithSidebar top' : ''}`}>
+		(openSortWithSidebar || openFilterWithSidebar) && (sort || filter) && (
+			<Popover className={`${dropdownButton} openWithSidebar top ${!inPopover ? 'showMobile' : ''}`}>
 				<FilterIcon slot="button" />
 				<div slot="content" class={`${modalFiltersWrapper}`}>
-					{sort && (
+					{openSortWithSidebar && sort && (
 						<label>
 							<SortIcon aria-label="Sort by" />
 							<select data-sort>
-								{sort?.map((sort) => (
-									<option value={sort.value} data-order={sort.order}>
-										{sort.title}
+								{sort.map((s) => (
+									<option value={s.value} data-order={s.order}>
+										{s.title}
 									</option>
 								))}
 							</select>
 						</label>
 					)}
-					{filter?.map((filter) =>
-						filter.type !== 'select' ? (
-							<label>
-								<input name={filter.value} value={filter.value} type={filter.type} />
-								{!filter.icon ? filter.title : filter.icon === 'globe' && <GlobeIcon />}
-							</label>
-						) : (
-							<label class="flex">
-								{!filter.icon ? filter.title : filter.icon === 'globe' && <GlobeIcon />}
-								<select name={filter.title} data-filter>
-									<option value="">All</option>
-									{filter.values?.map(([title, value]) => (
-										<option value={value}>{title}</option>
-									))}
-								</select>
-							</label>
-						)
-					)}
+
+					{openFilterWithSidebar &&
+						filter?.map((f) =>
+							f.type !== 'select' ? (
+								<label>
+									<input name={f.value} value={f.value} type={f.type} />
+									{!f.icon ? f.title : f.icon === 'globe' && <GlobeIcon />}
+								</label>
+							) : (
+								<label class="flex">
+									{!f.icon ? f.title : f.icon === 'globe' && <GlobeIcon />}
+									<select name={f.title} data-filter>
+										<option value="">All</option>
+										{f.values?.map(([title, value]) => (
+											<option value={value}>{title}</option>
+										))}
+									</select>
+								</label>
+							)
+						)}
 				</div>
 			</Popover>
 		)
@@ -152,17 +175,15 @@ const { openSearchWithSidebar, search, sort, filter, className = '', style } = A
 		container: HTMLElement | null
 
 		searchValue: string
-
 		sortValue: string
 		sortOrder: number
-
 		filters: string[]
-		selectFilters: {}
+		selectFilters: Record<string, string>
 
-		searchElement: HTMLElement | null
-		selectFilterElements: NodeListOf<HTMLElement> | null
-		checkboxFilterElements: NodeListOf<HTMLElement> | null
-		sortElements: NodeListOf<HTMLElement> | null
+		searchElement: HTMLInputElement | null
+		selectFilterElements: NodeListOf<HTMLSelectElement> | null
+		checkboxFilterElements: NodeListOf<HTMLInputElement> | null
+		sortElements: NodeListOf<HTMLSelectElement> | null
 
 		constructor() {
 			super()
@@ -188,13 +209,13 @@ const { openSearchWithSidebar, search, sort, filter, className = '', style } = A
 			this.sortElements = this.querySelectorAll('select[data-sort]')
 		}
 
-		// Combines the results of all filters and determines whether an item should be filtered
 		filterItem = (item: HTMLElement) => {
 			const lowerSearch = stringNormalize(this.searchValue)
 			const elementSearchableText = `${item.innerText}${item.dataset.searchable || ''}`
 			const searchResult = stringNormalize(elementSearchableText).includes(lowerSearch)
 			const itemCategories = item.dataset.category?.split(',')
-			const combinedFilters = [...this.filters, ...Object.values(this.selectFilters)] as string[]
+			const combinedFilters = [...this.filters, ...Object.values(this.selectFilters)]
+
 			const filterResult =
 				combinedFilters.length > 0
 					? combinedFilters.every((filter) => itemCategories && itemCategories.includes(filter))
@@ -211,7 +232,6 @@ const { openSearchWithSidebar, search, sort, filter, className = '', style } = A
 			return visible
 		}
 
-		// Toggle a checkbox filter on and off
 		toggleFilter = (value: string) => {
 			if (this.filters.includes(value)) {
 				this.filters = this.filters.filter((currentFilter) => currentFilter !== value)
@@ -220,18 +240,16 @@ const { openSearchWithSidebar, search, sort, filter, className = '', style } = A
 			}
 		}
 
-		// Set a select filter
-		selectFilter = (title: string, value: string) => {
+		selectFilter = (name: string, value: string) => {
 			const newFilters = { ...this.selectFilters }
 			if (!value) {
-				delete newFilters[title]
+				delete newFilters[name]
 			} else {
-				newFilters[title] = value
+				newFilters[name] = value
 			}
 			this.selectFilters = newFilters
 		}
 
-		// Filter and sort items based on current filters and sorts
 		filterItems = () => {
 			const filtered = this.htmlElements.filter((item) => this.filterItem(item))
 
@@ -242,21 +260,19 @@ const { openSearchWithSidebar, search, sort, filter, className = '', style } = A
 					const aNumber = parseInt(sortA)
 					const bNumber = parseInt(sortB)
 
-					if (typeof aNumber === 'number') {
+					if (!isNaN(aNumber) && !isNaN(bNumber)) {
 						return (aNumber - bNumber) * this.sortOrder
 					} else {
-						return sortA.localeCompare(sortB)
+						return sortA.localeCompare(sortB) * this.sortOrder
 					}
 				})
 
 				if (this.container) {
-					// Remove all current filter-items
 					this.htmlElements.forEach((item) => {
 						if (item.parentElement === this.container) {
 							this.container?.removeChild(item)
 						}
 					})
-					// Append filtered and sorted items in new order
 					this.filteredElements.forEach((item) => {
 						this.container?.appendChild(item)
 					})
@@ -265,68 +281,58 @@ const { openSearchWithSidebar, search, sort, filter, className = '', style } = A
 				this.filteredElements = filtered
 			}
 
-			// Scroll to top on filtering
 			this.sidebar?.scrollTo(0, 0)
-
 			this.onChange()
 		}
 
-		// When anything changes let everyone know
 		onChange = () => {
 			const detail: FilterEventDetails = {
 				items: this.htmlElements,
 				searchValue: this.searchValue,
 				filteredItems: this.filteredElements
 			}
-			const event = new CustomEvent(filterEventName, {
-				detail
-			})
+			const event = new CustomEvent(filterEventName, { detail })
 			window.dispatchEvent(event)
 		}
 
-		onSearch = (e) => {
-			const target = e.currentTarget
+		onSearch = (e: Event) => {
+			const target = e.currentTarget as HTMLInputElement
 			this.searchValue = target.value
 			this.filterItems()
 		}
 
-		onSelectFilter = (e) => {
-			const target = e.target
-			this.selectFilter(target.title, target.value)
+		onSelectFilter = (e: Event) => {
+			const target = e.target as HTMLSelectElement
+			this.selectFilter(target.name, target.value)
 			this.filterItems()
 		}
 
-		onCheckboxFilter = (e) => {
-			const target = e.currentTarget
+		onCheckboxFilter = (e: Event) => {
+			const target = e.currentTarget as HTMLInputElement
 			this.toggleFilter(target.value)
 			this.filterItems()
 		}
 
-		onSort = (e) => {
-			const target = e.target
+		onSort = (e: Event) => {
+			const target = e.target as HTMLSelectElement
+			const selectedOption = target.options[target.selectedIndex]
 			this.sortValue = target.value
-			this.sortOrder = target.dataset.order === 'asc' ? 1 : -1
+			this.sortOrder = selectedOption.dataset.order === 'asc' ? 1 : -1
 			this.filterItems()
 		}
 
 		connectedCallback() {
-			// attach callbacks for search, sort, filter elements
 			this.searchElement?.addEventListener('input', this.onSearch)
-			this.selectFilterElements &&
-				Array.from(this.selectFilterElements).map((el) => el.addEventListener('change', this.onSelectFilter))
-			this.checkboxFilterElements &&
-				Array.from(this.checkboxFilterElements).map((el) => el.addEventListener('input', this.onCheckboxFilter))
-			this.sortElements && Array.from(this.sortElements).map((el) => el.addEventListener('change', this.onSort))
+			this.selectFilterElements?.forEach((el) => el.addEventListener('change', this.onSelectFilter))
+			this.checkboxFilterElements?.forEach((el) => el.addEventListener('input', this.onCheckboxFilter))
+			this.sortElements?.forEach((el) => el.addEventListener('change', this.onSort))
 		}
 
 		disconnectedCallback() {
-			// detach callbacks for search, sort, filter elements
 			this.searchElement?.removeEventListener('input', this.onSearch)
-			this.selectFilterElements &&
-				Array.from(this.selectFilterElements).map((el) => el.removeEventListener('change', this.onSelectFilter))
-			this.checkboxFilterElements &&
-				Array.from(this.checkboxFilterElements).map((el) => el.removeEventListener('input', this.onCheckboxFilter))
-			this.sortElements && Array.from(this.sortElements).map((el) => el.removeEventListener('change', this.onSort))
+			this.selectFilterElements?.forEach((el) => el.removeEventListener('change', this.onSelectFilter))
+			this.checkboxFilterElements?.forEach((el) => el.removeEventListener('input', this.onCheckboxFilter))
+			this.sortElements?.forEach((el) => el.removeEventListener('change', this.onSort))
 		}
 	}
 

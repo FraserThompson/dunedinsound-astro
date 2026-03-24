@@ -11,15 +11,16 @@ import PlayerTracklist from "../player/PlayerTracklist"
 import { AudioWrapper, CompactPlayerWrapper, WinampTitlebar } from "./CompactPlayer.css"
 
 interface Props {
+	title?: string
 	artistAudio: ArtistAudio[]
 	playOnLoad?: boolean
 }
 
-const CompactPlayer: FunctionalComponent<Props> = ({ artistAudio, playOnLoad }) => {
+const CompactPlayer: FunctionalComponent<Props> = ({ title = "AUDIO PLAYER", artistAudio, playOnLoad }) => {
 	return (
 		<PlayerProvider artistAudio={artistAudio} playOnLoad={playOnLoad}>
 			<div className={CompactPlayerWrapper}>
-				<div className={WinampTitlebar} data-title="AUDIO PLAYER"/>
+				<div className={WinampTitlebar} data-title={title}/>
 				<div className={AudioWrapper}>
 					<PlayerTransport />
 					<PlayerWaveform />

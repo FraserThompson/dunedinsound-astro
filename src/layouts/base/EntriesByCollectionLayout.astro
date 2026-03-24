@@ -54,7 +54,10 @@ const shufflers = collection in Shufflers ? Shufflers[collection] : null
 		search={`Filter ${collection}s`}
 		sort={shufflers?.sort}
 		filter={shufflers?.filter}
+		inPopover={true}
 		openSearchWithSidebar={true}
+		openFilterWithSidebar={true}
+		openSortWithSidebar={true}
 	/>
 	<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href=`/${collection}s`>
 		<ChevronLeftIcon /> Go to all {collection}s

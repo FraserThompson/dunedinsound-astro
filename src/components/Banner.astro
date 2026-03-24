@@ -62,19 +62,17 @@ const {
 	loading = 'eager'
 } = Astro.props
 
+const bannerVars = assignInlineVars({
+	[bannerHeight]: height,
+	[bannerHeightMobile]: heightMobile,
+	[marginBottom]: bottomMargin,
+	[marginBottomMobile]: bottomMarginMobile
+})
+
 const hasSubtitle = Astro.slots.has('subtitle')
 ---
 
-<div
-	class={`${BannerWrapper} banner`}
-	id={id}
-	style={assignInlineVars({
-		[bannerHeight]: height,
-		[bannerHeightMobile]: heightMobile,
-		[marginBottom]: bottomMargin,
-		[marginBottomMobile]: bottomMarginMobile
-	})}
->
+<div class={`${BannerWrapper} banner`} id={id} style={bannerVars}>
 	{
 		title && (
 			<div class={BannerTitle}>

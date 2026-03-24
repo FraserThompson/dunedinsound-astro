@@ -45,6 +45,7 @@ const markers = groupedVenues.map((venueList) => ({
 		search="Filter venues by name"
 		sort={venueShufflers['sort']}
 		filter={venueShufflers['filter']}
+		openSortWithSidebar={true}
 	/>
 	<EntryMenu collectionEntries={venues} slot="sidebarMenu" transition:persist />
 	<Map markers={markers} slot="content">

@@ -24,7 +24,7 @@ export const PlayerSidebarSidebarWrapper = style({
 export const PlayerSiderMenubar = style({
 	marginLeft: "8px",
 	marginRight: "8px",
-	height: theme.dimensions.subheaderHeight
+	height: "20px"
 })
 
 export const PlayerSidebarBottomWrapper = style({

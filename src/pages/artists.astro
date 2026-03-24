@@ -3,7 +3,7 @@ import { loadAndFormatCollection } from 'src/util/collection'
 import { Shufflers } from 'src/util/shufflers'
 import { ResponsiveImage } from 'src/util/ResponsiveImage'
 import SubheadersLayout from 'src/layouts/base/SubheadersLayout.astro'
-import { artistListItem, artistGigCount } from './Artists.css'
+import { artistListItem, artistGigCount, artistGigLabel } from './Artists.css'
 import VirtualizedList from 'src/components/VirtualizedList.astro'
 import { makeHash } from 'src/util/names'
 import ShuffleFilters from 'src/components/ShuffleFilters.astro'
@@ -48,7 +48,7 @@ const artistShufflers = Shufflers['artist']
 					data-lastgig={artist.extra.lastGig}
 					data-numbergigs={artist.extra.gigCount}
 				>
-					{artist.entry.data.title} {artist.entry.data.origin ? '(' + artist.entry.data.origin + ')' : ''}
+					<span class={artistGigLabel}>{artist.entry.data.title} {artist.entry.data.origin ? '(' + artist.entry.data.origin + ')' : ''}</span>
 					<span class={`${artistGigCount}`}>{artist.extra.gigCount}</span>
 				</a>
 			))

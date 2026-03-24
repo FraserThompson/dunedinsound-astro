@@ -9,9 +9,6 @@ export const artistListItem = style({
 	paddingRight: theme.dimensions.basePaddingMobile,
 	height: '35px',
 	borderBottom: '1px solid rgba(255,255,255,0.1)',
-	textOverflow: 'ellipsis',
-	whiteSpace: 'nowrap',
-	overflow: 'hidden',
 	selectors: {
 		'&.dead': {
 			color: theme.color.dullText
@@ -28,4 +25,10 @@ export const artistListItem = style({
 export const artistGigCount = style({
 	marginLeft: 'auto',
 	color: theme.color.dullText
+})
+
+export const artistGigLabel = style({
+	textOverflow: 'ellipsis',
+	whiteSpace: 'nowrap',
+	overflow: 'hidden'
 })

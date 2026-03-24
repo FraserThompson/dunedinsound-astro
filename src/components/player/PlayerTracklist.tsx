@@ -25,28 +25,28 @@ const PlayerTracklist: FunctionalComponent<Props> = ({ maxHeight, maxHeightDeskt
 		})}>
 			{playlist?.map((item, index) => (
 				<li key={`${index}. ${item.title}`} className={selectedTrack == index ? TracklistTrack + ' active' : TracklistTrack} {...item.dataAttributes}>
-					<span style={{ width: "92%" }}>
+					<span style={{ width: "92%", display: "flex", alignItems: "center" }}>
 						<a role="button" className={TrackButton} onClick={() => selectTrack(index)}>
 							{item.title}
 						</a>
-						{item.tracklist && (
-							<ul className="tracklist">
-								{item.tracklist.map((item) => (
-									<li key={item.title}>
-										<a onClick={() => seekToTime(item.time, index, true)} style={{ cursor: "pointer" }} role="button">
-											{item.title} ({item.time})
-										</a>
-									</li>
-								)
-								)}
-							</ul>
-						)}
 					</span>
 					<span style={{ marginLeft: "auto" }}>
 						<a title={'Download MP3: ' + item.title} href={item.files[0]} target="_blank">
 							<DownloadIcon />
 						</a>
 					</span>
+					{item.tracklist && (
+						<ul className="tracklist">
+							{item.tracklist.map((item) => (
+								<li key={item.title}>
+									<a onClick={() => seekToTime(item.time, index, true)} style={{ cursor: "pointer" }} role="button">
+										{item.title} ({item.time})
+									</a>
+								</li>
+							)
+							)}
+						</ul>
+					)}
 				</li>
 			))}
 			{!playlist && <li className={TracklistTrack}>Tracks will appear here</li>}

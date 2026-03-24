@@ -99,7 +99,7 @@ const hasArtistMedia = galleryCount === 1 ? !uncategorizedImages.length : galler
 				{!!entryMedia.audio?.length && (
 					<div class={GigBannerPlayer}>
 						<PlayerContainer>
-							<CompactPlayer artistAudio={entryMedia.audio} client:load />
+							<CompactPlayer title="GIG PLAYER" artistAudio={entryMedia.audio} client:load />
 						</PlayerContainer>
 					</div>
 				)}

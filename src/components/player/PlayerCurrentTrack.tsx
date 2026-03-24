@@ -11,7 +11,7 @@ import { CurrentTrackMarquee, CurrentTrackText } from "./PlayerCurrentTrack.css"
 import PlayerVisualizer from "./PlayerVisualizer"
 
 const PlayerCurrentTrack: FunctionalComponent = () => {
-	const { currentTrackTitle } = usePlayer()
+	const { currentTrackTitle, playing } = usePlayer()
 
 	return (
 		<div className={WinampInset}>
@@ -19,9 +19,9 @@ const PlayerCurrentTrack: FunctionalComponent = () => {
 				<PlayerVisualizer width={230} height={18} />
 			</div>
 			<div className={CurrentTrackMarquee}>
-				<p className={CurrentTrackText}>
+				{!playing && <p className={CurrentTrackText}>
 					{currentTrackTitle ? <>*** {currentTrackTitle} ***</> : "Load a playlist to begin"}
-				</p>
+				</p>}
 			</div>
 		</div>
 	)

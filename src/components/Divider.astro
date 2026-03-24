@@ -1,14 +1,14 @@
 ---
 /**
  * A clickable divider.
- * 
+ *
  * Props:
  *  - href: the href
  *  - color: override default text color
  *  - backgroundColor: override default background color
  *  - className: add a class
  *  - sticky: if true it will be sticky
- *  - stickyTop: 
+ *  - stickyTop:
  *  - smoothScroll: if true it will scroll smoothly to the anchor specified in the href, and not update the URL
  *  - zIndex: Override the default zIndex (5 for normal, 6 for sticky)
  *
@@ -16,7 +16,17 @@
  * @returns
  */
 
-import { dividerWrapper, dividerColor, dividerBackgroundColor, stickyTop, stickyTopMobile, dividerZIndex, dividerHeight, dividerHeightMobile, dividerMarginBottom } from './Divider.css'
+import {
+	dividerWrapper,
+	dividerColor,
+	dividerBackgroundColor,
+	stickyTop,
+	stickyTopMobile,
+	dividerZIndex,
+	dividerHeight,
+	dividerHeightMobile,
+	dividerMarginBottom
+} from './Divider.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 interface Props {
@@ -34,22 +44,34 @@ interface Props {
 	zIndex?: string
 }
 
-const { href, color, backgroundColor, className = '', sticky, top, topMobile, smoothScroll, height, heightMobile, marginBottom, zIndex } = Astro.props
+const {
+	href,
+	color,
+	backgroundColor,
+	className = '',
+	sticky,
+	top,
+	topMobile,
+	smoothScroll,
+	height,
+	heightMobile,
+	marginBottom,
+	zIndex
+} = Astro.props
+
+const dividerVars = assignInlineVars({
+	[dividerColor]: color,
+	[dividerBackgroundColor]: backgroundColor,
+	[stickyTop]: top ? top : undefined,
+	[stickyTopMobile]: topMobile ? topMobile : undefined,
+	[dividerHeight]: height,
+	[dividerHeightMobile]: heightMobile,
+	[dividerMarginBottom]: marginBottom,
+	[dividerZIndex]: zIndex
+})
 ---
 
-<div
-	class={`${dividerWrapper[sticky ? 'sticky' : 'normal']} ${className}`}
-	style={assignInlineVars({
-		[dividerColor]: color,
-		[dividerBackgroundColor]: backgroundColor,
-		[stickyTop]: top ? top : undefined,
-		[stickyTopMobile]: topMobile ? topMobile : undefined,
-		[dividerHeight]: height,
-		[dividerHeightMobile]: heightMobile,
-		[dividerMarginBottom]: marginBottom,
-		[dividerZIndex]: zIndex
-	})}
->
+<div class={`${dividerWrapper[sticky ? 'sticky' : 'normal']} ${className}`} style={dividerVars}>
 	{
 		href && (
 			<a class="dividerLink" href={href} data-smoothscroll={smoothScroll}>
@@ -64,6 +86,7 @@ const { href, color, backgroundColor, className = '', sticky, top, topMobile, sm
 	import { scrollToElement } from 'src/util/helpers'
 	const dividers = document.querySelectorAll<HTMLElement>('.dividerLink')
 	dividers.forEach(
-		(divider) => divider.dataset.smoothscroll && divider.addEventListener('click', (e: any) => scrollToElement(e.target))
+		(divider) =>
+			divider.dataset.smoothscroll && divider.addEventListener('click', (e: any) => scrollToElement(e.target))
 	)
 </script>

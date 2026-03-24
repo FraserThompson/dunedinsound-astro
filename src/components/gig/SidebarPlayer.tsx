@@ -17,7 +17,6 @@ import PlayerTracklist from "../player/PlayerTracklist"
 import { PlayerSidebarTracklist, PlayerSidebarWrapper, PlayerSidebarSidebarWrapper, PlayerSidebarWaveWrapper, PlayerSidebarContentWrapper, PlayerSidebarBottomWrapper, PlayerSidebarChildrenWrapper, PlayerSiderMenubar } from "./SidebarPlayer.css"
 import { WinampTitlebar } from "./CompactPlayer.css"
 import PlayerCurrentTrack from "../player/PlayerCurrentTrack"
-import PlayerVisualizer from "../player/PlayerVisualizer"
 
 interface Props {
 	title: string

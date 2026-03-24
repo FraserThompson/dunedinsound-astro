@@ -64,7 +64,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 		if (!artistAudio) {
 			setLoading(false)
 		}
-	
+
 		if (!waveformRef.current || !artistAudio) return;
 
 		// Only create wavesurfer if we haven't already got one
@@ -178,6 +178,9 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 		const track = playlist[selectedTrack]
 		const title = track.title
 
+		// This means it didn't change. Do nothing.
+		if (title === currentTrackTitle) return
+
 		// Send an event
 		const detail: PlayerTrackChangeEventDetails = {
 			track
@@ -239,7 +242,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 			wavesurfer.seekTo(ratio)
 			if (play) wavesurfer.play()
 		},
-		[wavesurfer]
+		[wavesurfer, selectedTrack]
 	)
 
 	const playPause = useCallback(() => {
@@ -285,11 +288,13 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 			if (!playlist) return
 			const oldSelectedTrackTitle = playlist[selectedTrack].title
 			const shuffled = shuffleArray(playlist)
-			const newSelectedTrack = shuffled.findIndex((thing) => thing.title == oldSelectedTrackTitle);
 			setPlaylist(shuffled)
-			setselectedTrack(newSelectedTrack)
+			if (playing || (currentTime && currentTime > 0)) {
+				const newSelectedTrack = shuffled.findIndex((thing) => thing.title == oldSelectedTrackTitle);
+				setselectedTrack(newSelectedTrack)
+			}
 		},
-		[playlist, selectedTrack]
+		[playlist, selectedTrack, playing, currentTime]
 	)
 
 	const value = useMemo(
