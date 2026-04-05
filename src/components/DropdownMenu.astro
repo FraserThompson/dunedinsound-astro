@@ -109,7 +109,7 @@ const menuVars = assignInlineVars({
 							data-submenu-button={hasSubmenu ? 'true' : undefined}
 							aria-expanded={hasSubmenu ? 'false' : undefined}
 						>
-							{item.title}
+							<p style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{item.title}</p>
 							{item.subtitle && <span style="margin-left:auto; color:#888">{item.subtitle}</span>}
 							{hasSubmenu && (
 								<NavArrowRight
@@ -124,7 +124,9 @@ const menuVars = assignInlineVars({
 								{item.submenu!.map((subItem) => (
 									<li class={dropdownLi} style={buttonVars}>
 										<a class={`${dropdownLink} menuLink menu-title`} href={subItem.href || '#'} style={buttonVars}>
-											{subItem.title}
+											<p style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+												{subItem.title}
+											</p>
 											{subItem.subtitle && <span style="margin-left:auto; color:#888">{subItem.subtitle}</span>}
 										</a>
 									</li>
@@ -140,9 +142,9 @@ const menuVars = assignInlineVars({
 </dropdown-menu>
 
 <script>
-	import { dropdownClickEventName } from 'src/util/events'
-	import { scrollToElement } from 'src/util/helpers'
-	import { replaceEventName } from 'src/util/history'
+	import { dropdownClickEventName } from '@src/util/events'
+	import { scrollToElement } from '@src/util/helpers'
+	import { replaceEventName } from '@src/util/history'
 
 	class DropdownMenu extends HTMLElement {
 		mainButton: HTMLButtonElement | null
@@ -267,6 +269,7 @@ const menuVars = assignInlineVars({
 
 			submenu.style.setProperty('--dyn-submenu-top', `${rect.top}px`)
 			submenu.style.setProperty('--dyn-submenu-left', `${rect.right}px`)
+			submenu.style.setProperty('--dyn-submenu-height', `${window.innerHeight - rect.top - 20}px`)
 
 			toggleBtn.setAttribute('aria-expanded', 'true')
 			submenu.classList.add('submenu-open')

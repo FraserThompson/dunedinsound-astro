@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "preact/hooks"
 import type { FunctionalComponent } from "preact"
-import CloudBackground from 'src/components/gig/CloudBackground'
-import { getRandom } from 'src/util/helpers'
-import { shuffler } from 'src/util/shuffling.ts'
+import CloudBackground from '@src/components/gig/CloudBackground'
+import { getRandom } from '@src/util/helpers'
+import { shuffler } from '@src/util/shuffling.ts'
 import { ShufflePlayerWrapper, ShuffleBottom, ShuffleWrapper, ToggleButton } from "./GigsShuffle.css"
 import HeavyYoutube from "../HeavyYoutube"
-import { formattedDate } from "src/util/names"
+import { formattedDate } from "@src/util/names"
 import { AudioWrapper, CompactPlayerWrapper, WinampTitlebar } from "./CompactPlayer.css"
 import { TransportButton } from "../player/PlayerTransport.css"
 import { TracklistTrack, TracklistWrapper } from "../player/PlayerTracklist.css"

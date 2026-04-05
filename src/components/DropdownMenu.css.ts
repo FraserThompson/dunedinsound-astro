@@ -122,6 +122,9 @@ export const dropdownSubmenu = style([
 		// Override the main menu's slide animation so it doesn't shift
 		marginTop: 0,
 
+		overflowY: "auto",
+		maxHeight: 'var(--dyn-submenu-height, 100vh)',
+
 		selectors: {
 			'&.submenu-open': {
 				visibility: 'visible',

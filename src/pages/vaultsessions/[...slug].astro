@@ -1,7 +1,7 @@
 ---
-import BaseLayout from 'src/layouts/base/BaseLayout.astro'
-import VaultSession from 'src/layouts/collection/VaultSession.astro'
-import { loadAndFormatCollection } from 'src/util/collection.ts'
+import BaseLayout from '@src/layouts/base/BaseLayout.astro'
+import VaultSession from '@src/layouts/collection/VaultSession.astro'
+import { loadAndFormatCollection } from '@src/util/collection.ts'
 
 export async function getStaticPaths() {
 	const entries = await loadAndFormatCollection('vaultsession')

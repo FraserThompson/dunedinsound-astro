@@ -1,9 +1,9 @@
 ---
 import BaseLayout from '../layouts/base/BaseLayout.astro'
-import { loadAndFormatCollection } from 'src/util/collection'
-import vslogo from 'src/assets/vslogo.gif'
-import vslogo_mono from 'src/assets/vslogo_mono.gif'
-import Room from 'src/components/Room.astro'
+import { loadAndFormatCollection } from '@src/util/collection'
+import vslogo from '@src/assets/vslogo.gif'
+import vslogo_mono from '@src/assets/vslogo_mono.gif'
+import Room from '@src/components/Room.astro'
 
 const vaultsessions = await loadAndFormatCollection('vaultsession')
 ---

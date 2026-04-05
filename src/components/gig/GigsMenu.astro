@@ -7,13 +7,13 @@
  * Props:
  *  selected (optional): it will show the artists under that gig.
  */
-import { loadAndFormatCollection, sortGigs } from 'src/util/collection.ts'
+import { loadAndFormatCollection, sortGigs } from '@src/util/collection.ts'
 import { gigLink, yearLink, monthLink, yearsMenuWrapper } from './GigsMenu.css'
-import { makeHash } from 'src/util/names'
+import { makeHash } from '@src/util/names'
 import { MenuLi } from '../Menu.css'
 import { MenuWrapper } from '../Menu.css'
 import ArtistsMenu from './ArtistsMenu.astro'
-import { artistsToString } from 'src/util/helpers'
+import { artistsToString } from '@src/util/helpers'
 import SeriesIndicator from '../SeriesIndicator.astro'
 import GigsYearDropdown from './GigsYearDropdown.astro'
 
@@ -91,7 +91,7 @@ const { selected } = Astro.props
 
 <script>
 	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
-	import { dropdownClickEventName, filterEventName, type FilterEventDetails } from 'src/util/events'
+	import { dropdownClickEventName, filterEventName, type FilterEventDetails } from '@src/util/events'
 	/**
 	 * A menu of gigs, with series at the bottom.
 	 *
@@ -122,7 +122,7 @@ const { selected } = Astro.props
 		 *
 		 * @param e
 		 */
-		gigClick(e: MouseEvent) {
+		gigClick(e: any) {
 			e.preventDefault()
 			// Close sidebar on mobile
 			// See: SidebarNav.astro
@@ -249,7 +249,7 @@ const { selected } = Astro.props
 			window.addEventListener(filterEventName, this.onFilter)
 			window.addEventListener(dropdownClickEventName, this.onDropdownClick)
 			!this.selected &&
-				this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', (e: MouseEvent) => this.gigClick(e)))
+				this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', this.gigClick))
 		}
 
 		/**
@@ -259,7 +259,7 @@ const { selected } = Astro.props
 			window.removeEventListener(filterEventName, this.onFilter)
 			window.removeEventListener(dropdownClickEventName, this.onDropdownClick)
 			!this.selected &&
-				this.gigLinks?.forEach((gigLink) => gigLink.removeEventListener('click', (e: MouseEvent) => this.gigClick(e)))
+				this.gigLinks?.forEach((gigLink) => gigLink.removeEventListener('click', this.gigClick))
 		}
 	}
 

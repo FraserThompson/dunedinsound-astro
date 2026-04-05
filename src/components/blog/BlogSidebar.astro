@@ -9,15 +9,14 @@
  *  - headings: All headings in the article.
  *  - className (optional): A class added to the wrapper.
  */
-import { type ProcessedEntry } from 'src/util/collection'
+import { type ProcessedEntry } from '@src/util/collection'
 import { blogSidebarWrapper, sidebarBox } from './BlogSidebar.css'
 import { theme } from '../../Theme.css'
-import { socialLinksToMenuItems } from 'src/util/helpers'
+import { socialLinksToMenuItems } from '@src/util/helpers'
 import type { MarkdownHeading } from 'astro'
-import { tagLink } from 'src/components/blog/BlogTags.css'
-import { toMachineName } from 'scripts/scriptHelpers.mjs'
+import { tagLink } from '@src/components/blog/BlogTags.css'
 import TableOfContents from './TableOfContents.astro'
-import { formattedDate } from 'src/util/names'
+import { formattedDate, toMachineName } from '@src/util/names'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>

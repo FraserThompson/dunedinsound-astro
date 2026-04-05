@@ -3,19 +3,20 @@
  * A layout with a player for playing one artists audio.
  *
  * Props:
- *  - audioFromGigs: Array of ArtistAudio elements to put in the playlist
+ *  - audioFromGigs: Array of PlayerAudio elements to put in the playlist
  *  - gigsFromEntry: The Entry which the gigs are from (optional)
  */
-import { loadAndFormatCollection, type ArtistAudio, type ProcessedEntry } from 'src/util/collection'
-import SidebarPlayer from 'src/components/gig/SidebarPlayer'
-import ImageGallery from 'src/components/ImageGallery.astro'
+import { loadAndFormatCollection, type PlayerAudio, type ProcessedEntry } from '@src/util/collection'
+import SidebarPlayer from '@src/components/gig/SidebarPlayer'
+import ImageGallery from '@src/components/ImageGallery.astro'
 import BaseLayout from '../base/BaseLayout.astro'
-import { artistPlayerThreshold, seriesVenuePlayerThreshold } from 'src/util/constants'
-import DropdownMenu from 'src/components/DropdownMenu.astro'
-import { fileButton, gigMetaWrapper } from 'src/layouts/base/PlayerLayout.css'
+import { artistPlayerThreshold, seriesVenuePlayerThreshold } from '@src/util/constants'
+import DropdownMenu from '@src/components/DropdownMenu.astro'
+import { fileButton, gigMetaWrapper } from '@src/layouts/base/PlayerLayout.css'
+import type { MenuLink } from '@src/components/Menu.astro'
 
 interface Props {
-	audioFromGigs?: ArtistAudio[] | undefined
+	audioFromGigs?: PlayerAudio[]
 	gigsFromEntry?: ProcessedEntry<'artist'> | ProcessedEntry<'venue'> | ProcessedEntry<'series'>
 }
 
@@ -24,12 +25,22 @@ const { gigsFromEntry, audioFromGigs } = Astro.props
 const artists = await loadAndFormatCollection('artist', (entry) => entry.extra.gigCount > artistPlayerThreshold)
 const venues = await loadAndFormatCollection('venue', (entry) => entry.extra.gigCount > seriesVenuePlayerThreshold)
 const series = await loadAndFormatCollection('series', (entry) => entry.extra.gigCount > seriesVenuePlayerThreshold)
-const artistList = artists.map((entry) => ({
+
+const artistList: MenuLink[] = artists.map((entry) => ({
 	title: entry.entry.data.title,
+	subtitle: entry.extra.gigCount,
 	href: `/player/artist/${entry.entry.id}`
 }))
-const venuesList = venues.map((entry) => ({ title: entry.entry.data.title, href: `/player/venue/${entry.entry.id}` }))
-const seriesList = series.map((entry) => ({ title: entry.entry.data.title, href: `/player/series/${entry.entry.id}` }))
+const venuesList: MenuLink[] = venues.map((entry) => ({
+	title: entry.entry.data.title,
+	subtitle: entry.extra.gigCount,
+	href: `/player/venue/${entry.entry.id}`
+}))
+const seriesList: MenuLink[] = series.map((entry) => ({
+	title: entry.entry.data.title,
+	subtitle: entry.extra.gigCount,
+	href: `/player/series/${entry.entry.id}`
+}))
 ---
 
 <BaseLayout
@@ -41,7 +52,7 @@ const seriesList = series.map((entry) => ({ title: entry.entry.data.title, href:
 >
 	<SidebarPlayer
 		title={`${gigsFromEntry ? gigsFromEntry.entry.id : ''} PLAYER`}
-		artistAudio={audioFromGigs}
+		playerAudio={audioFromGigs}
 		client:load
 	>
 		<DropdownMenu
@@ -67,7 +78,7 @@ const seriesList = series.map((entry) => ({ title: entry.entry.data.title, href:
 			data-gig={''}
 		>
 		</div>
-		<ImageGallery thumbnailWidthDesktop="200px" />
+		<ImageGallery thumbnailWidthDesktop="250px" />
 	</SidebarPlayer>
 </BaseLayout>
 
@@ -77,9 +88,10 @@ const seriesList = series.map((entry) => ({ title: entry.entry.data.title, href:
 		playerTrackChange,
 		type ImageGalleryUpdateEventDetails,
 		type PlayerTrackChangeEventDetails
-	} from 'src/util/events'
+	} from '@src/util/events'
 
-	import { getEntryPath, type ArtistGigResponse } from 'src/util/helpers'
+	import { getEntryPath, type ArtistGigResponse } from '@src/util/helpers'
+	import { formattedDate } from '@src/util/names'
 
 	const init = () => {
 		const metaContainer: HTMLElement | null = document.querySelector('#gig-meta')
@@ -90,11 +102,10 @@ const seriesList = series.map((entry) => ({ title: entry.entry.data.title, href:
 		window.addEventListener(playerTrackChange, async (e: any) => {
 			const detail: PlayerTrackChangeEventDetails = e.detail
 
-			const artistId = document.querySelector<HTMLElement>('#gig-meta')?.dataset.artist ?? 'index'
+			const artistId = detail.track.dataAttributes?.['data-artist']
 			const gigId = detail.track.dataAttributes?.['data-gig']
 
-			// Do nothing if nothing changed
-			if (!gigId || gigId == metaContainer?.dataset.gig) return
+			if (!gigId) return
 
 			const req = await fetch(`/data/gigs/${gigId}/${artistId}.json`)
 
@@ -120,27 +131,33 @@ const seriesList = series.map((entry) => ({ title: entry.entry.data.title, href:
 
 				const text = document.createElement('p')
 				text.setAttribute('style', 'padding:0;margin:0;')
-				text.innerHTML = `title: ${gig.data.title} <a href="${getEntryPath(gig.data.title, 'gig')}">[Go to gig]</a>`
+				text.innerHTML = `title: ${gig.data.title} <a href="${getEntryPath(gig.data.title, 'gig')}">[gig page]</a>`
 				texts.push(text)
 
 				// Update metadata section
-				for (const field in gig.data) {
+				const allowedFields = ['date', 'artists', 'description']
+				const selectedArtist = detail.track.dataAttributes?.['data-artist']
+				Object.entries(gig.data).forEach(([key, value]) => {
 					const text = document.createElement('p')
 					text.setAttribute('style', 'padding:0;margin:0;')
-					const value = gig.data[field]
 
-					if (field === 'title') {
-						continue
+					if (!allowedFields.includes(key)) {
+						return
+					} else if (typeof value === 'string' && key === 'date') {
+						text.innerHTML = `${key}: ${formattedDate(new Date(value))}`
 					} else if (typeof value === 'string') {
-						text.innerHTML = `${field}: ${value}`
+						text.innerHTML = `${key}: ${value}`
 					} else if (Array.isArray(value)) {
-						const valueTexts = value.map((thing) => `${thing.id.id}`)
-						text.innerHTML = `${field}: ${valueTexts.join(',')}`
-					} else if (typeof value === 'object') {
-						text.innerHTML = `${field}: ${value.id}`
+						const valueTexts = value.map((thing) =>
+							thing.id.id !== selectedArtist ? `<span>${thing.id.id}</span>` : `<strong class='selectedArtist'>${thing.id.id}</strong>`
+						)
+						text.innerHTML = `${key}: ${valueTexts.join(', ')}`
+					} else if (typeof value === 'object' && 'id' in value) {
+						text.innerHTML = `${key}: ${value.id}`
 					}
 					texts.push(text)
-				}
+				})
+
 				metaContainer.dataset.gig = gigId
 				metaContainer.replaceChildren(...texts)
 			}

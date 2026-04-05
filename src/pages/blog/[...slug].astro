@@ -1,7 +1,7 @@
 ---
-import { loadAndFormatCollection, getEntryImages } from 'src/util/collection.ts'
+import { loadAndFormatCollection, getEntryImages } from '@src/util/collection.ts'
 import Blog from '../../layouts/collection/Blog.astro'
-import BaseLayout from 'src/layouts/base/BaseLayout.astro'
+import BaseLayout from '@src/layouts/base/BaseLayout.astro'
 
 export async function getStaticPaths() {
 	const entries = await loadAndFormatCollection('blog')

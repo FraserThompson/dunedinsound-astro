@@ -7,7 +7,7 @@
  * Props:
  *  selected (optional): it will show the artists under that gig.
  */
-import { type ProcessedEntry } from 'src/util/collection.ts'
+import { type ProcessedEntry } from '@src/util/collection.ts'
 import { artistLink, artistsMenuWrapper } from './GigsMenu.css'
 import { MenuLi } from '../Menu.css'
 
@@ -31,7 +31,7 @@ const { artists } = Astro.props
 </ul>
 
 <script>
-	import { replaceEventName } from 'src/util/history'
+	import { replaceEventName } from '@src/util/history'
 	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
 
 	/**

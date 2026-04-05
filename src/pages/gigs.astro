@@ -1,12 +1,12 @@
 ---
-import { loadAndFormatCollection } from 'src/util/collection'
-import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
-import GigsMenu from 'src/components/gig/GigsMenu.astro'
-import GigTile from 'src/components/gig/GigTile.astro'
-import VirtualizedList from 'src/components/VirtualizedList.astro'
-import SeriesTile from 'src/components/gig/SeriesTile.astro'
-import ShuffleFilters from 'src/components/ShuffleFilters.astro'
-import Menu from 'src/components/Menu.astro'
+import { loadAndFormatCollection } from '@src/util/collection'
+import SidebarLayout from '@src/layouts/base/SidebarLayout.astro'
+import GigsMenu from '@src/components/gig/GigsMenu.astro'
+import GigTile from '@src/components/gig/GigTile.astro'
+import VirtualizedList from '@src/components/VirtualizedList.astro'
+import SeriesTile from '@src/components/gig/SeriesTile.astro'
+import ShuffleFilters from '@src/components/ShuffleFilters.astro'
+import Menu from '@src/components/Menu.astro'
 
 const gigs = await loadAndFormatCollection('gig')
 const series = await loadAndFormatCollection('series')
@@ -37,9 +37,9 @@ const series = await loadAndFormatCollection('series')
 </SidebarLayout>
 
 <script>
-	import { filterEventName, updateEventName, type FilterEventDetails } from 'src/util/events'
-	import { scrollToElement } from 'src/util/helpers'
-	import { stringNormalize } from 'src/util/names'
+	import { filterEventName, updateEventName, type FilterEventDetails } from '@src/util/events'
+	import { scrollToElement } from '@src/util/helpers'
+	import { stringNormalize } from '@src/util/names'
 
 	document.addEventListener('astro:page-load', () => {
 		// See SidebarNav.astro

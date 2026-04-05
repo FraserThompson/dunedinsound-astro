@@ -9,13 +9,13 @@
  *  - selected (optional): the current entry. Will highlight it if supplied.
  *  - style (optional): Style object to apply to the wrapper
  */
-import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
-import { MenuLi, MenuLinkWrapper } from 'src/components/Menu.css'
+import { loadAndFormatCollection, type ProcessedEntry } from '@src/util/collection'
+import { MenuLi, MenuLinkWrapper } from '@src/components/Menu.css'
 import type { CollectionKey } from 'astro:content'
 import { theme } from '../Theme.css'
 import AllAgesIndicator from './AllAgesIndicator.astro'
 import SeriesIndicator from './SeriesIndicator.astro'
-import { makeHash } from 'src/util/names'
+import { makeHash } from '@src/util/names'
 
 interface Props {
 	collection?: CollectionKey
@@ -29,12 +29,12 @@ interface Props {
 const { selected, collection, collectionEntries, linksTo, itemClass, linkClass } = Astro.props
 
 // Helpers for conciseness
-const isDied = (entry) => 'died' in entry.entry.data && entry.entry.data.died !== undefined
-const isAllAges = (entry) => 'allAges' in entry.entry.data && entry.entry.data.allAges
-const hasOrigin = (entry) => 'origin' in entry.entry.data
+const isDied = (entry: ProcessedEntry<CollectionKey>) =>
+	'died' in entry.entry.data && entry.entry.data.died !== undefined
+const isAllAges = (entry: ProcessedEntry<CollectionKey>) => 'allAges' in entry.entry.data && entry.entry.data.allAges
 
-const getCategory = (entry) =>
-	`${hasOrigin(entry) ? entry.entry.data.origin : 'Dunedin'},${isDied(entry) ? 'dead' : 'active'},${isAllAges(entry) ? 'allages' : ''}`
+const getCategory = (entry: ProcessedEntry<CollectionKey>) =>
+	`${'origin' in entry.entry.data ? entry.entry.data.origin : 'Dunedin'},${isDied(entry) ? 'dead' : 'active'},${isAllAges(entry) ? 'allages' : ''}`
 
 const entries = collection ? await loadAndFormatCollection(collection) : collectionEntries
 ---

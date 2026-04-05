@@ -128,7 +128,7 @@ const contentVars = assignInlineVars({
 			}
 
 			// Open desired elements with it
-			const openWithElements = document.querySelectorAll('.openWithSidebar')
+			const openWithElements: NodeListOf<HTMLElement> = document.querySelectorAll('.openWithSidebar')
 			openWithElements.forEach((el: HTMLElement) => {
 				el.classList.toggle('openedWithSidebar')
 			})

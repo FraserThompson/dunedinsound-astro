@@ -12,15 +12,15 @@
  * Slots:
  *  - banner: Content to go in the banner at the top.
  */
-import EntryMenu from 'src/components/EntryMenu.astro'
-import ShuffleFilters from 'src/components/ShuffleFilters.astro'
+import EntryMenu from '@src/components/EntryMenu.astro'
+import ShuffleFilters from '@src/components/ShuffleFilters.astro'
 import ContentByEntry from '../../components/ContentByEntry.astro'
-import { type ProcessedEntry } from 'src/util/collection'
-import type { ResponsiveImage } from 'src/util/ResponsiveImage'
-import { Shufflers } from 'src/util/shufflers'
+import { type ProcessedEntry } from '@src/util/collection'
+import type { ResponsiveImage } from '@src/util/ResponsiveImage'
+import { Shufflers } from '@src/util/shufflers'
 import SidebarLayout from './SidebarLayout.astro'
 import ChevronLeftIcon from '~icons/iconoir/nav-arrow-left'
-import { backButton } from 'src/components/gig/GigsMenu.css'
+import { backButton } from '@src/components/gig/GigsMenu.css'
 
 interface Props {
 	entry: ProcessedEntry<'artist'> | ProcessedEntry<'venue'>

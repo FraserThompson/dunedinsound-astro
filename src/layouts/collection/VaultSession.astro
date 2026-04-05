@@ -1,11 +1,11 @@
 ---
-import type { ProcessedEntry } from 'src/util/collection'
-import Room from 'src/components/Room.astro'
-import { socialLinksToMenuItems } from 'src/util/helpers'
-import LiteYoutube from 'src/components/LiteYoutube.astro'
+import type { ProcessedEntry } from '@src/util/collection'
+import Room from '@src/components/Room.astro'
+import { socialLinksToMenuItems } from '@src/util/helpers'
+import LiteYoutube from '@src/components/LiteYoutube.astro'
 import { ArtistMetadata, VaultTracklist, VaultTrackLink } from './VaultSession.css'
-import PlayerContainer from 'src/components/gig/PlayerContainer.astro'
-import CompactPlayer from 'src/components/gig/CompactPlayer'
+import PlayerContainer from '@src/components/gig/PlayerContainer.astro'
+import CompactPlayer from '@src/components/gig/CompactPlayer'
 
 interface Props {
 	entry: ProcessedEntry<'vaultsession'>
@@ -60,14 +60,14 @@ const entryExtra = entry.extra
 	{
 		entryExtra.audio && (
 			<PlayerContainer minimizedAlways={true}>
-				<CompactPlayer artistAudio={[entryExtra.audio]} client:load />
+				<CompactPlayer playerAudio={[entryExtra.audio]} client:load />
 			</PlayerContainer>
 		)
 	}
 </Room>
 
 <script>
-	import { timeToSeconds } from 'src/util/helpers'
+	import { timeToSeconds } from '@src/util/helpers'
 
 	class VideoControls extends HTMLElement {
 		_internals: any

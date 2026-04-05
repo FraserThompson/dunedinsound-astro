@@ -10,16 +10,16 @@
  * Slot:
  *  - default: All site content should go here.
  */
-import SiteFooter from 'src/components/SiteFooter.astro'
-import SiteHeader from 'src/components/SiteHeader.astro'
-import SEO, { type Poo } from 'src/components/SEO.astro'
+import SiteFooter from '@src/components/SiteFooter.astro'
+import SiteHeader from '@src/components/SiteHeader.astro'
+import SEO, { type Poo } from '@src/components/SEO.astro'
 import '../../Theme.css.ts'
 import './BaseLayout.css.ts'
 import 'lightgallery/css/lightgallery.css'
-import { Content, SiteContainer } from 'src/components/UtilClasses.css'
+import { Content, SiteContainer } from '@src/components/UtilClasses.css'
 import { ClientRouter } from 'astro:transitions'
-import siteIcon from 'src/assets/site-icon.jpg'
-import { siteTitle } from 'src/util/seo'
+import siteIcon from '@src/assets/site-icon.jpg'
+import { siteTitle } from '@src/util/seo'
 
 interface Props {
 	hideFooter?: boolean
@@ -93,7 +93,7 @@ const { hideFooter, hasSidebar, style, className = '', poo } = Astro.props
 
 <script>
 	import { navigate } from 'astro:transitions/client'
-	import { elementIsVisibleInViewport } from 'src/util/helpers'
+	import { elementIsVisibleInViewport } from '@src/util/helpers'
 
 	interface StoredScrollPosition {
 		collection: string

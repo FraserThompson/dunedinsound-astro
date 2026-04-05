@@ -1,10 +1,10 @@
 ---
-import ShuffleFilters from 'src/components/ShuffleFilters.astro'
-import { loadAndFormatCollection } from 'src/util/collection'
-import GigsShuffle from 'src/components/gig/GigsShuffle.tsx'
-import SubheadersLayout from 'src/layouts/base/SubheadersLayout.astro'
+import ShuffleFilters from '@src/components/ShuffleFilters.astro'
+import { loadAndFormatCollection } from '@src/util/collection'
+import GigsShuffle from '@src/components/gig/GigsShuffle.tsx'
+import SubheadersLayout from '@src/layouts/base/SubheadersLayout.astro'
 import fs from 'fs-extra'
-import Menu from 'src/components/Menu.astro'
+import Menu from '@src/components/Menu.astro'
 
 const gigs = await loadAndFormatCollection('gig')
 

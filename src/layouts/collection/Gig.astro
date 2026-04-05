@@ -1,20 +1,20 @@
 ---
-import Banner from 'src/components/Banner.astro'
-import { type ProcessedEntry } from 'src/util/collection'
-import ImageGallery from 'src/components/ImageGallery.astro'
-import PlayerContainer from 'src/components/gig/PlayerContainer.astro'
+import Banner from '@src/components/Banner.astro'
+import { type ProcessedEntry } from '@src/util/collection'
+import ImageGallery from '@src/components/ImageGallery.astro'
+import PlayerContainer from '@src/components/gig/PlayerContainer.astro'
 import MapIcon from '~icons/iconoir/map-pin'
-import CornerLabel from 'src/components/gig/CornerLabel.astro'
-import BigIntro from 'src/components/gig/BigIntro.astro'
-import ArtistMedia from 'src/components/gig/ArtistMedia.astro'
-import LiteYoutube from 'src/components/LiteYoutube.astro'
-import Divider from 'src/components/Divider.astro'
+import CornerLabel from '@src/components/gig/CornerLabel.astro'
+import BigIntro from '@src/components/gig/BigIntro.astro'
+import ArtistMedia from '@src/components/gig/ArtistMedia.astro'
+import LiteYoutube from '@src/components/LiteYoutube.astro'
+import Divider from '@src/components/Divider.astro'
 import { theme } from '../../Theme.css'
 import { GigBannerPlayer, GigFeatureVid } from './Gig.css'
-import ArtistDropdown from 'src/components/gig/ArtistDropdown.astro'
-import { formattedDate } from 'src/util/names'
-import TextContainer from 'src/components/TextContainer.astro'
-import CompactPlayer from 'src/components/gig/CompactPlayer'
+import ArtistDropdown from '@src/components/gig/ArtistDropdown.astro'
+import { formattedDate } from '@src/util/names'
+import TextContainer from '@src/components/TextContainer.astro'
+import CompactPlayer from '@src/components/gig/CompactPlayer'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -99,7 +99,7 @@ const hasArtistMedia = galleryCount === 1 ? !uncategorizedImages.length : galler
 				{!!entryMedia.audio?.length && (
 					<div class={GigBannerPlayer}>
 						<PlayerContainer>
-							<CompactPlayer title="GIG PLAYER" artistAudio={entryMedia.audio} client:load />
+							<CompactPlayer title="GIG PLAYER" playerAudio={entryMedia.audio} client:load />
 						</PlayerContainer>
 					</div>
 				)}
@@ -148,8 +148,8 @@ const hasArtistMedia = galleryCount === 1 ? !uncategorizedImages.length : galler
 }
 
 <script>
-	import { getHeaderHeight, debounce } from 'src/util/helpers'
-	import { replaceState } from 'src/util/history'
+	import { getHeaderHeight, debounce } from '@src/util/helpers'
+	import { replaceState } from '@src/util/history'
 
 	document.addEventListener('astro:page-load', () => {
 		const artistElements = document.querySelectorAll('.artist')
@@ -163,7 +163,7 @@ const hasArtistMedia = galleryCount === 1 ? !uncategorizedImages.length : galler
 			threshold: [0, 0.1, 0.5, 1]
 		}
 
-		const updateHash = debounce((id) => {
+		const updateHash = debounce((id: string) => {
 			const url = new URL(window.location.href)
 			if (id) {
 				url.hash = id
@@ -173,7 +173,7 @@ const hasArtistMedia = galleryCount === 1 ? !uncategorizedImages.length : galler
 			replaceState(url)
 		}, 50)
 
-		const callback = (entries) => {
+		const callback = (entries: IntersectionObserverEntry[]) => {
 			if (window.location.hash.includes('image')) return
 
 			entries.forEach((entry) => {

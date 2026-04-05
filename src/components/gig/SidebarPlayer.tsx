@@ -3,13 +3,13 @@
  * 
  * Props:
  *  - Title: Displayed at the top of the window.
- *  - artistAudio: Audio array.
+ *  - playerAudio: Audio array.
  *  - playOnLoad (optional): If true, will start playing immediately.
  *  - sidebar (optional): An extra sidebar block (use slot="sidebar").
  */
 
 import type { FunctionalComponent } from "preact"
-import type { ArtistAudio } from "src/util/collection"
+import type { PlayerAudio } from "@src/util/collection"
 import PlayerProvider from "../player/PlayerProvider"
 import PlayerTransport from "../player/PlayerTransport"
 import PlayerWaveform from "../player/PlayerWaveform"
@@ -20,14 +20,14 @@ import PlayerCurrentTrack from "../player/PlayerCurrentTrack"
 
 interface Props {
 	title: string
-	artistAudio?: ArtistAudio[]
+	playerAudio?: PlayerAudio[]
 	playOnLoad?: boolean,
 	sidebar?: HTMLElement
 	menu?: HTMLElement
 }
 
-const PlayerSidebar: FunctionalComponent<Props> = ({ title, artistAudio, playOnLoad, sidebar, menu, children }) => (
-	<PlayerProvider artistAudio={artistAudio} playOnLoad={playOnLoad}>
+const PlayerSidebar: FunctionalComponent<Props> = ({ title, playerAudio, playOnLoad, sidebar, menu, children }) => (
+	<PlayerProvider playerAudio={playerAudio} playOnLoad={playOnLoad}>
 		<div class={PlayerSidebarWrapper}>
 			<div className={WinampTitlebar} data-title={title.toLocaleUpperCase()} />
 			{menu &&

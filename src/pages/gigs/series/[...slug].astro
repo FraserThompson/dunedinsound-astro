@@ -1,11 +1,11 @@
 ---
-import { loadAndFormatCollection } from 'src/util/collection.ts'
-import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
-import Series from 'src/layouts/collection/Series.astro'
-import EntryMenu from 'src/components/EntryMenu.astro'
+import { loadAndFormatCollection } from '@src/util/collection.ts'
+import SidebarLayout from '@src/layouts/base/SidebarLayout.astro'
+import Series from '@src/layouts/collection/Series.astro'
+import EntryMenu from '@src/components/EntryMenu.astro'
 import BackIcon from '~icons/iconoir/long-arrow-up-left'
-import { MenuLi, MenuLinkWrapper, MenuWrapper } from 'src/components/Menu.css'
-import SeriesIndicator from 'src/components/SeriesIndicator.astro'
+import { MenuLi, MenuLinkWrapper, MenuWrapper } from '@src/components/Menu.css'
+import SeriesIndicator from '@src/components/SeriesIndicator.astro'
 
 export async function getStaticPaths() {
 	const entries = await loadAndFormatCollection('series')

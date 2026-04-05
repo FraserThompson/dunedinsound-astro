@@ -1,12 +1,13 @@
 import { createContext } from "preact"
 import { useContext } from "preact/hooks"
-import type { ArtistAudio } from "src/util/collection"
+import type { PlayerAudio } from "@src/util/collection"
 import type WaveSurfer from "wavesurfer.js"
 
 export interface PlayerState {
 	playing: boolean
 	ready: boolean
-	playlist?: ArtistAudio[]
+	loading: boolean
+	playlist?: PlayerAudio[]
 	selectedTrack: number
 	currentTrackTitle: string
 	currentTime?: number
@@ -25,7 +26,6 @@ export interface PlayerActions {
 export type PlayerContextValue = PlayerState & PlayerActions & {
 	waveformRef: preact.RefObject<HTMLDivElement>
 	wavesurfer?: WaveSurfer
-	loading: boolean
 }
 
 export const PlayerContext = createContext<PlayerContextValue | null>(null)

@@ -9,7 +9,7 @@
 * See CompactPlayer.tsx for an example of implementation.
 * 
 * Parameters:
-*  - artistAudio: Media to be displayed. An array of artistMedia objects.
+*  - playerAudio: Media to be displayed. An array of artistMedia objects.
 *  - playOnLoad (optional): If true it will play the track once it loads.
 * 
 * Events:
@@ -21,19 +21,19 @@ import type { FunctionalComponent } from "preact"
 import { shuffleArray, timeToSeconds } from '../../util/helpers.ts'
 import WaveSurfer from 'wavesurfer.js'
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.esm.js'
-import type { ArtistAudio } from "src/util/collection.ts"
+import type { PlayerAudio } from "@src/util/collection.ts"
 import { PlayerContext } from "./PlayerContext.tsx"
-import { playerTrackChange, type PlayerTrackChangeEventDetails } from "src/util/events.ts"
+import { playerTrackChange, type PlayerTrackChangeEventDetails } from "@src/util/events.ts"
 
 interface Props {
-	artistAudio?: ArtistAudio[]
+	playerAudio?: PlayerAudio[]
 	playOnLoad?: boolean
 }
 
-const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, children }) => {
+const PlayerProvider: FunctionalComponent<Props> = ({ playerAudio, playOnLoad, children }) => {
 	const waveformRef = useRef(null)
 
-	const [playlist, setPlaylist] = useState(undefined as ArtistAudio[] | undefined)
+	const [playlist, setPlaylist] = useState(undefined as PlayerAudio[] | undefined)
 
 	const [playing, setPlaying] = useState(false)
 	const [ready, setReady] = useState(false) // used only on initial load
@@ -61,11 +61,11 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 			(window as any).cached_json = (window as any).cached_json || {}
 		}
 
-		if (!artistAudio) {
+		if (!playerAudio) {
 			setLoading(false)
 		}
 
-		if (!waveformRef.current || !artistAudio) return;
+		if (!waveformRef.current || !playerAudio) return;
 
 		// Only create wavesurfer if we haven't already got one
 		if (!wavesurfer) {
@@ -85,9 +85,9 @@ const PlayerProvider: FunctionalComponent<Props> = ({ artistAudio, playOnLoad, c
 			setRegionsPlugin(wsRegions)
 		}
 
-		setPlaylist(artistAudio)
+		setPlaylist(playerAudio)
 
-	}, [artistAudio])
+	}, [playerAudio])
 
 	/**
 	 * On wavesurfer instance available.

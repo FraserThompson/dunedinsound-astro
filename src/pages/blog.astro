@@ -1,12 +1,12 @@
 ---
-import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
-import Banner from 'src/components/Banner.astro'
-import TextContainer from 'src/components/TextContainer.astro'
-import { generateExcerpt } from 'src/util/helpers'
-import BlogTags from 'src/components/blog/BlogTags.astro'
-import SidebarLayout from 'src/layouts/base/SidebarLayout.astro'
-import ShuffleFilters from 'src/components/ShuffleFilters.astro'
-import { formattedDate } from 'src/util/names'
+import { loadAndFormatCollection, type ProcessedEntry } from '@src/util/collection'
+import Banner from '@src/components/Banner.astro'
+import TextContainer from '@src/components/TextContainer.astro'
+import { generateExcerpt } from '@src/util/helpers'
+import BlogTags from '@src/components/blog/BlogTags.astro'
+import SidebarLayout from '@src/layouts/base/SidebarLayout.astro'
+import ShuffleFilters from '@src/components/ShuffleFilters.astro'
+import { formattedDate } from '@src/util/names'
 
 interface Props {
 	entries?: ProcessedEntry<'blog'>[]

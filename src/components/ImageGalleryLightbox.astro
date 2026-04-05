@@ -14,9 +14,10 @@ import 'lightgallery/css/lg-zoom.css'
 	import lightGallery from 'lightgallery'
 	import lgZoom from 'lightgallery/plugins/zoom'
 	import { navigate } from 'astro:transitions/client'
-	import { imageGalleryUpdatedEventName } from 'src/util/events'
+	import { imageGalleryUpdatedEventName } from '@src/util/events'
+import type { LightGallery } from 'lightgallery/lightgallery'
 
-	let lightbox
+	let lightbox: LightGallery
 
 	const initLightbox = () => {
 		const options = {

@@ -13,7 +13,7 @@
  * and this component will respond by updating the gallery.
  *
  */
-import type { ResponsiveImage } from 'src/util/ResponsiveImage'
+import type { ResponsiveImage } from '@src/util/ResponsiveImage'
 import ImageGalleryLightbox from './ImageGalleryLightbox.astro'
 import { gridWrapper, childWidthDesktop, childWidthMobile } from './GridContainer.css'
 import LightboxImage from './LightboxImage.astro'
@@ -46,12 +46,12 @@ const { images, noLightbox, thumbnailWidthDesktop = '450px', thumbnailWidthMobil
 		imageGalleryUpdatedEventName,
 		imageGalleryUpdateEventName,
 		type ImageGalleryUpdateEventDetails
-	} from 'src/util/events'
-	import { getResponsiveImageAttrs, responsiveImageSizes } from 'src/util/helpers'
-	import type { ResponsiveImage } from 'src/util/ResponsiveImage'
+	} from '@src/util/events'
+	import { getResponsiveImageAttrs, responsiveImageSizes } from '@src/util/helpers'
+	import type { ResponsiveImage } from '@src/util/ResponsiveImage'
 
 	export class ImageGallery extends HTMLElement {
-		observer: MutationObserver
+		observer: MutationObserver | null = null
 
 		constructor() {
 			super()
@@ -85,9 +85,7 @@ const { images, noLightbox, thumbnailWidthDesktop = '450px', thumbnailWidthMobil
 			source.setAttribute('sizes', sizes)
 
 			const img = document.createElement('img')
-			for (const attr in attrs) {
-				img.setAttribute(attr, attrs[attr])
-			}
+			Object.entries(attrs).forEach(([key, value]) => value && img.setAttribute(key, value))
 			img.setAttribute('loading', 'lazy')
 			img.setAttribute('decoding', 'async')
 
@@ -118,11 +116,11 @@ const { images, noLightbox, thumbnailWidthDesktop = '450px', thumbnailWidthMobil
 
 		/**
 		 * Respond to DOM updates and send an event (eg. so the lightbox can refresh)
-		 * 
+		 *
 		 * @param mutationList
 		 * @param observer
 		 */
-		onDomChange = (mutationList, observer) => {
+		onDomChange = (mutationList: MutationRecord[]) => {
 			for (const mutation of mutationList) {
 				if (mutation.type === 'childList') {
 					const updatedEvent = new CustomEvent(imageGalleryUpdatedEventName)
@@ -144,7 +142,7 @@ const { images, noLightbox, thumbnailWidthDesktop = '450px', thumbnailWidthMobil
 
 		disconnectedCallback() {
 			window.removeEventListener(imageGalleryUpdateEventName, this.onTriggerUpdate)
-			this.observer.disconnect()
+			this.observer?.disconnect()
 		}
 	}
 

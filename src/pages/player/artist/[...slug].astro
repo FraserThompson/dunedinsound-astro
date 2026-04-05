@@ -1,7 +1,7 @@
 ---
-import { loadAndFormatCollection, type ArtistAudio } from 'src/util/collection.ts'
-import PlayerLayout from 'src/layouts/base/PlayerLayout.astro'
-import { artistPlayerThreshold } from 'src/util/constants'
+import { loadAndFormatCollection, type PlayerAudio } from '@src/util/collection.ts'
+import PlayerLayout from '@src/layouts/base/PlayerLayout.astro'
+import { artistPlayerThreshold } from '@src/util/constants'
 import path from 'path'
 
 export async function getStaticPaths() {
@@ -20,7 +20,7 @@ export async function getStaticPaths() {
 	)
 }
 
-let audioFromGigs: ArtistAudio[] | undefined = undefined
+let audioFromGigs: PlayerAudio[] = []
 
 const { entry } = Astro.props
 
@@ -36,11 +36,10 @@ if (entry) {
 			.filter((audio) => audio.title === entry.entry.id)
 			.map((audio) => ({
 				...audio,
-				title: path.basename(audio.files[0]),
-				dataAttributes: { 'data-gig': gig.entry.id }
+				title: path.basename(audio.files[0])
 			}))
 		return [...acc, ...audio]
-	}, [])
+	}, [] as PlayerAudio[])
 
 	const vaultsessions = await loadAndFormatCollection(
 		'vaultsession',

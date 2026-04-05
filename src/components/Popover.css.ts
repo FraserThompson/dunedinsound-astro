@@ -3,6 +3,7 @@ import { theme } from '../Theme.css'
 
 export const popoverContent = style({
 	top: theme.dimensions.headerHeightMobile,
+	position: 'fixed',
 	margin: '0',
 	backgroundColor: theme.color.background,
 	color: theme.color.text,

@@ -18,7 +18,7 @@
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import type { Grid } from './GridChild.astro'
 import { marginBottom, marginBottomMobile, clusterizeScroll } from './VirtualizedList.css'
-import 'node_modules/clusterize.js/clusterize.css'
+import '@node_modules/clusterize.js/clusterize.css'
 
 interface Props {
 	rowHeight?: number
@@ -56,8 +56,8 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 <script>
 	import Clusterize from 'clusterize.js'
 	import type { Grid } from './GridChild.astro'
-	import { filterEventName, updateEventName, type FilterEventDetails, type UpdateEventDetails } from 'src/util/events'
-	import { breakpoints } from 'src/Theme.css'
+	import { filterEventName, updateEventName, type FilterEventDetails, type UpdateEventDetails } from '@src/util/events'
+	import { breakpoints } from '@src/Theme.css'
 
 	class VirtualizedList extends HTMLElement {
 		contentAreaId = 'contentArea'
@@ -95,6 +95,8 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 			// Enough rows to fill up the screen
 			this.rowsInBlock = Math.round(window.innerHeight / this.rowHeight)
 			this.blocksInCluster = this.rowsInBlock * 3
+
+			this.clusterize = null
 		}
 
 		/**

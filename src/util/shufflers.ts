@@ -1,5 +1,5 @@
 import { getCollection } from "astro:content"
-import type { Filter, Sorter } from "src/components/ShuffleFilters.astro"
+import type { Filter, Sorter } from "@src/components/ShuffleFilters.astro"
 
 /**
  * Filters and sorters used on collection parent pages and their entry menus.

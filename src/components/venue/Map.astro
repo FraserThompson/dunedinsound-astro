@@ -62,9 +62,9 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 
 <script>
 	import mapboxgl, { Popup } from 'mapbox-gl'
-	import { elementIsVisibleInViewport, getCurrentScreensize } from 'src/util/helpers'
+	import { elementIsVisibleInViewport, getCurrentScreensize } from '@src/util/helpers'
 	import type { SidebarWrapper } from '../SidebarNav.astro.0.mts'
-	import { filterEventName, type FilterEventDetails } from 'src/util/events'
+	import { filterEventName, type FilterEventDetails } from '@src/util/events'
 
 	class MapWrapper extends HTMLElement {
 		loadingSpinner: HTMLElement | null

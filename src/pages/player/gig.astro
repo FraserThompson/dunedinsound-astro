@@ -1,25 +1,23 @@
 ---
-import { loadAndFormatCollection, type ArtistAudio } from 'src/util/collection.ts'
-import PlayerLayout from 'src/layouts/base/PlayerLayout.astro'
+import { loadAndFormatCollection, type PlayerAudio } from '@src/util/collection.ts'
+import PlayerLayout from '@src/layouts/base/PlayerLayout.astro'
 import path from 'path'
 
 const gigs = await loadAndFormatCollection('gig')
 const vaultsessions = await loadAndFormatCollection('vaultsession')
 
-let audioFromGigs: ArtistAudio[] | undefined = undefined
-
-audioFromGigs = gigs.reduce((acc, gig) => {
+let audioFromGigs: PlayerAudio[] = gigs.reduce((acc: PlayerAudio[], gig) => {
 	const audio = gig.extra.media.audio.map((audio) => ({
 		...audio,
-		title: path.basename(audio.files[0]),
-		dataAttributes: { 'data-gig': gig.entry.id }
+		title: path.basename(audio.files[0])
 	}))
 	return [...acc, ...audio]
-}, [])
+}, [] as PlayerAudio[])
 
 if (vaultsessions.length) {
 	const vaultSeshAudio = vaultsessions[0].extra.audio
 	audioFromGigs.push({ ...vaultSeshAudio, title: path.basename(vaultSeshAudio.files[0]) })
 }
 ---
+
 <PlayerLayout audioFromGigs={audioFromGigs} />

@@ -35,7 +35,7 @@ const { className = '' } = Astro.props
 </popover-wrapper>
 
 <script>
-	import { getCurrentScreensize } from 'src/util/helpers'
+	import { getCurrentScreensize } from '@src/util/helpers'
 
 	class Popover extends HTMLElement {
 		dialogEl: HTMLDialogElement | null
@@ -48,7 +48,7 @@ const { className = '' } = Astro.props
 		public onToggle = (e: any) => {
 			const dialog = e.target
 			const button = e.source
-			const open = e.newState === "open"
+			const open = e.newState === 'open'
 
 			if (open) {
 				// Get button position
@@ -58,8 +58,8 @@ const { className = '' } = Astro.props
 
 				// Position popover below the button
 				Object.assign(dialog.style, {
-					top: `${rect.bottom + window.scrollY}px`,
-					left: `${!isMobile ? rect.left + window.scrollX + 'px' : 'auto'}`,
+					top: `${rect.bottom}px`,
+					left: `${!isMobile ? rect.left + 'px' : 'auto'}`,
 					right: `${isMobile ? '0px' : 'auto'}`,
 					minWidth: `${rect.width}px`
 				})

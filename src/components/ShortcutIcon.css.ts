@@ -1,6 +1,8 @@
 import { globalStyle, style } from '@vanilla-extract/css'
 
 export const shortcutIconWrapper = style({
+	position: "relative",
+	width: "100px",
 	color: "black",
 	display: "flex",
 	alignItems: "center",

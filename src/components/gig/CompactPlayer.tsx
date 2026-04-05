@@ -3,7 +3,7 @@
  */
 
 import type { FunctionalComponent } from "preact"
-import type { ArtistAudio } from "src/util/collection"
+import type { PlayerAudio } from "@src/util/collection"
 import PlayerProvider from "../player/PlayerProvider"
 import PlayerTransport from "../player/PlayerTransport"
 import PlayerWaveform from "../player/PlayerWaveform"
@@ -12,13 +12,13 @@ import { AudioWrapper, CompactPlayerWrapper, WinampTitlebar } from "./CompactPla
 
 interface Props {
 	title?: string
-	artistAudio: ArtistAudio[]
+	playerAudio: PlayerAudio[]
 	playOnLoad?: boolean
 }
 
-const CompactPlayer: FunctionalComponent<Props> = ({ title = "AUDIO PLAYER", artistAudio, playOnLoad }) => {
+const CompactPlayer: FunctionalComponent<Props> = ({ title = "AUDIO PLAYER", playerAudio, playOnLoad }) => {
 	return (
-		<PlayerProvider artistAudio={artistAudio} playOnLoad={playOnLoad}>
+		<PlayerProvider playerAudio={playerAudio} playOnLoad={playOnLoad}>
 			<div className={CompactPlayerWrapper}>
 				<div className={WinampTitlebar} data-title={title}/>
 				<div className={AudioWrapper}>

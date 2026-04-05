@@ -25,8 +25,8 @@
  *
  */
 import BackgroundImage from './BackgroundImage.astro'
-import type { ResponsiveImage } from 'src/util/ResponsiveImage'
-import type { ResponsiveImageSizes } from 'src/components/Image2.astro'
+import type { ResponsiveImage } from '@src/util/ResponsiveImage'
+import type { ResponsiveImageSizes } from '@src/components/Image2.astro'
 import {
 	tileWrapper,
 	tileInner,
@@ -40,7 +40,7 @@ import {
 	tileBottomContent
 } from './Tile.css'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
-import Image2 from 'src/components/Image2.astro'
+import Image2 from '@src/components/Image2.astro'
 import CornerLabel from './gig/CornerLabel.astro'
 
 export type BackgroundStyle = 'full' | 'center' | 'fulldesktop'

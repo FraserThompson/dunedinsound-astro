@@ -1,4 +1,4 @@
-import { style } from '@vanilla-extract/css'
+import { globalStyle, style } from '@vanilla-extract/css'
 import { theme } from '../../Theme.css'
 
 export const fileButton = style({
@@ -17,4 +17,8 @@ export const gigMetaWrapper = style({
 			display: 'block'
 		},
 	}
+})
+
+globalStyle(`${gigMetaWrapper} .selectedArtist`, {
+	color: "#28da1d",
 })

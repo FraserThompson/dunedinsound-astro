@@ -1,8 +1,8 @@
 import rss, { type RSSFeedItem } from '@astrojs/rss';
-import { loadAndFormatCollection } from 'src/util/collection';
-import { defaultMetaDescription, siteTitle } from 'src/util/seo';
+import { loadAndFormatCollection } from '@src/util/collection';
+import { defaultMetaDescription, siteTitle } from '@src/util/seo';
 
-export async function GET(context) {
+export async function GET(context: any) {
 
 	const gigs = await loadAndFormatCollection('gig')
 	const blogs = await loadAndFormatCollection('blog')

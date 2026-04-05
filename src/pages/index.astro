@@ -1,14 +1,14 @@
 ---
 import BaseLayout from '../layouts/base/BaseLayout.astro'
-import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
-import Tile from 'src/components/Tile.astro'
+import { loadAndFormatCollection, type ProcessedEntry } from '@src/util/collection'
+import Tile from '@src/components/Tile.astro'
 import { theme } from '../Theme.css'
-import GigTile from 'src/components/gig/GigTile.astro'
-import FlexGridContainer from 'src/components/FlexGridContainer.astro'
-import GridContainer from 'src/components/GridContainer.astro'
-import { gridChild } from 'src/components/GridChild.css'
-import GridChild from 'src/components/GridChild.astro'
-import BlogTile from 'src/components/blog/BlogTile.astro'
+import GigTile from '@src/components/gig/GigTile.astro'
+import FlexGridContainer from '@src/components/FlexGridContainer.astro'
+import GridContainer from '@src/components/GridContainer.astro'
+import { gridChild } from '@src/components/GridChild.css'
+import GridChild from '@src/components/GridChild.astro'
+import BlogTile from '@src/components/blog/BlogTile.astro'
 
 const gigs = await loadAndFormatCollection('gig')
 const blogs = await loadAndFormatCollection('blog')

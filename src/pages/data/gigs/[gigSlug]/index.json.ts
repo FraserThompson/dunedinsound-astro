@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { getCollection, getEntry } from "astro:content";
-import { getEntryImages } from 'src/util/collection.ts'
-import type { ArtistGigResponse } from "src/util/helpers";
+import { getEntryImages } from '@src/util/collection.ts'
+import type { ArtistGigResponse } from "@src/util/helpers";
 
 export const GET = (async ({ params, request }) => {
 	const gigSlug = params.gigSlug

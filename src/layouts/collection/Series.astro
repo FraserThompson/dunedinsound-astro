@@ -1,16 +1,16 @@
 ---
-import { loadAndFormatCollection, type ProcessedEntry } from 'src/util/collection'
-import FlexGridContainer from 'src/components/FlexGridContainer.astro'
-import GigTile from 'src/components/gig/GigTile.astro'
-import { BannerTitle } from 'src/components/Banner.css'
-import TextContainer from 'src/components/TextContainer.astro'
+import { loadAndFormatCollection, type ProcessedEntry } from '@src/util/collection'
+import FlexGridContainer from '@src/components/FlexGridContainer.astro'
+import GigTile from '@src/components/gig/GigTile.astro'
+import { BannerTitle } from '@src/components/Banner.css'
+import TextContainer from '@src/components/TextContainer.astro'
 import { gigsWrapper, sideTextWrapper } from './Series.css'
-import SocialLinks from 'src/components/SocialLinks.astro'
-import Divider from 'src/components/Divider.astro'
-import { theme } from 'src/Theme.css'
-import DropdownMenu from 'src/components/DropdownMenu.astro'
-import { seriesVenuePlayerThreshold } from 'src/util/constants'
-import ShortcutIcon from 'src/components/ShortcutIcon.astro'
+import SocialLinks from '@src/components/SocialLinks.astro'
+import Divider from '@src/components/Divider.astro'
+import { theme } from '@src/Theme.css'
+import DropdownMenu from '@src/components/DropdownMenu.astro'
+import { seriesVenuePlayerThreshold } from '@src/util/constants'
+import ShortcutIcon from '@src/components/ShortcutIcon.astro'
 
 interface Props {
 	entry: ProcessedEntry<'series'>
@@ -91,7 +91,9 @@ const resources = Array.isArray(entryData.resources)
 		)}
 		{
 			entryExtra.gigCount > seriesVenuePlayerThreshold && (
-				<ShortcutIcon title={`PLAYER`} href={`/player/series/${entry.entry.id}`} />
+				<div style={{ backgroundColor: "#008080", display: "flex", justifyContent: "center" }}>
+					<ShortcutIcon title={`PLAYER`} href={`/player/series/${entry.entry.id}`} />
+				</div>
 			)
 		}
 	</TextContainer>

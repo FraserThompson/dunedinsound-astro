@@ -38,7 +38,7 @@ const { minimizedAlways } = Astro.props
 </player-wrapper>
 
 <script>
-	import { calculateScrollHeaderOffset } from 'src/util/helpers'
+	import { calculateScrollHeaderOffset } from '@src/util/helpers'
 
 	class PlayerWrapper extends HTMLElement {
 		private _internals
@@ -51,6 +51,8 @@ const { minimizedAlways } = Astro.props
 
 		constructor() {
 			super()
+
+			this.player = null
 
 			this._internals = this.attachInternals()
 			this.minimizedAlways = !!this.dataset.minimizedalways

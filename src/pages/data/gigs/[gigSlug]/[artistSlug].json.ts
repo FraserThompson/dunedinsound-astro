@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { getCollection, getEntry } from "astro:content";
-import { getEntryImages } from 'src/util/collection.ts'
-import type { ArtistGigResponse } from "src/util/helpers";
+import { getEntryImages } from '@src/util/collection.ts'
+import type { ArtistGigResponse } from "@src/util/helpers";
 
 export const GET = (async ({ params, request }) => {
 	const artistSlug = params.artistSlug
@@ -38,21 +38,10 @@ export async function getStaticPaths() {
 
 	const gigs = await getCollection('gig')
 
-	const countByArtist = new Map<string, number>()
-	for (const gig of gigs) {
-		for (const a of gig.data.artists ?? []) {
-			const id = a.id.id
-			countByArtist.set(id, (countByArtist.get(id) ?? 0) + 1)
-		}
-	}
-
 	return gigs.flatMap((gig) =>
 		(gig.data.artists ?? [])
-			.map((a) => a.id.id)
-			.filter((artistId) => (countByArtist.get(artistId) ?? 0) >= 5)
-			.map((artistId) => ({
-				params: { artistSlug: artistId, gigSlug: gig.id }
+			.map((a) => ({
+				params: { artistSlug: a.id.id, gigSlug: gig.id }
 			}))
 	)
-
 }

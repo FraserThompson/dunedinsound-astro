@@ -1,4 +1,4 @@
-import type { ArtistAudio } from "./collection"
+import type { PlayerAudio } from "./collection"
 import type { ResponsiveImage } from "./ResponsiveImage"
 
 export const updateEventName = 'virtual-window:update'
@@ -24,5 +24,5 @@ export interface ImageGalleryUpdateEventDetails {
 }
 
 export interface PlayerTrackChangeEventDetails {
-	track: ArtistAudio
+	track: PlayerAudio
 }

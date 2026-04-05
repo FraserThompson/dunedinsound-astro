@@ -1,2 +1,4 @@
+Disallow: /data
+
 User-agent: *
 Allow: /

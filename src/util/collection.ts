@@ -24,7 +24,7 @@ interface Track {
 	time: string
 }
 
-export type ArtistAudio = {
+export type PlayerAudio = {
 	title: string
 	files: string[]
 	tracklist?: Track[]
@@ -33,7 +33,7 @@ export type ArtistAudio = {
 
 interface GigMedia {
 	artistImages: { [id: string]: ResponsiveImage[] }
-	audio: ArtistAudio[]
+	audio: PlayerAudio[]
 	imageCount: number
 }
 
@@ -62,7 +62,7 @@ type CollectionExtraMap = {
 	}
 	vaultsession: {
 		artist?: CollectionEntry<'artist'>
-		audio: ArtistAudio
+		audio: PlayerAudio
 	}
 	blog: {
 		coverVid?: string
@@ -683,7 +683,7 @@ export async function getGigMedia(entry: CollectionEntry<'gig'>): Promise<GigMed
 			return acc
 		}, {})
 	}
-	let audio: ArtistAudio[] = []
+	let audio: PlayerAudio[] = []
 
 	artistDirs.sort((a, b) => artistIds.indexOf(path.basename(a)) - artistIds.indexOf(path.basename(b)))
 
@@ -699,6 +699,8 @@ export async function getGigMedia(entry: CollectionEntry<'gig'>): Promise<GigMed
 			const responsiveImages = await getResponsiveImagesByDir(artistDir, artistId);
 			artistImages[artistId] = responsiveImages ? Object.values(responsiveImages) : [];
 
+			imageCount += artistImages[artistId].length
+
 			const audioFiles = (
 				await new fdir({
 					pathSeparator: '/',
@@ -710,10 +712,13 @@ export async function getGigMedia(entry: CollectionEntry<'gig'>): Promise<GigMed
 			).map((src) => `/${src}`);
 
 			if (audioFiles.length) {
-				imageCount += audioFiles.length
 				audio.push({
 					title: artistId,
 					files: audioFiles,
+					dataAttributes: {
+						'data-gig': entry.id,
+						'data-artist': artistId,
+					},
 					tracklist: entryData.artists.find((artist) => artist.id.id === artistId)?.tracklist
 				});
 			}
