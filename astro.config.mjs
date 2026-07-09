@@ -5,12 +5,23 @@ import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin'
 import Icons from 'unplugin-icons/vite'
 import { remarkImagesPlugin } from './src/remark-images-plugin.ts'
 import sectionize from '@hbsnow/rehype-sectionize'
+import { unified } from '@astrojs/markdown-remark';
 
 const ignoredDirs = [".astro", "dist", "public", "media", "dist_media", "node_modules", "audio", "scripts", "docker"]
 
 // https://astro.build/config
 export default defineConfig({
-	integrations: [mdx({ remarkPlugins: [remarkImagesPlugin], rehypePlugins: [sectionize] }), preact({ compat: true })],
+	integrations: [mdx(), preact({ compat: true })],
+	markdown: {
+		processor: unified({
+			rehypePlugins: [
+				sectionize,
+			],
+			remarkPlugins: [
+				remarkImagesPlugin
+			]
+		}),
+	},
 	site: 'https://dunedinsound.com',
 	prefetch: {
 		prefetchAll: true,

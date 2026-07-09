@@ -122,7 +122,7 @@ const { selected } = Astro.props
 		 *
 		 * @param e
 		 */
-		gigClick(e: any) {
+		gigClick = (e: any) => {
 			e.preventDefault()
 			// Close sidebar on mobile
 			// See: SidebarNav.astro
@@ -137,7 +137,7 @@ const { selected } = Astro.props
 		 * @param target
 		 *   The gig which was clicked.
 		 */
-		scrollToGig(target: HTMLElement) {
+		scrollToGig = (target: HTMLElement) => {
 			// Find where the gig appears in the menu
 			const index = Array.from(this.gigLinks).indexOf(target)
 			// Scroll to it in the virtualized list

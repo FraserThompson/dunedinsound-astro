@@ -2,7 +2,7 @@
 import WebsiteInfo from '@src/components/page/WebsiteInfo.astro'
 import TextContainer from '@src/components/TextContainer.astro'
 import type { ProcessedEntry } from '@src/util/collection.ts'
-import { render } from 'astro:content';
+import { render } from 'astro:content'
 
 interface Props {
 	entry: ProcessedEntry<'page'>
@@ -12,11 +12,6 @@ const { entry } = Astro.props
 const { Content, headings, remarkPluginFrontmatter } = await render(entry.entry)
 ---
 
-{
-	!entry.entry.data.fullWidth && (
-		<TextContainer>
-			<Content components={{ WebsiteInfo }} />
-		</TextContainer>
-	)
-}
-{entry.entry.data.fullWidth && <Content />}
+<TextContainer className=`${entry.entry.data.stickyHeaders ? 'sticky-headers' : ''}`>
+	<Content components={{ WebsiteInfo }} />
+</TextContainer>

@@ -204,9 +204,9 @@ const {
 			this.sortOrder = 1
 
 			this.searchElement = this.querySelector('input[type=search]')
-			this.selectFilterElements = this.querySelectorAll('select[data-filter]')
+			this.selectFilterElements = this.querySelectorAll('select[data-filter]') as unknown as NodeListOf<HTMLSelectElement>
 			this.checkboxFilterElements = this.querySelectorAll('input[type=checkbox]')
-			this.sortElements = this.querySelectorAll('select[data-sort]')
+			this.sortElements = this.querySelectorAll('select[data-sort]') as unknown as NodeListOf<HTMLSelectElement>
 		}
 
 		filterItem = (item: HTMLElement) => {

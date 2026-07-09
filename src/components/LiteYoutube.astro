@@ -202,7 +202,7 @@ const cssVars = {
 				return
 			}
 
-			const data = await response.json()
+			const data: any = await response.json()
 
 			if (data.items && data.items.length) {
 				const title = data.items[0].snippet.title

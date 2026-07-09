@@ -20,7 +20,7 @@ const PlayerCurrentTrack: FunctionalComponent = () => {
 			</div>
 			<div className={CurrentTrackMarquee}>
 				{!playing && <p className={CurrentTrackText}>
-					{currentTrackTitle ? <>*** {currentTrackTitle} ***</> : "Load a playlist to begin"}
+					{currentTrackTitle ? <>*** {currentTrackTitle} ***</> : "Use the 'file' menu to load a playlist"}
 				</p>}
 			</div>
 		</div>

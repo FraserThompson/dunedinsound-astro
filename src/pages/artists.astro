@@ -3,11 +3,10 @@ import { loadAndFormatCollection } from '@src/util/collection'
 import { Shufflers } from '@src/util/shufflers'
 import { ResponsiveImage } from '@src/util/ResponsiveImage'
 import SubheadersLayout from '@src/layouts/base/SubheadersLayout.astro'
-import { artistListItem, artistGigCount, artistGigLabel } from './Artists.css'
 import VirtualizedList from '@src/components/VirtualizedList.astro'
 import { makeHash } from '@src/util/names'
 import ShuffleFilters from '@src/components/ShuffleFilters.astro'
-import { headerHeightMobile } from '@src/Theme.css'
+import { headerHeightMobile, theme } from '@src/Theme.css'
 
 const artists = await loadAndFormatCollection('artist')
 
@@ -42,16 +41,49 @@ const artistShufflers = Shufflers['artist']
 				<a
 					href={artist.extra.absolutePath}
 					id={makeHash(artist.entry.id)}
-					class={`${artistListItem} filter-item ${artist.entry.data.died ? 'dead' : ''}`}
+					class={`filter-item`}
 					data-category={`${artist.entry.data.origin || 'Dunedin'},${!artist.entry.data.died ? 'active' : ''}`}
 					data-title={artist.entry.data.title}
 					data-lastgig={artist.extra.lastGig}
 					data-numbergigs={artist.extra.gigCount}
 				>
-					<span class={artistGigLabel}>{artist.entry.data.title} {artist.entry.data.origin ? '(' + artist.entry.data.origin + ')' : ''}</span>
-					<span class={`${artistGigCount}`}>{artist.extra.gigCount}</span>
+					<span class="artistLabel" style={{ color: artist.entry.data.died ? theme.color.dullText : null }}>
+						{artist.entry.data.title} {artist.entry.data.origin ? '(' + artist.entry.data.origin + ')' : ''}
+					</span>
+					<span class="gigCount">{artist.extra.gigCount}</span>
 				</a>
 			))
 		}
 	</VirtualizedList>
 </SubheadersLayout>
+
+<style define:vars={{
+	basePadding: theme.dimensions.basePadding,
+	basePaddingMobile: theme.dimensions.basePaddingMobile,
+	dullText: theme.color.dullText
+}}>
+	.filter-item {
+		display: flex;
+		align-items: center;
+		content-visibility: auto;
+		padding-left: var(--basePaddingMobile);
+		padding-right: var(--basePaddingMobile);
+		height: 35px;
+		border-bottom: 1px solid rgba(255,255,255,0.1);
+	}
+	@media screen and (--md) {
+		.filter-item {
+			padding-left: var(--basePadding);
+			padding-right: var(--basePadding);
+		}
+	}
+	.artistLabel {
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+	}
+	.gigCount {
+		margin-left: auto;
+		color: var(--dullText);
+	}
+</style>

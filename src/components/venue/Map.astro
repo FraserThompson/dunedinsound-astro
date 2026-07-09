@@ -67,6 +67,7 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 	import { filterEventName, type FilterEventDetails } from '@src/util/events'
 
 	class MapWrapper extends HTMLElement {
+		searchBox: HTMLInputElement | null
 		loadingSpinner: HTMLElement | null
 		map: mapboxgl.Map
 		markers: mapboxgl.Marker[]
@@ -80,12 +81,13 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			super()
 
 			mapboxgl.accessToken =
-				'pk.eyJ1IjoiZnJhc2VydGhvbXBzb24iLCJhIjoiY2llcnF2ZXlhMDF0cncwa21yY2tyZjB5aCJ9.iVxJbdbZiWVfHItWtZfKPQ'
+				'pk.eyJ1IjoiZnJhc2VydGhvbXBzb24iLCJhIjoiY21vNm1hOGRhMjRlYjJwcTNidzF5cnQ3MiJ9.MayfCS-JtsxS_39lenMNwQ'
 
 			const centerAttrib = this.getAttribute('data-center')
 			const center = centerAttrib ? JSON.parse(centerAttrib) : [170.5016047, -45.8745557]
 			const zoom = this.getAttribute('data-zoom') || '13'
 
+			this.searchBox = document.querySelector('input[name="search"]')
 			this.loadingSpinner = this.querySelector('.spinner')
 			this.interactive = this.getAttribute('data-nointeract') ? false : true
 
@@ -228,44 +230,44 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 			if (!this.interactive) return
 
 			const detail: FilterEventDetails = e.detail
-			const items = detail.items
 			const filteredItems = detail.filteredItems
 			const bounds = new mapboxgl.LngLatBounds()
 
-			items?.forEach((item) => {
-				const el = item.querySelector('a')
-				const key = el?.dataset.markerkey
+			// Collect all marker keys that should be visible
+			const visibleMarkerKeys = new Set(
+				(filteredItems || []).map((item) => item.querySelector('a')?.dataset.markerkey).filter(Boolean)
+			)
 
-				// The index of the marker matching the shuffle item
-				const marker = this.markers.findIndex((marker) => marker.getLngLat().toString() == key)
-
-				if (this.markers[marker] === undefined) {
-					return
-				}
-
-				if (marker === undefined) {
-					console.error('No matching marker:')
-					console.error(el?.dataset.markerkey)
-					return
-				}
-
-				if (!filteredItems?.includes(item)) {
-					this.markers[marker].remove()
+			// Show/hide markers based on whether their key is in the visible set
+			this.markers.forEach((marker) => {
+				const key = marker.getLngLat().toString()
+				if (visibleMarkerKeys.has(key)) {
+					marker.addTo(this.map)
+					bounds.extend(marker.getLngLat())
 				} else {
-					this.markers[marker].addTo(this.map)
-
-					bounds.extend(this.markers[marker].getLngLat())
-
-					// If there's one result open the popup for ease of use (ON DESKTOP)
-					if (getCurrentScreensize() !== 'xs') {
-						if (filteredItems?.length === 1) {
-							!this.markers[marker].getPopup()?.isOpen() && this.markers[marker].togglePopup()
-						} else {
-							this.markers[marker].getPopup()?.isOpen() && this.markers[marker].togglePopup()
-						}
-					}
+					marker.remove()
 				}
 			})
+
+			// If there's one result open the popup for ease of use (ON DESKTOP)
+			if (getCurrentScreensize() !== 'xs' && visibleMarkerKeys.size === 1) {
+				const onlyKey = Array.from(visibleMarkerKeys)[0]
+				const marker = this.markers.find((m) => m.getLngLat().toString() === onlyKey)
+				if (marker && !marker.getPopup()?.isOpen()) {
+					marker.togglePopup()
+					// Prevent popup from stealing focus
+					if (this.searchBox) {
+						this.searchBox.focus({ preventScroll: true })
+					}
+				}
+			} else if (getCurrentScreensize() !== 'xs') {
+				// Close popups if more than one marker is visible
+				this.markers.forEach((marker) => {
+					if (marker.getPopup()?.isOpen() && visibleMarkerKeys.has(marker.getLngLat().toString())) {
+						marker.togglePopup()
+					}
+				})
+			}
 
 			// Fit the map to the resulting markers
 			!bounds.isEmpty() && this.map.fitBounds(bounds, { duration: 500, padding: 10 })

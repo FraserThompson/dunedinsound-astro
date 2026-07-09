@@ -24,7 +24,12 @@ export const PlayerSidebarSidebarWrapper = style({
 export const PlayerSiderMenubar = style({
 	marginLeft: "8px",
 	marginRight: "8px",
-	height: "20px"
+	height: "30px",
+	'@media': {
+		'screen and (--md)': {
+			height: "20px",
+		}
+	}
 })
 
 export const PlayerSidebarBottomWrapper = style({

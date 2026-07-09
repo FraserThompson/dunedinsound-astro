@@ -62,3 +62,10 @@ globalStyle(`${textContainer} a.active`, {
 globalStyle(`${textContainer} .lightboxImage`, {
 	margin: '0 auto'
 })
+
+globalStyle(`${textContainer}.sticky-headers h2`, {
+	background: theme.color.background,
+	borderBottom: theme.borders.secondary,
+	position: 'sticky',
+	top: 0
+})

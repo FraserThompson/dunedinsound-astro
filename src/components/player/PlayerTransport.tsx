@@ -18,7 +18,7 @@ const PlayerTransport: FunctionalComponent<Props> = ({ showShuffle }) => {
 	return (
 		<div>
 			<button
-				className={`${TransportButton} left`}
+				className={`${TransportButton} hideMobile left`}
 				disabled={!ready}
 				id="prev"
 				onClick={() => previous()}
@@ -33,7 +33,7 @@ const PlayerTransport: FunctionalComponent<Props> = ({ showShuffle }) => {
 			>
 			</button>
 			<button
-				className={`${TransportButton} right`}
+				className={`${TransportButton} hideMobile right`}
 				disabled={!ready}
 				id="next"
 				onClick={() => next()}

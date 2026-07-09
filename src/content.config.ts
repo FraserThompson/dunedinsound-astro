@@ -139,7 +139,7 @@ const Page = defineCollection({
 	loader: glob({ pattern: '*.mdx', base: './src/content/page/' }),
 	schema: z.object({
 		title: z.string(),
-		fullWidth: z.boolean().optional()
+		stickyHeaders: z.boolean().optional()
 	})
 })
 

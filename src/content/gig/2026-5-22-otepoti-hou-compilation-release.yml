@@ -1,0 +1,20 @@
+title: "Ōtepoti Hou Compilation Release"
+date: 2026-5-22 08:30:00+13:00
+venue: burns_hall
+description: "Ōtepoti Hou is a compilation of local music arranged by council entity Ara Toi, released on limited vinyl, cassette, and digital mediums. You can listen to it <a href='https://otepotihou.bandcamp.com/album/tepoti-hou'>on Bandcamp.</a>"
+artists:
+  - id: speeches
+    tracklist:
+      - title: 'Sean Norling'
+        time: '00:00'
+      - title: 'Councillor Steve Walker'
+        time: '07:52'
+      - title: 'Francisca Griffin'
+        time: '13:19'
+      - title: 'Kath & Rachel NZMC'
+        time: '15:55'
+      - title: 'Stephen Stedman'
+        time: '20:20'
+  - id: tough_guy
+  - id: keira_wallace
+  - id: turama_ite_ara

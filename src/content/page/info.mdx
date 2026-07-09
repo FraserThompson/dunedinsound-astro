@@ -1,14 +1,16 @@
 ---
 title: Info
-fullWidth: true
+stickyHeaders: true
 ---
 
 import WebsiteInfo from '@src/components/page/WebsiteInfo.astro'
-import TextContainer from '@src/components/TextContainer.astro'
 
-<WebsiteInfo/>
+<div style={{ position: 'absolute', padding: 0, top: 0, left: 0, maxWidth: '100%', width: '100%' }}>
+  <WebsiteInfo/>
+</div>
 
-<TextContainer>
+<div style={{height: '500px'}}></div>
+
 ## What is this?
 
 The aim of dunedinsound.com is to document and archive a vertical slice of the music scene in Dunedin as it happens.
@@ -101,4 +103,3 @@ This website is not for self-promotion so don't ask me to add your band, that's 
     cool
   </a>
 </h2>
-</TextContainer>

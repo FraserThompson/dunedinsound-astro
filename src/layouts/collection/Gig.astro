@@ -15,6 +15,7 @@ import ArtistDropdown from '@src/components/gig/ArtistDropdown.astro'
 import { formattedDate } from '@src/util/names'
 import TextContainer from '@src/components/TextContainer.astro'
 import CompactPlayer from '@src/components/gig/CompactPlayer'
+import { getEntrySlug } from '@src/util/helpers'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -139,7 +140,7 @@ const hasArtistMedia = galleryCount === 1 ? !uncategorizedImages.length : galler
 			<ul>
 				{entryExtra.relatedBlogs.map((entry) => (
 					<li>
-						<a href={entry.id}>{entry.data.title}</a>
+						<a href={`/blog/${getEntrySlug(entry.data.title, entry.collection)}`}>{entry.data.title}</a>
 					</li>
 				))}
 			</ul>

@@ -57,7 +57,7 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 	import Clusterize from 'clusterize.js'
 	import type { Grid } from './GridChild.astro'
 	import { filterEventName, updateEventName, type FilterEventDetails, type UpdateEventDetails } from '@src/util/events'
-	import { breakpoints } from '@src/Theme.css'
+	import { breakpoints } from '../Theme.css'
 
 	class VirtualizedList extends HTMLElement {
 		contentAreaId = 'contentArea'

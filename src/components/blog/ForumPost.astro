@@ -1,0 +1,178 @@
+---
+interface Props {
+	username: string
+	userTitle?: string
+	postDate: string
+	postCount: string | number
+	joinedDate: string
+	location?: string
+}
+
+const { username, userTitle, postDate, postCount, joinedDate, location } = Astro.props
+---
+
+<article class="forum-post-prosilver">
+	<section class="post-main-content">
+		<header class="post-header">
+			<span class="post-icon" aria-hidden="true">📄</span>
+			<span class="header-text">
+				by <strong class="author-highlight">{username}</strong> on {postDate}
+			</span>
+		</header>
+
+		<div class="post-body">
+			<slot />
+		</div>
+	</section>
+
+	<aside class="profile-sidebar">
+		<div class="profile-details">
+			<h3 class="profile-username">{username}</h3>
+			{userTitle && <p class="profile-rank">{userTitle}</p>}
+
+			<dl class="profile-stats">
+				<div>
+					<dt>Posts:</dt>
+					<dd>{postCount}</dd>
+				</div>
+				<div>
+					<dt>Joined:</dt>
+					<dd>{joinedDate}</dd>
+				</div>
+				{
+					location && (
+						<div>
+							<dt>Location:</dt>
+							<dd>{location}</dd>
+						</div>
+					)
+				}
+			</dl>
+		</div>
+	</aside>
+</article>
+
+<style>
+	/* Core Container & Layout mimicking phpBB3 Prosilver */
+	.forum-post-prosilver {
+		padding: 0px !important;
+		font-family: 'Verdana', 'Helvetica', 'Arial', sans-serif;
+		background-color: #ecf3f7;
+		border: 1px solid #cadceb;
+		border-radius: 7px;
+		display: grid;
+		grid-template-columns: 1fr 190px;
+		color: #333333;
+		margin-bottom: 1.25rem;
+		box-sizing: border-box;
+		overflow: hidden;
+		margin-bottom: 4px !important;
+	}
+
+	/* Main Post Content Layout */
+	.post-main-content {
+		padding: 10px 12px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		position: relative;
+	}
+
+	.post-header {
+		color: #536482;
+		margin: 0 !important;
+		padding: 10px 10px 0px 15px !important;
+		display: flex;
+		align-items: center;
+		gap: 4px;
+	}
+
+	.post-icon {
+		font-size: 10px;
+		opacity: 0.6;
+	}
+
+	.author-highlight {
+		color: #bc2a4b;
+		font-weight: bold;
+	}
+
+	.post-body {
+		flex-grow: 1;
+		padding-top: 0 !important;
+		padding-bottom: 0 !important;
+		color: #333333;
+	}
+
+	.profile-sidebar {
+		padding: 10px 10px 10px 15px;
+		border-left: 1px solid #ffffff;
+		font-size: 11px;
+		color: #536482;
+	}
+
+	.profile-username {
+		font-size: 12px;
+		font-weight: bold;
+		margin: 0 0 2px 0;
+	}
+
+	.profile-rank {
+		font-size: 12px;
+		margin: 0 0 8px 0;
+		color: #536482;
+	}
+
+	.profile-stats {
+		margin: 0;
+		padding: 0;
+		line-height: 1.4;
+	}
+
+	.profile-stats div {
+		margin-bottom: 2px;
+	}
+
+	.profile-stats dt {
+		display: inline;
+		font-weight: bold;
+	}
+
+	.profile-stats dd {
+		display: inline;
+		margin: 0;
+	}
+
+	/* Responsive Mobile Layout Override */
+	@media (max-width: 768px) {
+		.forum-post-prosilver {
+			grid-template-columns: 1fr;
+		}
+
+		.profile-sidebar {
+			border-left: none;
+			border-top: 1px solid #ffffff;
+			display: flex;
+			gap: 15px;
+			align-items: center;
+		}
+
+		.top-button {
+			display: none; /* Hide button layout clutter on small mobile viewports */
+		}
+	}
+</style>
+
+<style is:global>
+	.post-body p, .post-body ul {
+		line-height: 16.8px !important;
+		font-size: 12px !important;
+		font-family: Verdana, Helvetica, Arial, sans-serif !important;
+	}
+	.post-body .quote-content {
+		background-color: transparent !important;
+	}
+	.post-header span {
+		font-size: 12px !important;
+	}
+</style>

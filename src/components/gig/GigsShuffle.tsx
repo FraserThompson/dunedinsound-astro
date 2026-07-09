@@ -32,7 +32,7 @@ const GigsJukebox: FunctionalComponent = () => {
 	useEffect(() => {
 		const doTheThing = async () => {
 			const gigs = await fetch('/gigs.json')
-			const gigsJson = await gigs.json()
+			const gigsJson: any = await gigs.json()
 			setGigs(gigsJson)
 		}
 		doTheThing()

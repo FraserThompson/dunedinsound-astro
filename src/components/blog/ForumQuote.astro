@@ -1,0 +1,64 @@
+---
+interface Props {
+  author: string;
+}
+
+const { author } = Astro.props;
+---
+
+<div class="forum-quote-prosilver">
+  <div class="quote-header">
+    <span class="quote-mark" aria-hidden="true">❝</span>
+    <strong>{author}</strong> wrote:
+  </div>
+  <blockquote class="quote-content">
+    <slot />
+  </blockquote>
+</div>
+
+<style>
+  .forum-quote-prosilver {
+    background-color: #ebeadd; 
+    border: 1px solid #dbdbce;
+    border-radius: 4px;
+    margin: 8px 0 12px 10px;
+    padding: 6px 10px;
+    font-size: 11px;
+    color: #333333;
+    box-sizing: border-box;
+    display: block;
+  }
+
+  .quote-header {
+    font-size: 11px;
+    color: #000000;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .quote-mark {
+    font-size: 12px;
+    color: #536482;
+    font-family: serif;
+    font-weight: bold;
+  }
+
+  .quote-content {
+    margin: 0;
+    padding: 0;
+    line-height: 1.4;
+    font-style: normal;
+    display: block;
+  }
+
+  .quote-content :global(a) {
+    color: #105289;
+    text-decoration: underline;
+  }
+  
+  .quote-content :global(a:hover) {
+    color: #d31141;
+  }
+</style>

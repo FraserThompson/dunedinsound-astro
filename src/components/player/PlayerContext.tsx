@@ -7,6 +7,7 @@ export interface PlayerState {
 	playing: boolean
 	ready: boolean
 	loading: boolean
+	currentPeaks: number[]
 	playlist?: PlayerAudio[]
 	selectedTrack: number
 	currentTrackTitle: string

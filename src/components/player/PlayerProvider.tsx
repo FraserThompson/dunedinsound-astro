@@ -39,6 +39,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ playerAudio, playOnLoad, c
 	const [ready, setReady] = useState(false) // used only on initial load
 	const [loading, setLoading] = useState(true)
 
+	const [currentPeaks, setCurrentPeaks] = useState([] as number[])
 	const [currentTime, setCurrentTime] = useState(undefined as number | undefined)
 	const [duration, setDuration] = useState(undefined as number | undefined)
 	const [selectedTrack, setselectedTrack] = useState(0)
@@ -204,13 +205,14 @@ const PlayerProvider: FunctionalComponent<Props> = ({ playerAudio, playOnLoad, c
 			setReady(false)
 			if (json) {
 				if (!(window as any).cached_json[json]) {
-					// If we have a URL and no cache we need to fetch it
+					// If we have a URL and no cached JSON we need to fetch it
 					fetch(json.replace('#', '%23'))
 						.then((response) => response.json())
-						.then((data) => {
+						.then((data: any) => {
 							// Support new JSON waveforms and old ones
 							const theData = "data" in data ? data.data : data;
 							(window as any).cached_json[json] = theData
+							setCurrentPeaks(theData);
 							wavesurfer.load(mp3, (window as any).cached_json[json])
 						})
 						.catch((err) => {
@@ -218,7 +220,9 @@ const PlayerProvider: FunctionalComponent<Props> = ({ playerAudio, playOnLoad, c
 						})
 				} else {
 					// Else we can just use the cached one
-					wavesurfer.load(mp3, (window as any).cached_json[json])
+					const cachedJson = (window as any).cached_json[json]
+					setCurrentPeaks(cachedJson);
+					wavesurfer.load(mp3, cachedJson)
 				}
 			}
 		},
@@ -309,6 +313,7 @@ const PlayerProvider: FunctionalComponent<Props> = ({ playerAudio, playOnLoad, c
 			duration,
 			selectedTrack,
 			currentTrackTitle,
+			currentPeaks,
 			playPause,
 			next,
 			previous,

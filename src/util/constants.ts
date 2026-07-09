@@ -20,5 +20,5 @@ export const monthMap: { [i: number]: Month } = {
 
 export const epochYear = 1600
 
-export const artistPlayerThreshold = 9
+export const artistPlayerThreshold = 3
 export const seriesVenuePlayerThreshold = 2

@@ -89,9 +89,10 @@ const { images, noLightbox, thumbnailWidthDesktop = '450px', thumbnailWidthMobil
 			img.setAttribute('loading', 'lazy')
 			img.setAttribute('decoding', 'async')
 
-			picture.append(source, img)
-			wrapper.append(picture)
-			anchor.append(wrapper)
+			picture.appendChild(source)
+			picture.appendChild(img)
+			wrapper.appendChild(picture)
+			anchor.appendChild(wrapper)
 
 			return anchor
 		}

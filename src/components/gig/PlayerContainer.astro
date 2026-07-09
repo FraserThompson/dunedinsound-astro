@@ -1,7 +1,7 @@
 ---
 /**
  * A container for wrapping the Player which allows it to be minimized on scroll.
- * 
+ *
  * Encapsulates the behaviour which minimizes it when scrolled, and handles
  * its open/close behaviour when its in this state.
  */
@@ -43,24 +43,17 @@ const { minimizedAlways } = Astro.props
 	class PlayerWrapper extends HTMLElement {
 		private _internals
 
-		sidebarExists: boolean
 		playerInBanner: HTMLElement | null
 		minimizedAlways: boolean
-		player: HTMLElement | null
-		openButton: HTMLElement | null
+		bannerHeight: number | undefined
 
 		constructor() {
 			super()
 
-			this.player = null
-
 			this._internals = this.attachInternals()
 			this.minimizedAlways = !!this.dataset.minimizedalways
-
-			this.openButton = this.querySelector<HTMLElement>('button#open-button')
-
-			this.sidebarExists = !!document.querySelector<HTMLElement>('#sidebar')
-			this.playerInBanner = this.closest<HTMLElement>('.banner')
+			this.playerInBanner = null
+			this.bannerHeight = undefined
 		}
 
 		get open() {
@@ -106,21 +99,16 @@ const { minimizedAlways } = Astro.props
 			if (this.minimizedAlways) return
 
 			const bannerHeight = calculateScrollHeaderOffset(window) || 30
+			const isMinimized = window.scrollY >= bannerHeight
 
-			if (window.scrollY >= bannerHeight) {
-				this.minimized = true
+			this.minimized = isMinimized
+
+			if (!this.playerInBanner) return
+
+			if (isMinimized) {
+				this.playerInBanner.style.height = `${bannerHeight}px`
 			} else {
-				this.minimized = false
-			}
-		}
-
-		/**
-		 * Fires when the Wavesurfer instance in the Player component is ready.
-		 */
-		onWavesurferReady = () => {
-			// This is to prevent skipping when scrolling up and down on mobile.
-			if (this.playerInBanner) {
-				this.playerInBanner.style.height = this.playerInBanner.clientHeight.toString() + 'px'
+				this.playerInBanner.style.height = ''
 			}
 		}
 
@@ -139,8 +127,11 @@ const { minimizedAlways } = Astro.props
 		}
 
 		connectedCallback() {
-			this.openButton &&
-				this.openButton.addEventListener('click', () => {
+			this.playerInBanner = this.closest<HTMLElement>('.banner')
+
+			const openButton = this.querySelector<HTMLElement>('button#open-button')
+			openButton &&
+				openButton.addEventListener('click', () => {
 					this.open = !this.open
 				})
 
@@ -149,18 +140,22 @@ const { minimizedAlways } = Astro.props
 				this.minimized = true
 			}
 
-			if (this.sidebarExists) {
+			const sidebarExists = !!document.querySelector<HTMLElement>('#sidebar')
+			if (sidebarExists) {
 				this.classList.add('sidebarExists')
 			}
 
-			window.addEventListener('wavesurfer_ready', () => this.onWavesurferReady())
-			window.addEventListener('wavesurfer_play', () => this.onWavesurferPlay())
-			window.addEventListener('wavesurfer_stop', () => this.onWavesurferStop())
+			window.addEventListener('wavesurfer_play', this.onWavesurferPlay)
+			window.addEventListener('wavesurfer_stop', this.onWavesurferStop)
 			window.addEventListener('scroll', this.onScroll, { passive: true })
+
+			requestAnimationFrame(this.onScroll)
 		}
 
 		disconnectedCallback() {
 			window.removeEventListener('scroll', this.onScroll)
+			window.removeEventListener('wavesurfer_play', this.onWavesurferPlay)
+			window.removeEventListener('wavesurfer_stop', this.onWavesurferStop)
 		}
 	}
 
