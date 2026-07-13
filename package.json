@@ -17,7 +17,7 @@
     "audio": "docker compose up --build && node ./scripts/copyAudio.mjs"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20260708.1",
+    "@cloudflare/workers-types": "^5.20260712.1",
     "@hbsnow/rehype-sectionize": "^1.0.7",
     "@iconify-json/iconoir": "^1.2.11",
     "@svgr/core": "^8.1.0",
@@ -34,10 +34,10 @@
     "glob": "^13.0.6",
     "html-to-text": "^10.0.0",
     "markdown-it": "^14.3.0",
-    "prettier": "^3.9.4",
+    "prettier": "^3.9.5",
     "prettier-plugin-astro": "^0.14.1",
     "sharp": "^0.35.3",
-    "wrangler": "^4.107.1",
+    "wrangler": "^4.110.0",
     "yaml": "^2.9.0"
   },
   "dependencies": {
@@ -58,7 +58,7 @@
     "cssnano": "^8.0.2",
     "fdir": "^6.5.0",
     "lightgallery": "^2.9.0",
-    "mapbox-gl": "^3.25.0",
+    "mapbox-gl": "^3.26.0",
     "polished": "^4.3.1",
     "postcss-custom-media": "^12.0.1",
     "postcss-nesting": "^14.0.0",

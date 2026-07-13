@@ -6,5 +6,26 @@ artists:
     vid:
       - link: td68iyvIzXU
   - id: raiden_freeman
+    tracklist:
+      - time: "00:50"
+        title: Not a Dirty Man
+      - time: "04:22"
+        title: Object—Perception—Image—Memory 
+      - time: "07:37"
+        title: Sonar, Manchurian Candidate, Horror (medley) 
+      - time: "14:18"
+        title: Megatron
+      - time: "17:57"
+        title: Stop Messing Me Around
+      - time: "21:48"
+        title: That's So True
+      - time: "24:45"
+        title: The Balance of Nature (Burt Bacharach cover)
+      - time: "27:13"
+        title: Vicente The Pilot (unreleased)
+      - time: "31:10"
+        title: I Cento Cavalieri (unreleased)
+      - time: "36:12"
+        title: Call It What It Is (unreleased)
     vid:
       - link: cM2Ue89BvF0

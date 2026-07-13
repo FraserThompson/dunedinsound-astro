@@ -24,13 +24,21 @@ interface Props {
 	noLightbox?: boolean
 	thumbnailWidthDesktop?: string
 	thumbnailWidthMobile?: string
+	enableClientUpdates?: boolean
 }
 
-const { images, noLightbox, thumbnailWidthDesktop = '450px', thumbnailWidthMobile = '180px' } = Astro.props
+const {
+	images,
+	noLightbox,
+	thumbnailWidthDesktop = '450px',
+	thumbnailWidthMobile = '180px',
+	enableClientUpdates = false
+} = Astro.props
 ---
 
 <image-gallery
 	class={gridWrapper['autoflow']}
+	data-enable-client-updates={enableClientUpdates ? 'true' : 'false'}
 	style={assignInlineVars({
 		[childWidthDesktop]: thumbnailWidthDesktop,
 		[childWidthMobile]: thumbnailWidthMobile
@@ -111,6 +119,7 @@ const { images, noLightbox, thumbnailWidthDesktop = '450px', thumbnailWidthMobil
 		 */
 		onTriggerUpdate = (e: any) => {
 			const detail: ImageGalleryUpdateEventDetails = e.detail
+			if (!detail?.images) return
 			const elements = this.createElements(Object.values(detail.images))
 			this.replaceChildren(...elements)
 		}
@@ -131,8 +140,10 @@ const { images, noLightbox, thumbnailWidthDesktop = '450px', thumbnailWidthMobil
 		}
 
 		connectedCallback() {
-			// Listen for update events
-			window.addEventListener(imageGalleryUpdateEventName, this.onTriggerUpdate)
+			// Only opt-in galleries should react to global update events.
+			if (this.dataset.enableClientUpdates === 'true') {
+				window.addEventListener(imageGalleryUpdateEventName, this.onTriggerUpdate)
+			}
 
 			// Watch for DOM changes so we can tell others (ie. the lightbox)
 			const targetNode = this
@@ -142,7 +153,9 @@ const { images, noLightbox, thumbnailWidthDesktop = '450px', thumbnailWidthMobil
 		}
 
 		disconnectedCallback() {
-			window.removeEventListener(imageGalleryUpdateEventName, this.onTriggerUpdate)
+			if (this.dataset.enableClientUpdates === 'true') {
+				window.removeEventListener(imageGalleryUpdateEventName, this.onTriggerUpdate)
+			}
 			this.observer?.disconnect()
 		}
 	}

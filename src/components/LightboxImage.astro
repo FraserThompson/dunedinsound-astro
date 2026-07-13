@@ -8,17 +8,22 @@
  *  - see image2
  */
 import Image2 from './Image2.astro'
-import type { Props } from './Image2.astro'
+import type { Props as Image2Props } from './Image2.astro'
 
-const props = Astro.props
+export interface Props extends Image2Props {
+	caption?: string
+}
+
+const props: Props = Astro.props
+const alt = props.responsiveImage?.alt || props.alt || props.caption
 ---
-
 <a
-	class={`lightboxImage`}
+	class={`lightboxImage ${props.objectFit === 'contain' ? 'free-aspect' : ''}`}
 	href={props.responsiveImage?.images['3200']}
 	data-download-url={props.responsiveImage?.src}
 	data-lg-size={"3200-2134"}
-	data-alt={props.responsiveImage?.alt || props.alt}
+	data-alt={alt}
 >
-	<Image2 {...props} />
+	<Image2 {...props} alt={alt} />
 </a>
+{props.caption && <em>{props.caption}</em>}

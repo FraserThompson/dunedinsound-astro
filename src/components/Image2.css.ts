@@ -31,13 +31,11 @@ globalStyle(`.image2 img`, {
 	willChange: 'transform'
 })
 
-globalStyle(`.image2 p`, {
-	paddingTop: 0,
-	marginTop: 0,
-	fontStyle: 'italic'
-})
-
 globalStyle(`.lightboxImage`, {
 	display: 'block',
-	aspectRatio: '3/2'
+	aspectRatio: '3/2',
+})
+
+globalStyle(`.lightboxImage.free-aspect`, {
+	aspectRatio: 'unset !important',
 })

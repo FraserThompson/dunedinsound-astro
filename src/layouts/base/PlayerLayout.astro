@@ -78,7 +78,7 @@ const seriesList: MenuLink[] = series.map((entry) => ({
 			data-gig={''}
 		>
 		</div>
-		<ImageGallery thumbnailWidthDesktop="250px" />
+		<ImageGallery thumbnailWidthDesktop="250px" enableClientUpdates={true} />
 	</SidebarPlayer>
 </BaseLayout>
 
@@ -93,77 +93,90 @@ const seriesList: MenuLink[] = series.map((entry) => ({
 	import { getEntryPath, type ArtistGigResponse } from '@src/util/helpers'
 	import { formattedDate } from '@src/util/names'
 
-	const init = () => {
-		const metaContainer: HTMLElement | null = document.querySelector('#gig-meta')
+	const onPlayerTrackChange = async (e: Event) => {
+		const detail = (e as CustomEvent<PlayerTrackChangeEventDetails>).detail
 
-		/**
-		 * When the track changes, grab data about the gig.
-		 */
-		window.addEventListener(playerTrackChange, async (e: any) => {
-			const detail: PlayerTrackChangeEventDetails = e.detail
+		const artistId = detail.track.dataAttributes?.['data-artist']
+		const gigId = detail.track.dataAttributes?.['data-gig']
 
-			const artistId = detail.track.dataAttributes?.['data-artist']
-			const gigId = detail.track.dataAttributes?.['data-gig']
+		if (!gigId) return
 
-			if (!gigId) return
+		let req: Response
+		try {
+			req = await fetch(`/data/gigs/${gigId}/${artistId}.json`)
+		} catch (error) {
+			if (error instanceof DOMException && error.name === 'AbortError') {
+				return
+			}
+			throw error
+		}
 
-			const req = await fetch(`/data/gigs/${gigId}/${artistId}.json`)
+		if (req.ok) {
+			const json: ArtistGigResponse = await req.json()
 
-			if (req.ok) {
-				const json: ArtistGigResponse = await req.json()
-
-				if (json.images) {
-					// Give images to the image gallery
-					const detail: ImageGalleryUpdateEventDetails = {
-						images: json.images
-					}
-					const event = new CustomEvent(imageGalleryUpdateEventName, {
-						detail
-					})
-					window.dispatchEvent(event)
+			if (json.images) {
+				// Give images to the image gallery
+				const detail: ImageGalleryUpdateEventDetails = {
+					images: json.images
 				}
+				const event = new CustomEvent(imageGalleryUpdateEventName, {
+					detail
+				})
+				window.dispatchEvent(event)
+			}
 
-				if (!metaContainer) return
+			const metaContainer: HTMLElement | null = document.querySelector('#gig-meta')
+			if (!metaContainer) return
 
-				const gig = json.data
+			const gig = json.data
 
-				const texts: Node[] = []
+			const texts: Node[] = []
 
+			const text = document.createElement('p')
+			text.setAttribute('style', 'padding:0;margin:0;')
+			text.innerHTML = `title: ${gig.data.title} <a href="${getEntryPath(gig.data.title, 'gig')}">[gig page]</a>`
+			texts.push(text)
+
+			// Update metadata section
+			const allowedFields = ['date', 'artists', 'description']
+			const selectedArtist = detail.track.dataAttributes?.['data-artist']
+			Object.entries(gig.data).forEach(([key, value]) => {
 				const text = document.createElement('p')
 				text.setAttribute('style', 'padding:0;margin:0;')
-				text.innerHTML = `title: ${gig.data.title} <a href="${getEntryPath(gig.data.title, 'gig')}">[gig page]</a>`
+
+				if (!allowedFields.includes(key)) {
+					return
+				} else if (typeof value === 'string' && key === 'date') {
+					text.innerHTML = `${key}: ${formattedDate(new Date(value))}`
+				} else if (typeof value === 'string') {
+					text.innerHTML = `${key}: ${value}`
+				} else if (Array.isArray(value)) {
+					const valueTexts = value.map((thing) =>
+						thing.id.id !== selectedArtist ? `<span>${thing.id.id}</span>` : `<strong class='selectedArtist'>${thing.id.id}</strong>`
+					)
+					text.innerHTML = `${key}: ${valueTexts.join(', ')}`
+				} else if (typeof value === 'object' && 'id' in value) {
+					text.innerHTML = `${key}: ${value.id}`
+				}
 				texts.push(text)
+			})
 
-				// Update metadata section
-				const allowedFields = ['date', 'artists', 'description']
-				const selectedArtist = detail.track.dataAttributes?.['data-artist']
-				Object.entries(gig.data).forEach(([key, value]) => {
-					const text = document.createElement('p')
-					text.setAttribute('style', 'padding:0;margin:0;')
-
-					if (!allowedFields.includes(key)) {
-						return
-					} else if (typeof value === 'string' && key === 'date') {
-						text.innerHTML = `${key}: ${formattedDate(new Date(value))}`
-					} else if (typeof value === 'string') {
-						text.innerHTML = `${key}: ${value}`
-					} else if (Array.isArray(value)) {
-						const valueTexts = value.map((thing) =>
-							thing.id.id !== selectedArtist ? `<span>${thing.id.id}</span>` : `<strong class='selectedArtist'>${thing.id.id}</strong>`
-						)
-						text.innerHTML = `${key}: ${valueTexts.join(', ')}`
-					} else if (typeof value === 'object' && 'id' in value) {
-						text.innerHTML = `${key}: ${value.id}`
-					}
-					texts.push(text)
-				})
-
-				metaContainer.dataset.gig = gigId
-				metaContainer.replaceChildren(...texts)
-			}
-		})
+			metaContainer.dataset.gig = gigId
+			metaContainer.replaceChildren(...texts)
+		}
 	}
 
+	const init = () => {
+		window.removeEventListener(playerTrackChange, onPlayerTrackChange)
+		window.addEventListener(playerTrackChange, onPlayerTrackChange)
+	}
+
+	const cleanup = () => {
+		window.removeEventListener(playerTrackChange, onPlayerTrackChange)
+	}
+
+	document.removeEventListener('astro:page-load', init)
 	document.addEventListener('astro:page-load', init)
-	document.addEventListener('astro:after-swap', init)
+	document.removeEventListener('astro:before-swap', cleanup)
+	document.addEventListener('astro:before-swap', cleanup)
 </script>

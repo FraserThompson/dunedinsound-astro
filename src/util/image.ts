@@ -9,6 +9,27 @@ import {
 	validateImageSrcsExist
 } from './imageCache'
 
+
+async function getResponsiveImageDirectoryKeys(dir: string): Promise<string[]> {
+	const mediaDirs = await new fdir({
+		pathSeparator: '/',
+		includeBasePath: true,
+		maxDepth: 2
+	})
+		.group()
+		.glob(`**/**@(jpg|webp)`)
+		.crawl(dir)
+		.withPromise()
+
+	const keys = new Set<string>()
+	for (const group of mediaDirs) {
+		if (!group.files.length) continue
+		keys.add(path.basename(group.directory))
+	}
+
+	return [...keys]
+}
+
 /**
  * Returns a responsive image object from a responsive image directory.
  *
@@ -138,29 +159,61 @@ export async function getResponsiveImagesByDir(
 					return undefined
 				}
 
-				// Reconstruct ResponsiveImage objects from cached data
-				const images: { [id: string]: ResponsiveImage } = {}
-				let invalidCachedData = false
-				for (const [key, imgData] of Object.entries(data)) {
-					// Validate cached data structure
-					if (!imgData?.srcs || !Array.isArray(imgData.srcs) || imgData.srcs.length === 0) {
-						console.warn(`Invalid cached image data for ${key} in ${dir}, skipping`)
-						continue
-					}
-					if (
-						shouldValidateImageCacheThisSession(dir, 'responsiveImages') &&
-						!validateImageSrcsExist(imgData.srcs)
-					) {
-						console.warn(`Cached image files missing for ${key} in ${dir}, regenerating directory cache`)
-						invalidCachedData = true
-						break
-					}
-					images[key] = new ResponsiveImage(imgData.srcs, imgData.alt)
-				}
+				const shouldValidate = shouldValidateImageCacheThisSession(dir, 'responsiveImages')
 
-				if (invalidCachedData) {
-					// some cached files are missing; fall through to regenerate
+				if (shouldValidate) {
+					const diskKeys = await getResponsiveImageDirectoryKeys(dir)
+					const cachedKeys = new Set(Object.keys(data))
+					const hasNewKeys = diskKeys.some((key) => !cachedKeys.has(key))
+					const hasMissingKeys = Object.keys(data).some((key) => !diskKeys.includes(key))
+
+					if (hasNewKeys) {
+						console.warn(`New responsive image directories found for ${dir}, regenerating directory cache`)
+					} else if (hasMissingKeys) {
+						console.warn(`Some cached responsive image directories missing for ${dir}, regenerating directory cache`)
+					}
+
+					if (hasNewKeys || hasMissingKeys) {
+						// directory set changed; fall through to regenerate
+					} else {
+						// Reconstruct ResponsiveImage objects from cached data
+						const images: { [id: string]: ResponsiveImage } = {}
+						let invalidCachedData = false
+						for (const [key, imgData] of Object.entries(data)) {
+							// Validate cached data structure
+							if (!imgData?.srcs || !Array.isArray(imgData.srcs) || imgData.srcs.length === 0) {
+								console.warn(`Invalid cached image data for ${key} in ${dir}, skipping`)
+								continue
+							}
+							if (!validateImageSrcsExist(imgData.srcs)) {
+								console.warn(`Cached image files missing for ${key} in ${dir}, regenerating directory cache`)
+								invalidCachedData = true
+								break
+							}
+							images[key] = new ResponsiveImage(imgData.srcs, imgData.alt)
+						}
+
+						if (!invalidCachedData) {
+							if (Object.keys(images).length === 0) {
+								logImageCacheEvent('responsiveImages', 'hit', time)
+								return undefined
+							}
+							logImageCacheEvent('responsiveImages', 'hit', time)
+							return images
+						}
+					}
 				} else {
+					// Reconstruct ResponsiveImage objects from cached data
+					const images: { [id: string]: ResponsiveImage } = {}
+					for (const [key, imgData] of Object.entries(data)) {
+						// Validate cached data structure
+						if (!imgData?.srcs || !Array.isArray(imgData.srcs) || imgData.srcs.length === 0) {
+							console.warn(`Invalid cached image data for ${key} in ${dir}, skipping`)
+							continue
+						}
+						images[key] = new ResponsiveImage(imgData.srcs, imgData.alt)
+					}
+
 					// If no valid images after reconstruction, return undefined
 					if (Object.keys(images).length === 0) {
 						logImageCacheEvent('responsiveImages', 'hit', time)
@@ -237,6 +290,25 @@ export async function getImagesByDir(imageDir: string) {
 		const data = getImageCache<CachedData>(imageDir, 'images')
 		if (data !== undefined) {
 			const time = performance.now() - startTime
+
+			// Empty cache entries can become stale if files were added later.
+			if (Object.keys(data).length === 0) {
+				const existing = await new fdir({
+					pathSeparator: '/',
+					includeBasePath: true,
+					maxDepth: 1
+				})
+					.glob(`**@(jpg|webp)`)
+					.crawl(imageDir)
+					.withPromise()
+
+				if (existing.length === 0) {
+					logImageCacheEvent('images', 'hit', time)
+					return data
+				}
+
+				console.log(`New images found in ${imageDir}, regenerating cached empty images`)
+			}
 
 			// Validate that each cached image file still exists on disk
 			const srcs = Object.values(data)

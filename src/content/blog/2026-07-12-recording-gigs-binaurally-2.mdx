@@ -1,0 +1,268 @@
+---
+title: Upgrading my wearable binaural recording rig (guide)
+date: 2026-07-12T07:00:00.000Z
+author: Fraser Thompson
+description: "I bootleg live music on a wearable recording rig, and so can you."
+tags:
+  - Tech
+---
+import Image from "@src/components/LightboxImage.astro"
+import CompactPlayer from '@src/components/gig/CompactPlayer'
+
+In 2016 I bought twenty JLI-61A electret condenser capsules from a company in the USA for a grand total of $86NZD, or 0.66 weeks of rent in 2016 money. Today, after a decade of shoving them in my ears/pocket/backpack, I'm down to just one operational capsule. So it's time to get more.
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['jli61a']} caption="The lone survivor"/>
+
+Quick recap: my approach for all [dunedinsound.com](http://dunedinsound.com) audio recordings is to glue microphones into earplugs and shove them in my ears. This way I can get a decent sounding recording without having to find a place to put a portable recorder, or harass the sound person for a lineout or whatever. I can just stand around and record roughly what I would hear if I didn't have microphones in my ears.
+
+As we know, live music is very loud. So the other key to this approach is a modification to the microphone capsules called the Linkwitz mod after Siegfried Linkwitz who invented it.
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['linkwitz']} caption="Shoutout Siegfried Linkwitz"/>
+
+Without this mod, the audio would be a distorted garbled mess because these microphones are designed for sensitivity at the expense of high volume handling. And all it requires is slicing a trace on the tiny PCB on the back of the capsule, and building a little circuit with a battery to power them.
+
+Now, [traditionally this mod is performed on the Panasonic WM-61A capsules](https://www.diyaudio.com/community/threads/finished-wm-61a-measurement-mic.53447/). But these have been out of production for a long time (don't trust anyone claiming to sell new WM-61As). A company called JLI [makes a cloned version](https://www.jlielectronics.com/microphone-capsules/jli-61a/) which is practically the same, which is why in 2016 I ordered 20 of them.
+
+So my instinct was to just order more JLI-61A's. But then I got thinking... Is this really the best option? A clone of a 20+ year old microphone design? Have there been advancements since then, or lesser known options which are superior?
+
+I did some searching. Most of the info is tucked away in niche forums, or random blog posts like the one you're reading now. There's a small community of [ultrasonic recording enthusiasts](https://zachpoff.com/resources/cheap-microphones-for-ultrasound/) who like to record bats, as well as the usual field recording types (although these guys are usually more interested in recording really quiet stuff than loud stuff).
+
+It turns out there's a few WM-61A alternatives. Primo makes a few which are highly regarded. There's also a PUI Audio option which [this guy recommends](https://zachpoff.com/resources/low-noise-binaural-mics-primo-em172/), but it's 10mm meaning it's too large to go into earplugs. And Digikey recommends a drop-in WM-61A replacement from PUI Audio, the POM-3535L-3-R.
+
+The POM-3535L-3-R is indeed a drop in replacement, with basically the same specifications as the original. But after further investigation I discovered that PUI audio makes a lot of capsules, and what I settled on was the [POM-2739L-HD3-R](https://puiaudio.com/product/microphones/POM-2739L-HD3-R).
+
+<div>
+| Spec | JLI-61A | POM-2739L-HD3-R |
+| --- | --- | --- |
+| SNR | 62 dB | 73 dB |
+| Sensitivity | −34 dB | −39 dB |
+| Frequency | 20–20 kHz | 20–20 kHz |
+| Dimensions | 6.0×3.5 mm | 6.0×2.7 mm |
+</div>
+
+I picked this for a few reasons. For one, on paper it's a touch better than the WM-61A clones (particularly the signal to noise ratio). Secondly, it's the same dimensions so will glue into earplugs nicely. And lastly, it exposes three solder pads instead of the usual two, meaning no mod is required because the source, drain, and ground are already exposed. Which is a pretty massive boon since the modification process is finicky and risks damaging the tiny capsules. 
+
+After ordering 6 of them (the order total was about the same as my 2016 order because they're more expensive) I figured if I'm going to upgrade the capsules I may as well rebuild the whole thing better. So I came up with a list of improvements for the next version:
+
+* Audio grade capacitors
+* Higher capacity battery
+* More robust connections and cables
+* Shielded enclosure
+* Capsules which hopefully sound better
+
+In this article I will guide you through the process of building your own set of high SPL binaural ear microphones designed for live music. I think it's a very doable project regardless of your skill level. I'll also compare the new capsules to the old ones to see whether it's worth diverging from the tried and true modded WM-61A lifestyle.
+
+## The battery box
+
+### Bill of materials and circuit diagram
+
+To build this you will need:
+
+* Perfboard (get the one with the paired holes and long rails like [this one](https://www.jaycar.co.nz/small-breadboard-layout-prototyping-board/p/HP9570))
+* 2 x 2.2uF capacitors
+* 2 x 10k resistors
+* A 3-pin mini XLR jack and socket
+* A 3.5mm headphone jack or harvested cable
+* Figure 8 twin screened audio cable [like this](https://www.jaycar.co.nz/fig-8-twin-screened-audio-cable/p/WB1502)
+* Some sort of enclosure to hold it all (I use [this one](https://www.jaycar.co.nz/bulkhead-enclosure-black-65-x-38-x-27mm/p/HB6065))
+* Some sort of 9v power source (this will depend on the size of the enclosure you're planning on putting it in)
+* Soldering iron and solder, etc
+
+And here's a really rough circuit diagram:
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['diagram']} alt="Circuit diagram"/>
+
+Interpreting circuit diagrams can take some getting used to, especially when they're handrawn by me, but if you trace the circuit carefully you should be able to build it. If it helps to visualize things, this is how I laid out mine:
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['circuit2']} caption="Capacitors and resistors inserted"/>
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['circuit3']} caption="Closer view of resistors"/>
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['circuit1']} caption="Rear of the PCB ready for soldering and snipping"/>
+
+PRO TIP: Test the circuit outside of the enclosure before soldering it to the mini-XLR connector since it'll be a lot more annoying to work on after that point.
+
+Also, be really careful not to accidentally short the battery (ie. connect the positive to the negative) or your battery will get really really hot and probably eventually explode. Mine didn't explode, but it did get alarmingly hot.
+
+### Capacitors
+
+Every previous iteration of this design I've used electrolytic capacitors. These are small and cheap and work fine, but for this build I went for [fancy polyester ones](https://www.jaycar.co.nz/2-2uf-250v-metallised-polypropylene-crossover-capacitor/p/RY6952) which are often used in audio crossovers. Supposedly these are more transparent meaning they do less to the audio signal when it passes through them, but they're also expensive and larger. Spoilers: I measured the difference below and you should probably just go with the cheaper ones.
+
+### Battery
+
+For my choice of pocketable enclosure with big capacitors, the smallest 9v power source I can fit is 3 x 3v CR1632 button cells for a capacity of about 130mAh (voltage adds up in series, so 3x3 is 9v). At that capacity and my typical gig recording velocity they will last for around 3 months.
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['fit-check']} caption="How much space there is for batteries in my enclosure"/>
+
+If you have more space you could go for 3 x CR2023 which will last longer, and if you have even more, a typical 9v alkaline battery has like 550mAh capacity so will last ages.
+
+I taped my three CR1632's together into a nice little nugget then used washers soldered on wires as terminals.
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['little-battery']} alt="The battery nugget"/>
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['terminals']} alt="Washes on wires as terminals"/>
+
+My previous battery was a 9v L1022 remote controller battery, which I don't recommend since they're really hard to find and only 38mAh capacity.
+
+### Resistors
+
+The resistors in this circuit serve two jobs as I understand: they regulate the input voltage going to the microphone, and in combination with the capacitor they form a high pass filter. The actual value of the resistor is quite flexible, I only had 6.9k resistors on hand so I just used those, which means it gets *slightly* more voltage and the high pass is raised slightly to about 10hz. So if for some reason 10k resistors aren't available, don't fret too much.
+
+### Ins and outs
+
+I like to decouple the microphones from the battery box so I can swap out the capsule assembly without messing with the circuit. I also use a locking mini XLR connector to avoid loose connections out in the field. And for the output I usually cut like 20cm off the end of a cable with a 3.5mm stereo jack and use that, because I am apparently incapable of building 3.5mm stereo cables which don't crackle and pop at the slightest movement. So I just harvest them instead.
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['minixlrhole']} caption="Hole drilled for mini XLR jack"/>
+
+I also decided to shield the case with aluminium tape. Probably overkill, but may as well (radio frequencies are everywhere). I then added another layer of electrical tape to prevent stuff shorting out. 
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['shielding']} caption="Aluminium tape for shielding"/>
+
+This is what everything looks like in the box:
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['complete-box']} caption="Completed box"/>
+
+## The capsules
+
+### Wiring them up
+
+Since the POM-2739L-HD3-R expose all three solder pads, we don't need to do any modifications to them. Hooray! We do the 2-wire version of the linkwitz mod since it means we can use standard audio cables and connectors, so we'll need to bridge the Drain and Ground pads and treat these as one pad. The shield on our cable should go to this pad, and the core should go to the Source pad. I put a blob of hot glue on the back after testing them to protect the fragile solder pads from strain.
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['glued-capsule']} caption="After soldering and dropping hot glue on the back"/>
+
+You may also have read about the 3-wire version of the Linkwitz mod. I've always wondered if there's any difference between them. Apparently they're electrically identical, the difference is the 2-wire version runs the audio through the chassis of the capsule, meaning if you touch it on metal or sweaty skin or something it might introduce infetterence. But since we're sealing them inside silicone earplugs this isn't an issue.
+
+### More on the Linkwitz mod
+
+I've never really understood what it actually does but after doing a bit of reading I think I kind of do, and I'm going to clumsily try to explain.
+
+Electret condenser microphones typically have a **Source** and a **Drain**, which are connected directly to an internal JFET transistor. **Drain** is where the battery voltage enters the microphone, **Source** is where it exits to ground. The captured audio signal voltage goes through components inside the capsule and into the **Drain** (so, confusingly, the audio gets out of the capsule on the same path the voltage goes in, but it's AC, so it can be separated from the DC battery voltage or something. Idk, electricity is magic).
+
+What the Linkwitz mod does is flip the paradigm on its head. **Drain** gets the +9v battery voltage, **Source** takes the audio signal, and the ground is only connected to the capsule chassis. The two wire version is an even cleverer trick where **Drain** and chassis are bridged, so the +9v battery voltage runs through the chassis, and the **Source** takes the audio signal but also, through the magic of a DC blocking capacitor, it's connected to the 0v terminal on the battery and acts as the ground too.
+
+The difference: In the unmodified capsule the internal JFET transistor's job is basically to boost the signal, it multiplies the small changes in AC voltage which makes up the audio signal and makes them bigger. The modification deprives this internal transistor of its voltage boost, so now the audio signal is sent out of the microphone at a gain of exactly 1. Because the internal JFET amplifier has limited voltage handling it has limited headroom, and when bypassed in this way there's now heaps more headroom, up to 130db apparently.
+
+### Cable
+
+I use a figure 8 cable with two cores and screen, then I separate this so it goes to each ear. This has the benefit of being shielded and since it's figure 8 already, it doesn't require a junction. I then use stiff solid core wire which loops around the ear for security and slip some sleeving onto this (optional, but adds a premium touch).
+
+### Earplugs
+
+Get cheap AliExpress ones with removable filters then you can replace the filter with a mic capsule. Then use some epoxy (I use Araldite) to glue them in.
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['glued-in']} caption="Capsule glued into earplugs with epoxy"/>
+
+If you can, find the ones that look like this unless you're a large eared individual:
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['good-earplugs']} alt="Good earplugs" objectFit="contain"/>
+
+For this rebuild I got ones that look like this and for my ears they're too big and don't fit as well:
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['bad-earplugs']} alt="Bad earplugs" objectFit="contain"/>
+
+## Measurements and samples
+
+I measured an audio sweep played through my DT880 headphones with the capsules inserted in my ears to gather data on relative differences. Caveats apply, the frequency response of the headphones is obviously going to be apparent in the data, using headphones over the microphones will introduce various forms of distortion, and measurements can only tell  you so much. But for relative differences it's something.
+
+Volume was kept the same between tests then normalized to -1db from 96khz 32-bit float WAV to 96khz 16-bit WAV and fed into REW to generate graphs.
+
+I compared the new circuit and capsules against the old circuit and capsules, and also threw in the Roland CS-10EM off the shelf binaural headphones for good measure.
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['sweep-fit']} caption="Frequency response graph from a sweep played through headphones" objectFit="contain"/>
+
+The data shows the frequency response is very similar between both sets of capsules. The Roland set seems to have fatter bass, but I think this could be due to placement (they stick out physically a lot further, which brings them closer to the headphone drivers, enhancing the proximity effect).
+
+It gets interesting in the 16-20khz range, where the WM-61A manages to be strikingly flat, and the POM-2739L-HD3-R rolls off quite sharply. Most adults won't be hearing much in this range, but it does indicate why the WM-61A were so revered as measurement microphones.
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['sweep-highend']} caption="A closer look at the high end response" objectFit="contain"/>
+
+I also took some audio sample recordings through my headphones for subjective comparison (song is [Dare by Dale Kerrigan](https://dalekerrigan.bandcamp.com/track/dare)):
+
+import audio_sample_roland_mp3 from '@dist_media/blog/2026-07-12-recording-gigs-binaurally-2/audio sample - roland.mp3?url'
+import audio_sample_roland_json from '@dist_media/blog/2026-07-12-recording-gigs-binaurally-2/audio sample - roland.mp3.json?url'
+import audio_sample_new_mp3 from '@dist_media/blog/2026-07-12-recording-gigs-binaurally-2/audio sample - new.mp3?url'
+import audio_sample_new_json from '@dist_media/blog/2026-07-12-recording-gigs-binaurally-2/audio sample - new.mp3.json?url'
+import audio_sample_old_mp3 from '@dist_media/blog/2026-07-12-recording-gigs-binaurally-2/audio sample - old.mp3?url'
+import audio_sample_old_json from '@dist_media/blog/2026-07-12-recording-gigs-binaurally-2/audio sample - old.mp3.json?url'
+
+<CompactPlayer
+  playerAudio={[
+    {
+      title: 'JLI-61A',
+      files: [audio_sample_old_mp3, audio_sample_old_json],
+    },
+    {
+      title: 'PUI Audio POM-2739L-HD3-R',
+      files: [audio_sample_new_mp3, audio_sample_new_json],
+    },
+    {
+      title: 'Roland CS-10EM',
+      files: [audio_sample_roland_mp3, audio_sample_roland_json],
+    },
+  ]}
+client:load />
+
+And here's a frequency response graph generated from these samples:
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['sample']} caption="Frequency response graph from music samples played through headphones" objectFit="contain"/>
+
+Just for the sake of it here's the response graph from a sweep through my speakers, which will obviously also be measuring my room but my speakers are more accurate than my headphones so it could tell us something:
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['speaker-sweep']} caption="Frequency response graph from a sweep played through speakers" objectFit="contain"/>
+
+They definitely have a different tonality but it's hard to tell which I prefer.
+
+Oh, and by the way, this is the old capsules measured in the new box (blue) vs the old box (green) (the only real difference between them is the old has electrolytic capacitors and the new has more expensive polyester ones):
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['sweep-different-box']} caption="Frequency response graph from a sweep recorded with the same capsules but different boxes" objectFit="contain"/>
+
+Maybe there's a little bit of something happening up there with the electrolytic capacitors peaks being a bit more "peaky" at the high end compared to the polyester ones? But I'm not sure if that couldn't be explained by subtle differences in headphone positioning. I think this is reaching the limits of my janky testing setup.
+
+Maybe you can hear a difference? It's easy to imagine there is one, but I think it's probably not worth 10x the cost per capacitor.
+
+import audio_sample_newbox_mp3 from '@dist_media/blog/2026-07-12-recording-gigs-binaurally-2/audio sample - newbox.mp3?url'
+import audio_sample_newbox_json from '@dist_media/blog/2026-07-12-recording-gigs-binaurally-2/audio sample - newbox.mp3.json?url'
+import audio_sample_oldbox_mp3 from '@dist_media/blog/2026-07-12-recording-gigs-binaurally-2/audio sample - oldbox.mp3?url'
+import audio_sample_oldbox_json from '@dist_media/blog/2026-07-12-recording-gigs-binaurally-2/audio sample - oldbox.mp3.json?url'
+
+<CompactPlayer
+  playerAudio={[
+    {
+      title: 'Electrolytic capacitors',
+      files: [audio_sample_oldbox_mp3, audio_sample_oldbox_json],
+    },
+    {
+      title: 'Polyester capacitors',
+      files: [audio_sample_newbox_mp3, audio_sample_newbox_json],
+    },
+  ]}
+client:load />
+
+The real test though was taking them to the mighty Crown Hotel.
+
+## Real world testing
+
+I recorded [Cuticles with the Biscuits and Stef Animal](/gigs/the-biscuits-cuticles-and-stef-animal). It was a great time, as expected of the mighty Crown Hotel. You can listen for yourself [here](/gigs/the-biscuits-cuticles-and-stef-animal).
+
+The overall audio sounds good to me. I *think* I prefer the top end on these to my JLI-61A, it sounds more natural and less peaky, not as bright but when the drummer is really going at that crash cymbal that's not a bad thing. Everything else is about as expected with one exception.
+
+They seem to be clipping? Which is not what I expected at all, even the manufacturers datasheet claims they will handle 130dbA. The clipping only happens when I'm standing right next to the PA, but I've stood right next to the PA hundreds of times and the JLI-61A never clipped. So this was surprising to me.
+
+...until I realized I had the gain set wrong. 
+
+If you have a Zoom H1 Essential **DO NOT UPGRADE TO FIRMWARE 2.0**. The whole point of a 32-bit float recorder is you don't have to set the gain. Firmware 2.0 adds a gain setting. Every time you start up the player it flashes a reminder that the forward and next buttons adjust the gain, which is annoying, and also it doesn't show what the gain is set to until you press one of these buttons.
+
+So I somehow had my gain set to 93/100, and because I never knowingly adjust the gain I assumed it'd be at unity and didn't touch the buttons. It's a terrible interface, and the only other thing 2.0 adds is AI noise reduction. So don't upgrade.
+
+But this is good news. It means even at close to the maximum gain my H1E can apply, it was only *sometimes* clipping and still resulted in a usable recording. At unity gain it will be completely fine, as expected of Linkwitz modded electret condenser capsules.
+
+## Findings
+
+To answer the question I posed at the start: No, it seems like electret condenser microphone technology hasn't really progressed since the venerable WM-61A, and forking out extra for newer variants simply for the sound is probably not worth it. I suspect electret condenser design is so simple that there's not much room for improvement when it comes to frequency response. Maybe SNR and self-noise, but for what I do that doesn't matter much.
+
+Here in New Zealand the value propositions are complicated by shipping costs, for example 10 JLI-61A's is only $19USD, but then the cheapest shipping is $54USD, which comes out to $126NZD. Meanwhile, I got my PUI audio capsules from Element14, which has free shipping for orders over like $100NZD, so even though I paid more per capsule I paid less overall (and was able to throw in a couple of extra things I needed). So even though in the rest of the world the JLI-61A are cheaper, here they're kind of not. Which makes the exploration of alternatives a useful exercise.
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['shipping-expensive']} caption="Typical NZ online shopping experience" objectFit="contain"/>
+
+There are other options, like the Primo EM258, but I don't know if it's Linkwitz moddable... It doesn't look like it exposes the trace. There's some on AliExpress but I don't trust that they're genuine. And there's also [this place](https://micverve.com/) which sells them (as well as old stock WM-61A apparently?) and with really cheap shipping, but again I'm not sure how reliable they are. 
+
+Maybe I'll pick up a few and do a follow-up electret capsule shootout? Let me know if anyone has any suggestions or would be interested in this! (contact on info page)
+
