@@ -248,8 +248,7 @@ const { selected } = Astro.props
 		connectedCallback() {
 			window.addEventListener(filterEventName, this.onFilter)
 			window.addEventListener(dropdownClickEventName, this.onDropdownClick)
-			!this.selected &&
-				this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', this.gigClick))
+			!this.selected && this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', this.gigClick))
 		}
 
 		/**
@@ -258,8 +257,7 @@ const { selected } = Astro.props
 		disconnectedCallback() {
 			window.removeEventListener(filterEventName, this.onFilter)
 			window.removeEventListener(dropdownClickEventName, this.onDropdownClick)
-			!this.selected &&
-				this.gigLinks?.forEach((gigLink) => gigLink.removeEventListener('click', this.gigClick))
+			!this.selected && this.gigLinks?.forEach((gigLink) => gigLink.removeEventListener('click', this.gigClick))
 		}
 	}
 

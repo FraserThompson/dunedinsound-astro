@@ -19,7 +19,7 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 ---
 
 <SidebarLayout poo={{ title: 'Blog' }}>
-	<ShuffleFilters slot="subheaderTopDesktop" search={`Filter articles by title`} />
+	<ShuffleFilters slot="subheaderTopDesktop" search={`Search articles by title`} />
 	<div slot="sidebarMenu">
 		<BlogTags selected={selectedTag} />
 	</div>

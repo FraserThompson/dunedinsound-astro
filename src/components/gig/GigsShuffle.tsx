@@ -6,9 +6,10 @@ import { shuffler } from '@src/util/shuffling.ts'
 import { ShufflePlayerWrapper, ShuffleBottom, ShuffleWrapper, ToggleButton } from "./GigsShuffle.css"
 import HeavyYoutube from "../HeavyYoutube"
 import { formattedDate } from "@src/util/names"
-import { AudioWrapper, CompactPlayerWrapper, WinampTitlebar } from "./CompactPlayer.css"
+import { AudioWrapper, CompactPlayerWrapper, WinampTitlebar } from "../CompactPlayer.css"
 import { TransportButton } from "../player/PlayerTransport.css"
-import { TracklistTrack, TracklistWrapper } from "../player/PlayerTracklist.css"
+import { TracklistWrapper } from "../player/PlayerTracklist.css"
+import { TracklistTrackWrapper } from "../player/PlayerTracklistTrack.css"
 
 /**
  * A shufflable jukebox for playing random videos from random gigs.
@@ -97,8 +98,8 @@ const GigsJukebox: FunctionalComponent = () => {
 					</div>
 					{currentGig && (
 						<ul className={`${TracklistWrapper}`}>
-							<li className={`${TracklistTrack} noHover`}>Date: {formattedDate(new Date(currentGig.date))}</li>
-							<li className={`${TracklistTrack} noHover`}>
+							<li className={`${TracklistTrackWrapper} noHover`}>Date: {formattedDate(new Date(currentGig.date))}</li>
+							<li className={`${TracklistTrackWrapper} noHover`}>
 								Gig: {currentGig.title}
 								<div>
 									<a href={currentGig.extra.absolutePath} title="Gig page" target="_blank" style={{ marginLeft: "10px", color: "blue" }}>
@@ -106,7 +107,7 @@ const GigsJukebox: FunctionalComponent = () => {
 									</a>
 								</div>
 							</li>
-							{currentArtist && <li className={`${TracklistTrack} noHover`}>
+							{currentArtist && <li className={`${TracklistTrackWrapper} noHover`}>
 								Artist: {currentArtist.title || 'Unknown'}
 								<div>
 									<a target="_blank" title={currentArtist.title} href={`${currentArtist.extra.absolutePath}`} style={{ marginLeft: "10px", color: "blue" }}>
@@ -114,7 +115,7 @@ const GigsJukebox: FunctionalComponent = () => {
 									</a>
 								</div>
 							</li>}
-							<li className={`${TracklistTrack} noHover`}>
+							<li className={`${TracklistTrackWrapper} noHover`}>
 								Venue: {currentGig.extra.venue.data.title || 'Unknown'}
 								<div>
 									<a href={`/venues/${currentGig.extra.venue.id}`} title={currentGig.extra.venue.data.title} target="_blank" style={{ marginLeft: "10px", color: "blue" }}>

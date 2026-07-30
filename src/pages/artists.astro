@@ -22,7 +22,7 @@ const artistShufflers = Shufflers['artist']
 <SubheadersLayout poo={{ title: 'Artists' }} hideFooter={true}>
 	<ShuffleFilters
 		slot="subheaderTop"
-		search={'Filter artists by name'}
+		search={'Search artists by name'}
 		sort={artistShufflers['sort']}
 		filter={artistShufflers['filter']}
 	/>
@@ -34,7 +34,6 @@ const artistShufflers = Shufflers['artist']
 		}}
 		bottomMargin="0px"
 		bottomMarginMobile={`${headerHeightMobile * 2}px`}
-		rowHeight={35}
 	>
 		{
 			artists.map((artist) => (
@@ -57,11 +56,13 @@ const artistShufflers = Shufflers['artist']
 	</VirtualizedList>
 </SubheadersLayout>
 
-<style define:vars={{
-	basePadding: theme.dimensions.basePadding,
-	basePaddingMobile: theme.dimensions.basePaddingMobile,
-	dullText: theme.color.dullText
-}}>
+<style
+	define:vars={{
+		basePadding: theme.dimensions.basePadding,
+		basePaddingMobile: theme.dimensions.basePaddingMobile,
+		dullText: theme.color.dullText
+	}}
+>
 	.filter-item {
 		display: flex;
 		align-items: center;
@@ -69,7 +70,7 @@ const artistShufflers = Shufflers['artist']
 		padding-left: var(--basePaddingMobile);
 		padding-right: var(--basePaddingMobile);
 		height: 35px;
-		border-bottom: 1px solid rgba(255,255,255,0.1);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 	}
 	@media screen and (--md) {
 		.filter-item {

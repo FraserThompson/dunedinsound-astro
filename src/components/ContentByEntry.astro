@@ -138,7 +138,7 @@ const hasInfo =
 					<div>
 						<strong>{collection === 'venue' ? 'Other venues at this location' : 'See also'}</strong>
 						<ul style={{ marginTop: '0px' }}>
-							{allReferences.map((thing, i, arr) => (
+							{allReferences.map((thing) => (
 								<li>
 									<a href={thing.extra.absolutePath}>
 										{thing.entry.data.title}{' '}
@@ -160,7 +160,7 @@ const hasInfo =
 	{
 		entryExtra.gigCount > artistPlayerThreshold && (
 			<div slot="customContent" class={artistPlaylistWrapper}>
-				<ShortcutIcon title={`PLAYER`} href={`/player/${collection}/${entry.entry.id}`} />
+				<ShortcutIcon title={`OPEN IN PLAYER`} href={`/player/${collection}/${entry.entry.id}`} />
 			</div>
 		)
 	}

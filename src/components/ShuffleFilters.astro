@@ -21,8 +21,7 @@
  * sidebar is opened. This will also hide filters/sorters inside a button which pops a Popover.
  */
 
-import { shuffleFilter, modalFiltersWrapper, dropdownButton } from './ShuffleFilters.css'
-import { searchboxWrapper } from './SearchBox.css'
+import { shuffleFilter, modalFiltersWrapper, dropdownButton, searchIcon, searchboxWrapper } from './ShuffleFilters.css'
 import SortIcon from '~icons/iconoir/sort'
 import SearchIcon from '~icons/iconoir/search'
 import FilterIcon from '~icons/iconoir/filter'
@@ -76,8 +75,8 @@ const {
 			<label
 				class={`${searchboxWrapper} fixedBottomMobile flex ${openSearchWithSidebar ? 'openWithSidebar bottom' : ''}`}
 			>
-				<SearchIcon class="hideMobile" />
-				<input type="search" name="search" placeholder={search} />
+				<SearchIcon class={`${searchIcon}`} />
+				<input type="search" name="search" placeholder={search} style={{ paddingLeft: '1.6em' }} />
 			</label>
 		)
 	}
@@ -85,9 +84,9 @@ const {
 	{/* INLINE ELEMENTS (Hidden on mobile if assigned to sidebar) */}
 	{
 		sort && !inPopover && (
-			<label class={openSortWithSidebar ? 'hideMobile' : undefined}>
+			<label class={openSortWithSidebar ? 'hideMobile flex' : undefined}>
 				<SortIcon aria-label="Sort by" />
-				<select data-sort>
+				<select name="Sort items" data-sort>
 					{sort.map((s) => (
 						<option value={s.value} data-order={s.order}>
 							{s.title}
@@ -204,7 +203,9 @@ const {
 			this.sortOrder = 1
 
 			this.searchElement = this.querySelector('input[type=search]')
-			this.selectFilterElements = this.querySelectorAll('select[data-filter]') as unknown as NodeListOf<HTMLSelectElement>
+			this.selectFilterElements = this.querySelectorAll(
+				'select[data-filter]'
+			) as unknown as NodeListOf<HTMLSelectElement>
 			this.checkboxFilterElements = this.querySelectorAll('input[type=checkbox]')
 			this.sortElements = this.querySelectorAll('select[data-sort]') as unknown as NodeListOf<HTMLSelectElement>
 		}

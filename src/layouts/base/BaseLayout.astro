@@ -13,6 +13,9 @@
 import SiteFooter from '@src/components/SiteFooter.astro'
 import SiteHeader from '@src/components/SiteHeader.astro'
 import SEO, { type Poo } from '@src/components/SEO.astro'
+import GlobalPlayerContainer from '@src/components/GlobalPlayerContainer.astro'
+import GlobalPlayer from '@src/components/GlobalPlayer.tsx'
+import PersistentWaveformSlot from '@src/components/player/PersistentWaveformSlot.astro'
 import '../../Theme.css.ts'
 import '@src/layouts/base/BaseLayout.css.ts'
 import 'lightgallery/css/lightgallery.css'
@@ -30,6 +33,7 @@ interface Props {
 }
 
 const { hideFooter, hasSidebar, style, className = '', poo } = Astro.props
+const isPlayerPage = Astro.url.pathname.startsWith('/player')
 ---
 
 <html lang="en" transition:animate="none">
@@ -53,6 +57,12 @@ const { hideFooter, hasSidebar, style, className = '', poo } = Astro.props
 			<div class={`${Content} ${className}`} style={style}>
 				<slot />
 			</div>
+			<!-- Provides the minimized player on pages which dont have a full player -->
+			<GlobalPlayerContainer transition:persist>
+				<GlobalPlayer client:only="preact">
+					<PersistentWaveformSlot slot="waveform" />
+				</GlobalPlayer>
+			</GlobalPlayerContainer>
 		</div>
 		{!hideFooter && <SiteFooter hasSidebar={hasSidebar} transition:persist />}
 	</body>

@@ -28,10 +28,13 @@ if (entry) {
 	// Find related gigs and sort them
 	const gigs = await loadAndFormatCollection('gig', (thing) => !!(thing.entry.data.series?.id === entry.entry.id))
 	audioFromGigs = gigs.reduce((acc, gig) => {
-		const audio = gig.extra.media.audio.map((audio) => ({
-			...audio,
-			title: path.basename(audio.files[0])
-		}))
+		const audio = gig.extra.media.audio.map((audio) => {
+			const title = path.basename(audio.files[0])
+			return {
+				...audio,
+				title
+			}
+		})
 		return [...acc, ...audio]
 	}, [] as PlayerAudio[])
 }

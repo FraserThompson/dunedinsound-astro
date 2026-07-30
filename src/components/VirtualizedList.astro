@@ -5,7 +5,6 @@
  * Supports ShuffleFilter (simply give its children the filter-item class.)
  *
  * Props:
- *  - rowHeight: The height each row is expected to be.
  *  - id: Optional id attribute given to container.
  *  - grid: A grid object representing how many columns per screen size.
  *  - filterOnSidebar: If true, this will respond to ShuffleFilter events and
@@ -21,7 +20,6 @@ import { marginBottom, marginBottomMobile, clusterizeScroll } from './Virtualize
 import '@node_modules/clusterize.js/clusterize.css'
 
 interface Props {
-	rowHeight?: number
 	id?: string
 	grid?: Grid
 	filterOnSidebar?: boolean
@@ -29,15 +27,10 @@ interface Props {
 	bottomMarginMobile?: string
 }
 
-const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, grid = {} } = Astro.props
+const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, grid = {} } = Astro.props
 ---
 
-<virtualized-list
-	id={id}
-	data-rowheight={rowHeight}
-	data-grid={JSON.stringify(grid)}
-	data-filteronsidebar={filterOnSidebar}
->
+<virtualized-list id={id} data-grid={JSON.stringify(grid)} data-filteronsidebar={filterOnSidebar}>
 	<slot name="outside" />
 	<div
 		id="scrollArea"
@@ -62,41 +55,22 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 	class VirtualizedList extends HTMLElement {
 		contentAreaId = 'contentArea'
 		scrollAreaId = 'scrollArea'
-		defaultRowHeight = 300
+		rowHeight = 300
 		totalCols = 12
 		colCount = 1
 
-		clusterize: Clusterize | null
+		clusterize: Clusterize | null = null
 
-		allCells: HTMLElement[]
-		scrollArea: HTMLElement | null
-		rowHeight: number
-		rowsInBlock: number
-		blocksInCluster: number
+		allCells: HTMLElement[] | null = null
+		scrollArea: HTMLElement | null = null
+		contentArea: HTMLElement | null = null
+		rowsInBlock: number = 0
+		blocksInCluster: number = 0
 		filterOnSidebar: boolean
 
 		constructor() {
 			super()
-
-			this.scrollArea = this.querySelector(`#${this.scrollAreaId}`)
-
-			// Get initial list of cells before Clusterize mangles them
-			this.allCells = Array.from(this.querySelectorAll(`#${this.contentAreaId} > *`))
-
-			this.rowHeight = this.dataset.rowheight ? parseInt(this.dataset.rowheight) : this.defaultRowHeight
 			this.filterOnSidebar = this.dataset.filteronsidebar ? true : false
-
-			const grid = this.dataset.grid ? JSON.parse(this.dataset.grid) : null
-
-			if (grid) {
-				this.colCount = this.calculateColCount(grid)
-			}
-
-			// Enough rows to fill up the screen
-			this.rowsInBlock = Math.round(window.innerHeight / this.rowHeight)
-			this.blocksInCluster = this.rowsInBlock * 3
-
-			this.clusterize = null
 		}
 
 		/**
@@ -129,9 +103,19 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 		}
 
 		/**
+		 * Find the height of the first row and assume all rows are too.
+		 */
+		getRowHeight = () => {
+			const firstRow = this.contentArea?.children[0].getBoundingClientRect()
+			return firstRow?.height || 300
+		}
+
+		/**
 		 * When a cluster is swapped let others know via an event.
 		 */
 		onClusterChange = () => {
+			if (!this.allCells) return
+
 			const detail: UpdateEventDetails = {
 				visibleCells: this.visibleCells,
 				allCells: this.allCells
@@ -156,6 +140,8 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 		 * @param id id of element to scroll to.
 		 */
 		public scrollToId = (id: string) => {
+			if (!this.allCells) return
+
 			const matchingEl = this.allCells.findIndex((el) => el.id === id)
 			if (matchingEl) {
 				this.scrollToRow(matchingEl)
@@ -167,6 +153,8 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 		 * @param e
 		 */
 		onFilter = (e: any) => {
+			if (!this.allCells) return
+
 			const detail: FilterEventDetails = e.detail
 			let filteredItems = detail.filteredItems
 
@@ -235,9 +223,27 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, rowHeight = 300, 
 		}
 
 		connectedCallback() {
+			this.scrollArea = this.querySelector(`#${this.scrollAreaId}`)
+			this.contentArea = this.querySelector(`#${this.contentAreaId}`)
+
+			if (!this.scrollArea || !this.contentArea) return
+
+			// Get initial list of cells before Clusterize mangles them
+			this.allCells = Array.from(this.contentArea.children) as HTMLElement[]
+			const grid = this.dataset.grid ? JSON.parse(this.dataset.grid) : null
+			if (grid) {
+				this.colCount = this.calculateColCount(grid)
+			}
+
+			// Enough rows to fill up the screen
+			this.rowHeight = this.getRowHeight()
+			this.rowsInBlock = Math.round(window.innerHeight / this.rowHeight)
+			this.blocksInCluster = this.rowsInBlock * 3
+
 			this.clusterize = new Clusterize({
-				scrollId: this.scrollAreaId,
-				contentId: this.contentAreaId,
+				// @ts-expect-error
+				scrollElem: this.scrollArea,
+				contentElem: this.contentArea,
 				rows_in_block: this.rowsInBlock,
 				blocks_in_cluster: this.blocksInCluster,
 				no_data_text: 'No results match these filters.',

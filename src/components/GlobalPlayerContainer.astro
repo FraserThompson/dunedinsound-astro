@@ -1,0 +1,172 @@
+---
+/**
+ * Wraps the global mini player and provides minimize/maximize functionality.
+ */
+import ChevronDownIcon from '~icons/iconoir/nav-arrow-down'
+import ChevronUpIcon from '~icons/iconoir/nav-arrow-up'
+import {
+	playerWrapper,
+	playerBarWrapper,
+	playerBar,
+	openButtonToggle,
+	icon,
+	player,
+	titleBarClose
+} from './GlobalPlayerContainer.css'
+import CompactPlayerControls from './player/CompactPlayerControls'
+---
+
+<player-wrapper class={playerWrapper}>
+	<div class={playerBarWrapper}>
+		<div class={playerBar}>
+			<CompactPlayerControls client:only="preact" />
+			<button
+				class={`${openButtonToggle} open-button`}
+				type="button"
+				title="Toggle audio player"
+				aria-label="Toggle audio player"
+			>
+				<span class={`${icon} up`} aria-role="presentation">
+					<ChevronUpIcon />
+				</span>
+				<span class={`${icon} down hidden`} aria-role="presentation">
+					<ChevronDownIcon />
+				</span>
+			</button>
+		</div>
+	</div>
+	<div id="player" class={player}>
+		<button
+			class={`${openButtonToggle} ${titleBarClose} open-button`}
+			title="Toggle audio player"
+			aria-label="Toggle audio player"
+		>
+			<div class={`${icon}`} aria-role="presentation">
+				<ChevronDownIcon />
+			</div>
+		</button>
+		<slot />
+	</div>
+</player-wrapper>
+
+<script>
+	import { playerState } from '@src/components/player/playerStore'
+
+	const PLAYER_OPEN_STORAGE_KEY = 'compactPlayerOpen'
+
+	class PlayerWrapper extends HTMLElement {
+		private _internals
+		playerStateUnsubscribe: (() => void) | undefined
+
+		constructor() {
+			super()
+			this._internals = this.attachInternals()
+		}
+
+		get open() {
+			return this._internals.states.has('open')
+		}
+
+		set open(flag) {
+			if (flag) {
+				this._internals.states.add('open')
+			} else {
+				this._internals.states.delete('open')
+			}
+
+			this.persistOpenState(flag)
+		}
+
+		get minimized() {
+			return this._internals.states.has('minimized')
+		}
+
+		set minimized(flag) {
+			if (flag) {
+				this._internals.states.add('minimized')
+			} else {
+				this._internals.states.delete('minimized')
+			}
+		}
+
+		get visible() {
+			return this._internals.states.has('visible')
+		}
+
+		set visible(flag) {
+			if (flag) {
+				this._internals.states.add('visible')
+			} else {
+				this._internals.states.delete('visible')
+			}
+		}
+
+		get playing() {
+			return this._internals.states.has('playing')
+		}
+
+		set playing(flag) {
+			if (flag) {
+				this._internals.states.add('playing')
+				this.visible = true
+			} else {
+				this._internals.states.delete('playing')
+			}
+		}
+
+		persistOpenState(flag: boolean) {
+			try {
+				sessionStorage.setItem(PLAYER_OPEN_STORAGE_KEY, flag ? '1' : '0')
+			} catch {
+				// Ignore storage failures (private mode, blocked storage, etc.)
+			}
+		}
+
+		readStoredOpenState() {
+			try {
+				const stored = sessionStorage.getItem(PLAYER_OPEN_STORAGE_KEY)
+				if (stored === '1') return true
+				if (stored === '0') return false
+				return undefined
+			} catch {
+				return undefined
+			}
+		}
+
+		openButtonClickHandler = () => {
+			this.open = !this.open
+		}
+
+		connectedCallback() {
+			const syncPlaying = () => {
+				this.playing = playerState.get().playing
+				this.visible = playerState.get().playlist.length ? true : false
+			}
+
+			syncPlaying()
+			this.playerStateUnsubscribe = playerState.subscribe(syncPlaying)
+
+			const openButton = this.querySelectorAll<HTMLElement>('button.open-button')
+			openButton.forEach((el) => {
+				el.addEventListener('click', this.openButtonClickHandler)
+			})
+
+			const storedOpen = this.readStoredOpenState()
+			if (storedOpen !== undefined) {
+				this.open = storedOpen
+			}
+		}
+
+		disconnectedCallback() {
+			const openButton = this.querySelectorAll<HTMLElement>('button.open-button')
+			openButton.forEach((el) => {
+				el.removeEventListener('click', this.openButtonClickHandler)
+			})
+
+			this.playerStateUnsubscribe?.()
+			this.playerStateUnsubscribe = undefined
+		}
+	}
+
+	customElements.define('player-wrapper', PlayerWrapper)
+</script>

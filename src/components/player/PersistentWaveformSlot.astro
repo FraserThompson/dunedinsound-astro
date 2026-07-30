@@ -1,0 +1,14 @@
+---
+import LoadingSpinner from '../LoadingSpinner'
+import PlayerWaveform from './PlayerWaveform'
+import { WaveWrapper } from './PlayerWaveform.css'
+---
+
+<div transition:persist transition:name="global-waveform" style="display: contents;">
+	<PlayerWaveform client:only="preact">
+		<div slot="fallback">
+			<div class={WaveWrapper}></div>
+			<LoadingSpinner />
+		</div>
+	</PlayerWaveform>
+</div>

@@ -33,11 +33,14 @@ if (entry) {
 
 	audioFromGigs = gigs.reduce((acc, gig) => {
 		const audio = gig.extra.media.audio
-			.filter((audio) => audio.title === entry.entry.id)
-			.map((audio) => ({
-				...audio,
-				title: path.basename(audio.files[0])
-			}))
+			.filter((audio) => audio.artist?.id === entry.entry.id)
+			.map((audio) => {
+				const title = path.basename(audio.files[0])
+				return {
+					...audio,
+					title
+				}
+			})
 		return [...acc, ...audio]
 	}, [] as PlayerAudio[])
 
@@ -48,7 +51,11 @@ if (entry) {
 
 	if (vaultsessions.length) {
 		const vaultSeshAudio = vaultsessions[0].extra.audio
-		audioFromGigs.push({ ...vaultSeshAudio, title: path.basename(vaultSeshAudio.files[0]) })
+		const title = path.basename(vaultSeshAudio.files[0])
+		audioFromGigs.push({
+			...vaultSeshAudio,
+			title
+		})
 	}
 }
 ---

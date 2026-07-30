@@ -1,29 +1,42 @@
 /**
- * The waveform for the player. 
+ * The waveform container for the player.
  * 
- * Must be instantiated inside a PlayerProvider.
+ * Holds the wavesurfer waveform, with duration/length overlays.
  */
 
-import type { FunctionalComponent } from "preact"
-import { usePlayer } from "./PlayerContext"
-import LoadingSpinner from "../LoadingSpinner"
+import { useEffect, useRef } from "preact/hooks"
+import { playerEngine } from "./playerEngine"
 import { LengthWrapper, WaveWrapper } from "./PlayerWaveform.css"
+import { usePlayer } from "./usePlayer"
+import { formatTime } from "./wavesurferShared"
+import LoadingSpinner from "../LoadingSpinner"
 
-const formatTime = (time?: number) => {
-	if (time == null) return "0:00"
-	const mins = Math.floor(time / 60)
-	const secs = String(Math.floor(time % 60)).padStart(2, "0")
-	return `${mins}:${secs}`
-}
+export default function PlayerWaveform() {
+	const containerRef = useRef<HTMLDivElement | null>(null)
 
-const PlayerWaveform: FunctionalComponent = () => {
-	const { waveformRef, loading, ready, currentTime, duration } = usePlayer()
+	const { ready, loading, currentTime, duration } = usePlayer()
+
+	useEffect(() => {
+		const el = containerRef.current
+		if (!el) return
+
+		// Attach WaveSurfer canvas to this persistent DOM slot
+		playerEngine.mountContainer(el)
+
+		const resizeObserver = new ResizeObserver(() => {
+			playerEngine.mountContainer(el)
+		})
+
+		resizeObserver.observe(el)
+
+		return () => resizeObserver.disconnect()
+	}, [])
 
 	return (
 		<>
-			<div className={WaveWrapper} id="waveform" ref={waveformRef}>
-				{ready && <div className={LengthWrapper} style={{ left: '0px' }}>{formatTime(currentTime)}</div>}
-				{ready && <div className={LengthWrapper} style={{ right: '0px' }}>{duration && formatTime(duration)}</div>}
+			<div className={WaveWrapper} id="waveform" ref={containerRef}>
+				{ready && !!currentTime && <div className={LengthWrapper} style={{ left: '0px' }}>{formatTime(currentTime)}</div>}
+				{ready && !!duration && <div className={LengthWrapper} style={{ right: '0px' }}>{formatTime(duration)}</div>}
 			</div>
 			{loading && (
 				<div style={{ position: 'absolute', zIndex: '10' }}>
@@ -33,5 +46,3 @@ const PlayerWaveform: FunctionalComponent = () => {
 		</>
 	)
 }
-
-export default PlayerWaveform

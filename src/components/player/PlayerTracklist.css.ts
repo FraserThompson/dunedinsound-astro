@@ -1,4 +1,4 @@
-import { createVar, fallbackVar, globalStyle, style } from "@vanilla-extract/css"
+import { createVar, fallbackVar, style } from "@vanilla-extract/css"
 import { theme } from "../../Theme.css"
 
 export const maxHeightVar = createVar()
@@ -33,39 +33,3 @@ export const TracklistWrapper = style([WinampInset, {
 		}
 	}
 }])
-
-export const TracklistTrack = style({
-	lineHeight: '1.2rem',
-	paddingLeft: '3px',
-	paddingRight: '3px',
-	listStyle: 'none',
-	textAlign: 'left',
-	fontFamily: 'monospace',
-	color: '#28da1d',
-	display: 'flex',
-	flexWrap: 'wrap',
-	flexDirection: 'row',
-	selectors: {
-		'&.active': {
-			backgroundColor: '#0818c4'
-		}
-	}
-})
-
-export const TrackButton = style({
-	cursor: "pointer",
-	width: "100%",
-	display: "block",
-	textOverflow: "ellipsis",
-	overflow: "hidden",
-	whiteSpace: "nowrap",
-})
-
-globalStyle(`${TracklistTrack} a`, {
-	lineHeight: '1.2rem',
-	color: '#28da1d'
-})
-
-globalStyle(`${TracklistTrack} a:hover`, {
-	color: theme.color.lightContrast2
-})

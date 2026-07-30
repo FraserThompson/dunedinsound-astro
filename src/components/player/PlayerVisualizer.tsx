@@ -1,10 +1,9 @@
 /**
  * The Visualizer for the player. 
- * Must be instantiated inside a PlayerProvider.
  */
 
 import type { FunctionalComponent } from "preact"
-import { usePlayer } from "./PlayerContext"
+import { usePlayer } from "./usePlayer"
 import { useEffect, useRef } from "preact/hooks"
 
 // Clamp a number to the normalized audio range.
@@ -56,7 +55,7 @@ interface Props {
 const PlayerVisualizer: FunctionalComponent<Props> = ({
 	width = 230,
 	height = 18,
-	lineColor = 'rgba(255, 255, 255, 1)',
+	lineColor = 'rgba(231, 209, 171, 0.4)',
 	backgroundColor = 'rgba(0, 0, 0, 0)'
 }) => {
 	// Read playback state and peak data from the player context.

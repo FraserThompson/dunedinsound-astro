@@ -1,18 +1,27 @@
 import { style } from '@vanilla-extract/css'
-import { theme } from '../../Theme.css'
-import { WinampBackground } from '../player/PlayerTracklist.css'
+import { theme } from '../Theme.css'
+import { WinampBackground } from './player/PlayerTracklist.css'
 
-export const CompactPlayerWrapper = style([ WinampBackground, {
+export const CompactPlayerWrapper = style([WinampBackground, {
 	transition: 'all 150ms ease-in-out',
+	position: 'relative',
 	boxShadow: theme.borders.shadowTop
 }])
+
+export const CompactPlayerWaveWrapper = style({
+	display: 'flex',
+	minHeight: 0,
+	flexDirection: 'column',
+	border: theme.borders.groove,
+	borderRadius: '3px',
+	margin: '0 5px 5px 5px 5px',
+	padding: '5px',
+})
 
 export const AudioWrapper = style({
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'center',
-	marginLeft: '5px',
-	marginRight: '5px'
 })
 
 export const WinampTitlebar = style({
@@ -42,7 +51,7 @@ export const WinampTitlebar = style({
 		'&::after': {
 			content: "attr(data-title)",
 			position: 'absolute',
-			marginTop: '-5px',
+			marginTop: '-2px',
 			textAlign: 'center',
 			paddingLeft: '10px',
 			paddingRight: '10px',

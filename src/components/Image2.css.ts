@@ -1,4 +1,4 @@
-import { createVar, fallbackVar, globalStyle, style } from '@vanilla-extract/css'
+import { createVar, fallbackVar, globalStyle } from '@vanilla-extract/css'
 
 export const objectFit = createVar()
 export const objectPosition = createVar()

@@ -183,8 +183,6 @@ globalStyle('input[type="text"], input[type="search"]', {
 	border: '1px solid #000',
 	minWidth: '0px',
 	maxWidth: '100%',
-	paddingLeft: theme.dimensions.basePaddingMobile,
-	paddingRight: theme.dimensions.basePaddingMobile,
 	width: '100%',
 	boxSizing: 'border-box',
 	height: `calc(${theme.dimensions.headerHeightMobile} - 2px)`,
@@ -193,8 +191,6 @@ globalStyle('input[type="text"], input[type="search"]', {
 	'@media': {
 		'screen and (--lg)': {
 			maxWidth: theme.dimensions.sidebarWidth,
-			paddingLeft: theme.dimensions.basePadding,
-			paddingRight: theme.dimensions.basePadding
 		},
 		'screen and (--md)': {
 			height: `calc(${theme.dimensions.headerHeight} - 2px)`
@@ -248,10 +244,6 @@ globalStyle('table td, table th', {
 /**
  * Utility classes
  */
-globalStyle('.hidden', {
-	display: 'none !important'
-})
-
 globalStyle('.showMobile', {
 	display: 'inline-block !important',
 	'@media': {

@@ -17,7 +17,7 @@ const series = await loadAndFormatCollection('series')
 	poo={{ title: 'Gigs', image: gigs[0].extra.cover?.[0]?.src }}
 	hideFooter={true}
 >
-	<ShuffleFilters slot="subheaderTopDesktop" search="Filter gigs by title, artist, venue" />
+	<ShuffleFilters slot="subheaderTopDesktop" search="Search gigs by title, artist, venue" />
 	<div style={{ marginLeft: 'auto' }} slot="subheaderTopDesktop">
 		<Menu
 			links={[
@@ -32,7 +32,11 @@ const series = await loadAndFormatCollection('series')
 		<div slot="outside">
 			{series.map((serie) => <SeriesTile series={serie} />)}
 		</div>
-		{gigs.map((gig) => <GigTile gig={gig} responsiveImageSizes="full" />)}
+		{
+			gigs.map((gig) => (
+				<GigTile gig={gig} containerHeight="480px" containerHeightMobile="250px" responsiveImageSizes="full" />
+			))
+		}
 	</VirtualizedList>
 </SidebarLayout>
 

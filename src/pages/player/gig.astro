@@ -7,16 +7,23 @@ const gigs = await loadAndFormatCollection('gig')
 const vaultsessions = await loadAndFormatCollection('vaultsession')
 
 let audioFromGigs: PlayerAudio[] = gigs.reduce((acc: PlayerAudio[], gig) => {
-	const audio = gig.extra.media.audio.map((audio) => ({
-		...audio,
-		title: path.basename(audio.files[0])
-	}))
+	const audio = gig.extra.media.audio.map((audio) => {
+		const title = path.basename(audio.files[0])
+		return {
+			...audio,
+			title
+		}
+	})
 	return [...acc, ...audio]
 }, [] as PlayerAudio[])
 
 if (vaultsessions.length) {
 	const vaultSeshAudio = vaultsessions[0].extra.audio
-	audioFromGigs.push({ ...vaultSeshAudio, title: path.basename(vaultSeshAudio.files[0]) })
+	const title = path.basename(vaultSeshAudio.files[0])
+	audioFromGigs.push({
+		...vaultSeshAudio,
+		title
+	})
 }
 ---
 

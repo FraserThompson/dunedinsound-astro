@@ -1,28 +1,24 @@
 /**
- * Display with the current track.
- * 
- * Must be instantiated inside a PlayerProvider.
+ * Display with the current track title and a playing visualizer.
  */
 
 import type { FunctionalComponent } from "preact"
-import { usePlayer } from "./PlayerContext"
+import { usePlayer } from "./usePlayer"
 import { WinampInset } from "./PlayerTracklist.css"
-import { CurrentTrackMarquee, CurrentTrackText } from "./PlayerCurrentTrack.css"
+import { CurrentTrackPanel } from "./PlayerCurrentTrack.css"
 import PlayerVisualizer from "./PlayerVisualizer"
+import { MarqueeText } from "../MarqueeText"
 
 const PlayerCurrentTrack: FunctionalComponent = () => {
-	const { currentTrackTitle, playing } = usePlayer()
+	const { playlist, selectedTrack, playing } = usePlayer()
+	const currentTrackTitle = playlist?.[selectedTrack]?.title
 
 	return (
-		<div className={WinampInset}>
-			<div style={{ position: 'absolute' }}>
-				<PlayerVisualizer width={230} height={18} />
+		<div className={`${WinampInset} ${CurrentTrackPanel}`} style={{ flex: 1 }}>
+			<div style={{ position: 'absolute', overflow: 'hidden' }}>
+				<PlayerVisualizer width={600} height={18} />
 			</div>
-			<div className={CurrentTrackMarquee}>
-				{!playing && <p className={CurrentTrackText}>
-					{currentTrackTitle ? <>*** {currentTrackTitle} ***</> : "Use the 'file' menu to load a playlist"}
-				</p>}
-			</div>
+			<MarqueeText text={currentTrackTitle} isPlaying={playing}></MarqueeText>
 		</div>
 	)
 }

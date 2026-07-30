@@ -149,7 +149,7 @@ createGlobalTheme(':root', theme, {
 		headerHeightMobileWithSubheader: `${headerHeightMobile + subheaderHeight}px`,
 		subheaderHeight: `${subheaderHeight}px`,
 		subheaderHeightNegative: `-${subheaderHeight}px`,
-		sidebarWidth: '320px',
+		sidebarWidth: 'min(20vw, 480px)',
 		viewportHeight: `calc(100% - ${headerHeight}px)`,
 		footerHeight: '280px',
 		contentContainerWidth: '740px',

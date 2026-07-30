@@ -1,17 +1,26 @@
 import { style } from '@vanilla-extract/css'
 import { theme } from '../../Theme.css'
+import { WinampBackground } from '@src/components/player/PlayerTracklist.css'
 
 export const GigBannerPlayer = style({
 	padding: '0px',
+	zIndex: 1,
 	width: '100%',
 	boxSizing: 'border-box',
 	marginTop: 'auto',
 	'@media': {
 		'screen and (--md)': {
-			padding: theme.dimensions.basePadding
+			padding: theme.dimensions.basePadding,
 		}
 	}
 })
+
+export const LibraryLoadingPlaceholder = style([WinampBackground, {
+	position: 'relative',
+	width: '100%',
+	maxWidth: '600px',
+	minHeight: '212px',
+}])
 
 export const GigFeatureVid = style({
 	height: 'auto',

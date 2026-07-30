@@ -9,7 +9,8 @@ import { epochYear, monthMap, type Month } from './constants'
 import { getCollectionMetaDescription } from './seo'
 import { DIST_MEDIA_DIR } from './constants'
 import { existsSync } from 'node:fs'
-import { getEntryPath, getEntrySlug } from './helpers'
+import { entryToMinimal, getEntryPath, getEntrySlug } from './helpers'
+import { getPlayerAudioId } from './helpers'
 
 type EntryExtraCommon = {
 	slug: string
@@ -24,11 +25,19 @@ interface Track {
 	time: string
 }
 
+export interface MinimalEntryDefinition {
+	id: string
+	title: string
+}
+
 export type PlayerAudio = {
+	id: string
 	title: string
 	files: string[]
 	tracklist?: Track[]
-	dataAttributes?: { [id: string]: string }
+	artist?: MinimalEntryDefinition
+	gig?: MinimalEntryDefinition
+	venue?: MinimalEntryDefinition
 }
 
 interface GigMedia {
@@ -426,7 +435,7 @@ export async function getBlogExtra(
 export async function getVaultSessionExtra(
 	entry: CollectionEntry<'vaultsession'>
 ): Promise<CollectionExtraMap['vaultsession']> {
-	const artist = await getEntry('artist', entry.data.artist.id)
+	const artistEntry = await getEntry('artist', entry.data.artist.id)
 
 	const type = entry.collection
 	const dir = `${DIST_MEDIA_DIR}/${type}/${getEntryId(entry)}`
@@ -442,15 +451,27 @@ export async function getVaultSessionExtra(
 			.withPromise()
 	).map((src) => `/${src}`)
 
+	const gig = entryToMinimal(entry)
+	const artist = artistEntry && entryToMinimal(artistEntry)
+
+	const venue = {
+		title: 'Vault Sessions',
+		id: 'vault_sessions'
+	}
+
 	const audio = {
 		title: entry.data.title,
 		files: audioFiles,
+		id: getPlayerAudioId(audioFiles),
+		gig,
+		artist,
+		venue,
 		tracklist: entry.data.tracklist
 	}
 
 	return {
 		audio,
-		artist
+		artist: artistEntry
 	}
 }
 
@@ -662,6 +683,8 @@ export async function getEntryImages<C extends CollectionKey>(
 export async function getGigMedia(entry: CollectionEntry<'gig'>): Promise<GigMedia> {
 	const entryData = entry.data
 
+	const venueEntry = await getEntry("venue", entryData.venue.id)
+
 	// This is used for sorting media into the correct order
 	const artistIds: string[] = entryData.artists.map((artist) => artist.id.id)
 
@@ -696,6 +719,8 @@ export async function getGigMedia(entry: CollectionEntry<'gig'>): Promise<GigMed
 
 			if (artistId === 'cover' || artistId === entry.id) return;
 
+			const artistEntry = await getEntry("artist", artistId)
+
 			const responsiveImages = await getResponsiveImagesByDir(artistDir, artistId);
 			artistImages[artistId] = responsiveImages ? Object.values(responsiveImages) : [];
 
@@ -712,13 +737,17 @@ export async function getGigMedia(entry: CollectionEntry<'gig'>): Promise<GigMed
 			).map((src) => `/${src}`);
 
 			if (audioFiles.length) {
+				const gig = entryToMinimal(entry)
+				const artist = artistEntry && entryToMinimal(artistEntry)
+				const venue = venueEntry && entryToMinimal(venueEntry)
+				const title = path.basename(audioFiles[0])
 				audio.push({
-					title: artistId,
+					title,
 					files: audioFiles,
-					dataAttributes: {
-						'data-gig': entry.id,
-						'data-artist': artistId,
-					},
+					id: getPlayerAudioId(audioFiles),
+					gig,
+					artist,
+					venue,
 					tracklist: entryData.artists.find((artist) => artist.id.id === artistId)?.tracklist
 				});
 			}
@@ -726,7 +755,11 @@ export async function getGigMedia(entry: CollectionEntry<'gig'>): Promise<GigMed
 	);
 
 	if (audio.length) {
-		audio.sort((a, b) => artistIds.indexOf(a.title) - artistIds.indexOf(b.title))
+		audio.sort(
+			(a, b) =>
+				artistIds.indexOf(a.artist?.id || '')
+				- artistIds.indexOf(b.artist?.id || '')
+		)
 	}
 
 	return { artistImages, audio, imageCount }

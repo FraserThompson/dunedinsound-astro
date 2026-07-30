@@ -2,7 +2,6 @@
 import Banner from '@src/components/Banner.astro'
 import { type ProcessedEntry } from '@src/util/collection'
 import ImageGallery from '@src/components/ImageGallery.astro'
-import PlayerContainer from '@src/components/gig/PlayerContainer.astro'
 import MapIcon from '~icons/iconoir/map-pin'
 import CornerLabel from '@src/components/gig/CornerLabel.astro'
 import BigIntro from '@src/components/gig/BigIntro.astro'
@@ -10,12 +9,13 @@ import ArtistMedia from '@src/components/gig/ArtistMedia.astro'
 import LiteYoutube from '@src/components/LiteYoutube.astro'
 import Divider from '@src/components/Divider.astro'
 import { theme } from '../../Theme.css'
-import { GigBannerPlayer, GigFeatureVid } from './Gig.css'
+import { GigBannerPlayer, GigFeatureVid, LibraryLoadingPlaceholder } from './Gig.css'
 import ArtistDropdown from '@src/components/gig/ArtistDropdown.astro'
 import { formattedDate } from '@src/util/names'
 import TextContainer from '@src/components/TextContainer.astro'
-import CompactPlayer from '@src/components/gig/CompactPlayer'
 import { getEntrySlug } from '@src/util/helpers'
+import PlayerLibrary from '@src/components/player/PlayerLibrary'
+import LoadingSpinner from '@src/components/LoadingSpinner'
 
 interface Props {
 	entry: ProcessedEntry<'gig'>
@@ -99,9 +99,21 @@ const hasArtistMedia = galleryCount === 1 ? !uncategorizedImages.length : galler
 				)}
 				{!!entryMedia.audio?.length && (
 					<div class={GigBannerPlayer}>
-						<PlayerContainer>
-							<CompactPlayer title="GIG PLAYER" playerAudio={entryMedia.audio} client:load />
-						</PlayerContainer>
+						<PlayerLibrary
+							playerAudio={entryMedia.audio}
+							columns={['artist']}
+							columnTemplate="minmax(0, 6fr)"
+							title="GIG AUDIO"
+							maxHeight="160px"
+							maxWidth="600px"
+							client:only="preact"
+						>
+							<div slot="fallback">
+								<div class={LibraryLoadingPlaceholder}>
+									<LoadingSpinner />
+								</div>
+							</div>
+						</PlayerLibrary>
 					</div>
 				)}
 			</Fragment>

@@ -9,6 +9,7 @@ import type { webLinks } from '@src/content.config'
 import MarkdownIt from 'markdown-it'
 import { convert } from 'html-to-text'
 import type { MenuLink } from '@src/components/Menu.astro'
+import type { MinimalEntryDefinition } from './collection'
 import type { ProcessedEntry, SortedGigs } from './collection'
 import { breakpoints, headerHeight, headerHeightMobile } from '../Theme.css'
 import type { ResponsiveImage } from './ResponsiveImage'
@@ -354,6 +355,12 @@ export function getEntryPath(title: string, collection: CollectionKey): string {
 	}
 }
 
+/**
+ * Items for the year selected dropdown, with bar graph.
+ * 
+ * @param sortedGigs 
+ * @returns 
+ */
 export function getGigYearDropdownItems(sortedGigs: SortedGigs): MenuLink[] {
 	return Object.entries(sortedGigs)
 		.reverse()
@@ -372,9 +379,37 @@ export function getGigYearDropdownItems(sortedGigs: SortedGigs): MenuLink[] {
 		})
 }
 
+/**
+ * Shuffles an array of anything.
+ * 
+ * @param array 
+ * @returns 
+ */
 export function shuffleArray(array: any[]): any[] {
 	return array
 		.map(value => ({ value, sort: Math.random() }))
 		.sort((a, b) => a.sort - b.sort)
 		.map(({ value }) => value)
 }
+
+/**
+ * Converts any entry into a minimal one to be passed around with less fuss.
+ * 
+ * @param entry 
+ * @returns 
+ */
+export function entryToMinimal(entry: CollectionEntry<'artist'> | CollectionEntry<'gig'> | CollectionEntry<'venue'> | CollectionEntry<'vaultsession'>): MinimalEntryDefinition {
+	return {
+		id: entry.id,
+		title: entry?.data?.title || entry.id
+	}
+}
+
+/**
+ * Creates a unique ID for a player audio item.
+ * 
+ * @param files 
+ * @returns 
+ */
+export const getPlayerAudioId = (files: string[]) =>
+	`${encodeURI(files[0]) || ''}`

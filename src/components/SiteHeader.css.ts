@@ -32,7 +32,6 @@ export const headerMobile = style({
 	backgroundColor: theme.color.primary,
 	zIndex: '12',
 	width: '100%',
-	boxShadow: theme.borders.shadowTop,
 	borderTop: theme.borders.primary,
 	'@media': {
 		'screen and (--md)': {

@@ -7,13 +7,13 @@
  *  - gigsFromEntry: The Entry which the gigs are from (optional)
  */
 import { loadAndFormatCollection, type PlayerAudio, type ProcessedEntry } from '@src/util/collection'
-import SidebarPlayer from '@src/components/gig/SidebarPlayer'
+import LibraryPlayer from '@src/components/LibraryPlayer'
 import ImageGallery from '@src/components/ImageGallery.astro'
 import BaseLayout from '@src/layouts/base/BaseLayout.astro'
+import PersistentWaveformSlot from '@src/components/player/PersistentWaveformSlot.astro'
 import { artistPlayerThreshold, seriesVenuePlayerThreshold } from '@src/util/constants'
-import DropdownMenu from '@src/components/DropdownMenu.astro'
-import { fileButton, gigMetaWrapper } from '@src/layouts/base/PlayerLayout.css'
-import type { MenuLink } from '@src/components/Menu.astro'
+import LoadingSpinner from '@src/components/LoadingSpinner'
+import { PlayerLibraryActionBar } from '@src/components/player/PlayerLibrary.css'
 
 interface Props {
 	audioFromGigs?: PlayerAudio[]
@@ -24,23 +24,31 @@ const { gigsFromEntry, audioFromGigs } = Astro.props
 
 const artists = await loadAndFormatCollection('artist', (entry) => entry.extra.gigCount > artistPlayerThreshold)
 const venues = await loadAndFormatCollection('venue', (entry) => entry.extra.gigCount > seriesVenuePlayerThreshold)
-const series = await loadAndFormatCollection('series', (entry) => entry.extra.gigCount > seriesVenuePlayerThreshold)
+const gigs = await loadAndFormatCollection('gig')
+const vaultsessions = await loadAndFormatCollection('vaultsession')
 
-const artistList: MenuLink[] = artists.map((entry) => ({
+// List of artists for artist selector
+const artistOptions = artists.map((entry) => ({
+	id: entry.entry.id,
 	title: entry.entry.data.title,
-	subtitle: entry.extra.gigCount,
-	href: `/player/artist/${entry.entry.id}`
+	count: entry.extra.gigCount
 }))
-const venuesList: MenuLink[] = venues.map((entry) => ({
+
+// List of venues for venues selector
+const venueOptions = venues.map((entry) => ({
+	id: entry.entry.id,
 	title: entry.entry.data.title,
-	subtitle: entry.extra.gigCount,
-	href: `/player/venue/${entry.entry.id}`
+	count: entry.extra.gigCount
 }))
-const seriesList: MenuLink[] = series.map((entry) => ({
-	title: entry.entry.data.title,
-	subtitle: entry.extra.gigCount,
-	href: `/player/series/${entry.entry.id}`
-}))
+
+// Full list of library items, minimal since it goes in as a data-attribute
+const libraryItems: PlayerAudio[] = [
+	...gigs.flatMap((gigEntry) => gigEntry.extra.media.audio),
+	...vaultsessions.flatMap((session) => [session.extra.audio])
+]
+
+const initialArtistId = gigsFromEntry?.entry.collection === 'artist' ? gigsFromEntry.entry.id : undefined
+const initialVenueId = gigsFromEntry?.entry.collection === 'venue' ? gigsFromEntry.entry.id : undefined
 ---
 
 <BaseLayout
@@ -50,56 +58,58 @@ const seriesList: MenuLink[] = series.map((entry) => ({
 		description: gigsFromEntry ? `Play audio bootlages from ${gigsFromEntry.entry.data.title}.` : 'Audio player'
 	}}
 >
-	<SidebarPlayer
-		title={`${gigsFromEntry ? gigsFromEntry.entry.id : ''} PLAYER`}
+	<LibraryPlayer
+		title={`PLAYER`}
 		playerAudio={audioFromGigs}
-		client:load
+		playerAudio={libraryItems}
+		artistOptions={artistOptions}
+		venueOptions={venueOptions}
+		initialArtistId={initialArtistId}
+		initialVenueId={initialVenueId}
+		client:only="preact"
 	>
-		<DropdownMenu
-			slot="menu"
-			list={[
-				{ title: 'Load an artist', submenu: artistList },
-				{ title: 'Load a venue', submenu: venuesList },
-				{ title: 'Load a series', submenu: seriesList },
-				{ title: 'Load all', href: '/player/gig' }
-			]}
-			buttonHeight={'20px'}
-			direction="down"
-			width="200px"
-			buttonPosition="left"
-			backgroundColor="#353551"
-		>
-			<div class={fileButton} slot="button">File</div>
-		</DropdownMenu>
+		<div slot="fallback">
+			<LoadingSpinner />
+		</div>
+		<PersistentWaveformSlot slot="waveform" />
+		<ImageGallery thumbnailWidthDesktop="250px" enableClientUpdates={true} />
 		<div
 			id="gig-meta"
-			class={gigMetaWrapper}
+			slot="footer"
+			class={PlayerLibraryActionBar}
 			data-artist={gigsFromEntry && gigsFromEntry.entry.collection === 'artist' ? gigsFromEntry.entry.id : 'index'}
 			data-gig={''}
 		>
 		</div>
-		<ImageGallery thumbnailWidthDesktop="250px" enableClientUpdates={true} />
-	</SidebarPlayer>
+	</LibraryPlayer>
 </BaseLayout>
 
 <script>
+	import { WinampInset } from '@src/components/player/PlayerTracklist.css'
+	import { TransportButton } from '@src/components/player/PlayerTransport.css'
 	import {
 		imageGalleryUpdateEventName,
-		playerTrackChange,
+		playerLibraryPreviewEventName,
 		type ImageGalleryUpdateEventDetails,
-		type PlayerTrackChangeEventDetails
+		type PlayerLibraryPreviewEventDetails
 	} from '@src/util/events'
 
 	import { getEntryPath, type ArtistGigResponse } from '@src/util/helpers'
 	import { formattedDate } from '@src/util/names'
 
-	const onPlayerTrackChange = async (e: Event) => {
-		const detail = (e as CustomEvent<PlayerTrackChangeEventDetails>).detail
+	let playerStateUnsubscribe: (() => void) | undefined
+	let libraryPreviewSelection: PlayerLibraryPreviewEventDetails | undefined
+	let lastRenderedPreviewKey: string | undefined
 
-		const artistId = detail.track.dataAttributes?.['data-artist']
-		const gigId = detail.track.dataAttributes?.['data-gig']
+	const updateFromSelection = async (selection?: PlayerLibraryPreviewEventDetails) => {
+		const artistId = selection?.artist.id
+		const gigId = selection?.gig.id
 
 		if (!gigId) return
+
+		const previewKey = `${gigId}|${artistId || ''}`
+		if (previewKey === lastRenderedPreviewKey) return
+		lastRenderedPreviewKey = previewKey
 
 		let req: Response
 		try {
@@ -130,49 +140,32 @@ const seriesList: MenuLink[] = series.map((entry) => ({
 
 			const gig = json.data
 
-			const texts: Node[] = []
-
-			const text = document.createElement('p')
-			text.setAttribute('style', 'padding:0;margin:0;')
-			text.innerHTML = `title: ${gig.data.title} <a href="${getEntryPath(gig.data.title, 'gig')}">[gig page]</a>`
-			texts.push(text)
-
-			// Update metadata section
-			const allowedFields = ['date', 'artists', 'description']
-			const selectedArtist = detail.track.dataAttributes?.['data-artist']
-			Object.entries(gig.data).forEach(([key, value]) => {
-				const text = document.createElement('p')
-				text.setAttribute('style', 'padding:0;margin:0;')
-
-				if (!allowedFields.includes(key)) {
-					return
-				} else if (typeof value === 'string' && key === 'date') {
-					text.innerHTML = `${key}: ${formattedDate(new Date(value))}`
-				} else if (typeof value === 'string') {
-					text.innerHTML = `${key}: ${value}`
-				} else if (Array.isArray(value)) {
-					const valueTexts = value.map((thing) =>
-						thing.id.id !== selectedArtist ? `<span>${thing.id.id}</span>` : `<strong class='selectedArtist'>${thing.id.id}</strong>`
-					)
-					text.innerHTML = `${key}: ${valueTexts.join(', ')}`
-				} else if (typeof value === 'object' && 'id' in value) {
-					text.innerHTML = `${key}: ${value.id}`
-				}
-				texts.push(text)
-			})
-
 			metaContainer.dataset.gig = gigId
-			metaContainer.replaceChildren(...texts)
+			metaContainer.innerHTML = `
+				<button class='${TransportButton} clear' href="${getEntryPath(gig.data.title, 'gig')}">
+					GO TO GIG PAGE
+				</button>
+				<span class='${WinampInset}' style="color: #28da1d; font-family: monospace; font-size: 12px; margin-left: auto;">
+					${formattedDate(new Date(gig.data.date))}
+				<span>
+			`
 		}
 	}
 
+	const onLibraryPreviewSelection = async (event: Event) => {
+		const customEvent = event as CustomEvent<PlayerLibraryPreviewEventDetails>
+		libraryPreviewSelection = customEvent.detail
+		await updateFromSelection(libraryPreviewSelection)
+	}
+
 	const init = () => {
-		window.removeEventListener(playerTrackChange, onPlayerTrackChange)
-		window.addEventListener(playerTrackChange, onPlayerTrackChange)
+		playerStateUnsubscribe?.()
+		window.removeEventListener(playerLibraryPreviewEventName, onLibraryPreviewSelection as EventListener)
+		window.addEventListener(playerLibraryPreviewEventName, onLibraryPreviewSelection as EventListener)
 	}
 
 	const cleanup = () => {
-		window.removeEventListener(playerTrackChange, onPlayerTrackChange)
+		window.removeEventListener(playerLibraryPreviewEventName, onLibraryPreviewSelection as EventListener)
 	}
 
 	document.removeEventListener('astro:page-load', init)

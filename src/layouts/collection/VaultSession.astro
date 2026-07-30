@@ -4,12 +4,12 @@ import Room from '@src/components/Room.astro'
 import { socialLinksToMenuItems } from '@src/util/helpers'
 import LiteYoutube from '@src/components/LiteYoutube.astro'
 import { ArtistMetadata, VaultTracklist, VaultTrackLink } from './VaultSession.css'
-import PlayerContainer from '@src/components/gig/PlayerContainer.astro'
-import CompactPlayer from '@src/components/gig/CompactPlayer'
+import GlobalPlayer from '@src/components/GlobalPlayer'
 
 interface Props {
 	entry: ProcessedEntry<'vaultsession'>
 }
+
 const { entry } = Astro.props
 
 const entryData = entry.entry.data
@@ -41,29 +41,26 @@ const entryExtra = entry.extra
 		}
 		{
 			entryExtra.audio && (
-				<a title="FULL MP3 DOWNLOAD" target="_blank" href={entryExtra.audio.files[0]}>
-					<h3 class="coolText">⭐DOWNLOAD MP3⭐</h3>
-				</a>
+				<>
+					<GlobalPlayer client:only="preact" title="VAULT SESSION PLAYER" playerAudio={[entryExtra.audio]} />
+					<a title="FULL MP3 DOWNLOAD" target="_blank" href={entryExtra.audio.files[0]}>
+						<h3 class="coolText">⭐DOWNLOAD MP3⭐</h3>
+					</a>
+				</>
 			)
 		}
 	</video-controls>
 	<div class={ArtistMetadata} slot="right">
 		<h3 class="monospace">More from this artist</h3>
 		{
-			entryExtra.artist && socialLinksToMenuItems(entryExtra.artist.data.links).map((item) => (
-				<li>
-					<a href={item.href}>{item.title}</a>
-				</li>
-			))
+			entryExtra.artist &&
+				socialLinksToMenuItems(entryExtra.artist.data.links).map((item) => (
+					<li>
+						<a href={item.href}>{item.title}</a>
+					</li>
+				))
 		}
 	</div>
-	{
-		entryExtra.audio && (
-			<PlayerContainer minimizedAlways={true}>
-				<CompactPlayer playerAudio={[entryExtra.audio]} client:load />
-			</PlayerContainer>
-		)
-	}
 </Room>
 
 <script>
@@ -88,9 +85,6 @@ const entryExtra = entry.extra
 			this.trackTimes = [...this.trackLinks].map((track) => timeToSeconds(track.getAttribute('data-time') || '00:00'))
 		}
 
-		/**
-		 * Runs every second and updates the class on the active track.
-		 */
 		tick() {
 			if (!this.player) return
 
@@ -105,7 +99,6 @@ const entryExtra = entry.extra
 				}
 			})
 
-			// If we're on a differnt track...
 			if (this.activeTrack !== activeTrack) {
 				this.trackLinks[this.activeTrack].classList.remove('active')
 				this.activeTrack = activeTrack
@@ -113,19 +106,11 @@ const entryExtra = entry.extra
 			}
 		}
 
-		/**
-		 * Seeks the video to a time in seconds.
-		 * @param time
-		 */
 		seekVideoTo(time: number) {
 			this.player && this.player.seekTo(time, true)
 			this.playerTime = time
 		}
 
-		/**
-		 * Handler for clicking a track on the sidebar.
-		 * @param e
-		 */
 		trackClickHandler(e: MouseEvent) {
 			if (!(e.currentTarget instanceof HTMLElement)) return
 
@@ -133,9 +118,6 @@ const entryExtra = entry.extra
 			this.seekVideoTo(timeToSeconds(time))
 		}
 
-		/**
-		 * When the player is ready play the video.
-		 */
 		onPlayerReady(e: any) {
 			e.target.setPlaybackQuality('hd720')
 			e.target.playVideo()

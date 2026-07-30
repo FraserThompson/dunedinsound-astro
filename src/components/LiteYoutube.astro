@@ -18,12 +18,10 @@ interface Props {
 
 const { videoid, loadAPI, autoload, freeAspect } = Astro.props
 
-const cssVars = {
-	aspectRatio: freeAspect ? 'auto' : '16/9'
-}
+const aspectRatio = freeAspect ? 'auto' : '16/9'
 ---
 
-<lite-youtube-toucher data-videoid={videoid} data-loadapi={loadAPI ? 'true' : undefined}>
+<lite-youtube-toucher data-videoid={videoid} data-loadapi={loadAPI ? 'true' : undefined} style={{ aspectRatio }}>
 	<lite-youtube
 		autoload={autoload ? 'true' : undefined}
 		videoid={videoid}
@@ -32,9 +30,8 @@ const cssVars = {
 		params="enablejsapi=1&rel=0"></lite-youtube>
 </lite-youtube-toucher>
 
-<style is:global define:vars={cssVars}>
+<style is:global>
 	lite-youtube-toucher {
-		aspect-ratio: var(--aspectRatio);
 		height: 100%;
 		width: 100%;
 	}

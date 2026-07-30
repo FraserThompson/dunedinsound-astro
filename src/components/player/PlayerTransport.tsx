@@ -1,32 +1,27 @@
 /**
- * The transport for the player. 
- * 
- * Must be instantiated inside a PlayerProvider.
+ * The transport for the player.
  */
 
 import type { FunctionalComponent } from "preact"
-import { usePlayer } from "./PlayerContext"
+import { usePlayer } from "./usePlayer"
 import { TransportButton } from "./PlayerTransport.css"
 
-interface Props {
-	showShuffle?: boolean
-}
-
-const PlayerTransport: FunctionalComponent<Props> = ({ showShuffle }) => {
-	const { playing, playPause, previous, next, ready, toggleShuffle } = usePlayer()
+const PlayerTransport: FunctionalComponent = () => {
+	const { playing, playPause, previous, next, ready } = usePlayer()
+	const controlsDisabled = !ready && !playing
 
 	return (
 		<div>
 			<button
 				className={`${TransportButton} hideMobile left`}
-				disabled={!ready}
+				disabled={controlsDisabled}
 				id="prev"
 				onClick={() => previous()}
 				aria-label="Previous track"
 			>
 			</button>
 			<button
-				disabled={!ready}
+				disabled={controlsDisabled}
 				className={playing ? `${TransportButton} pause` : `${TransportButton} play`}
 				onClick={() => playPause()}
 				aria-label="Play/Pause"
@@ -34,20 +29,12 @@ const PlayerTransport: FunctionalComponent<Props> = ({ showShuffle }) => {
 			</button>
 			<button
 				className={`${TransportButton} hideMobile right`}
-				disabled={!ready}
+				disabled={controlsDisabled}
 				id="next"
 				onClick={() => next()}
 				aria-label="Next track"
 			>
 			</button>
-			{showShuffle && <button
-				className={`${TransportButton} shuffle`}
-				disabled={!ready}
-				id="shuffle"
-				onClick={() => toggleShuffle()}
-				aria-label="Toggle shuffle"
-			>
-			</button>}
 		</div>
 	)
 }

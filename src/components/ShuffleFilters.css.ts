@@ -33,6 +33,17 @@ export const dropdownButton = style(({
 	}
 }))
 
+export const searchboxWrapper = style({
+	display: "flex",
+	alignItems: "center",
+	width: '100%'
+})
+
+export const searchIcon = style({
+	position: 'absolute',
+	paddingLeft: '6px'
+})
+
 globalStyle('.filtr-item', {
 	willChange: 'opacity, transform'
 })
