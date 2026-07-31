@@ -2,10 +2,16 @@
 import LoadingSpinner from '../LoadingSpinner'
 import PlayerWaveform from './PlayerWaveform'
 import { WaveWrapper } from './PlayerWaveform.css'
+
+interface Props {
+	hideMobile?: boolean
+}
+
+const { hideMobile } = Astro.props
 ---
 
 <div transition:persist transition:name="global-waveform" style="display: contents;">
-	<PlayerWaveform client:only="preact">
+	<PlayerWaveform hideMobile={hideMobile} client:only="preact">
 		<div slot="fallback">
 			<div class={WaveWrapper}></div>
 			<LoadingSpinner />

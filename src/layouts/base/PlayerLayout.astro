@@ -73,7 +73,7 @@ const initialVenueId = gigsFromEntry?.entry.collection === 'venue' ? gigsFromEnt
 				<LoadingSpinner />
 			</div>
 		</div>
-		<PersistentWaveformSlot slot="waveform" />
+		<PersistentWaveformSlot slot="waveform" hideMobile={true}/>
 		<ImageGallery thumbnailWidthDesktop="250px" enableClientUpdates={true} />
 		<div
 			id="gig-meta"

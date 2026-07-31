@@ -18,7 +18,7 @@ interface Props {
 	waveform?: HTMLElement
 }
 
-const GlobalPlayer: FunctionalComponent<Props> = ({ title = "AUDIO PLAYER", playerAudio, waveform }) => {
+const GlobalPlayer: FunctionalComponent<Props> = ({ title = "PLAYLIST", playerAudio, waveform }) => {
 	const { setPlaylist } = usePlayer()
 
 	useEffect(() => {

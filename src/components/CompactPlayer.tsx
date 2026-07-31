@@ -43,15 +43,6 @@ const CompactPlayer: FunctionalComponent<Props> = ({ title = "AUDIO PLAYER", pla
 	const currentTrack = playlist[selectedTrack]
 	const currentTracklist = currentTrack?.tracklist ?? []
 
-	const currentTrackMarker = useMemo(() => {
-		for (let i = currentTracklist.length - 1; i >= 0; i--) {
-			if (currentTime >= timeToSeconds(currentTracklist[i].time)) {
-				return i
-			}
-		}
-		return -1
-	}, [currentTime, currentTracklist])
-
 	/** 
 	 * Initialize on load.
 	 */

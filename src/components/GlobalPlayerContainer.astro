@@ -140,7 +140,13 @@ import CompactPlayerControls from './player/CompactPlayerControls'
 		connectedCallback() {
 			const syncPlaying = () => {
 				this.playing = playerState.get().playing
-				this.visible = playerState.get().playlist.length ? true : false
+				// Hide when nothing in playlist
+				if (!playerState.get().playlist.length) {
+					this.open = false
+					this.visible = false
+				} else {
+					this.visible = true
+				}
 			}
 
 			syncPlaying()

@@ -10,11 +10,23 @@ import { LengthWrapper, WaveWrapper } from "./PlayerWaveform.css"
 import { usePlayer } from "./usePlayer"
 import { formatTime } from "./wavesurferShared"
 import LoadingSpinner from "../LoadingSpinner"
+import { getCurrentScreensize } from "@src/util/helpers"
 
-export default function PlayerWaveform() {
+interface Props {
+	hideMobile?: boolean
+}
+
+export default function PlayerWaveform({ hideMobile }: Props) {
 	const containerRef = useRef<HTMLDivElement | null>(null)
 
 	const { ready, loading, currentTime, duration } = usePlayer()
+
+	const isMobile = getCurrentScreensize() === 'xs'
+
+	// Avoid attaching to a hidden wavesurfer container
+	if (isMobile && hideMobile) {
+		return null
+	}
 
 	useEffect(() => {
 		const el = containerRef.current

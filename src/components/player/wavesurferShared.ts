@@ -72,7 +72,7 @@ const parsePeaksPayload = (payload: unknown): number[] => {
 	return peaks as number[]
 }
 
-export const loadWaveSurferTrack = ({
+export const loadWaveSurferTrack = async ({
 	wavesurfer,
 	trackFile,
 	peaksFile,
@@ -89,7 +89,7 @@ export const loadWaveSurferTrack = ({
 		return wavesurfer.load(trackFile, [cachedPeaks])
 	}
 
-	// Fetch if not in cache
+	// Fetch if not in cache...
 	let peaksRequest = inflightPeaksRequests.get(peaksFile)
 	if (!peaksRequest) {
 		peaksRequest = fetch(peaksFile.replace("#", "%23"))
@@ -106,7 +106,7 @@ export const loadWaveSurferTrack = ({
 		inflightPeaksRequests.set(peaksFile, peaksRequest)
 	}
 
-	peaksRequest
+	return peaksRequest
 		.then((peaks) => {
 			if (!isCurrentRequest()) return
 			onPeaks?.(peaks)
