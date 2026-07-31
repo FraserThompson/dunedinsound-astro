@@ -158,15 +158,18 @@ class PlayerEngine {
 
 			updatePlayerState({ playlist: newPlaylist, selectedTrack: targetIndex })
 			this.loadTrackIndex(targetIndex, true, seekTime)
+			return
+		}
+
+		if (isFirstLoad) {
+			// Player is empty: load track 0 into WaveSurfer to render waveform, BUT autoPlay = false
+			console.log('is first load')
+			updatePlayerState({ playlist: newPlaylist, selectedTrack: 0, playing: false })
+			this.loadTrackIndex(0, false)
 		} else {
-			if (isFirstLoad) {
-				// Player is empty: load track 0 into WaveSurfer to render waveform, BUT autoPlay = false
-				updatePlayerState({ playlist: newPlaylist, selectedTrack: 0, playing: false })
-				this.loadTrackIndex(0, false)
-			} else {
-				// Player already has an active track: just append to playlist without touching WaveSurfer
-				updatePlayerState({ playlist: newPlaylist })
-			}
+			// Player already has an active track: just append to playlist without touching WaveSurfer
+			console.log('not first load')
+			updatePlayerState({ playlist: newPlaylist })
 		}
 	}
 

@@ -98,14 +98,14 @@ const { selected } = Astro.props
 	 * Similar to EntryMenu.astro but with subcategories for year/month.
 	 */
 	class GigsMenu extends HTMLUListElement {
-		sidebar: SidebarWrapper | null
-		artistsMenu: HTMLElement | null
-		selected: string | null
+		sidebar: SidebarWrapper | null = null
+		dropdowns: NodeListOf<Element> | null = null
+		filters: NodeListOf<Element> | null = null
+		artistsMenu: HTMLElement | null = null
+		selected: string | null = null
 
 		constructor() {
 			super()
-			this.sidebar = document.querySelector<SidebarWrapper>('sidebar-wrapper')
-			this.artistsMenu = this.querySelector('artists-menu')
 			this.selected = this.getAttribute('data-selected')
 		}
 
@@ -246,8 +246,13 @@ const { selected } = Astro.props
 		 * Attach listeners.
 		 */
 		connectedCallback() {
-			window.addEventListener(filterEventName, this.onFilter)
-			window.addEventListener(dropdownClickEventName, this.onDropdownClick)
+			this.sidebar = document.querySelector<SidebarWrapper>('sidebar-wrapper')
+			this.artistsMenu = this.querySelector('artists-menu')
+			this.dropdowns = document.querySelectorAll('dropdown-menu')
+			this.filters = document.querySelectorAll('shuffle-filters')
+			this.filters?.forEach((filter) => filter.addEventListener(filterEventName, this.onFilter))
+			this.dropdowns?.forEach((dropdown) => dropdown.addEventListener(dropdownClickEventName, this.onDropdownClick))
+
 			!this.selected && this.gigLinks?.forEach((gigLink) => gigLink.addEventListener('click', this.gigClick))
 		}
 
@@ -255,8 +260,8 @@ const { selected } = Astro.props
 		 * Detach listeners.
 		 */
 		disconnectedCallback() {
-			window.removeEventListener(filterEventName, this.onFilter)
-			window.removeEventListener(dropdownClickEventName, this.onDropdownClick)
+			this.filters?.forEach((filter) => filter.removeEventListener(filterEventName, this.onFilter))
+			this.dropdowns?.forEach((dropdown) => dropdown.removeEventListener(dropdownClickEventName, this.onDropdownClick))
 			!this.selected && this.gigLinks?.forEach((gigLink) => gigLink.removeEventListener('click', this.gigClick))
 		}
 	}

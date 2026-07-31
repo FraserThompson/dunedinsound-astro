@@ -2,21 +2,10 @@
  * Filters displayed in the library.
  * 
  * This includes venues and artists.
- * 
- * Props:
- *  - artistOptions: List of artists for filtering.
- *  - venueOptions: List of venues for filtering.
- *  - selectedArtistId: Which artist is selected.
- *  - selectedVenueId: Which venue is selected.
- *  - onSelectArtist: Handler for when an artist is selected.
- *  - onSelectVenue: Handler for when an venue is selected.
- *  - venueFilteredCount: Count of tracks matching current venue filter.
- *  - artistFilteredCount: Count of tracks matching current artist filter.
- *  - artistCounts: Counts of gigs matching each artist.
- *  - venueCounts: Counts of gigs matching each venue.
  */
 
 import type { FunctionalComponent } from "preact"
+import { useRef, useEffect } from "preact/hooks"
 import { TracklistWrapper } from "@src/components/player/PlayerTracklist.css"
 import {
 	PlayerLibraryColumnLabel,
@@ -47,6 +36,24 @@ interface Props {
 
 export const ALL_FILTER_ID = 'all'
 
+// Helper to scroll the active child element into view within its parent scroll container
+const scrollToActive = (container: HTMLElement | null) => {
+	if (!container) return
+	const activeEl = container.querySelector<HTMLElement>('.active')
+	if (!activeEl) return
+
+	const elTop = activeEl.offsetTop
+	const elBottom = elTop + activeEl.offsetHeight
+	const containerTop = container.scrollTop
+	const containerBottom = containerTop + container.clientHeight
+
+	if (elTop < containerTop) {
+		container.scrollTop = elTop
+	} else if (elBottom > containerBottom) {
+		container.scrollTop = elBottom - container.clientHeight
+	}
+}
+
 export const PlayerLibraryFilters: FunctionalComponent<Props> = ({
 	artistOptions,
 	venueOptions,
@@ -59,13 +66,26 @@ export const PlayerLibraryFilters: FunctionalComponent<Props> = ({
 	artistCounts,
 	venueCounts,
 }) => {
+	const artistListRef = useRef<HTMLUListElement>(null)
+	const venueListRef = useRef<HTMLUListElement>(null)
+
+	// Scroll active artist into view on initial mount or selection change
+	useEffect(() => {
+		scrollToActive(artistListRef.current)
+	}, [selectedArtistId, artistOptions])
+
+	// Scroll active venue into view on initial mount or selection change
+	useEffect(() => {
+		scrollToActive(venueListRef.current)
+	}, [selectedVenueId, venueOptions])
+
 	return (
 		<div className={PlayerLibraryFiltersWrapper}>
 			<div className={PlayerLibraryColumn}>
 				<div className={PlayerTableHeader}>
 					<div className={PlayerLibraryHeaderButton}>Artist</div>
 				</div>
-				<ul className={TracklistWrapper}>
+				<ul ref={artistListRef} className={TracklistWrapper}>
 					<li
 						role="button"
 						onClick={() => onSelectArtist(ALL_FILTER_ID)}
@@ -91,7 +111,7 @@ export const PlayerLibraryFilters: FunctionalComponent<Props> = ({
 				<div className={PlayerTableHeader}>
 					<div className={PlayerLibraryHeaderButton}>Venue</div>
 				</div>
-				<ul className={TracklistWrapper}>
+				<ul ref={venueListRef} className={TracklistWrapper}>
 					<li
 						role="button"
 						onClick={() => onSelectVenue(ALL_FILTER_ID)}

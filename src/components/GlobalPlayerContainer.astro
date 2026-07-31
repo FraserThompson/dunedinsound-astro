@@ -51,6 +51,7 @@ import CompactPlayerControls from './player/CompactPlayerControls'
 
 <script>
 	import { playerState } from '@src/components/player/playerStore'
+	import { playerContainerToggle, type PlayerContainerToggleEventDetails } from '@src/util/events'
 
 	const PLAYER_OPEN_STORAGE_KEY = 'compactPlayerOpen'
 
@@ -63,6 +64,7 @@ import CompactPlayerControls from './player/CompactPlayerControls'
 			this._internals = this.attachInternals()
 		}
 
+		// Mini player is expanded
 		get open() {
 			return this._internals.states.has('open')
 		}
@@ -74,21 +76,19 @@ import CompactPlayerControls from './player/CompactPlayerControls'
 				this._internals.states.delete('open')
 			}
 
+			const detail: PlayerContainerToggleEventDetails = { open: flag }
+			this.dispatchEvent(
+				new CustomEvent(playerContainerToggle, {
+					detail,
+					bubbles: true,
+					composed: true
+				})
+			)
+
 			this.persistOpenState(flag)
 		}
 
-		get minimized() {
-			return this._internals.states.has('minimized')
-		}
-
-		set minimized(flag) {
-			if (flag) {
-				this._internals.states.add('minimized')
-			} else {
-				this._internals.states.delete('minimized')
-			}
-		}
-
+		// Mini player is visible
 		get visible() {
 			return this._internals.states.has('visible')
 		}

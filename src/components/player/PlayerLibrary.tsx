@@ -1,22 +1,9 @@
 /**
- * Library of all audio on the website.
- * 
- * Props:
- *  - playerAudio: Array of audio to display in library.
- *  - columns: What columns to display (artist, gig, and venue by default)
- *  - columnTemplate: CSS grid template for columns.
- *  - artistOptions: List of artists for filtering.
- *  - venueOptions: List of venues for filtering.
- *  - initialArtistId: Artist which should be selected initially.
- *  - initialVenueId: Venue which should be selected initially.
- *  - title: Title to show in header.
- *  - maxWidth: the max width
- *  - maxHeight: the max height
- *  - maxHeightDesktop: the max height on desktop.
+ * Library of all audio on the website with virtualized list rendering.
  */
 
 import type { FunctionalComponent } from "preact"
-import { useState } from "preact/hooks"
+import { useState, useRef, useEffect } from "preact/hooks"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import type { PlayerAudio } from "@src/util/collection"
 import { usePlayer } from "./usePlayer"
@@ -55,6 +42,7 @@ interface Props {
 	maxWidth?: string
 	maxHeight?: string
 	maxHeightDesktop?: string
+	rowHeight?: number
 }
 
 const matchesFilter = (item: PlayerAudio, artistId: string, venueId: string) => {
@@ -73,7 +61,7 @@ const getOptionCount = (items: PlayerAudio[], options: PlayerLibraryFilterOption
 export const PlayerLibrary: FunctionalComponent<Props> = ({
 	playerAudio = [],
 	columns = ['artist', 'gig', 'venue'],
-	columnTemplate = 'minmax(0, 1.5fr) minmax(0, 2fr) minmax(0, 1fr)',
+	columnTemplate = 'minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr)',
 	artistOptions = [],
 	venueOptions = [],
 	initialArtistId,
@@ -81,10 +69,10 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 	maxWidth,
 	maxHeight = "160px",
 	title,
-	maxHeightDesktop
+	maxHeightDesktop,
+	rowHeight = 24,
 }) => {
 	const {
-		seekToTime,
 		selectTrack,
 		selectedTrack,
 		currentTime,
@@ -97,6 +85,11 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 	const [selectedArtistId, setSelectedArtistId] = useState(initialArtistId || ALL_FILTER_ID)
 	const [selectedVenueId, setSelectedVenueId] = useState(initialVenueId || ALL_FILTER_ID)
 	const [selectedTrackId, setSelectedTrackId] = useState('')
+
+	// Virtualization state
+	const scrollRef = useRef<HTMLUListElement>(null)
+	const [scrollTop, setScrollTop] = useState(0)
+	const [containerHeight, setContainerHeight] = useState(300)
 
 	const venueFilteredItems = playerAudio.filter((item) => selectedVenueId === ALL_FILTER_ID || item.venue?.id === selectedVenueId)
 	const artistFilteredItems = playerAudio.filter((item) => selectedArtistId === ALL_FILTER_ID || item.artist?.id === selectedArtistId)
@@ -111,6 +104,42 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 	const selectedId = playlist[selectedTrack]?.id
 
 	const findTrackInPlayerPlaylist = (track: PlayerAudio) => playlist.findIndex((item) => item.id === track.id)
+
+	// Reset scroll top when filter changes so you aren't stuck scrolled down
+	useEffect(() => {
+		if (scrollRef.current) {
+			scrollRef.current.scrollTop = 0
+			setScrollTop(0)
+		}
+	}, [selectedArtistId, selectedVenueId])
+
+	// Track scroll position for virtualization window
+	useEffect(() => {
+		const container = scrollRef.current
+		if (!container) return
+
+		const handleScroll = () => setScrollTop(container.scrollTop)
+		const handleResize = () => setContainerHeight(container.clientHeight)
+
+		handleResize()
+		container.addEventListener("scroll", handleScroll, { passive: true })
+		window.addEventListener("resize", handleResize)
+
+		return () => {
+			container.removeEventListener("scroll", handleScroll)
+			window.removeEventListener("resize", handleResize)
+		}
+	}, [])
+
+	// Calculate visible row window
+	const overscan = 5 // Extra rows above and below to prevent flashing while scrolling
+	const startIndex = Math.max(0, Math.floor(scrollTop / rowHeight) - overscan)
+	const visibleCount = Math.ceil(containerHeight / rowHeight) + 2 * overscan
+	const endIndex = Math.min(filteredItems.length, startIndex + visibleCount)
+
+	const visibleItems = filteredItems.slice(startIndex, endIndex)
+	const paddingTop = startIndex * rowHeight
+	const paddingBottom = Math.max(0, (filteredItems.length - endIndex) * rowHeight)
 
 	// Opens <player-wrapper>
 	const openGlobalPlayer = () => {
@@ -147,21 +176,6 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 			}
 			window.dispatchEvent(new CustomEvent(playerLibraryPreviewEventName, { detail }))
 		}
-	}
-
-	// Timestamp seeking handler
-	const onSeekClick = (track: PlayerAudio, time: string) => {
-		const existingIndex = findTrackInPlayerPlaylist(track)
-		if (existingIndex >= 0) {
-			// Pass existingIndex directly to ensure we seek on the exact target track
-			selectTrack(existingIndex, true, time)
-		} else {
-			addTracksToPlaylist([track], true)
-			// Delay seek slightly or pass timestamp through state if possible
-			seekToTime(time)
-		}
-		setSelectedTrackId(track.id)
-		openGlobalPlayer()
 	}
 
 	// Action button click handlers
@@ -222,8 +236,10 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 						FILE
 					</div>
 				</div>
-				{/* Tracklist */}
+
+				{/* Virtualized Tracklist */}
 				<ul
+					ref={scrollRef}
 					className={TracklistWrapper}
 					style={assignInlineVars({
 						[maxHeightVar]: maxHeight,
@@ -233,7 +249,12 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 					{!filteredItems.length && (
 						<li className="tracklist-track">No tracks match this filter.</li>
 					)}
-					{filteredItems.map((track) => {
+
+					{/* Top Virtual Spacer */}
+					{paddingTop > 0 && <li style={{ height: `${paddingTop}px`, pointerEvents: 'none' }} aria-hidden="true" />}
+
+					{/* Visible Track Window */}
+					{visibleItems.map((track) => {
 						const inPlaylistIndex = findTrackInPlayerPlaylist(track)
 						const isSelected = track.id === selectedTrackId
 						const isGlobalSelectedTrack = !!track.id && track.id === selectedId && inPlaylistIndex === selectedTrack
@@ -243,13 +264,13 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 							<TracklistTrack
 								key={track.id}
 								track={track}
+								hideTracklist={true}
 								isSelected={isSelected}
 								isPlayingTrack={isPlayingTrack}
 								isPausedTrack={isPausedTrack}
 								currentTime={currentTime}
 								duration={duration}
 								onTrackClick={onTrackClick}
-								onSeekClick={onSeekClick}
 								rowTemplate={columnTemplate}
 							>
 								{columns.map((column) => (
@@ -258,6 +279,9 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 							</TracklistTrack>
 						)
 					})}
+
+					{/* Bottom Virtual Spacer */}
+					{paddingBottom > 0 && <li style={{ height: `${paddingBottom}px`, pointerEvents: 'none' }} aria-hidden="true" />}
 				</ul>
 
 				{/* Bottom Action Bar */}

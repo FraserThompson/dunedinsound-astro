@@ -31,7 +31,8 @@ import PlayerCurrentTrack from "./player/PlayerCurrentTrack"
 import PlayerLibrary from "./player/PlayerLibrary"
 import type { PlayerLibraryFilterOption } from "./player/PlayerLibraryFilters"
 import { getCurrentScreensize } from "@src/util/helpers"
-import { useEffect } from "preact/hooks"
+import { useEffect, useState } from "preact/hooks"
+import { playerContainerToggle, type PlayerContainerToggleEventDetails } from "@src/util/events"
 
 interface Props {
 	title: string
@@ -55,20 +56,44 @@ const LibraryPlayer: FunctionalComponent<Props> = ({
 	children,
 	footer
 }) => {
+	const [playerOpenedPadding, setPlayerOpenedPadding] = useState(null as number | null)
+
+	// When the mini-player opens this will move the library up on mobile.
+	const onPlayerOpen = (e: any) => {
+		const detail = e.detail as PlayerContainerToggleEventDetails
+		if (detail.open) {
+			const height = e.target.getBoundingClientRect().height
+			setPlayerOpenedPadding(height)
+		} else {
+			setPlayerOpenedPadding(null)
+		}
+	}
+
 	useEffect(() => {
 		const playerWrapper = document.querySelector<HTMLElement>("player-wrapper") as
 			| (HTMLElement & { open?: boolean })
 			| null
-		if (playerWrapper && "visible" in playerWrapper) {
+
+		if (!playerWrapper) return
+
+		// On mobile we want the mini player to be visible, on desktop we dont want it at all
+		if ("visible" in playerWrapper) {
 			if (getCurrentScreensize() === 'xs') {
 				playerWrapper.visible = true
+				playerWrapper.addEventListener(playerContainerToggle, onPlayerOpen)
+				const height = playerWrapper.getBoundingClientRect().height
+				if (playerWrapper.open) {
+					setPlayerOpenedPadding(height)
+				}
 			} else {
 				playerWrapper.remove()
 			}
 		}
+		return () => playerWrapper.removeEventListener(playerContainerToggle, onPlayerOpen)
 	}, [])
+
 	return (
-		<div class={LibraryPlayerWrapper}>
+		<div class={`${LibraryPlayerWrapper}`} style={{ paddingBottom: playerOpenedPadding }}>
 			<div className={WinampTitlebar} data-title={title.toLocaleUpperCase()} />
 			<div class={`${LibraryPlayerWaveWrapper} hideMobile`}>
 				{waveform ?? <div style={{ minHeight: "65px" }} />}

@@ -134,7 +134,7 @@ const {
 			for (const mutation of mutationList) {
 				if (mutation.type === 'childList') {
 					const updatedEvent = new CustomEvent(imageGalleryUpdatedEventName)
-					window.dispatchEvent(updatedEvent)
+					this.dispatchEvent(updatedEvent)
 				}
 			}
 		}

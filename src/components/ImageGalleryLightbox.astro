@@ -3,7 +3,7 @@
  * We use lightgallery pretty much as is, this component just
  * updates the URL on image change, and opens the corresponding
  * image so people can link directly to images.
- * 
+ *
  * Also responds to {imageGalleryUpdatedEventName} to trigger a refresh.
  */
 import 'lightgallery/css/lightgallery.css'
@@ -15,7 +15,7 @@ import 'lightgallery/css/lg-zoom.css'
 	import lgZoom from 'lightgallery/plugins/zoom'
 	import { navigate } from 'astro:transitions/client'
 	import { imageGalleryUpdatedEventName } from '@src/util/events'
-import type { LightGallery } from 'lightgallery/lightgallery'
+	import type { LightGallery } from 'lightgallery/lightgallery'
 
 	let lightbox: LightGallery
 
@@ -85,7 +85,10 @@ import type { LightGallery } from 'lightgallery/lightgallery'
 	document.addEventListener('astro:page-load', initLightbox)
 
 	// Refresh lightbox when gallery updates
-	window.addEventListener(imageGalleryUpdatedEventName, () => {
-		lightbox.refresh()
-	})
+	const galleries = document.querySelectorAll('image-gallery')
+	galleries.forEach((gallery) =>
+		gallery.addEventListener(imageGalleryUpdatedEventName, () => {
+			lightbox.refresh()
+		})
+	)
 </script>

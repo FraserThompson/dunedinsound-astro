@@ -69,7 +69,9 @@ const initialVenueId = gigsFromEntry?.entry.collection === 'venue' ? gigsFromEnt
 		client:only="preact"
 	>
 		<div slot="fallback">
-			<LoadingSpinner />
+			<div style={{ position: 'fixed', width: '100vw', height: '100vh', overflow: 'hidden' }}>
+				<LoadingSpinner />
+			</div>
 		</div>
 		<PersistentWaveformSlot slot="waveform" />
 		<ImageGallery thumbnailWidthDesktop="250px" enableClientUpdates={true} />
@@ -142,9 +144,9 @@ const initialVenueId = gigsFromEntry?.entry.collection === 'venue' ? gigsFromEnt
 
 			metaContainer.dataset.gig = gigId
 			metaContainer.innerHTML = `
-				<button class='${TransportButton} clear' href="${getEntryPath(gig.data.title, 'gig')}">
+				<a class='${TransportButton} clear' href="${getEntryPath(gig.data.title, 'gig')}">
 					GO TO GIG PAGE
-				</button>
+				</a>
 				<span class='${WinampInset}' style="color: #28da1d; font-family: monospace; font-size: 12px; margin-left: auto;">
 					${formattedDate(new Date(gig.data.date))}
 				<span>

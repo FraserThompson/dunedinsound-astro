@@ -12,9 +12,11 @@ export const LibraryPlayerWrapper = style([WinampBackground, {
 	display: "flex",
 	flexDirection: "column",
 	paddingBottom: theme.dimensions.subheaderHeight,
+	transition: 'padding-bottom 0.25s ease-in-out',
+	willChange: 'padding-bottom',
 	'@media': {
 		'screen and (--md)': {
-			paddingBottom: 0,
+			paddingBottom: '0 !important',
 			height: "100vh",
 		}
 	}

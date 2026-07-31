@@ -86,7 +86,7 @@ const series = await loadAndFormatCollection('series')
 			})
 		}
 
-		window.addEventListener(updateEventName, (e: any) => {
+		const onVirtualListUpdate = (e: any) => {
 			// Stop observing if we've started scrolling to a year.
 			// This is to avoid it being centered. Also kinda bad, should improve.
 			// @ts-expect-error
@@ -104,15 +104,12 @@ const series = await loadAndFormatCollection('series')
 					)
 				}, 3000)
 			}
-		})
+		}
 
-		// Observe loaded elements on page load
-		setTimeout(() => {
-			observeGigs()
-		}, 200)
+		const virtualLists = document.querySelectorAll('virtualized-list')
+		virtualLists.forEach((list) => list.addEventListener(updateEventName, onVirtualListUpdate))
 
-		// We want to show a series at the top if there's one, so check on filter.
-		window.addEventListener(filterEventName, (e: any) => {
+		const onFilter = (e: any) => {
 			// Hidden by default
 			seriesTiles.forEach((el) => el.classList.add('hidden'))
 			// Find if there's exactly one match
@@ -123,7 +120,16 @@ const series = await loadAndFormatCollection('series')
 			if (seriesMatches.length === 1) {
 				seriesMatches[0].classList.remove('hidden')
 			}
-		})
+		}
+
+		// We want to show a series at the top if there's one, so check on filter.
+		const filters = document.querySelectorAll('shuffle-filters')
+		filters.forEach((filter) => filter.addEventListener(filterEventName, onFilter))
+
+		// Observe loaded elements on page load
+		setTimeout(() => {
+			observeGigs()
+		}, 200)
 
 		if (window.location.hash) {
 			// @ts-expect-error

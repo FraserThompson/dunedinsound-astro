@@ -45,7 +45,8 @@ const PlayerTracklist: FunctionalComponent<Props> = ({ maxHeight, maxHeightDeskt
 						isPlayingTrack={isPlayingTrack}
 						isPausedTrack={isPausedTrack}
 					>
-						<div>{(index + 1).toString().padStart(2, '0')}.</div><div class="track-title">{track.title}</div>
+						<div style={{ paddingRight: '5px' }}>{(index + 1).toString().padStart(2, '0')}.</div>
+						<div class="track-title">{track.title}</div>
 					</TracklistTrack>
 				})}
 				{!playlist && <li>Add a track to begin</li>}

@@ -3,6 +3,7 @@
  * 
  * Props:
  *  - track: The track to display.
+ *  - hideTracklist: Whether to hide the subtracklist.
  *  - isSelected: Whether it's selected.
  *  - isPlayingTrack: Whether it's playing.
  *  - isPausedTrack: Whether it's paused.
@@ -24,6 +25,7 @@ import { SubTracklist, TracklistTrackWrapper } from "./PlayerTracklistTrack.css"
 
 interface Props {
 	track: PlayerAudio
+	hideTracklist?: boolean
 	isSelected?: boolean
 	isPlayingTrack?: boolean
 	isPausedTrack?: boolean
@@ -37,6 +39,7 @@ interface Props {
 
 export const TrackListTrack: FunctionalComponent<Props> = ({
 	track,
+	hideTracklist = false,
 	isSelected = false,
 	isPlayingTrack = false,
 	isPausedTrack = false,
@@ -93,7 +96,7 @@ export const TrackListTrack: FunctionalComponent<Props> = ({
 				</div>
 
 				{/* Sub-tracklist timestamp seek links */}
-				{track.tracklist && (
+				{!hideTracklist && track.tracklist && (
 					<ul className={SubTracklist}>
 						{track.tracklist.map((trackItem) => (
 							<li key={trackItem.title}>

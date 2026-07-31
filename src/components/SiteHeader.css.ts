@@ -33,6 +33,8 @@ export const headerMobile = style({
 	zIndex: '12',
 	width: '100%',
 	borderTop: theme.borders.primary,
+	transform: 'translateZ(0)',
+	backfaceVisibility: 'hidden',
 	'@media': {
 		'screen and (--md)': {
 			display: 'none'

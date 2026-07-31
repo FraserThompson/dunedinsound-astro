@@ -13,6 +13,7 @@ export const TracklistTrackWrapper = style({
 	textAlign: 'left',
 	fontFamily: 'monospace',
 	color: '#28da1d',
+	fontSize: "12px",
 	cursor: "pointer",
 	selectors: {
 		'&.active': {
@@ -20,6 +21,11 @@ export const TracklistTrackWrapper = style({
 		},
 		'&:hover': {
 			backgroundColor: '#0818c4'
+		}
+	},
+	'@media': {
+		'screen and (--md)': {
+			fontSize: "16px",
 		}
 	}
 })
@@ -31,13 +37,25 @@ export const SubTracklist = style({
 
 globalStyle(`${TracklistTrackWrapper} span`, {
 	textOverflow: "ellipsis",
+	fontSize: "12px",
 	overflow: "hidden",
 	whiteSpace: "nowrap",
+	'@media': {
+		'screen and (--md)': {
+			fontSize: "16px",
+		}
+	}
 })
 
 globalStyle(`${TracklistTrackWrapper} .track-title`, {
+	fontSize: "12px",
 	direction: "rtl",
 	textOverflow: "ellipsis",
 	overflow: "hidden",
 	whiteSpace: "nowrap",
+	'@media': {
+		'screen and (--md)': {
+			fontSize: "16px",
+		}
+	}
 })

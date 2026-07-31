@@ -293,7 +293,7 @@ const {
 				filteredItems: this.filteredElements
 			}
 			const event = new CustomEvent(filterEventName, { detail })
-			window.dispatchEvent(event)
+			this.dispatchEvent(event)
 		}
 
 		onSearch = (e: Event) => {

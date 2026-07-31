@@ -47,6 +47,7 @@ globalStyle(`${WaveWrapper} wave`, {
 
 export const LengthWrapper = style({
 	lineHeight: '1em',
+	fontSize: '12px',
 	color: '#28da1d',
 	pointerEvents: 'none',
 	zIndex: '5',

@@ -14,7 +14,7 @@
  *  Each menu item should have
  *   data-markerkey: The toString'd LatLng in this format - LngLat(lng, lat)
  *
- * This will also respond to a shuffle-filter on the page and remove markers based on index.
+ * This will also respond to a shuffle-filters on the page and remove markers based on index.
  */
 
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -67,19 +67,141 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 	import { filterEventName, type FilterEventDetails } from '@src/util/events'
 
 	class MapWrapper extends HTMLElement {
-		searchBox: HTMLInputElement | null
-		loadingSpinner: HTMLElement | null
-		map: mapboxgl.Map
-		markers: mapboxgl.Marker[]
-		sidebar: SidebarWrapper | null
-		sidebarLinks: NodeListOf<HTMLAnchorElement> | undefined
-		selectedMarker: mapboxgl.Marker | undefined
-		selectedSidebar: HTMLElement | null | undefined
-		interactive: boolean
+		searchBox: HTMLInputElement | null = null
+		loadingSpinner: HTMLElement | null = null
+		map: mapboxgl.Map | null = null
+		markers: mapboxgl.Marker[] = []
+		filters: NodeListOf<Element> | null = null
+		sidebar: SidebarWrapper | null = null
+		sidebarLinks: NodeListOf<HTMLAnchorElement> | null = null
+		selectedMarker: mapboxgl.Marker | null = null
+		selectedSidebar: HTMLElement | null = null
+		interactive: boolean = true
 
-		constructor() {
-			super()
+		/**
+		 * Closes all popups (pass in a popup to exclude that one)
+		 * @param exclude
+		 */
+		closeAllPopups(exclude?: Popup) {
+			this.markers?.forEach((marker) => {
+				const popup = marker.getPopup()
+				if (exclude && exclude === popup) return
+				popup?.isOpen() && popup?.remove()
+			})
+		}
 
+		/**
+		 * Highlight in sidebar when a marker is clicked.
+		 * @param e
+		 */
+		markerClick(e: any) {
+			if (!this.sidebarLinks) return
+
+			const popup = e.target as mapboxgl.Popup
+			const markerLatLng = popup.getLngLat()
+
+			this.selectedSidebar?.classList.remove('active')
+
+			const matchingSidebarItems = this.sidebar?.querySelectorAll<HTMLElement>(
+				`[data-markerkey='${markerLatLng.toString()}']`
+			)
+
+			if (matchingSidebarItems) {
+				const sorted = [...matchingSidebarItems].sort(
+					(a, b) => parseInt(b.dataset.date || '0') - parseInt(a.dataset.date || '0')
+				)
+				this.selectedSidebar = sorted[0]
+				this.selectedSidebar?.classList.add('active')
+				if (this.selectedSidebar && !elementIsVisibleInViewport(this.selectedSidebar, this.sidebar?.menu)) {
+					this.selectedSidebar.scrollIntoView({ behavior: 'smooth', block: 'center' })
+				}
+			}
+		}
+
+		/**
+		 * Popup marker when sidebar item is clicked.
+		 */
+		sidebarClick(e: MouseEvent) {
+			if (!(e.currentTarget instanceof HTMLElement) || !this.map) return
+
+			const key = e.currentTarget?.getAttribute('data-markerkey')
+
+			if (!key) return
+
+			const marker = this.markers.find((marker) => marker.getLngLat().toString() === key)
+
+			if (!marker) return
+
+			this.map.panTo(marker.getLngLat())
+
+			// Unselect old sidebar item
+			this.selectedSidebar?.classList.remove('active')
+
+			// Select new sidebar item
+			this.selectedSidebar = e.currentTarget
+			this.selectedSidebar?.classList.add('active')
+
+			// Close old popup
+			this.selectedMarker?.togglePopup()
+
+			// Open new popup
+			this.selectedMarker = marker
+			this.selectedMarker.togglePopup()
+
+			// Close sidebar on mobile
+			// See: SidebarNav.astro
+			this.sidebar?.toggleSidebar()
+		}
+
+		onFilter = (e: any) => {
+			// If it's not interactive we dont want to be zoomin around on filter
+			if (!this.interactive || !this.map) return
+
+			const detail: FilterEventDetails = e.detail
+			const filteredItems = detail.filteredItems
+			const bounds = new mapboxgl.LngLatBounds()
+
+			// Collect all marker keys that should be visible
+			const visibleMarkerKeys = new Set(
+				(filteredItems || []).map((item) => item.querySelector('a')?.dataset.markerkey).filter(Boolean)
+			)
+
+			// Show/hide markers based on whether their key is in the visible set
+			this.markers.forEach((marker) => {
+				const key = marker.getLngLat().toString()
+				if (visibleMarkerKeys.has(key) && this.map) {
+					marker.addTo(this.map)
+					bounds.extend(marker.getLngLat())
+				} else {
+					marker.remove()
+				}
+			})
+
+			// If there's one result open the popup for ease of use (ON DESKTOP)
+			if (getCurrentScreensize() !== 'xs' && visibleMarkerKeys.size === 1) {
+				const onlyKey = Array.from(visibleMarkerKeys)[0]
+				const marker = this.markers.find((m) => m.getLngLat().toString() === onlyKey)
+				if (marker && !marker.getPopup()?.isOpen()) {
+					marker.togglePopup()
+					// Prevent popup from stealing focus
+					if (this.searchBox) {
+						this.searchBox.focus({ preventScroll: true })
+					}
+				}
+			} else if (getCurrentScreensize() !== 'xs') {
+				// Close popups if more than one marker is visible
+				this.markers.forEach((marker) => {
+					if (marker.getPopup()?.isOpen() && visibleMarkerKeys.has(marker.getLngLat().toString())) {
+						marker.togglePopup()
+					}
+				})
+			}
+
+			// Fit the map to the resulting markers
+			!bounds.isEmpty() && this.map.fitBounds(bounds, { duration: 500, padding: 10 })
+		}
+
+		connectedCallback() {
 			mapboxgl.accessToken =
 				'pk.eyJ1IjoiZnJhc2VydGhvbXBzb24iLCJhIjoiY21vNm1hOGRhMjRlYjJwcTNidzF5cnQ3MiJ9.MayfCS-JtsxS_39lenMNwQ'
 
@@ -99,9 +221,9 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 				interactive: this.interactive
 			})
 
-			this.markers = []
 			this.sidebar = document.querySelector<SidebarWrapper>('sidebar-wrapper')
-			this.sidebarLinks = this.sidebar?.querySelectorAll('[data-markerkey]')
+			this.sidebarLinks = this.sidebar?.querySelectorAll('[data-markerkey]') ?? null
+			this.filters = document.querySelectorAll('shuffle-filters')
 
 			const markers = JSON.parse(this.getAttribute('data-markers') || '') as any
 			const popups: NodeListOf<HTMLElement> = this.querySelectorAll('.popup')
@@ -148,144 +270,18 @@ const { markers, zoom, center, height, heightMobile, nointeract } = Astro.props
 					marker?.togglePopup()
 				}
 			}
-		}
 
-		/**
-		 * Closes all popups (pass in a popup to exclude that one)
-		 * @param exclude
-		 */
-		closeAllPopups(exclude?: Popup) {
-			this.markers?.forEach((marker) => {
-				const popup = marker.getPopup()
-				if (exclude && exclude === popup) return
-				popup?.isOpen() && popup?.remove()
-			})
-		}
-
-		/**
-		 * Highlight in sidebar when a marker is clicked.
-		 * @param e
-		 */
-		markerClick(e: any) {
-			if (!this.sidebarLinks) return
-
-			const popup = e.target as mapboxgl.Popup
-			const markerLatLng = popup.getLngLat()
-
-			this.selectedSidebar?.classList.remove('active')
-
-			const matchingSidebarItems = this.sidebar?.querySelectorAll<HTMLElement>(
-				`[data-markerkey='${markerLatLng.toString()}']`
-			)
-
-			if (matchingSidebarItems) {
-				const sorted = [...matchingSidebarItems].sort(
-					(a, b) => parseInt(b.dataset.date || '0') - parseInt(a.dataset.date || '0')
-				)
-				this.selectedSidebar = sorted[0]
-				this.selectedSidebar?.classList.add('active')
-				if (this.selectedSidebar && !elementIsVisibleInViewport(this.selectedSidebar, this.sidebar?.menu)) {
-					this.selectedSidebar.scrollIntoView({ behavior: 'smooth', block: 'center' })
-				}
-			}
-		}
-
-		/**
-		 * Popup marker when sidebar item is clicked.
-		 */
-		sidebarClick(e: MouseEvent) {
-			if (!(e.currentTarget instanceof HTMLElement)) return
-
-			const key = e.currentTarget?.getAttribute('data-markerkey')
-
-			if (!key) return
-
-			const marker = this.markers.find((marker) => marker.getLngLat().toString() === key)
-
-			if (!marker) return
-
-			this.map.panTo(marker.getLngLat())
-
-			// Unselect old sidebar item
-			this.selectedSidebar?.classList.remove('active')
-
-			// Select new sidebar item
-			this.selectedSidebar = e.currentTarget
-			this.selectedSidebar?.classList.add('active')
-
-			// Close old popup
-			this.selectedMarker?.togglePopup()
-
-			// Open new popup
-			this.selectedMarker = marker
-			this.selectedMarker.togglePopup()
-
-			// Close sidebar on mobile
-			// See: SidebarNav.astro
-			this.sidebar?.toggleSidebar()
-		}
-
-		onFilter = (e: any) => {
-			// If it's not interactive we dont want to be zoomin around on filter
-			if (!this.interactive) return
-
-			const detail: FilterEventDetails = e.detail
-			const filteredItems = detail.filteredItems
-			const bounds = new mapboxgl.LngLatBounds()
-
-			// Collect all marker keys that should be visible
-			const visibleMarkerKeys = new Set(
-				(filteredItems || []).map((item) => item.querySelector('a')?.dataset.markerkey).filter(Boolean)
-			)
-
-			// Show/hide markers based on whether their key is in the visible set
-			this.markers.forEach((marker) => {
-				const key = marker.getLngLat().toString()
-				if (visibleMarkerKeys.has(key)) {
-					marker.addTo(this.map)
-					bounds.extend(marker.getLngLat())
-				} else {
-					marker.remove()
-				}
-			})
-
-			// If there's one result open the popup for ease of use (ON DESKTOP)
-			if (getCurrentScreensize() !== 'xs' && visibleMarkerKeys.size === 1) {
-				const onlyKey = Array.from(visibleMarkerKeys)[0]
-				const marker = this.markers.find((m) => m.getLngLat().toString() === onlyKey)
-				if (marker && !marker.getPopup()?.isOpen()) {
-					marker.togglePopup()
-					// Prevent popup from stealing focus
-					if (this.searchBox) {
-						this.searchBox.focus({ preventScroll: true })
-					}
-				}
-			} else if (getCurrentScreensize() !== 'xs') {
-				// Close popups if more than one marker is visible
-				this.markers.forEach((marker) => {
-					if (marker.getPopup()?.isOpen() && visibleMarkerKeys.has(marker.getLngLat().toString())) {
-						marker.togglePopup()
-					}
-				})
-			}
-
-			// Fit the map to the resulting markers
-			!bounds.isEmpty() && this.map.fitBounds(bounds, { duration: 500, padding: 10 })
-		}
-
-		connectedCallback() {
 			this.sidebarLinks?.forEach((link) => link.addEventListener('mousedown', (e) => this.sidebarClick(e)))
 
 			this.map.on('load', () => {
 				this.loadingSpinner?.remove()
 			})
 
-			// Support for hiding markers on filter
-			window.addEventListener(filterEventName, this.onFilter, false)
+			this.filters?.forEach((filter) => filter.addEventListener(filterEventName, this.onFilter, false))
 		}
 
 		disconnectedCallback() {
-			window.removeEventListener(filterEventName, this.onFilter, false)
+			this.filters?.forEach((filter) => filter.removeEventListener(filterEventName, this.onFilter))
 		}
 	}
 

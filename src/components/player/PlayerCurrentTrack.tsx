@@ -18,7 +18,7 @@ const PlayerCurrentTrack: FunctionalComponent = () => {
 			<div style={{ position: 'absolute', overflow: 'hidden' }}>
 				<PlayerVisualizer width={600} height={18} />
 			</div>
-			<MarqueeText text={currentTrackTitle} isPlaying={playing}></MarqueeText>
+			<MarqueeText text={currentTrackTitle} isPlaying={playing} placeholder="Add a track to begin"></MarqueeText>
 		</div>
 	)
 }

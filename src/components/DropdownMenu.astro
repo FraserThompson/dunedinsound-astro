@@ -250,7 +250,7 @@ const menuVars = assignInlineVars({
 			this.mainMenu?.classList.remove('open')
 			this.closeAllSubmenus()
 
-			window.dispatchEvent(
+			this.dispatchEvent(
 				new CustomEvent(dropdownClickEventName, {
 					detail: { target },
 					bubbles: true,

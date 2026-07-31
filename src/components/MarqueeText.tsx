@@ -5,6 +5,7 @@ import { CurrentTrackMarquee, CurrentTrackText } from "./MarqueeText.css"
 
 interface Props {
 	text?: string
+	placeholder?: string
 	isPlaying: boolean
 	speedPxPerSec?: number
 	spacer?: string
@@ -12,6 +13,7 @@ interface Props {
 
 export const MarqueeText: FunctionalComponent<Props> = ({
 	text,
+	placeholder,
 	isPlaying,
 	spacer = " ** ",
 	speedPxPerSec = 40,
@@ -65,6 +67,7 @@ export const MarqueeText: FunctionalComponent<Props> = ({
 						{displayText}
 					</span>
 				))}
+				{!text && placeholder && <span className={CurrentTrackStatusText} style={{ paddingLeft: "5px" }}>{placeholder}</span>}
 			</div>
 		</div>
 	)

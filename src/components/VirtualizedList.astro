@@ -64,6 +64,7 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, grid = {} } = Ast
 		allCells: HTMLElement[] | null = null
 		scrollArea: HTMLElement | null = null
 		contentArea: HTMLElement | null = null
+		filters: NodeListOf<Element> | null = null
 		rowsInBlock: number = 0
 		blocksInCluster: number = 0
 		filterOnSidebar: boolean
@@ -123,7 +124,7 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, grid = {} } = Ast
 			const event = new CustomEvent(updateEventName, {
 				detail
 			})
-			window.dispatchEvent(event)
+			this.dispatchEvent(event)
 		}
 
 		/**
@@ -226,6 +227,8 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, grid = {} } = Ast
 			this.scrollArea = this.querySelector(`#${this.scrollAreaId}`)
 			this.contentArea = this.querySelector(`#${this.contentAreaId}`)
 
+			this.filters = document.querySelectorAll('shuffle-filters')
+
 			if (!this.scrollArea || !this.contentArea) return
 
 			// Get initial list of cells before Clusterize mangles them
@@ -257,12 +260,12 @@ const { id, filterOnSidebar, bottomMargin, bottomMarginMobile, grid = {} } = Ast
 				this.updateGrid(this.allCells)
 			}
 
-			window.addEventListener(filterEventName, this.onFilter)
+			this.filters?.forEach((filter) => filter.addEventListener(filterEventName, this.onFilter))
 		}
 
 		disconnectedCallback() {
 			this.clusterize?.destroy()
-			window.removeEventListener(filterEventName, this.onFilter)
+			this.filters?.forEach((filter) => filter.removeEventListener(filterEventName, this.onFilter))
 		}
 	}
 
