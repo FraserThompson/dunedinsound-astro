@@ -15,6 +15,8 @@
 
 import type { FunctionalComponent } from "preact"
 import type { PlayerAudio } from "@src/util/collection"
+import ChevronDownIcon from '~icons/iconoir/nav-arrow-down'
+import ChevronUpIcon from '~icons/iconoir/nav-arrow-up'
 import PlayerTransport from "./player/PlayerTransport"
 import PlayerTracklist from "./player/PlayerTracklist"
 import {
@@ -23,8 +25,11 @@ import {
 	LibraryPlayerSidebarWrapper,
 	LibraryPlayerWaveWrapper,
 	LibraryPlayerContentWrapper,
+	LibraryPlayerContentToggle,
+	LibraryPlayerContentToggleIcon,
 	LibraryPlayerBottomWrapper,
 	LibraryPlayerChildrenWrapper,
+	LibraryContentFooterWrapper,
 } from "./LibraryPlayer.css"
 import { WinampTitlebar } from "./CompactPlayer.css"
 import PlayerCurrentTrack from "./player/PlayerCurrentTrack"
@@ -57,6 +62,7 @@ const LibraryPlayer: FunctionalComponent<Props> = ({
 	footer
 }) => {
 	const [playerOpenedPadding, setPlayerOpenedPadding] = useState(null as number | null)
+	const [contentOpen, setContentOpen] = useState(false)
 
 	// When the mini-player opens this will move the library up on mobile.
 	const onPlayerOpen = (e: any) => {
@@ -92,6 +98,13 @@ const LibraryPlayer: FunctionalComponent<Props> = ({
 		return () => playerWrapper.removeEventListener(playerContainerToggle, onPlayerOpen)
 	}, [])
 
+	const onToggleContent = () => {
+		setContentOpen((prev) => {
+			const next = !prev
+			return next
+		})
+	}
+
 	return (
 		<div class={`${LibraryPlayerWrapper}`} style={{ paddingBottom: playerOpenedPadding }}>
 			<div className={WinampTitlebar} data-title={title.toLocaleUpperCase()} />
@@ -116,14 +129,26 @@ const LibraryPlayer: FunctionalComponent<Props> = ({
 						maxHeightDesktop="100%"
 					/>
 				</div>
-				{children && <div class={`${LibraryPlayerContentWrapper} flex hideMobile`}>
-					<div className={WinampTitlebar} data-title="PREVIEW" />
+				{children && <div class={`${LibraryPlayerContentWrapper} ${contentOpen ? 'open' : ''}`}>
+					<button
+						type="button"
+						className={LibraryPlayerContentToggle}
+						title={contentOpen ? "Collapse preview" : "Expand preview"}
+						aria-label={contentOpen ? "Collapse preview" : "Expand preview"}
+						aria-expanded={contentOpen}
+						onClick={onToggleContent}
+					>
+						<span className={LibraryPlayerContentToggleIcon} aria-hidden="true">
+							{contentOpen ? <ChevronDownIcon /> : <ChevronUpIcon />}
+						</span>
+					</button>
+					<div className={WinampTitlebar} data-title="GIG PREVIEW" />
 					<div className={LibraryPlayerChildrenWrapper}>
 						{children}
 					</div>
-					{footer && <div>
+					<div className={LibraryContentFooterWrapper}>
 						{footer}
-					</div>}
+					</div>
 				</div>}
 				<div class={`${LibraryPlayerPlaylistWrapper} flex hideMobile`}>
 					<div className={WinampTitlebar} data-title="PLAYLIST" />

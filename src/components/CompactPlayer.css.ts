@@ -40,7 +40,7 @@ export const WinampTitlebar = style({
 	selectors: {
 		'&::before': {
 			background:
-				'-webkit-linear-gradient(top, #fffcdf 0%, #fffcdf 29%, #736c50 32%, #736c50 66%, #d5ceb1 69%, #d5ceb1 100%)',
+				'linear-gradient(to bottom, #fffcdf 0%, #fffcdf 29%, #736c50 32%, #736c50 66%, #d5ceb1 69%, #d5ceb1 100%)',
 			content: "''",
 			height: '8px',
 			width: '100%',

@@ -11,7 +11,6 @@ export const WinampInset = style({
 	scrollbarWidth: 'thin',
 	scrollbarColor: '#d5ceb1 black',
 	fontFamily: 'monospace',
-	fontSize: "16px"
 })
 
 export const WinampBackground = style({

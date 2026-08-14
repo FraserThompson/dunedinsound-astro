@@ -22,6 +22,7 @@ import { assignInlineVars } from '@vanilla-extract/dynamic'
 interface Props {
 	images?: ResponsiveImage[]
 	noLightbox?: boolean
+	disableUrlUpdates?: boolean
 	thumbnailWidthDesktop?: string
 	thumbnailWidthMobile?: string
 	enableClientUpdates?: boolean
@@ -30,6 +31,7 @@ interface Props {
 const {
 	images,
 	noLightbox,
+	disableUrlUpdates = false,
 	thumbnailWidthDesktop = '450px',
 	thumbnailWidthMobile = '180px',
 	enableClientUpdates = false
@@ -47,7 +49,7 @@ const {
 	{images?.map((responsiveImage) => <LightboxImage responsiveImage={responsiveImage} />)}
 </image-gallery>
 
-{!noLightbox && <ImageGalleryLightbox />}
+{!noLightbox && <ImageGalleryLightbox disableUrlUpdates={disableUrlUpdates} />}
 
 <script>
 	import {
@@ -133,7 +135,7 @@ const {
 		onDomChange = (mutationList: MutationRecord[]) => {
 			for (const mutation of mutationList) {
 				if (mutation.type === 'childList') {
-					const updatedEvent = new CustomEvent(imageGalleryUpdatedEventName)
+					const updatedEvent = new CustomEvent(imageGalleryUpdatedEventName, { bubbles: true })
 					this.dispatchEvent(updatedEvent)
 				}
 			}

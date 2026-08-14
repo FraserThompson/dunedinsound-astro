@@ -74,17 +74,18 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 }) => {
 	const {
 		selectTrack,
+		playPause,
 		selectedTrack,
 		currentTime,
 		duration,
 		addTracksToPlaylist,
+		removeTrackFromPlaylist,
 		playlist,
 		playing,
 	} = usePlayer()
 
 	const [selectedArtistId, setSelectedArtistId] = useState(initialArtistId || ALL_FILTER_ID)
 	const [selectedVenueId, setSelectedVenueId] = useState(initialVenueId || ALL_FILTER_ID)
-	const [selectedTrackId, setSelectedTrackId] = useState('')
 
 	// Virtualization state
 	const scrollRef = useRef<HTMLUListElement>(null)
@@ -99,9 +100,6 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 	const venueCounts = getOptionCount(artistFilteredItems, venueOptions, 'venue')
 	const availableArtistOptions = artistOptions.filter((option) => (artistCounts[option.id] ?? 0) > 0 || selectedArtistId === option.id)
 	const availableVenueOptions = venueOptions.filter((option) => (venueCounts[option.id] ?? 0) > 0 || selectedVenueId === option.id)
-
-	const selectedItem = filteredItems.find((item) => item.id === selectedTrackId)
-	const selectedId = playlist[selectedTrack]?.id
 
 	const findTrackInPlayerPlaylist = (track: PlayerAudio) => playlist.findIndex((item) => item.id === track.id)
 
@@ -158,6 +156,10 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 			openGlobalPlayer()
 		}
 		const existingIndex = findTrackInPlayerPlaylist(track)
+		if (existingIndex === selectedTrack) {
+			playPause()
+			return
+		}
 		if (existingIndex >= 0) {
 			selectTrack(existingIndex, true)
 		} else {
@@ -166,13 +168,13 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 	}
 
 	// Track selection & preview event dispatching
-	const onTrackClick = (item: PlayerAudio) => {
-		setSelectedTrackId(item.id)
+	const onTrackClick = (track: PlayerAudio) => {
+		playTrack(track)
 
-		if (item.artist && item.gig) {
+		if (track.artist && track.gig) {
 			const detail: PlayerLibraryPreviewEventDetails = {
-				artist: item.artist,
-				gig: item.gig,
+				artist: track.artist,
+				gig: track.gig,
 			}
 			window.dispatchEvent(new CustomEvent(playerLibraryPreviewEventName, { detail }))
 		}
@@ -185,7 +187,6 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 				openGlobalPlayer()
 			}
 			addTracksToPlaylist(filteredItems, true)
-			setSelectedTrackId(filteredItems[0].id)
 		}
 	}
 
@@ -195,16 +196,12 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 		}
 	}
 
-	const onPlaySelectedClick = () => {
-		if (selectedItem) {
-			playTrack(selectedItem)
-		}
+	const onAddClick = (track: PlayerAudio) => {
+		addTracksToPlaylist([track], false)
 	}
 
-	const onAddSelectedClick = () => {
-		if (selectedItem) {
-			addTracksToPlaylist([selectedItem], false)
-		}
+	const onRemoveClick = (track: PlayerAudio) => {
+		removeTrackFromPlaylist(findTrackInPlayerPlaylist(track))
 	}
 
 	return (
@@ -225,15 +222,23 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 				/>
 			)}
 			<div className={PlayerLibraryControls}>
+
 				{/* Header row */}
-				<div className={PlayerTableHeader} style={{ gridTemplateColumns: columnTemplate + ' minmax(0, 0.5fr)' }}>
+				<div className={PlayerTableHeader} style={{ gridTemplateColumns: '28px ' + columnTemplate + ' 28px' }}>
+
+					{/* Play icon */}
+					<div className={PlayerLibraryHeaderButton}>
+					</div>
+
+					{/* Selected columns */}
 					{columns.map((column) => (
 						<div key={column} className={PlayerLibraryHeaderButton}>
 							{column.toLocaleUpperCase()}
 						</div>
 					))}
+
+					{/* Submenu */}
 					<div className={PlayerLibraryHeaderButton}>
-						FILE
 					</div>
 				</div>
 
@@ -256,22 +261,24 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 					{/* Visible Track Window */}
 					{visibleItems.map((track) => {
 						const inPlaylistIndex = findTrackInPlayerPlaylist(track)
-						const isSelected = track.id === selectedTrackId
-						const isGlobalSelectedTrack = !!track.id && track.id === selectedId && inPlaylistIndex === selectedTrack
-						const isPlayingTrack = isGlobalSelectedTrack && playing
-						const isPausedTrack = isGlobalSelectedTrack && !playing && !!currentTime
+						const isSelectedTrack = selectedTrack === inPlaylistIndex
+						const isPlayingTrack = isSelectedTrack && playing
+						const isPausedTrack = isSelectedTrack && !playing && !!currentTime
 						return (
 							<TracklistTrack
 								key={track.id}
 								track={track}
 								hideTracklist={true}
-								isSelected={isSelected}
+								isInPlaylist={inPlaylistIndex !== -1}
 								isPlayingTrack={isPlayingTrack}
 								isPausedTrack={isPausedTrack}
 								currentTime={currentTime}
 								duration={duration}
+								subMenuMode='library'
 								onTrackClick={onTrackClick}
-								rowTemplate={columnTemplate}
+								onAddClick={onAddClick}
+								onRemoveClick={onRemoveClick}
+								columnTemplate={columnTemplate}
 							>
 								{columns.map((column) => (
 									<span key={column}>{track[column]?.title}</span>
@@ -288,10 +295,7 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 				<PlayerLibraryActionButtons
 					onPlayAll={onPlayAllClick}
 					onAddAll={onAddAllClick}
-					onPlaySelected={onPlaySelectedClick}
-					onAddSelected={onAddSelectedClick}
 					hasTracks={filteredItems.length > 0}
-					hasSelection={!!selectedItem}
 				/>
 			</div>
 		</div>

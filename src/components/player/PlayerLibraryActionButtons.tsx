@@ -19,19 +19,13 @@ import { PlayerLibraryActionBar } from "./PlayerLibrary.css"
 interface Props {
 	onPlayAll: () => void
 	onAddAll: () => void
-	onPlaySelected: () => void
-	onAddSelected: () => void
 	hasTracks: boolean
-	hasSelection: boolean
 }
 
 export const PlayerLibraryActionButtons: FunctionalComponent<Props> = ({
 	onPlayAll,
 	onAddAll,
-	onPlaySelected,
-	onAddSelected,
 	hasTracks,
-	hasSelection,
 }) => {
 	return (
 		<div className={PlayerLibraryActionBar}>
@@ -40,12 +34,6 @@ export const PlayerLibraryActionButtons: FunctionalComponent<Props> = ({
 			</button>
 			<button className={`${TransportButton} clear`} style={{ marginRight: "0.5rem" }} disabled={!hasTracks} onClick={onAddAll}>
 				<PlusIcon /> ADD ALL
-			</button>
-			<button className={`${TransportButton} clear`} disabled={!hasSelection} onClick={onPlaySelected}>
-				<PlayIcon /> PLAY SELECTED
-			</button>
-			<button className={`${TransportButton} clear`} disabled={!hasSelection} onClick={onAddSelected}>
-				<PlusIcon /> ADD SELECTED
 			</button>
 		</div>
 	)

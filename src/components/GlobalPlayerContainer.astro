@@ -138,11 +138,15 @@ import CompactPlayerControls from './player/CompactPlayerControls'
 		}
 
 		connectedCallback() {
+			const storedOpen = this.readStoredOpenState()
+			if (storedOpen !== undefined) {
+				this.open = storedOpen
+			}
+
 			const syncPlaying = () => {
 				this.playing = playerState.get().playing
 				// Hide when nothing in playlist
 				if (!playerState.get().playlist.length) {
-					this.open = false
 					this.visible = false
 				} else {
 					this.visible = true
@@ -156,11 +160,6 @@ import CompactPlayerControls from './player/CompactPlayerControls'
 			openButton.forEach((el) => {
 				el.addEventListener('click', this.openButtonClickHandler)
 			})
-
-			const storedOpen = this.readStoredOpenState()
-			if (storedOpen !== undefined) {
-				this.open = storedOpen
-			}
 		}
 
 		disconnectedCallback() {

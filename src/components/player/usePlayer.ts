@@ -15,6 +15,7 @@ export interface PlayerActions {
 	playPause: () => void
 	addTracksToPlaylist: (track: PlayerAudio, play?: boolean) => void
 	clearPlaylist: () => void
+	removeTrackFromPlaylist: (index: number) => void
 	next: (play?: boolean) => void
 	previous: () => void
 	selectTrack: (index: number, play?: boolean, seek?: string) => void
@@ -48,6 +49,7 @@ export const usePlayer = () => {
 		toggleShuffle: () => playerEngine.toggleShuffle(),
 		addTracksToPlaylist: (track: PlayerAudio[], play = true) =>
 			playerEngine.addTracksToPlaylist(track, play),
+		removeTrackFromPlaylist: (index: number) => playerEngine.removeTrackAtIndex(index),
 		clearPlaylist: () => playerEngine.setPlaylist([]),
 	}
 }

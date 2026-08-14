@@ -84,7 +84,7 @@ class PlayerEngine {
 					this.seekTo(this.pendingSeekTime)
 					this.pendingSeekTime = undefined
 				}
-				this.safePlay()
+				this.play()
 
 				// Make sure it's actually playing
 				const currentSrc = this.getCurrentSrc()
@@ -95,7 +95,10 @@ class PlayerEngine {
 		})
 	}
 
-	private async safePlay() {
+	/**
+	 * Plays.
+	 */
+	private async play() {
 		if (!this.ws) return
 		try {
 			await this.ws.play()
@@ -105,6 +108,11 @@ class PlayerEngine {
 		}
 	}
 
+	/**
+	 * Gets the wavesurfer instance.
+	 * 
+	 * @returns Wavesurfer instance
+	 */
 	public getWaveSurfer(): WaveSurfer | null {
 		return this.ws
 	}
@@ -120,6 +128,12 @@ class PlayerEngine {
 		}
 	}
 
+	/**
+	 * Sets the entire current playlist.
+	 * 
+	 * @param playlist array of tracks to set as playlist.
+	 * @param autoPlay if true, it will also play the first track.
+	 */
 	public async setPlaylist(playlist: PlayerAudio[], autoPlay = false) {
 		updatePlayerState({ playlist, selectedTrack: 0 })
 
@@ -133,6 +147,13 @@ class PlayerEngine {
 		this.loadTrackIndex(0, autoPlay)
 	}
 
+	/**
+	 * Adds tracks to the playlist.
+	 * 
+	 * @param tracks array of tracks to add
+	 * @param play if true, it plays the first added track.
+	 * @param seekTime optionally seek to a time.
+	 */
 	public addTracksToPlaylist(tracks: PlayerAudio[], play = false, seekTime?: string) {
 		if (!tracks.length) return
 
@@ -171,6 +192,58 @@ class PlayerEngine {
 		}
 	}
 
+	/**
+	 * Removes a track at an index. Stops it playing if it is,
+	 * @param index index to remove it.
+	 */
+	public removeTrackAtIndex(index: number) {
+		const state = playerState.get()
+		const currentPlaylist = state.playlist ?? []
+		if (index < 0 || index >= currentPlaylist.length) return
+
+		const wasSelected = state.selectedTrack === index
+		const wasPlaying = state.playing
+		const nextPlaylist = currentPlaylist.filter((_, i) => i !== index)
+
+		if (!nextPlaylist.length) {
+			this.setPlaylist([])
+			return
+		}
+
+		let nextSelectedTrack = state.selectedTrack
+		if (index < state.selectedTrack) {
+			nextSelectedTrack = state.selectedTrack - 1
+		} else if (index === state.selectedTrack) {
+			nextSelectedTrack = Math.min(index, nextPlaylist.length - 1)
+		}
+
+		if (wasSelected) {
+			if (wasPlaying) {
+				this.ws?.stop()
+			}
+
+			updatePlayerState({
+				playlist: nextPlaylist,
+				selectedTrack: nextSelectedTrack,
+				ready: false,
+				playing: false,
+			})
+			this.loadTrackIndex(nextSelectedTrack, false)
+			return
+		}
+
+		updatePlayerState({
+			playlist: nextPlaylist,
+			selectedTrack: nextSelectedTrack,
+		})
+	}
+
+	/**
+	 * Loads the playlist track at a given index.
+	 * @param index 
+	 * @param autoPlay 
+	 * @param seekTime 
+	 */
 	public async loadTrackIndex(index: number, autoPlay = false, seekTime?: string) {
 		const state = playerState.get()
 		const playlist = state.playlist ?? []
@@ -190,7 +263,7 @@ class PlayerEngine {
 		// Play it and don't load if we already have it.
 		if (this.currentTrackId === track.id) {
 			if (seekTime) this.seekTo(seekTime)
-			if (autoPlay) this.safePlay()
+			if (autoPlay) this.play()
 			updatePlayerState({ ready: true, loading: false })
 			return
 		}

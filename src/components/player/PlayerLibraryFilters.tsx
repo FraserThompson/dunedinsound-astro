@@ -12,8 +12,7 @@ import {
 	PlayerLibraryHeaderButton,
 	PlayerTableHeader,
 } from "@src/components/player/PlayerLibrary.css"
-import { PlayerLibraryFiltersWrapper, PlayerLibraryColumn } from "./PlayerLibraryFilters.css"
-import { TracklistTrackWrapper } from "./PlayerTracklistTrack.css"
+import { PlayerLibraryFiltersWrapper, PlayerLibraryColumn, PlayerLibraryFilterItem } from "./PlayerLibraryFilters.css"
 
 export interface PlayerLibraryFilterOption {
 	id: string
@@ -89,7 +88,7 @@ export const PlayerLibraryFilters: FunctionalComponent<Props> = ({
 					<li
 						role="button"
 						onClick={() => onSelectArtist(ALL_FILTER_ID)}
-						className={selectedArtistId === ALL_FILTER_ID ? `${TracklistTrackWrapper} active` : TracklistTrackWrapper}
+						className={selectedArtistId === ALL_FILTER_ID ? `${PlayerLibraryFilterItem} active` : PlayerLibraryFilterItem}
 					>
 						<span className={PlayerLibraryColumnLabel}>ALL ({venueFilteredCount})</span>
 					</li>
@@ -98,7 +97,7 @@ export const PlayerLibraryFilters: FunctionalComponent<Props> = ({
 							key={option.id}
 							role="button"
 							onClick={() => onSelectArtist(option.id)}
-							className={selectedArtistId === option.id ? `${TracklistTrackWrapper} active` : TracklistTrackWrapper}
+							className={selectedArtistId === option.id ? `${PlayerLibraryFilterItem} active` : PlayerLibraryFilterItem}
 						>
 							<span className={PlayerLibraryColumnLabel}>
 								{option.title} ({artistCounts[option.id] ?? option.count ?? 0})
@@ -115,7 +114,7 @@ export const PlayerLibraryFilters: FunctionalComponent<Props> = ({
 					<li
 						role="button"
 						onClick={() => onSelectVenue(ALL_FILTER_ID)}
-						className={selectedVenueId === ALL_FILTER_ID ? `${TracklistTrackWrapper} active` : TracklistTrackWrapper}
+						className={selectedVenueId === ALL_FILTER_ID ? `${PlayerLibraryFilterItem} active` : PlayerLibraryFilterItem}
 					>
 						<span className={PlayerLibraryColumnLabel}>ALL ({artistFilteredCount})</span>
 					</li>
@@ -124,7 +123,7 @@ export const PlayerLibraryFilters: FunctionalComponent<Props> = ({
 							key={option.id}
 							role="button"
 							onClick={() => onSelectVenue(option.id)}
-							className={selectedVenueId === option.id ? `${TracklistTrackWrapper} active` : TracklistTrackWrapper}
+							className={selectedVenueId === option.id ? `${PlayerLibraryFilterItem} active` : PlayerLibraryFilterItem}
 						>
 							<span className={PlayerLibraryColumnLabel}>
 								{option.title} ({venueCounts[option.id] ?? option.count ?? 0})

@@ -188,6 +188,33 @@ const CompactPlayer: FunctionalComponent<Props> = ({ title = "AUDIO PLAYER", pla
 		if (!wavesurfer.isPlaying()) void wavesurfer.play()
 	}
 
+	const removeTrackFromPlaylist = (index: number) => {
+		setPlaylist((currentPlaylist) => {
+			if (index < 0 || index >= currentPlaylist.length) return currentPlaylist
+
+			const nextPlaylist = currentPlaylist.filter((_, i) => i !== index)
+
+			setSelectedTrack((currentSelectedTrack) => {
+				if (!nextPlaylist.length) return 0
+				if (index < currentSelectedTrack) return currentSelectedTrack - 1
+				if (index === currentSelectedTrack) return Math.min(index, nextPlaylist.length - 1)
+				return currentSelectedTrack
+			})
+
+			if (!nextPlaylist.length) {
+				setPlaying(false)
+				setReady(false)
+				setLoading(false)
+				setCurrentTime(0)
+				setDuration(0)
+				void wavesurferRef.current?.stop()
+				void wavesurferRef.current?.empty()
+			}
+
+			return nextPlaylist
+		})
+	}
+
 
 	return (
 		<div className={CompactPlayerWrapper}>
@@ -219,7 +246,10 @@ const CompactPlayer: FunctionalComponent<Props> = ({ title = "AUDIO PLAYER", pla
 						const isPlayingTrack = playing && isSelected
 						const isPausedTrack = !playing && !!currentTime && isSelected
 						return <TrackListTrack
+							key={track.id}
 							track={track}
+							subMenuMode="playlist"
+							onRemoveClick={() => removeTrackFromPlaylist(index)}
 							onTrackClick={(track) => selectTrack(index)}
 							onSeekClick={(track, time) => seekToTime(time)}
 							isSelected={isSelected}

@@ -4,11 +4,9 @@ export const TracklistTrackWrapper = style({
 	minHeight: '1.5rem',
 	display: 'grid',
 	position: 'relative',
-	gridTemplateColumns: `minmax(0, 6fr) minmax(0, 0.5fr)`,
+	gridTemplateColumns: `28px minmax(0, 6fr) 28px`,
 	alignItems: 'center',
 	columnGap: '5px',
-	paddingLeft: '3px',
-	paddingRight: '3px',
 	listStyle: 'none',
 	textAlign: 'left',
 	fontFamily: 'monospace',
@@ -34,6 +32,21 @@ export const SubTracklist = style({
 	paddingLeft: "25px"
 })
 
+export const TrackActionButton = style({
+	display: 'inline-flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+	border: 0,
+	padding: 0,
+	background: 'transparent',
+	color: '#bfced9',
+	cursor: 'pointer',
+	selectors: {
+		'&:hover': {
+			filter: 'brightness(0.8)'
+		}
+	}
+})
 
 globalStyle(`${TracklistTrackWrapper} span`, {
 	textOverflow: "ellipsis",

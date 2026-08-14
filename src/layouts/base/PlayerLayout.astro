@@ -73,8 +73,8 @@ const initialVenueId = gigsFromEntry?.entry.collection === 'venue' ? gigsFromEnt
 				<LoadingSpinner />
 			</div>
 		</div>
-		<PersistentWaveformSlot slot="waveform" hideMobile={true}/>
-		<ImageGallery thumbnailWidthDesktop="250px" enableClientUpdates={true} />
+		<PersistentWaveformSlot slot="waveform" hideMobile={true} />
+		<ImageGallery thumbnailWidthDesktop="250px" enableClientUpdates={true} disableUrlUpdates={true} />
 		<div
 			id="gig-meta"
 			slot="footer"
@@ -87,6 +87,7 @@ const initialVenueId = gigsFromEntry?.entry.collection === 'venue' ? gigsFromEnt
 </BaseLayout>
 
 <script>
+	import { CurrentTrackStatusText } from '@src/components/player/PlayerCurrentTrack.css'
 	import { WinampInset } from '@src/components/player/PlayerTracklist.css'
 	import { TransportButton } from '@src/components/player/PlayerTransport.css'
 	import {
@@ -144,12 +145,15 @@ const initialVenueId = gigsFromEntry?.entry.collection === 'venue' ? gigsFromEnt
 
 			metaContainer.dataset.gig = gigId
 			metaContainer.innerHTML = `
-				<a class='${TransportButton} clear' href="${getEntryPath(gig.data.title, 'gig')}">
+				<a class='${TransportButton} clear' style='height: 18px;' href="${getEntryPath(gig.data.title, 'gig')}">
 					GO TO GIG PAGE
 				</a>
-				<span class='${WinampInset}' style="color: #28da1d; font-family: monospace; font-size: 12px; margin-left: auto;">
+				<span class='${WinampInset} ${CurrentTrackStatusText}' style='flex: 1; overflow: hidden;'>
+					${json.data.data.title}
+				</span>
+				<span class='${WinampInset} ${CurrentTrackStatusText}'>
 					${formattedDate(new Date(gig.data.date))}
-				<span>
+				</span>
 			`
 		}
 	}

@@ -8,87 +8,113 @@
  */
 import 'lightgallery/css/lightgallery.css'
 import 'lightgallery/css/lg-zoom.css'
+
+interface Props {
+	disableUrlUpdates?: boolean
+}
+
+const { disableUrlUpdates } = Astro.props
 ---
+
+<image-gallery-lightbox data-disable-url-updates={disableUrlUpdates ? 'true' : 'false'} hidden></image-gallery-lightbox>
 
 <script>
 	import lightGallery from 'lightgallery'
 	import lgZoom from 'lightgallery/plugins/zoom'
 	import { navigate } from 'astro:transitions/client'
 	import { imageGalleryUpdatedEventName } from '@src/util/events'
-	import type { LightGallery } from 'lightgallery/lightgallery'
+	import type { LightGallery } from '@node_modules/lightgallery/lightgallery'
 
-	let lightbox: LightGallery
+	class ImageGalleryLightbox extends HTMLElement {
+		lightbox: LightGallery | null = null
+		activeIndex = 0
+		lightboxClosedByBack = false
+		disableUrlUpdates = false
 
-	const initLightbox = () => {
-		const options = {
-			selector: '.lightboxImage',
-			plugins: [lgZoom],
-			hideScrollbar: true,
-			speed: 300,
-			mobileSettings: { controls: false, showCloseIcon: true, download: true }
-		}
-		lightbox = lightGallery(document.body, { ...options })
-
-		const hash = window.location.hash
-
-		// This is set to true when the back button is used to close
-		// the lightbox, so we can avoid triggering afterClose methods
-		// unecessarily (which causes the page to refresh).
-		let lightboxClosedByBack = false
-
-		// Open gallery to hash if we came at it from the URL
-		if (hash.includes('image=')) {
-			const imageIndex = hash.split('=')[1]
-			lightbox.openGallery(parseInt(imageIndex))
+		onGalleryUpdated = () => {
+			this.lightbox?.refresh()
+			if (this.disableUrlUpdates && this.lightbox?.lgOpened) {
+				this.lightbox.slide(this.activeIndex, false, false)
+			}
 		}
 
-		// Update URL on slide change
-		document.body?.addEventListener('lgBeforeSlide', (e) => {
-			// @ts-expect-error
+		onAfterSlide = (e: any) => {
+			this.activeIndex = e.detail.index
+		}
+
+		onBeforeSlide = (e: any) => {
 			const { index, prevIndex } = e.detail
-			// So the back button on mobile closes the lightbox
+			this.activeIndex = index
 			if (prevIndex === index) {
 				navigate(`#image=${index}`, { history: 'push' })
 			} else {
 				navigate(`#image=${index}`, { history: 'replace' })
 			}
-		})
+		}
 
-		document.body?.addEventListener('lgAfterClose', (e) => {
-			// If the lightbox was closed by the back button, we don't
-			// need to do anything to the URL. Just get out.
-			if (lightboxClosedByBack) {
-				lightboxClosedByBack = false
+		onAfterClose = () => {
+			if (this.lightboxClosedByBack) {
+				this.lightboxClosedByBack = false
 				return
 			}
 
-			// Index is set on state by Astro view transition API.
-			// If it's 0 then we came from an external link.
-			// Else use browser back.
 			if (window.history.state.index > 0) {
 				window.history.back()
 			} else {
 				navigate(``, { history: 'replace' })
 			}
-		})
+		}
 
-		// Close the image gallery on back button
-		window.addEventListener('popstate', (e) => {
-			if (!location.hash.includes('image') && lightbox.lgOpened) {
-				lightboxClosedByBack = true
-				lightbox.closeGallery()
+		onPopState = () => {
+			if (!location.hash.includes('image') && this.lightbox?.lgOpened) {
+				this.lightboxClosedByBack = true
+				this.lightbox.closeGallery()
 			}
-		})
+		}
+
+		connectedCallback() {
+			this.disableUrlUpdates = this.dataset.disableUrlUpdates === 'true'
+
+			const options = {
+				selector: '.lightboxImage',
+				plugins: [lgZoom],
+				hideScrollbar: true,
+				speed: 300,
+				mobileSettings: { controls: false, showCloseIcon: true, download: true }
+			}
+
+			this.lightbox = lightGallery(document.body, { ...options })
+
+			const hash = window.location.hash
+			if (hash.includes('image=')) {
+				const imageIndex = parseInt(hash.split('=')[1])
+				this.activeIndex = imageIndex
+				this.lightbox.openGallery(imageIndex)
+			}
+
+			document.addEventListener(imageGalleryUpdatedEventName, this.onGalleryUpdated)
+			document.body?.addEventListener('lgAfterSlide', this.onAfterSlide)
+
+			if (!this.disableUrlUpdates) {
+				document.body?.addEventListener('lgBeforeSlide', this.onBeforeSlide)
+				document.body?.addEventListener('lgAfterClose', this.onAfterClose)
+				window.addEventListener('popstate', this.onPopState)
+			}
+		}
+
+		disconnectedCallback() {
+			document.removeEventListener(imageGalleryUpdatedEventName, this.onGalleryUpdated)
+			document.body?.removeEventListener('lgAfterSlide', this.onAfterSlide)
+			document.body?.removeEventListener('lgBeforeSlide', this.onBeforeSlide)
+			document.body?.removeEventListener('lgAfterClose', this.onAfterClose)
+			window.removeEventListener('popstate', this.onPopState)
+			this.lightbox?.destroy?.()
+			this.lightbox = null
+			this.lightboxClosedByBack = false
+		}
 	}
 
-	// Init lightbox on page load
-	document.addEventListener('astro:page-load', initLightbox)
-
-	// Refresh lightbox when gallery updates
-	const galleries = document.querySelectorAll('image-gallery')
-	galleries.forEach((gallery) =>
-		gallery.addEventListener(imageGalleryUpdatedEventName, () => {
-			lightbox.refresh()
-		})
-	)
+	if (!customElements.get('image-gallery-lightbox')) {
+		customElements.define('image-gallery-lightbox', ImageGalleryLightbox)
+	}
 </script>

@@ -1,4 +1,5 @@
 import { style } from '@vanilla-extract/css'
+import { TracklistTrackWrapper } from './PlayerTracklistTrack.css'
 
 // Filter Top Section (Artist / Venue Columns)
 export const PlayerLibraryFiltersWrapper = style({
@@ -17,3 +18,10 @@ export const PlayerLibraryColumn = style({
 	flex: 1,
 	minHeight: 0,
 })
+
+export const PlayerLibraryFilterItem = style([TracklistTrackWrapper,
+	{
+		gridTemplateColumns: '1fr !important',
+		padding: '0 3px'
+	}
+])

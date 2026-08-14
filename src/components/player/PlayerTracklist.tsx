@@ -14,6 +14,7 @@ import { TracklistWrapper, maxHeightVar, maxHeightDesktopVar } from "./PlayerTra
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import { TransportButton } from "./PlayerTransport.css"
 import TracklistTrack from "./PlayerTracklistTrack"
+import { PlayerLibraryFilterItem } from "./PlayerLibraryFilters.css"
 
 interface Props {
 	maxHeight?: string
@@ -23,7 +24,7 @@ interface Props {
 }
 
 const PlayerTracklist: FunctionalComponent<Props> = ({ maxHeight, maxHeightDesktop, showShuffle = false, showClear = false }) => {
-	const { playlist, selectedTrack, selectTrack, seekToTime, ready, playing, currentTime, toggleShuffle, clearPlaylist } = usePlayer()
+	const { playlist, selectedTrack, selectTrack, seekToTime, ready, playing, currentTime, toggleShuffle, clearPlaylist, removeTrackFromPlaylist } = usePlayer()
 
 
 	return (
@@ -39,8 +40,10 @@ const PlayerTracklist: FunctionalComponent<Props> = ({ maxHeight, maxHeightDeskt
 					return <TracklistTrack
 						key={track.id}
 						track={track}
-						onTrackClick={(track) => selectTrack(index)}
-						onSeekClick={(track, time) => seekToTime(time, index)}
+						subMenuMode="playlist"
+						onRemoveClick={() => removeTrackFromPlaylist(index)}
+						onTrackClick={() => selectTrack(index, true)}
+						onSeekClick={(_, time) => seekToTime(time, index)}
 						isSelected={isSelected}
 						isPlayingTrack={isPlayingTrack}
 						isPausedTrack={isPausedTrack}
@@ -49,7 +52,7 @@ const PlayerTracklist: FunctionalComponent<Props> = ({ maxHeight, maxHeightDeskt
 						<div class="track-title">{track.title}</div>
 					</TracklistTrack>
 				})}
-				{!playlist && <li>Add a track to begin</li>}
+				{!playlist.length && <li className={`${PlayerLibraryFilterItem}`}>Add a track to begin</li>}
 			</ul>
 			<div>
 				{showShuffle && <button
