@@ -92,23 +92,47 @@ const initialVenueId = gigsFromEntry?.entry.collection === 'venue' ? gigsFromEnt
 	import { TransportButton } from '@src/components/player/PlayerTransport.css'
 	import {
 		imageGalleryUpdateEventName,
-		playerLibraryPreviewEventName,
-		type ImageGalleryUpdateEventDetails,
-		type PlayerLibraryPreviewEventDetails
+		type ImageGalleryUpdateEventDetails
 	} from '@src/util/events'
 
+	import type { MinimalEntryDefinition } from '@src/util/collection'
 	import { getEntryPath, type ArtistGigResponse } from '@src/util/helpers'
 	import { formattedDate } from '@src/util/names'
+	import { playerState } from '@src/components/player/playerStore'
 
 	let playerStateUnsubscribe: (() => void) | undefined
-	let libraryPreviewSelection: PlayerLibraryPreviewEventDetails | undefined
 	let lastRenderedPreviewKey: string | undefined
 
-	const updateFromSelection = async (selection?: PlayerLibraryPreviewEventDetails) => {
+	type SelectedGigPreview = {
+		artist: MinimalEntryDefinition
+		gig: MinimalEntryDefinition
+	}
+
+	const getSelectionFromPlayerState = (): SelectedGigPreview | undefined => {
+		const state = playerState.get()
+
+		const currentTrack = state.playlist[state.selectedTrack]
+		if (!currentTrack?.artist || !currentTrack?.gig) return
+
+		return {
+			artist: currentTrack.artist,
+			gig: currentTrack.gig
+		}
+	}
+
+	const updateFromSelection = async (selection?: SelectedGigPreview) => {
 		const artistId = selection?.artist.id
 		const gigId = selection?.gig.id
 
 		if (!gigId) return
+
+		const metaContainer: HTMLElement | null = document.querySelector('#gig-meta')
+		if (!metaContainer) return
+
+		// Do nothing if we're not changing
+		if (metaContainer.dataset.gig == gigId) {
+			return
+		}
 
 		const previewKey = `${gigId}|${artistId || ''}`
 		if (previewKey === lastRenderedPreviewKey) return
@@ -138,9 +162,6 @@ const initialVenueId = gigsFromEntry?.entry.collection === 'venue' ? gigsFromEnt
 				window.dispatchEvent(event)
 			}
 
-			const metaContainer: HTMLElement | null = document.querySelector('#gig-meta')
-			if (!metaContainer) return
-
 			const gig = json.data
 
 			metaContainer.dataset.gig = gigId
@@ -158,20 +179,25 @@ const initialVenueId = gigsFromEntry?.entry.collection === 'venue' ? gigsFromEnt
 		}
 	}
 
-	const onLibraryPreviewSelection = async (event: Event) => {
-		const customEvent = event as CustomEvent<PlayerLibraryPreviewEventDetails>
-		libraryPreviewSelection = customEvent.detail
-		await updateFromSelection(libraryPreviewSelection)
-	}
-
 	const init = () => {
 		playerStateUnsubscribe?.()
-		window.removeEventListener(playerLibraryPreviewEventName, onLibraryPreviewSelection as EventListener)
-		window.addEventListener(playerLibraryPreviewEventName, onLibraryPreviewSelection as EventListener)
+
+		const syncFromPlayerState = () => {
+			const selection = getSelectionFromPlayerState()
+			if (!selection) return
+			void updateFromSelection(selection)
+		}
+
+		syncFromPlayerState()
+
+		playerStateUnsubscribe = playerState.subscribe(() => {
+			syncFromPlayerState()
+		})
 	}
 
 	const cleanup = () => {
-		window.removeEventListener(playerLibraryPreviewEventName, onLibraryPreviewSelection as EventListener)
+		playerStateUnsubscribe?.()
+		playerStateUnsubscribe = undefined
 	}
 
 	document.removeEventListener('astro:page-load', init)

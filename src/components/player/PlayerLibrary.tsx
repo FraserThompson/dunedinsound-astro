@@ -19,7 +19,6 @@ import {
 	PlayerLibraryHeaderButton,
 	PlayerTableHeader,
 } from './PlayerLibrary.css'
-import { playerLibraryPreviewEventName, type PlayerLibraryPreviewEventDetails } from "@src/util/events"
 import {
 	PlayerLibraryFilters,
 	ALL_FILTER_ID,
@@ -170,14 +169,6 @@ export const PlayerLibrary: FunctionalComponent<Props> = ({
 	// Track selection & preview event dispatching
 	const onTrackClick = (track: PlayerAudio) => {
 		playTrack(track)
-
-		if (track.artist && track.gig) {
-			const detail: PlayerLibraryPreviewEventDetails = {
-				artist: track.artist,
-				gig: track.gig,
-			}
-			window.dispatchEvent(new CustomEvent(playerLibraryPreviewEventName, { detail }))
-		}
 	}
 
 	// Action button click handlers

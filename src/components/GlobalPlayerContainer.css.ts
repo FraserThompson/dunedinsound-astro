@@ -4,7 +4,7 @@ import { WinampBackground } from './player/PlayerTracklist.css'
 
 export const playerWrapper = style({
 	position: 'fixed',
-	zIndex: 8,
+	zIndex: 7,
 	bottom: '-400px',
 	transform: `translateY(100%)`,
 	left: '0px',

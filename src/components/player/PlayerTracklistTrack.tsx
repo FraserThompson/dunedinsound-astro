@@ -28,7 +28,6 @@ import {
 	TrackActionButton,
 	TracklistTrackWrapper,
 } from "./PlayerTracklistTrack.css"
-import { playerLibraryPreviewEventName, type PlayerLibraryPreviewEventDetails } from "@src/util/events"
 import PlayIcon from '~icons/iconoir/play'
 import PauseIcon from '~icons/iconoir/pause'
 import PlayerTracklistTrackSubmenu from "./PlayerTracklistTrackSubmenu"
@@ -72,13 +71,6 @@ export const TrackListTrack: FunctionalComponent<Props> = ({
 
 	const onClick = () => {
 		onTrackClick?.(track)
-		if (track.artist && track.gig) {
-			const detail: PlayerLibraryPreviewEventDetails = {
-				artist: track.artist,
-				gig: track.gig,
-			}
-			window.dispatchEvent(new CustomEvent(playerLibraryPreviewEventName, { detail }))
-		}
 	}
 
 	const progressPercent =
@@ -116,12 +108,7 @@ export const TrackListTrack: FunctionalComponent<Props> = ({
 			className={`${TracklistTrackWrapper} ${(isSelected || menuOpen || isPlayingTrack || isPausedTrack) ? "active" : ""}`}
 		>
 			{/* Visualizer overlay when actively playing */}
-			{isPlayingTrack && (
-				<div style={{ position: "absolute", top: "0px" }}>
-					<PlayerVisualizer width={600} height={27} />
-				</div>
-			)}
-
+			{isPlayingTrack && <PlayerVisualizer height={27} />}
 			{/* Play icon */}
 			<div className={`${TrackActionButton}`}>
 				{!isPlayingTrack && <PlayIcon />}

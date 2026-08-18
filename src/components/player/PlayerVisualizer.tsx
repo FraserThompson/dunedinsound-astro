@@ -1,5 +1,13 @@
 /**
- * The Visualizer for the player. 
+ * The Visualizer for the player.
+ * 
+ * Calculates width dynamically based on parent container size.
+ * 
+ * width: Fixed width, overrides dynamic calculation.
+ * height: Fixed height.
+ * lineColor: Color of the wiggly line.
+ * backgroundColor: Color of the background.
+ * 
  */
 
 import type { FunctionalComponent } from "preact"
@@ -67,6 +75,49 @@ const PlayerVisualizer: FunctionalComponent<Props> = ({
 	const prevPeakRef = useRef(0);
 	const energyRef = useRef(0);
 	const phaseRef = useRef(0);
+	const sizeRef = useRef({ width, height });
+
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+
+		const syncSize = () => {
+			const parentWidth = canvas.parentElement?.clientWidth;
+			const nextWidth = Math.max(1, Math.floor(parentWidth ?? width));
+			const nextHeight = Math.max(1, Math.floor(height));
+			const dpr = window.devicePixelRatio || 1;
+
+			sizeRef.current = { width: nextWidth, height: nextHeight };
+
+			canvas.style.width = `${nextWidth}px`;
+			canvas.style.height = `${nextHeight}px`;
+
+			const pixelWidth = Math.max(1, Math.floor(nextWidth * dpr));
+			const pixelHeight = Math.max(1, Math.floor(nextHeight * dpr));
+
+			if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+				canvas.width = pixelWidth;
+				canvas.height = pixelHeight;
+			}
+
+			const ctx = canvas.getContext('2d');
+			if (!ctx) return;
+			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+		};
+
+		syncSize();
+
+		const observed = canvas.parentElement ?? canvas;
+		const resizeObserver = new ResizeObserver(syncSize);
+		resizeObserver.observe(observed);
+
+		window.addEventListener('resize', syncSize);
+
+		return () => {
+			resizeObserver.disconnect();
+			window.removeEventListener('resize', syncSize);
+		};
+	}, [height, width]);
 
 	useEffect(() => {
 		if (!wavesurfer) return;
@@ -81,6 +132,8 @@ const PlayerVisualizer: FunctionalComponent<Props> = ({
 			const ctx = canvas?.getContext('2d');
 
 			if (!canvas || !ctx) return;
+			const dpr = window.devicePixelRatio || 1;
+			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
 			const duration = wavesurfer.getDuration();
 			if (!duration) return;
@@ -101,13 +154,16 @@ const PlayerVisualizer: FunctionalComponent<Props> = ({
 
 			phaseRef.current += 0.28 + energyRef.current * 0.82 + transient * 0.65;
 
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			const canvasWidth = sizeRef.current.width;
+			const canvasHeight = sizeRef.current.height;
+
+			ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 			ctx.fillStyle = backgroundColor;
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
 			const pointCount = 110;
-			const pointWidth = canvas.width / (pointCount - 1);
-			const centerY = canvas.height / 2;
+			const pointWidth = canvasWidth / (pointCount - 1);
+			const centerY = canvasHeight / 2;
 			const amplitude = centerY * 1.9;
 			const harmonicA = 0.62;
 			const harmonicB = 0.38;
@@ -159,9 +215,11 @@ const PlayerVisualizer: FunctionalComponent<Props> = ({
 			const canvas = canvasRef.current;
 			const ctx = canvas?.getContext('2d');
 			if (!canvas || !ctx) return;
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			const dpr = window.devicePixelRatio || 1;
+			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+			ctx.clearRect(0, 0, sizeRef.current.width, sizeRef.current.height);
 			ctx.fillStyle = backgroundColor;
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.fillRect(0, 0, sizeRef.current.width, sizeRef.current.height);
 		};
 
 		// Start the animation loop when audio starts playing.
@@ -202,12 +260,12 @@ const PlayerVisualizer: FunctionalComponent<Props> = ({
 	}, [wavesurfer, currentPeaks, backgroundColor, lineColor]);
 
 	return (
-		<canvas
-			ref={canvasRef}
-			width={width}
-			height={height}
-			style={{ display: 'block', maxWidth: '100%' }}
-		/>
+		<div style={{ position: 'absolute', width: '100%', top: '0px', overflow: 'hidden' }}>
+			<canvas
+				ref={canvasRef}
+				style={{ display: 'block', width: '100%', maxWidth: '100%' }}
+			/>
+		</div>
 	);
 };
 

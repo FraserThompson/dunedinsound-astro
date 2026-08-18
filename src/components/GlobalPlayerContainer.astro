@@ -95,8 +95,10 @@ import CompactPlayerControls from './player/CompactPlayerControls'
 
 		set visible(flag) {
 			if (flag) {
+				document.querySelector('body')?.classList.add('player-visible')
 				this._internals.states.add('visible')
 			} else {
+				document.querySelector('body')?.classList.remove('player-visible')
 				this._internals.states.delete('visible')
 			}
 		}

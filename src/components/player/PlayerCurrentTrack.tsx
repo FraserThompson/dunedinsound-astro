@@ -15,9 +15,7 @@ const PlayerCurrentTrack: FunctionalComponent = () => {
 
 	return (
 		<div className={`${WinampInset} ${CurrentTrackPanel}`} style={{ flex: 1 }}>
-			<div style={{ position: 'absolute', overflow: 'hidden' }}>
-				<PlayerVisualizer width={600} height={18} />
-			</div>
+			<PlayerVisualizer height={18} />
 			<MarqueeText text={currentTrackTitle} isPlaying={playing} placeholder="Add a track to begin"></MarqueeText>
 		</div>
 	)

@@ -16,9 +16,6 @@ export const imageGalleryUpdateEventName = 'gallery:update-triggered'
 // After an imagery gallery update is triggered
 export const imageGalleryUpdatedEventName = 'gallery:update-finished'
 
-// When a item in the player library triggers a content preview
-export const playerLibraryPreviewEventName = 'player:library-preview-selected'
-
 // When the mini player is toggled
 export const playerContainerToggle = 'player-container:toggle'
 
@@ -35,11 +32,6 @@ export interface FilterEventDetails {
 
 export interface ImageGalleryUpdateEventDetails {
 	images: { [key: string]: ResponsiveImage }
-}
-
-export interface PlayerLibraryPreviewEventDetails {
-	artist: MinimalEntryDefinition
-	gig: MinimalEntryDefinition
 }
 
 export interface PlayerContainerToggleEventDetails {

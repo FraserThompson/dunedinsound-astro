@@ -284,12 +284,17 @@ globalStyle('.hideMobile.flex', {
 globalStyle('.fixedBottomMobile', {
 	position: 'fixed',
 	bottom: theme.dimensions.headerHeightMobile,
+	transition: 'bottom 150ms ease-in-out',
 	zIndex: 1,
 	'@media': {
 		'screen and (--md)': {
 			position: 'static'
 		}
 	}
+})
+
+globalStyle('body.player-visible .fixedBottomMobile', {
+	bottom: theme.dimensions.headerHeightMobileWithSubheader,
 })
 
 globalStyle('.flex', {

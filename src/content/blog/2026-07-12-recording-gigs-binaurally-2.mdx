@@ -134,11 +134,11 @@ You may also have read about the 3-wire version of the Linkwitz mod. I've always
 
 I've never really understood what it actually does but after doing a bit of reading I think I kind of do, and I'm going to clumsily try to explain.
 
-Electret condenser microphones typically have a **Source** and a **Drain**, which are connected directly to an internal JFET transistor. **Drain** is where the battery voltage enters the microphone, **Source** is where it exits to ground. The captured audio signal voltage goes through components inside the capsule and into the **Drain** (so, confusingly, the audio gets out of the capsule on the same path the voltage goes in, but it's AC, so it can be separated from the DC battery voltage or something. Idk, electricity is magic).
+Electret condenser microphones typically have a **Source** and a **Drain**, which are connected directly to an internal FET transistor. **Drain** is where the battery voltage enters the microphone, **Source** is where it exits to ground. The captured audio signal voltage goes through components inside the capsule and into the **Drain** (so, confusingly, the audio gets out of the capsule on the same path the voltage goes in, but it's AC, so it can be separated from the DC battery voltage or something. Idk, electricity is magic).
 
 What the Linkwitz mod does is flip the paradigm on its head. **Drain** gets the +9v battery voltage, **Source** takes the audio signal, and the ground is only connected to the capsule chassis. The two wire version is an even cleverer trick where **Drain** and chassis are bridged, so the +9v battery voltage runs through the chassis, and the **Source** takes the audio signal but also, through the magic of a DC blocking capacitor, it's connected to the 0v terminal on the battery and acts as the ground too.
 
-The difference: In the unmodified capsule the internal JFET transistor's job is basically to boost the signal, it multiplies the small changes in AC voltage which makes up the audio signal and makes them bigger. The modification deprives this internal transistor of its voltage boost, so now the audio signal is sent out of the microphone at a gain of exactly 1. Because the internal JFET amplifier has limited voltage handling it has limited headroom, and when bypassed in this way there's now heaps more headroom, up to 130db apparently.
+The difference: In the unmodified capsule the internal FET transistor's job is basically to boost the signal, it multiplies the small changes in AC voltage which makes up the audio signal and makes them bigger. The modification deprives this internal transistor of its voltage boost, so now the audio signal is sent out of the microphone at a gain of exactly 1. Because the internal JFET amplifier has limited voltage handling it has limited headroom, and when bypassed in this way there's now heaps more headroom, up to 130db apparently.
 
 ### Cable
 
@@ -253,6 +253,14 @@ If you have a Zoom H1 Essential **DO NOT UPGRADE TO FIRMWARE 2.0**. The whole po
 So I somehow had my gain set to 93/100, and because I never knowingly adjust the gain I assumed it'd be at unity and didn't touch the buttons. It's a terrible interface, and the only other thing 2.0 adds is AI noise reduction. So don't upgrade.
 
 But this is good news. It means even at close to the maximum gain my H1E can apply, it was only *sometimes* clipping and still resulted in a usable recording. At unity gain it will be completely fine, as expected of Linkwitz modded electret condenser capsules.
+
+**UPDATE**
+
+Despite being fine for every other gig until now, at [YOURS NOISE](/gigs/yours-noise) there was distortion during the Strap and Fastplant sets. Specifically for transients like snare hits it became very crackly.
+
+It was an absurdly loud gig, and I can't know for sure that the WM-61A wouldn't have also distorted, but based on the fact that through all the gigs I've recorded them with they never have I don't think they would. So it sounds like for EXTREMELY high SPL's the WM-61A with the Linkwitz mod are still the GOATS.
+
+This doesn't really change my conclusion, but it's worth noting.
 
 ## Findings
 
