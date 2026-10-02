@@ -30,7 +30,8 @@ const entryExtra = entry.extra
 		collection: entry.entry.collection,
 		description: entryExtra.metaDescription,
 		date: entryData.date?.toISOString(),
-		image: entryExtra.cover?.[0]?.src
+		image: entryExtra.cover?.[0]?.src,
+		hidden: entryData.draft
 	}}
 >
 	<Blog entry={entry} images={images} />

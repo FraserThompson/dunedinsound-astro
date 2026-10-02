@@ -71,8 +71,10 @@ import CompactPlayerControls from './player/CompactPlayerControls'
 
 		set open(flag) {
 			if (flag) {
+				document.querySelector('body')?.classList.add('player-open')
 				this._internals.states.add('open')
 			} else {
+				document.querySelector('body')?.classList.remove('player-open')
 				this._internals.states.delete('open')
 			}
 

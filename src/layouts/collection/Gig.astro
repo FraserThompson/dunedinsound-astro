@@ -75,14 +75,21 @@ const hasArtistMedia = galleryCount === 1 ? !uncategorizedImages.length : galler
 			</CornerLabel>
 		)
 	}
+	{
+		entry.entry.id === '2026-8-29-dankfest-26-saturday' && (
+			<CornerLabel position="right" slot="customContent">
+				<span class="trippy2" style={{paddingTop: "20px"}}>500TH GIG WOW!!!!!</span>
+			</CornerLabel>
+		)
+	}
 	<CornerLabel position="left" slot="customContent">
-		{formattedDate(entryData.date)}
+		{formattedDate(entryData.date)} 
 	</CornerLabel>
 	{
 		entryExtra.series && (
 			<CornerLabel position="right" background={theme.color.transparentForeground} slot="customContent">
 				<a href={entryExtra.series.extra.absolutePath}>
-					<small style={{ color: theme.color.dullText }}>Series</small>
+					<small style={{ color: theme.color.dullText }}>Series {' '}</small>
 					<em>{entryExtra.series.entry.data.title}</em>
 					<small>({entryExtra.series.extra.gigCount} gigs)</small>
 				</a>

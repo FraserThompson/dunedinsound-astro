@@ -75,6 +75,7 @@ type CollectionExtraMap = {
 	}
 	blog: {
 		coverVid?: string
+		relatedBlogs?: CollectionEntry<'blog'>[]
 		relatedGigs?: CollectionEntry<'gig'>[]
 		relatedArtists?: CollectionEntry<'artist'>[]
 		relatedVenues?: CollectionEntry<'venue'>[]
@@ -378,6 +379,29 @@ export async function getSeriesExtra(
 export async function getBlogExtra(
 	entry: CollectionEntry<'blog'>
 ): Promise<CollectionExtraMap['blog']> {
+	const currentTags = new Set((entry.data.tags || []).map((tag) => tag.toLowerCase()))
+
+	const relatedBlogsByTags = (
+		await getCollection('blog', (blog) => {
+			if (blog.id === entry.id) return false
+			if (blog.data.hidden || blog.data.draft) return false
+
+			const blogTags = blog.data.tags || []
+			return blogTags.some((tag) => currentTags.has(tag.toLowerCase()))
+		})
+	)
+		.sort((a, b) => {
+			const aShared = (a.data.tags || []).filter((tag) => currentTags.has(tag.toLowerCase())).length
+			const bShared = (b.data.tags || []).filter((tag) => currentTags.has(tag.toLowerCase())).length
+
+			if (aShared !== bShared) {
+				return bShared - aShared
+			}
+
+			return new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+		})
+		.slice(0, 4)
+
 	const relatedArtists = entry.data.relatedArtists
 		? (
 			await Promise.all(entry.data.relatedArtists.map(async (artist: any) => await getEntry('artist', artist.id)))
@@ -420,6 +444,7 @@ export async function getBlogExtra(
 
 	return {
 		coverVid,
+		relatedBlogs: relatedBlogsByTags.length ? relatedBlogsByTags : undefined,
 		relatedGigs: relatedGigs.length ? relatedGigs : undefined,
 		relatedArtists,
 		relatedVenues

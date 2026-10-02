@@ -57,7 +57,7 @@ export const dropdownButtonWrapper = style({
 })
 
 export const dropdownMenu = style([
-	MenuWrapper['vertical'],
+	MenuWrapper({ layout: 'vertical' }),
 	{
 		width: fallbackVar(menuWidth, 'max-content'),
 		position: 'absolute',
@@ -89,7 +89,7 @@ export const dropdownMenu = style([
 ])
 
 export const dropdownLi = style([
-	MenuLi['vertical'],
+	MenuLi({ layout: 'vertical' }),
 	{
 		width: '100%',
 		position: 'relative',
@@ -136,7 +136,7 @@ export const dropdownSubmenu = style([
 ])
 
 export const dropdownLink = style([
-	MenuLinkWrapper['vertical'],
+	MenuLinkWrapper({ layout: 'vertical' }),
 	{
 		display: 'flex',
 		alignItems: 'center',

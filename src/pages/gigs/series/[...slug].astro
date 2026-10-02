@@ -31,10 +31,10 @@ const entryExtra = entry.extra
 		image: entryExtra.cover?.[0]?.src
 	}}
 >
-	<ul class={`${MenuWrapper['vertical']}`} style={{ zIndex: 15 }} slot="sidebarMenu">
-		<li class={`${MenuLi['vertical']}`}>
+	<ul class={`${MenuWrapper({ layout: 'vertical' })}`} style={{ zIndex: 15 }} slot="sidebarMenu">
+		<li class={`${MenuLi({ layout: 'vertical' })}`}>
 			<a
-				class={`${MenuLinkWrapper['vertical']} active`}
+				class={`${MenuLinkWrapper({ layout: 'vertical' })} active`}
 				style={{ backgroundColor: 'white', color: 'black' }}
 				href="/gigs/series"
 			>
@@ -49,10 +49,10 @@ const entryExtra = entry.extra
 		selected={entry.entry.id}
 		transition:persist
 	/>
-	<ul class={`${MenuWrapper['vertical']}`} style={{ zIndex: 15 }} slot="sidebarMenu">
-		<li class={`${MenuLi['vertical']}`}>
+	<ul class={`${MenuWrapper({ layout: 'vertical' })}`} style={{ zIndex: 15 }} slot="sidebarMenu">
+		<li class={`${MenuLi({ layout: 'vertical' })}`}>
 			<a
-				class={`${MenuLinkWrapper['vertical']} active`}
+				class={`${MenuLinkWrapper({ layout: 'vertical' })} active`}
 				style={{ backgroundColor: 'white', color: 'black' }}
 				href="/gigs"
 			>

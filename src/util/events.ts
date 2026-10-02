@@ -1,4 +1,3 @@
-import type { MinimalEntryDefinition } from "./collection"
 import type { ResponsiveImage } from "./ResponsiveImage"
 
 // When virtualized list updates

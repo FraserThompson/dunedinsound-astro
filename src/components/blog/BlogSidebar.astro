@@ -13,18 +13,18 @@ import { type ProcessedEntry } from '@src/util/collection'
 import { blogSidebarWrapper, sidebarBox } from './BlogSidebar.css'
 import { theme } from '../../Theme.css'
 import { socialLinksToMenuItems } from '@src/util/helpers'
-import type { MarkdownHeading } from 'astro'
 import { tagLink } from '@src/components/blog/BlogTags.css'
 import TableOfContents from './TableOfContents.astro'
 import { formattedDate, toMachineName } from '@src/util/names'
+import type { TocItem } from '@src/util/toc'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>
-	headings: MarkdownHeading[]
+	toc: TocItem[]
 	className?: string
 }
 
-const { entry, headings, className = '' } = Astro.props
+const { entry, toc, className = '' } = Astro.props
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
@@ -41,7 +41,7 @@ const entryExtra = entry.extra
 			)}
 		</small>
 	</div>
-	<TableOfContents headings={headings} />
+	<TableOfContents toc={toc} />
 	{
 		!!entryExtra.relatedArtists?.length && (
 			<div class={sidebarBox}>

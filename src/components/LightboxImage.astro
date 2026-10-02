@@ -1,7 +1,7 @@
 ---
 /**
  * Wraps an image and allows it to open in a lightbox.
- * 
+ *
  * See ImageGalleryLightbox.astro
  *
  * Props:
@@ -17,13 +17,16 @@ export interface Props extends Image2Props {
 const props: Props = Astro.props
 const alt = props.responsiveImage?.alt || props.alt || props.caption
 ---
-<a
-	class={`lightboxImage ${props.objectFit === 'contain' ? 'free-aspect' : ''}`}
-	href={props.responsiveImage?.images['3200']}
-	data-download-url={props.responsiveImage?.src}
-	data-lg-size={"3200-2134"}
-	data-alt={alt}
->
-	<Image2 {...props} alt={alt} />
-</a>
-{props.caption && <em>{props.caption}</em>}
+
+<div style={{ maxWidth: props.maxWidth }}>
+	<a
+		class={`lightboxImage ${props.objectFit === 'contain' || props.maxWidth ? 'free-aspect' : ''}`}
+		href={props.responsiveImage?.images['3200']}
+		data-download-url={props.responsiveImage?.src}
+		data-lg-size={'3200-2134'}
+		data-alt={alt}
+	>
+		<Image2 {...props} alt={alt} />
+	</a>
+	{props.caption && <em>{props.caption}</em>}
+</div>

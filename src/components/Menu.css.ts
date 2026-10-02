@@ -1,7 +1,8 @@
-import { globalStyle, style, styleVariants } from '@vanilla-extract/css'
+import { globalStyle, style, type StyleRule } from '@vanilla-extract/css'
+import { recipe } from '@vanilla-extract/recipes'
 import { theme } from '../Theme.css'
 
-const MenuWrapperBase = style({
+const menuWrapperBase: StyleRule = {
 	paddingLeft: 0,
 	paddingRight: 0,
 	listStyle: 'none',
@@ -15,21 +16,28 @@ const MenuWrapperBase = style({
 	borderRadius: '0',
 	margin: '0',
 	overflow: 'hidden'
-})
+}
 
-export const MenuWrapper = styleVariants({
-	vertical: [MenuWrapperBase],
-	sideways: [MenuWrapperBase],
-	horizontal: [
-		MenuWrapperBase,
-		{
-			justifyContent: 'space-evenly',
-			display: 'flex'
+export const MenuWrapperBase = style(menuWrapperBase)
+
+export const MenuWrapper = recipe({
+	base: menuWrapperBase,
+	variants: {
+		layout: {
+			vertical: {},
+			sideways: {},
+			horizontal: {
+				justifyContent: 'space-evenly',
+				display: 'flex'
+			}
 		}
-	]
+	},
+	defaultVariants: {
+		layout: 'horizontal'
+	}
 })
 
-const MenuLiBase = style({
+const menuLiBase: StyleRule = {
 	backgroundColor: theme.color.primary,
 	boxSizing: 'border-box',
 	selectors: {
@@ -38,46 +46,47 @@ const MenuLiBase = style({
 			color: theme.color.lightText
 		}
 	}
-})
+}
 
-export const MenuLi = styleVariants({
-	horizontal: [
-		MenuLiBase,
-		{
-			display: 'inline-flex',
-			alignItems: 'center',
-			textAlign: 'center',
-			borderRadius: '10px 10px 0px 0px',
-			border: `1px solid black`,
-			width: '100%'
-		}
-	],
-	vertical: [
-		MenuLiBase,
-		{
-			width: '100%',
-			selectors: {
-				'&.active, &:active': {
-					backgroundColor: theme.color.secondary
+export const MenuLiBase = style(menuLiBase)
+
+export const MenuLi = recipe({
+	base: menuLiBase,
+	variants: {
+		layout: {
+			horizontal: {
+				display: 'inline-flex',
+				alignItems: 'center',
+				textAlign: 'center',
+				borderRadius: '10px 10px 0px 0px',
+				border: `1px solid black`,
+				width: '100%'
+			},
+			vertical: {
+				width: '100%',
+				selectors: {
+					'&.active, &:active': {
+						backgroundColor: theme.color.secondary
+					}
 				}
+			},
+			sideways: {
+				textOverflow: 'clip',
+				borderRadius: '0px 10px 10px 0px',
+				border: `1px solid black`,
+				overflow: 'hidden',
+				display: 'flex',
+				alignItems: 'center',
+				width: '100%'
 			}
 		}
-	],
-	sideways: [
-		MenuLiBase,
-		{
-			textOverflow: 'clip',
-			borderRadius: '0px 10px 10px 0px',
-			border: `1px solid black`,
-			overflow: 'hidden',
-			display: 'flex',
-			alignItems: 'center',
-			width: '100%'
-		}
-	]
+	},
+	defaultVariants: {
+		layout: 'horizontal'
+	}
 })
 
-const MenuLinkWrapperBase = style({
+const menuLinkWrapperBase: StyleRule = {
 	boxSizing: 'border-box',
 	color: theme.color.text,
 	width: '100%',
@@ -104,68 +113,69 @@ const MenuLinkWrapperBase = style({
 			height: theme.dimensions.headerHeight
 		}
 	}
-})
+}
+
+export const MenuLinkWrapperBase = style(menuLinkWrapperBase)
 
 globalStyle(`${MenuLiBase}.active > ${MenuLinkWrapperBase}`, {
 	color: 'white'
 })
 
-export const MenuLinkWrapper = styleVariants({
-	horizontal: [
-		MenuLinkWrapperBase,
-		{
-			display: 'inline-flex',
-			justifyContent: 'center',
-			alignItems: 'center',
-			borderBottom: 'none',
-			borderTop: 'none',
-			borderRadius: '10px 10px 0px 0px',
-			paddingLeft: theme.dimensions.basePaddingMobile,
-			paddingRight: theme.dimensions.basePaddingMobile,
-			'@media': {
-				'screen and (--md)': {
-					paddingLeft: theme.dimensions.basePadding,
-					paddingRight: theme.dimensions.basePadding
-				}
-			}
-		}
-	],
-	vertical: [
-		MenuLinkWrapperBase,
-		{
-			display: 'block',
-			paddingLeft: theme.dimensions.basePaddingMobile,
-			paddingRight: theme.dimensions.basePaddingMobile,
-			'@media': {
-				'screen and (--md)': {
-					paddingLeft: theme.dimensions.basePadding,
-					paddingRight: theme.dimensions.basePadding
+export const MenuLinkWrapper = recipe({
+	base: menuLinkWrapperBase,
+	variants: {
+		layout: {
+			horizontal: {
+				display: 'inline-flex',
+				justifyContent: 'center',
+				alignItems: 'center',
+				borderBottom: 'none',
+				borderTop: 'none',
+				borderRadius: '10px 10px 0px 0px',
+				paddingLeft: theme.dimensions.basePaddingMobile,
+				paddingRight: theme.dimensions.basePaddingMobile,
+				'@media': {
+					'screen and (--md)': {
+						paddingLeft: theme.dimensions.basePadding,
+						paddingRight: theme.dimensions.basePadding
+					}
 				}
 			},
-			selectors: {
-				'&.active, &:active': {
-					backgroundColor: theme.color.secondary
+			vertical: {
+				display: 'block',
+				paddingLeft: theme.dimensions.basePaddingMobile,
+				paddingRight: theme.dimensions.basePaddingMobile,
+				'@media': {
+					'screen and (--md)': {
+						paddingLeft: theme.dimensions.basePadding,
+						paddingRight: theme.dimensions.basePadding
+					}
+				},
+				selectors: {
+					'&.active, &:active': {
+						backgroundColor: theme.color.secondary
+					}
+				}
+			},
+			sideways: {
+				boxSizing: 'content-box',
+				writingMode: 'vertical-rl',
+				textOrientation: 'mixed',
+				textAlign: 'center',
+				minHeight: '50px',
+				paddingTop: theme.dimensions.basePaddingMobile,
+				paddingBottom: theme.dimensions.basePaddingMobile,
+				borderRadius: '0px 10px 10px 0px',
+				'@media': {
+					'screen and (--md)': {
+						paddingTop: theme.dimensions.basePadding,
+						paddingBottom: theme.dimensions.basePadding
+					}
 				}
 			}
 		}
-	],
-	sideways: [
-		MenuLinkWrapperBase,
-		{
-			boxSizing: 'content-box',
-			writingMode: 'vertical-rl',
-			textOrientation: 'mixed',
-			textAlign: 'center',
-			minHeight: '50px',
-			paddingTop: theme.dimensions.basePaddingMobile,
-			paddingBottom: theme.dimensions.basePaddingMobile,
-			borderRadius: '0px 10px 10px 0px',
-			'@media': {
-				'screen and (--md)': {
-					paddingTop: theme.dimensions.basePadding,
-					paddingBottom: theme.dimensions.basePadding
-				}
-			}
-		}
-	]
+	},
+	defaultVariants: {
+		layout: 'horizontal'
+	}
 })

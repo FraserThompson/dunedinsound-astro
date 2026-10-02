@@ -27,7 +27,7 @@ class PlayerEngine {
 
 	private loadRequestId: string | null = null
 	private pendingPlayRequestId: string | null = null
-	private pendingSeekTime?: string
+	private pendingSeekTime?: string | number
 
 	/**
 	 * Attaches the HTML container to the wavesurfer instance.
@@ -46,7 +46,7 @@ class PlayerEngine {
 
 			const state = playerState.get()
 			if (state.playlist && state.playlist.length > 0 && !this.currentTrackId) {
-				this.loadTrackIndex(state.selectedTrack, state.playing)
+				this.loadTrackIndex(state.selectedTrack, state.playing, state.currentTime)
 			}
 		} else {
 			this.ws.setOptions({ container })
@@ -76,14 +76,17 @@ class PlayerEngine {
 		this.ws.on("audioprocess", (time) => updatePlayerState({ currentTime: time }))
 
 		this.ws.on("ready", (duration) => {
+			if (duration < 1) return
 			updatePlayerState({ ready: true, duration, loading: false, playing: this.ws?.isPlaying() })
 			this.applyRegions()
 
+			if (this.pendingSeekTime) {
+				this.seekTo(this.pendingSeekTime)
+				this.pendingSeekTime = undefined
+			}
+
 			if (this.pendingPlayRequestId === this.loadRequestId) {
-				if (this.pendingSeekTime) {
-					this.seekTo(this.pendingSeekTime)
-					this.pendingSeekTime = undefined
-				}
+
 				this.play()
 
 				// Make sure it's actually playing
@@ -122,7 +125,7 @@ class PlayerEngine {
 	 * @returns URL object of current src in player.
 	 */
 	public getCurrentSrc(): URL | undefined {
-		const src = this.ws?.getMediaElement().currentSrc
+		const src = this.ws?.getMediaElement()?.currentSrc
 		if (src) {
 			return new URL(src)
 		}
@@ -138,8 +141,8 @@ class PlayerEngine {
 		updatePlayerState({ playlist, selectedTrack: 0 })
 
 		if (!playlist || playlist.length === 0) {
-			await this.ws?.stop()
-			await this.ws?.empty()
+			this.ws?.stop()
+			this.ws?.empty()
 			this.init()
 			return
 		}
@@ -244,7 +247,7 @@ class PlayerEngine {
 	 * @param autoPlay 
 	 * @param seekTime 
 	 */
-	public async loadTrackIndex(index: number, autoPlay = false, seekTime?: string) {
+	public async loadTrackIndex(index: number, autoPlay = false, seekTime?: string | number) {
 		const state = playerState.get()
 		const playlist = state.playlist ?? []
 		const track = playlist[index]
@@ -307,9 +310,9 @@ class PlayerEngine {
 		}
 	}
 
-	public seekTo(time: string) {
+	public seekTo(time: string | number) {
 		if (!this.ws) return
-		const seconds = timeToSeconds(time)
+		const seconds = typeof time === 'string' ? timeToSeconds(time) : time
 		const duration = this.ws.getDuration()
 		if (duration > 0) {
 			this.ws.seekTo(seconds / duration)

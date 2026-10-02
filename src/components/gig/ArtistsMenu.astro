@@ -21,7 +21,7 @@ const { artists } = Astro.props
 <ul is="artists-menu" class={artistsMenuWrapper}>
 	{
 		artists.map((artist) => (
-			<li class={MenuLi['vertical']}>
+			<li class={MenuLi({ layout: 'vertical' })}>
 				<a class={`${artistLink}`} href={`#${artist.entry.id}`}>
 					{artist.entry.data.title} {artist.entry.data.origin ? '(' + artist.entry.data.origin + ')' : ''}
 				</a>

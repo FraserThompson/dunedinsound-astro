@@ -70,7 +70,7 @@ const PlayerVisualizer: FunctionalComponent<Props> = ({
 	const { wavesurfer, currentPeaks } = usePlayer();
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const animationRef = useRef<number>();
+	const animationRef = useRef<number | undefined>(undefined);
 	const pointLevelsRef = useRef<number[]>([]);
 	const prevPeakRef = useRef(0);
 	const energyRef = useRef(0);

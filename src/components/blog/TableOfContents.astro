@@ -1,16 +1,13 @@
 ---
-import type { MarkdownHeading } from 'astro'
-import generateToc from '@src/util/toc'
+import { type TocItem } from '@src/util/toc'
 import { sidebarBox } from './BlogSidebar.css'
 import TableOfContentsHeading from './TableOfContentsHeading.astro'
 
 interface Props {
-	headings: MarkdownHeading[]
+	toc: TocItem[]
 }
 
-const { headings } = Astro.props
-
-const toc = generateToc(headings)
+const { toc } = Astro.props
 ---
 
 {

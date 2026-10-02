@@ -17,15 +17,13 @@ export const sidebarWrapper = style({
 	boxSizing: 'border-box',
 	top: fallbackVar(offsetTopMobile, '0px'),
 	bottom: `calc(${fallbackVar(offsetBottomMobile, '0px')} + ${theme.dimensions.headerHeightMobile})`,
-	height: `calc(100% - ${fallbackVar(offsetTopMobile, '0px')} - ${fallbackVar(offsetBottomMobile, '0px')} - ${theme.dimensions.headerHeightMobile
-		})`,
+	height: `calc(100% - ${fallbackVar(offsetTopMobile, '0px')} - ${fallbackVar(offsetBottomMobile, '0px')} - ${theme.dimensions.headerHeightMobile})`,
 	left: fallbackVar(leftOffset, '0px'),
 	width: defaultWidth,
 	zIndex: '10',
 	boxShadow: theme.borders.shadow,
 	borderRight: theme.borders.primary,
-	transform: `translateY(calc(100vh - ${fallbackVar(offsetTopMobile, '0px')} - ${theme.dimensions.headerHeightMobile
-		}))`,
+	transform: `translateY(100vh)`,
 	transition: 'transform 0.3s ease-in',
 	willChange: 'transform',
 	selectors: {
@@ -45,6 +43,18 @@ export const sidebarWrapper = style({
 			left: theme.dimensions.headerHeight,
 			transform: `translateX(0)`,
 			pointerEvents: 'auto'
+		}
+	}
+})
+
+// Make room for mini player when visible on mobile
+globalStyle(`body.player-visible:not(.player-open) ${sidebarWrapper}`, {
+	bottom: `calc(${fallbackVar(offsetBottomMobile, '0px')} + ${theme.dimensions.headerHeightMobile} + ${theme.dimensions.subheaderHeight})`,
+	height: `calc(100% - ${fallbackVar(offsetTopMobile, '0px')} - ${fallbackVar(offsetBottomMobile, '0px')} - ${theme.dimensions.headerHeightMobile} - ${theme.dimensions.subheaderHeight})`,
+	'@media': {
+		'screen and (--md)': {
+			height: `calc(100% - ${fallbackVar(offsetTop, '0px')} - ${fallbackVar(offsetBottom, '0px')})`,
+			bottom: fallbackVar(offsetBottom, '0px'),
 		}
 	}
 })
@@ -184,12 +194,20 @@ globalStyle('.openWithSidebar', {
 })
 
 // Open with sidebar at bottom (default)
-globalStyle('.openWithSidebar.bottom', {
-	bottom: '-100px !important',
+globalStyle('body.player-visible:not(.player-open) .openWithSidebar.bottom, body:not(player-visible) .openWithSidebar.bottom', {
+	bottom: '-250px',
 	transition: 'bottom 0.5s ease-in-out',
 })
-globalStyle('.openedWithSidebar.bottom', {
-	bottom: `${theme.dimensions.headerHeightMobile} !important`,
+globalStyle('body:not(player-visible) .openedWithSidebar.bottom', {
+	bottom: `${theme.dimensions.headerHeightMobile}`,
+	'@media': {
+		'screen and (--md)': {
+			bottom: 'auto'
+		}
+	}
+})
+globalStyle(`body.player-visible:not(.player-open) .openedWithSidebar.bottom`, {
+	bottom: `calc(${theme.dimensions.headerHeightMobile} + ${theme.dimensions.subheaderHeight})`,
 	'@media': {
 		'screen and (--md)': {
 			bottom: 'auto'
@@ -199,7 +217,7 @@ globalStyle('.openedWithSidebar.bottom', {
 
 // Open with sidebar at top
 globalStyle('.openWithSidebar.top', {
-	top: '-100px !important',
+	top: '-100px',
 	transition: 'top 0.5s ease-in-out',
 	'@media': {
 		'screen and (--md)': {
@@ -208,7 +226,7 @@ globalStyle('.openWithSidebar.top', {
 	}
 })
 globalStyle('.openedWithSidebar.top', {
-	top: `0px !important`,
+	top: `0px`,
 	'@media': {
 		'screen and (--md)': {
 			top: 'auto'

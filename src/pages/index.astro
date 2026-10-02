@@ -14,7 +14,7 @@ const gigs = await loadAndFormatCollection('gig')
 const blogs = await loadAndFormatCollection('blog')
 
 // Combine gigs and blogs and sorts them by date
-const posts = [...gigs, ...blogs]
+const posts = [...gigs, ...blogs].filter((thing) => !thing.entry.data.draft)
 const combinedPosts = posts.sort((a, b) => {
 	return new Date(a.entry.data.date) > new Date(b.entry.data.date) ? -1 : 1
 })

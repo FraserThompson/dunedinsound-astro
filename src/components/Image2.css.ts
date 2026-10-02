@@ -1,18 +1,23 @@
 import { createVar, fallbackVar, globalStyle } from '@vanilla-extract/css'
+import { recipe } from '@vanilla-extract/recipes'
 
 export const objectFit = createVar()
 export const objectPosition = createVar()
+export const maxWidth = createVar()
 
-globalStyle(`.image2`, {
-	position: 'relative',
-	overflow: 'hidden',
-	verticalAlign: 'top',
-	bottom: '0px',
-	left: '0px',
-	backgroundSize: objectFit,
-	display: 'block',
-	height: '100%',
-	width: '100%'
+export const image2 = recipe({
+	base: {
+		position: 'relative',
+		display: 'flex',
+		justifyContent: 'center',
+		overflow: 'hidden',
+		verticalAlign: 'top',
+		bottom: '0px',
+		left: '0px',
+		height: '100%',
+		width: '100%',
+		backgroundSize: fallbackVar(objectFit, 'cover'),
+	}
 })
 
 globalStyle(`.image2 img`, {
@@ -23,7 +28,7 @@ globalStyle(`.image2 img`, {
 	height: '100%',
 	width: '100%',
 	margin: 0,
-	maxWidth: 'none',
+	maxWidth: fallbackVar(maxWidth, 'none'),
 	padding: 0,
 	objectFit: fallbackVar(objectFit, 'cover'),
 	objectPosition: fallbackVar(objectPosition, 'center'),

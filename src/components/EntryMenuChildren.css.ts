@@ -3,7 +3,7 @@ import { theme } from '../Theme.css'
 import { MenuLinkWrapper } from './Menu.css'
 
 export const entryMenuLink = style([
-	MenuLinkWrapper['vertical'],
+	MenuLinkWrapper({ layout: 'vertical' }),
 	{
 		color: theme.color.contrast2,
 		selectors: {

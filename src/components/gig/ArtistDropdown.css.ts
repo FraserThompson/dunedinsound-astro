@@ -13,7 +13,7 @@ export const artistExtraWrapper = style({
 })
 
 export const artistDropdownLink = style([
-	MenuLinkWrapper['vertical'],
+	MenuLinkWrapper({ layout: 'vertical' }),
 	{
 		height: '100% !important',
 		color: `${theme.color.darkText} !important`,

@@ -1,12 +1,12 @@
 ---
 import { loadAndFormatCollection, type ProcessedEntry } from '@src/util/collection'
-import Banner from '@src/components/Banner.astro'
 import TextContainer from '@src/components/TextContainer.astro'
 import { generateExcerpt } from '@src/util/helpers'
 import BlogTags from '@src/components/blog/BlogTags.astro'
 import SidebarLayout from '@src/layouts/base/SidebarLayout.astro'
 import ShuffleFilters from '@src/components/ShuffleFilters.astro'
 import { formattedDate } from '@src/util/names'
+import Image2 from '@src/components/Image2.astro'
 
 interface Props {
 	entries?: ProcessedEntry<'blog'>[]
@@ -26,33 +26,29 @@ const blogs = entries || (await loadAndFormatCollection('blog'))
 	<TextContainer slot="content">
 		{selectedTag && <h2>Articles tagged with "{selectedTag}"</h2>}
 		{
-			blogs.map((blog) => (
-				<div class="filter-item" data-category="">
-					<h2 style={{ marginBottom: '5px' }}>
-						<a href={blog.extra.absolutePath}>
-							{blog.entry.data.tags.includes('interview') && 'INTERVIEW: '}
-							{blog.entry.data.title}
-						</a>
-					</h2>
-					<h4>{formattedDate(blog.entry.data.date)}</h4>
-					{blog.extra.cover && (
-						<a href={blog.extra.absolutePath}>
-							<Banner
-								height="20vh"
-								heightMobile="20vh"
-								responsiveImageSizes={'textContainer'}
-								backgroundImage={blog.extra.cover}
-								loading={'lazy'}
-							/>
-						</a>
-					)}
-					{blog.entry.body && <p>{generateExcerpt(blog.entry.body)}</p>}
-					<p>
-						<a href={blog.extra.absolutePath}>More</a>
-					</p>
-					<hr />
-				</div>
-			))
+			blogs
+				.filter((thing) => !thing.entry.data.draft)
+				.map((blog) => (
+					<div class="filter-item" data-category="">
+						<h2 style={{ marginBottom: '5px' }}>
+							<a href={blog.extra.absolutePath}>
+								{blog.entry.data.tags.includes('interview') && 'INTERVIEW: '}
+								{blog.entry.data.title}
+							</a>
+						</h2>
+						<h4>{formattedDate(blog.entry.data.date)}</h4>
+						{blog.extra.cover && (
+							<a href={blog.extra.absolutePath}>
+								<Image2 responsiveImage={blog.extra.cover[0]} size="textContainer"/>
+							</a>
+						)}
+						{blog.entry.body && <p>{generateExcerpt(blog.entry.body)}</p>}
+						<p>
+							<a href={blog.extra.absolutePath}>More</a>
+						</p>
+						<hr />
+					</div>
+				))
 		}
 	</TextContainer>
 </SidebarLayout>

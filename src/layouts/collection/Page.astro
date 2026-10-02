@@ -12,6 +12,6 @@ const { entry } = Astro.props
 const { Content, headings, remarkPluginFrontmatter } = await render(entry.entry)
 ---
 
-<TextContainer className=`${entry.entry.data.stickyHeaders ? 'sticky-headers' : ''}`>
+<TextContainer stickyHeaders={entry.entry.data.stickyHeaders}>
 	<Content components={{ WebsiteInfo }} />
 </TextContainer>

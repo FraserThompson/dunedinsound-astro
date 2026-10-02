@@ -27,7 +27,7 @@ export type ResponsiveImageSizesKey = 'full' | 'textContainer' | 'grid' | 'small
  * Map of sizes for each screen size.
  */
 export const responsiveImageSizes: Record<ResponsiveImageSizesKey, string> = {
-	full: '50vw',
+	full: '80vw',
 	textContainer: '(min-width: 768px) 740px, 50vw',
 	grid: '(min-width: 1600px) 25vw, (min-width: 992px) 33vw, (min-width: 768px) 50vw, 25vw',
 	smallGrid: '(min-width: 1600px) 12vw, (min-width: 992px) 16vw, (min-width: 768px) 25vw, 50vw',

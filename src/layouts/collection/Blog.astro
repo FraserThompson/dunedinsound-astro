@@ -4,6 +4,7 @@ import { type ProcessedEntry } from '@src/util/collection.ts'
 import type { ResponsiveImage } from '@src/util/ResponsiveImage'
 import Banner from '@src/components/Banner.astro'
 import BlogSidebar from '@src/components/blog/BlogSidebar.astro'
+import BlogTile from '@src/components/blog/BlogTile.astro'
 import FlexGridContainer from '@src/components/FlexGridContainer.astro'
 import GigTile from '@src/components/gig/GigTile.astro'
 import CompactPlayer from '@src/components/CompactPlayer'
@@ -16,7 +17,8 @@ import ImageGallery from '@src/components/ImageGallery.astro'
 import ShareButton from '@src/components/ShareButton.astro'
 import { BlogTextContainer, BlogPageContainer, VideoCover } from './Blog.css'
 import { render } from 'astro:content'
-import { getEntryPath } from '@src/util/helpers'
+import DropdownMenu from '@src/components/DropdownMenu.astro'
+import generateToc from '@src/util/toc'
 
 interface Props {
 	entry: ProcessedEntry<'blog'>
@@ -25,6 +27,7 @@ interface Props {
 const { entry, images } = Astro.props
 
 const { Content, headings } = await render(entry.entry)
+const toc = generateToc(headings)
 
 const entryData = entry.entry.data
 const entryExtra = entry.extra
@@ -32,11 +35,10 @@ const entryExtra = entry.extra
 
 {
 	entryExtra.cover && !entryExtra.coverVid && (
-		<Banner
-			backgroundImage={entryExtra.cover}
-			backgroundImageVertical={entryExtra.coverVertical}
-			title={entryData.title}
-		>
+		<Banner backgroundImage={entryExtra.cover} backgroundImageVertical={entryExtra.coverVertical}>
+			<h1 slot="subtitle" style={{ textShadow: 'none' }}>
+				{entryData.title}
+			</h1>
 			<ShareButton
 				style={{ position: 'absolute', left: '50%', transform: 'translate(-50%)' }}
 				shareData={{
@@ -65,11 +67,29 @@ const entryExtra = entry.extra
 		</Banner>
 	)
 }
+{
+	entryData.stickyHeaders && (
+		<DropdownMenu
+			className="showMobile block"
+			direction="down"
+			buttonWidth="100%"
+			backgroundColor="white"
+			textColor="black"
+			buttonHeight="45px"
+			highlightOnScroll={true}
+			width="100%"
+			list={toc.map((heading) => ({
+				title: heading.text,
+				href: `#${heading.slug}`
+			}))}
+		/>
+	)
+}
 <div class={BlogPageContainer} id="overview">
 	<div style={{ maxWidth: '1600px', margin: '0 auto', display: 'flex' }}>
-		<BlogSidebar className="hideMobile" entry={entry} headings={headings} />
+		<BlogSidebar className="hideMobile" entry={entry} toc={toc} />
 		<div class={BlogTextContainer}>
-			<TextContainer light={true}>
+			<TextContainer light={true} stickyHeaders={entry.entry.data.stickyHeaders}>
 				<Content components={{ CompactPlayer, Image }} />
 			</TextContainer>
 		</div>
@@ -77,7 +97,7 @@ const entryExtra = entry.extra
 </div>
 <div class="showMobile">
 	<SidebarNav customButton={true}>
-		<BlogSidebar slot="sidebarMenu" entry={entry} headings={headings} />
+		<BlogSidebar slot="sidebarMenu" entry={entry} toc={toc} />
 		<a slot="sidebarSubheaderTopMobile" class={`showMobile flex ${backButton}`} href="/blog">
 			<ChevronLeftIcon /> Go to articles home
 		</a>
@@ -85,22 +105,18 @@ const entryExtra = entry.extra
 </div>
 {entryData.gallery && images && <ImageGallery images={Object.values(images)} />}
 <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-	<div style={{ display: 'flex', paddingBottom: '15px' }}>
-		{
-			entry.prev && (
-				<a href={getEntryPath(entry.prev.data.title, 'blog')} rel="prev">
-					← {entry.prev.data.title}
-				</a>
-			)
-		}
-		{
-			entry.next && (
-				<a href={getEntryPath(entry.next.data.title, 'blog')} style={{ marginLeft: 'auto' }} rel="next">
-					{entry.next.data.title} →
-				</a>
-			)
-		}
-	</div>
+	{!!entryExtra.relatedBlogs?.length && <h2>Related articles...</h2>}
+</div>
+{
+	!!entryExtra.relatedBlogs?.length && (
+		<FlexGridContainer>
+			{entryExtra.relatedBlogs.map((relatedBlog) => (
+				<BlogTile blog={relatedBlog} responsiveImageSizes={'grid'} backgroundStyle="center" />
+			))}
+		</FlexGridContainer>
+	)
+}
+<div style={{ maxWidth: '1100px', margin: '0 auto' }}>
 	{!!entryExtra.relatedGigs?.length && <h2>Related gigs...</h2>}
 </div>
 {

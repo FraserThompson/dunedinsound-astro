@@ -8,6 +8,7 @@ export interface Poo {
 	description?: string
 	image?: string
 	date?: string
+	hidden?: boolean
 }
 
 interface Props {
@@ -37,6 +38,7 @@ const schema = {
 <title>{title}</title>
 <meta name="description" content={description} />
 <meta name="image" content={poo.image} />
+{poo.hidden && <meta name="robots" content="noindex, nofollow" />}
 <meta property="og:site_name" content={siteTitle} />
 <meta property="og:url" content={`https://dunedinsound.com${currentPath}`} />
 <meta property="og:title" content={title} />
@@ -45,4 +47,4 @@ const schema = {
 <meta itemprop="datePublished" content={poo.date} />
 <meta property="og:image" content={poo.image} />
 
-<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline/>
+<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />

@@ -93,3 +93,11 @@ All requests go to a CloudFlare Worker which routes them appropriately.
 The built Astro site in `dist` are deployed via Wrangler as static assets in the worker (see https://developers.cloudflare.com/workers/static-assets/).
 
 The big JPG and MP3 files in `dist_media` are served from Cloudflare R2 which is bound to the worker (see `wrangler.jsonc`), which then routes requests for these files to R2 via `worker.js`.
+
+## Using R2 for sharing files
+
+Sometimes people ask for files and I keep running out of space on Drive.
+
+Instead, I can upload files to R2 by putting them in `shared` and running `pnpm run sync-shared`. This is a sync, so deleting them then running it again will remove them from the remote.
+
+Share the link like `https://dunedinsound.com/shared/whatever/file.mp4` rather than the direct R2 link so it sets the content-disposition and forces download instead of streaming.

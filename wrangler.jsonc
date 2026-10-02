@@ -14,6 +14,12 @@
 		"directory": "./dist",
 		"binding": "ASSETS"
 	},
+	"r2_buckets": [
+		{
+			"binding": "R2_BUCKET",
+			"bucket_name": "dunedinsound"
+		}
+	],
 	"routes": [
 		{
 			"pattern": "dunedinsound.com",

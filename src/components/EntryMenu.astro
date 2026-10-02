@@ -24,6 +24,6 @@ interface Props {
 const { selected, collection, collectionEntries, style } = Astro.props
 ---
 
-<ul class={`${MenuWrapper['vertical']} filter-container`} style={style}>
+<ul class={`${MenuWrapper({ layout: 'vertical' })} filter-container`} style={style}>
 	{(<EntryMenuChildren collection={collection} collectionEntries={collectionEntries} selected={selected} />)}
 </ul>

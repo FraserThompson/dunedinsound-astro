@@ -7,7 +7,7 @@
 
 import type { FunctionalComponent } from "preact"
 import type { PlayerAudio } from "@src/util/collection"
-import { useEffect, useMemo, useRef, useState } from "preact/hooks"
+import { useEffect, useRef, useState } from "preact/hooks"
 import { AudioWrapper, CompactPlayerWaveWrapper, CompactPlayerWrapper, WinampTitlebar } from "./CompactPlayer.css"
 import { TracklistWrapper } from "./player/PlayerTracklist.css"
 import { TransportButton } from "./player/PlayerTransport.css"
@@ -41,7 +41,6 @@ const CompactPlayer: FunctionalComponent<Props> = ({ title = "AUDIO PLAYER", pla
 	const playlistLengthRef = useRef(playlist.length)
 
 	const currentTrack = playlist[selectedTrack]
-	const currentTracklist = currentTrack?.tracklist ?? []
 
 	/** 
 	 * Initialize on load.

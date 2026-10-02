@@ -25,6 +25,7 @@ dist_media/
 audio/
 public/gigs.json
 
-.wrangler
+.wrangler*
 
 _drafts/
+shared/

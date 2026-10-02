@@ -262,6 +262,15 @@ globalStyle('.showMobile.flex', {
 	}
 })
 
+globalStyle('.showMobile.block', {
+	display: 'block !important',
+	'@media': {
+		'screen and (--md)': {
+			display: 'none !important'
+		}
+	}
+})
+
 globalStyle('.hideMobile', {
 	display: 'none !important',
 	'@media': {
@@ -293,8 +302,12 @@ globalStyle('.fixedBottomMobile', {
 	}
 })
 
-globalStyle('body.player-visible .fixedBottomMobile', {
+globalStyle('body.player-visible:not(.player-open) .fixedBottomMobile', {
 	bottom: theme.dimensions.headerHeightMobileWithSubheader,
+})
+
+globalStyle('body.player-visible.player-open .fixedBottomMobile', {
+	bottom: theme.dimensions.headerHeightNegative
 })
 
 globalStyle('.flex', {

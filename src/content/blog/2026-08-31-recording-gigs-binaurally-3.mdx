@@ -1,0 +1,206 @@
+---
+title: Cheap electret condenser capsules compared
+date: 2026-08-31T07:00:00.000Z
+author: Fraser Thompson
+description: "In this article I compare capsules from JLI, PUI, AliExpress, and Micverve to determine which is best for bootlegging live music."
+tags:
+  - Tech
+---
+import Image from "@src/components/LightboxImage.astro"
+import CompactPlayer from '@src/components/CompactPlayer'
+
+In my [last article](/blog/upgrading_my_wearable_binaural_recording_rig_guide), I attempted to find out if there were modern, readily available alternatives to the discontinued but legendary Panasonic WM-61A for recording live music, and ended up testing a capsule from PUI Audio. The results were fine, if a little disappointing in terms of high SPL handling. In this article, I’m going a step further and comparing four different capsules from various manufacturers, and also following up on some of the things I learnt after publishing the last article.
+
+Quick background for the uninitiated: I bootleg live music via a custom DIY recording rig which goes inside my ears. For more on that check [the previous article](/blog/upgrading_my_wearable_binaural_recording_rig_guide).
+
+## The capsules
+
+### <a href="https://www.jlielectronics.com/microphone-capsules/jli-61a/" target="_blank">JLI Electronics JLI-61A</a>
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['jli_61a']} alt="JLI-61A product photo" maxWidth="200px"/>
+
+Created to replace the Panasonic WM-61A after they were discontinued. This is what most of my recordings were done with, and what I attempted to find a replacement for in the previous article. 
+
+<div>
+| Sensitivity (dB) | \-34 \+/-4dB |
+| :---- | :---- |
+| **Frequency Response (Hz)** | 20-20k |
+| **S/N Ratio (dB)** | \>62 |
+| **Cost (excl. GST)** | $3.65NZD |
+</div>
+
+### <a href="https://nz.element14.com/pui-audio/pom-2739l-hd3-r/microphone-omni-2-2kohm-39db/dp/4411246" target="_blank">PUI Audio POM-2739L-HD3-R</a>
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['pui']} alt="PUI Audio POM-2739L-HD3-R product photo" maxWidth="200px"/>
+
+A modern electret condenser capsule design which doesn’t attempt to be a WM-61A clone. It also exposes three solder pads, meaning no modification is required. Fun fact: PUI Audio created the first PCB mounted electromechanical buzzer in 1973.
+
+<div>
+| Sensitivity (dB) | \-39 \+/-3dB |
+| :---- | :---- |
+| **Frequency Response (Hz)** | 20-20k |
+| **S/N Ratio (dB)** | 73 |
+| **Cost (excl. GST)** | $9.68NZD |
+</div>
+
+### <a href="https://www.aliexpress.com/item/1005003457441785.html" target="_blank">“Panasonic WM-61A” from Crabeccs on Aliexpress</a>
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['crabeccs-wm61a']} alt="Crabeccs WM-61A product photo" maxWidth="200px"/>
+
+There are a handful of sellers claiming to have genuine Panasonic WM-61A for sale on Aliexpress, the biggest is Crabeccs whose claim is “we specially contacted the agents of Panasonic in Japan to provide buyers with brand new original WM-61A”. It remains to be seen whether they’re actually genuine
+
+<div>
+| Sensitivity (dB) | \-35 \+/-3dB |
+| :---- | :---- |
+| **Frequency Response (Hz)** | 20-20k |
+| **S/N Ratio (dB)** | \>62 |
+| **Cost (excl. GST)** | $2.72NZD |
+</div>
+
+### <a href="https://micverve.com/collections/5-8-6-0mm/products/panasonic-wm-61a-omni-directional-electret-condenser-microphone" target="_blank">“Panasonic WM-61A” from Micverve</a>
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['micverve-wm61a']} alt="Micverve WM-61A product photo"  maxWidth="200px"/>
+
+Another supposedly genuine Panasonic WM-61A, sold via a specialist supplier who also sell a bunch of other extremely niche products for field recording. They claim to have “mastered the precise identification of counterfeit components.” I will be the judge of that.
+
+<div>
+| Sensitivity (dB) | \-35 \+/-3dB |
+| :---- | :---- |
+| **Frequency Response (Hz)** | 20-20k |
+| **S/N Ratio (dB)** | \>62 |
+| **Cost (excl. GST)** | $2.30NZD |
+</div>
+
+### <a href="https://www.roland.com/ca/products/cs-10em/" target="_blank">Roland CS-10EM</a>
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['cs10-em']} alt="Roland CS-10EM product photo" maxWidth="200px"/>
+
+These are included out of interest as an off-the-shelf non DIY version of what I’m doing by gluing capsules in earplugs.
+
+<div>
+| Sensitivity (dB) | \-40 |
+| :---- | :---- |
+| **Frequency Response (Hz)** | 20-20k |
+| **S/N Ratio (dB)** | \>60 |
+| **Cost (excl. GST)** | $199NZD |
+</div>
+
+## The comparison
+
+Methodology: Microphones in earplugs, Beyerdynamic DT880 over ears, 10-20k frequency sweep recorded via Zoom H1E at 32-bit 96khz then graphed via Room EQ Wizard. Not the most scientific method since it also measures the frequency response of my headphones, but as a like for like comparison it’s sufficient. 
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['sweep-final']} alt="Frequency sweep comparison graph" caption="blue=roland, lightgreen=micverve, purple=crabeccs, darkgreen=pui, yellow=jli" objectFit="contain"/>
+
+The low and midrange are practically identical between all capsules (aside from the Roland's low end bump, which I think could be due to closer proximity to the headphone drivers), it’s only on the high end where things get interesting.
+
+The PUI rolls off earlier than the others, around 16khz. In general, the Micverve capsules have the flattest high end response, both the Crabeccs and JLI start dipping at the top end, but the Micverve just keeps going. They also have an unusual 10k spike.
+
+Graphs are one thing, but how do they sound in a controlled test ([Dale Kerrigan's "Dare"](https://dalekerrigan.bandcamp.com/album/heavy-greasy))?
+
+import audio_sample_roland_mp3 from '@dist_media/blog/2026-08-31-recording-gigs-binaurally-3/audio sample - roland.mp3?url'
+import audio_sample_roland_json from '@dist_media/blog/2026-08-31-recording-gigs-binaurally-3/audio sample - roland.mp3.json?url'
+import audio_sample_pui_mp3 from '@dist_media/blog/2026-08-31-recording-gigs-binaurally-3/audio sample - pui.mp3?url'
+import audio_sample_pui_json from '@dist_media/blog/2026-08-31-recording-gigs-binaurally-3/audio sample - pui.mp3.json?url'
+import audio_sample_jli_mp3 from '@dist_media/blog/2026-08-31-recording-gigs-binaurally-3/audio sample - jli.mp3?url'
+import audio_sample_jli_json from '@dist_media/blog/2026-08-31-recording-gigs-binaurally-3/audio sample - jli.mp3.json?url'
+import audio_sample_crabeccs_mp3 from '@dist_media/blog/2026-08-31-recording-gigs-binaurally-3/audio sample - crabeccs.mp3?url'
+import audio_sample_crabeccs_json from '@dist_media/blog/2026-08-31-recording-gigs-binaurally-3/audio sample - crabeccs.mp3.json?url'
+import audio_sample_micverve_mp3 from '@dist_media/blog/2026-08-31-recording-gigs-binaurally-3/audio sample - micverve.mp3?url'
+import audio_sample_micverve_json from '@dist_media/blog/2026-08-31-recording-gigs-binaurally-3/audio sample - micverve.mp3.json?url'
+
+<CompactPlayer
+  playerAudio={[
+    {
+      title: 'JLI-61A',
+      files: [audio_sample_jli_mp3, audio_sample_jli_json],
+    },
+    {
+      title: 'PUI Audio POM-2739L-HD3-R',
+      files: [audio_sample_pui_mp3, audio_sample_jli_json],
+    },
+    {
+      title: 'Crabeccs WM-61A',
+      files: [audio_sample_crabeccs_mp3, audio_sample_crabeccs_json],
+    },
+    {
+      title: 'Micverve WM-61A',
+      files: [audio_sample_micverve_mp3, audio_sample_micverve_json],
+    },
+    {
+      title: 'Roland CS-10EM',
+      files: [audio_sample_roland_mp3, audio_sample_roland_json],
+    },
+  ]}
+client:load />
+
+In my subjective opinion the Micverve WM-61A sound the best, likely due to the extra air and sparkle from that high-end bump and extension. I think they sound good, really good. Also, I’ve exposed them to ridiculously high volumes and yet to experience any distortion, unlike the PUI capsules which started breaking up when I was standing next to the PA at YOURS during a [hardcore show](/gigs/yours-noise).
+
+## Are the WM-61A’s genuine?
+
+Answering this question was far more interesting than I thought it would be.
+
+To test capsules I Linkwitz mod them, wire them up with short solid-core wires, then put them in earplugs. Then I solder them to a cable which goes to a battery box. So the only variable changing is the capsules. 
+
+Everything was normal until I got to the Micverve capsules. First, when I tested them they sounded thin and bassless, like a telephone. I thought maybe I’d done something wrong with the soldering or modification? But I checked and re-checked and everything seemed fine.
+
+Turned out for some reason they’re fussy about the value of the resistor in the battery box. I’d used 6.7k because that’s what I had. The Linkwitz circuit asks for 10k but I was under the impression that the only difference that would make is a slightly different high-pass frequency. And none of the other capsules cared, only the Micverve did. Interesting.
+
+The second bit of weirdness which had me tearing my hair out for days was when I first tested them and this was the result:
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['sweep-all']} alt="Frequency sweep comparison graph" caption="lightgreen=jli, purple=pui, darkgreen=crabeccs, pink=micverve" objectFit="contain"/>
+
+It didn’t make sense, why would the Micverve capsules behave so differently on the low-end from every other electret condenser capsule I’d tested? I tried two other capsules from the batch I bought in case it was a normal variance between them, but they all behaved exactly the same. I 
+
+I emailed the supplier. They told me to check if all the capsules had the same curve, but I’d already tested four and I thought that was enough. I also took the chance to ask them if they actually were genuine, and if so, how? This is what they said: 
+
+> We can confirm that these are genuine original Panasonic WM-61A capsules. Regarding our supply source, the WM-61A model has indeed been discontinued. However, Panasonic notified us in advance before halting production and accepted our final bulk order. With decades of experience in this industry, we recognize the excellent cost-performance of this capsule model, so we placed a final order for 220,000 units of WM-61A. This large stock allows us to supply this model steadily to this day.
+
+Big if true, but of course anyone can just lie about anything so I didn’t take it at face value. Anyway, back to the other thing.
+
+My next theory was that maybe the act of gluing the back of the capsules altered the response somehow. Maybe there’s a microscopic vent, or perforations in the PCB material? All the tests I’d done so far had been with epoxy resin applied to the back. Of course, all capsules had this applied before testing and hadn’t had their frequency response altered, but maybe the Micverves were different.
+
+Anyway, I did a test of the raw capsules, only Linkwitz modded with nothing else done to them. And lo and behold:
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['sweep-plugged-vs-unplugged']} alt="Comparison between capsules with glue vs loose" caption="green=glued, yellow=loose" objectFit="contain"/>
+
+So I’d found the issue (or so I thought), gluing the back of the capsule reduces bass response. I replicated this many many times and two distinct groups formed.
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['sweep-insane']} alt="Frequency sweep comparison graph" objectFit="contain"/>
+
+I emailed Micverve with these findings and whether there’s some reason why the back needs to be clear. They came back with:
+
+> The side with soldered wires can be glued freely.
+
+Which obviously threw everything up in the air again. Okay, more experimentation then.
+
+I tried scraping off glued capsules the best I could and cleaning it with isopropyl alcohol. Still has the bass rolloff.
+
+I tried applying Blu-Tak to the rear of some of the unglued capsules. And nothing happened, the bass response didn't rolloff, they performed identically.
+
+So that confirms it isn’t simply blocking the rear that causes the issue, maybe it’s related to the glue I used?
+
+Next experiment: A different glue, instead of Araldite two part epoxy I used superglue. Bingo:
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['sweep-fixed-micverve']} caption="Ignore the top end differences, probably due to them being loose rather than in earplugs" objectFit="contain"/>
+
+After replicating this result again, I concluded that there must be something about two-part epoxy which breaks the Micverve WM-61A. I’m still not 100% sure what, but I do know that the curing process for epoxy resin is exothermic, maybe that heat was enough to alter the internals of the capsule. But why only the Micverve ones? I’ve been using Araldite for years and never experienced anything like this.
+
+The fact that they behave so differently leads me to consider that they might actually be genuine? Other users seem to agree, including this ultrasound guy who is very impressed by the high-end extension.
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['review']} alt="A glowing review of the Micverve WM-61A" maxWidth="350px"/>
+
+The Crabeccs I don’t believe are genuine, because if they were they’d surely behave like the Micverves. I'd love to know for sure though.
+
+Micverve also seem to actually care, like they replied to my emails quickly, they sell loads of weirdly niche electret condenser capsule related products, including assembled microphones and this really cool soldering jig which I recommend to anyone who solders electret condenser capsules frequently:
+
+<Image size="blog" responsiveImage={frontmatter.responsiveImages['solderingjig']} alt="Really cool aluminium soldering jig"/>
+
+So yeah. Micverve. Good guys.
+
+## The upshot
+
+If you want to do what I do, don’t fork out extra for new capsules with better specs. Just buy Micverve WM-61A, but don’t get them hot, and don’t use epoxy resin.
+
+What’s next? Maybe I should try building something with 10mm capsules? They wouldn’t be able to go as deeply in my ears but also might sound better. Or maybe I should go the other direction and try MEMS microphones, which are tiny surface mounted things that replaced electret condenser capsules in consumer devices. They’re in your phone.
+
+In fact I think that’s what I’ll do. Stay tuned.

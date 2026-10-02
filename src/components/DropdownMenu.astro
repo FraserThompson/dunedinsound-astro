@@ -1,4 +1,34 @@
 ---
+/**
+ * A general purpose dropdown menu.
+ * 
+ * Props:
+ *  - menuTitle (optional): label shown in the button; defaults to the menu icon if omitted
+ *  - className (optional): extra classes applied to the wrapper
+ *  - direction (required): menu opens up or down from the trigger
+ *  - list (optional): array of menu links and optional submenus (see MenuLink interface)
+ *  - top (optional): vertical offset for the desktop menu
+ *  - buttonPosition (optional): alignment of the button relative to the menu
+ *  - topMobile (optional): vertical offset for the mobile menu
+ *  - width (optional): width of the dropdown menu
+ *  - buttonWidth (optional): width of the trigger button
+ *  - buttonHeight (optional): height of the trigger button
+ *  - buttonHeightMobile (optional): height of the trigger button on mobile
+ *  - backgroundColor (optional): background colour for the menu and button
+ *  - textColor (optional): text colour for menu content
+ *  - highlightOnScroll (optional): automatically adds the active class as the matching section is scrolled into view
+ *    note: it also adds the active class when the hash changes in the URL. use this if you want highlighting behavior,
+ *    but you don't want to change the hash.
+ *
+ * Slots:
+ *  - default: arbitrary content inside the dropdown menu
+ *  - button: override the provided trigger button content
+ *
+ * Other things:
+ *  - if you want the button to be hidden on mobile until the user scrolls past a
+ *    certain point, include an element with "show-dropdown" at that location.
+ */
+
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import MenuIcon from '~icons/iconoir/menu'
 import NavArrowRight from '~icons/iconoir/nav-arrow-right'
@@ -31,6 +61,7 @@ interface MenuLink {
 
 export interface Props {
 	menuTitle?: string
+	className?: string
 	direction: 'up' | 'down'
 	list?: MenuLink[]
 	top?: string
@@ -42,10 +73,12 @@ export interface Props {
 	buttonHeightMobile?: string
 	backgroundColor?: string
 	textColor?: string
+	highlightOnScroll?: boolean
 }
 
 const {
 	menuTitle,
+	className = '',
 	direction,
 	list = [],
 	top,
@@ -56,7 +89,8 @@ const {
 	buttonHeight,
 	buttonHeightMobile,
 	backgroundColor,
-	textColor
+	textColor,
+	highlightOnScroll = false
 } = Astro.props
 
 const wrapperVars = assignInlineVars({
@@ -80,7 +114,12 @@ const menuVars = assignInlineVars({
 })
 ---
 
-<dropdown-menu class={dropdownWrapper} data-direction={direction} style={wrapperVars}>
+<dropdown-menu
+	class={`${dropdownWrapper} ${className}`}
+	data-direction={direction}
+	data-highlight-on-scroll={String(highlightOnScroll)}
+	style={wrapperVars}
+>
 	<button
 		data-main-button
 		class={dropdownButtonWrapper}
@@ -143,7 +182,7 @@ const menuVars = assignInlineVars({
 
 <script>
 	import { dropdownClickEventName } from '@src/util/events'
-	import { scrollToElement } from '@src/util/helpers'
+	import { getCurrentScreensize, scrollToElement } from '@src/util/helpers'
 	import { replaceEventName } from '@src/util/history'
 
 	class DropdownMenu extends HTMLElement {
@@ -165,6 +204,16 @@ const menuVars = assignInlineVars({
 		}
 
 		connectedCallback() {
+			window.addEventListener('scroll', this.updateMobileDropdownVisibility, { passive: true })
+			window.addEventListener('resize', this.updateMobileDropdownVisibility)
+			this.updateMobileDropdownVisibility()
+
+			if (this.getAttribute('data-highlight-on-scroll') === 'true') {
+				this.enableScrollHighlighting()
+				window.addEventListener('scroll', this.enableScrollHighlighting, { passive: true })
+				window.addEventListener('resize', this.enableScrollHighlighting)
+			}
+
 			// Setup Main Menu
 			this.mainButton?.addEventListener('click', this.handleMainButtonClick)
 
@@ -215,7 +264,38 @@ const menuVars = assignInlineVars({
 			document.removeEventListener('click', this.handleDocumentClick)
 			document.removeEventListener(replaceEventName, this.handleURLChange as EventListener)
 			window.removeEventListener('scroll', this.handleScroll)
+			window.removeEventListener('scroll', this.enableScrollHighlighting)
+			window.removeEventListener('resize', this.enableScrollHighlighting)
 			this.submenus.forEach((sub) => sub.remove())
+		}
+
+		enableScrollHighlighting = () => {
+			const links = Array.from(this.querySelectorAll<HTMLAnchorElement>('.menuLink[href^="#"]'))
+			const sections = links
+				.map((link) => {
+					const hash = link.getAttribute('href')
+					if (!hash || !hash.startsWith('#') || hash.length <= 1) return null
+					const target = document.getElementById(hash.slice(1))
+					if (!target) return null
+					return { link, target }
+				})
+				.filter((entry): entry is { link: HTMLAnchorElement; target: HTMLElement } => !!entry)
+				.sort((a, b) => a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top)
+
+			if (!sections.length) return
+
+			const activeLink = sections
+				.filter((section) => section.target.getBoundingClientRect().top <= 0)
+				.at(-1)?.link ?? null
+
+			this.querySelectorAll<HTMLAnchorElement>('.menuLink[href^="#"]').forEach((item) => {
+				const parentLi = item.closest('li')
+				if (item === activeLink) {
+					parentLi?.classList.add('active')
+				} else {
+					parentLi?.classList.remove('active')
+				}
+			})
 		}
 
 		handleMainButtonClick = (e: MouseEvent) => {
@@ -233,16 +313,38 @@ const menuVars = assignInlineVars({
 			}
 		}
 
+		updateMobileDropdownVisibility = () => {
+			const showDropdown = document.getElementById('show-dropdown')
+
+			if (!showDropdown || !this.mainButton) return
+
+			if (getCurrentScreensize() === 'lg') {
+				this.mainButton.style.display = ''
+				return
+			}
+
+			const triggerTop = showDropdown.getBoundingClientRect().top + window.scrollY
+			const shouldShow = window.scrollY > triggerTop + showDropdown.offsetHeight
+			this.mainButton.style.display = shouldShow ? '' : 'none'
+		}
+
 		handleMenuItemClick = (e: MouseEvent) => {
 			const target = e.currentTarget as HTMLAnchorElement
 			const scrollTarget = target.hash
 
 			if (scrollTarget && scrollTarget.startsWith('#')) {
-				const scrollTargetElement = document.querySelector(scrollTarget)
-				if (scrollTargetElement) {
+				const scrollTargetElement = document.getElementById(scrollTarget.slice(1))
+				// Compatibility with sectionized blog articles.
+				// Scroll to top of section rather than header.
+				const sectionParent = scrollTargetElement?.parentElement?.classList.contains('heading') ? scrollTargetElement.parentElement : null
+				if (scrollTargetElement || sectionParent) {
 					e.preventDefault()
 					e.stopPropagation()
-					scrollToElement(scrollTargetElement)
+					if (sectionParent) {
+						scrollToElement(sectionParent)
+					} else if (scrollTargetElement) {
+						scrollToElement(scrollTargetElement)
+					}
 				}
 			}
 

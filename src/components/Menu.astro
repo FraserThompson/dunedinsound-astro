@@ -47,7 +47,7 @@ const currentPath = new URL(Astro.request.url).pathname
 const { links, menuType = 'horizontal' } = Astro.props
 ---
 
-<ul class={MenuWrapper[menuType]}>
+<ul class={MenuWrapper({ layout: menuType })}>
 	{
 		links.map((link) => {
 			const highlightBehavior = link.highlightOnActive || 'partial'
@@ -59,10 +59,10 @@ const { links, menuType = 'horizontal' } = Astro.props
 					? 'sidebar-button'
 					: ''
 			return (
-				<li class={`${MenuLi[menuType]} ${link.class || ''}`}>
+				<li class={`${MenuLi({ layout: menuType })} ${link.class || ''}`}>
 					<a
 						class:list={[
-							MenuLinkWrapper[menuType],
+							MenuLinkWrapper({ layout: menuType }),
 							{
 								active:
 									highlightBehavior === 'partial' && partiallyActive

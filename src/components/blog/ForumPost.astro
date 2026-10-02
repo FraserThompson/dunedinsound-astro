@@ -2,17 +2,21 @@
 interface Props {
 	username: string
 	userTitle?: string
+	admin?: boolean
+	signature?: string
+	threadTitle?: string
 	postDate: string
 	postCount: string | number
 	joinedDate: string
 	location?: string
 }
 
-const { username, userTitle, postDate, postCount, joinedDate, location } = Astro.props
+const { username, userTitle, admin, signature, threadTitle, postDate, postCount, joinedDate, location } = Astro.props
 ---
 
 <article class="forum-post-prosilver">
 	<section class="post-main-content">
+		{threadTitle && <span class="thread-title">{threadTitle}</span>}
 		<header class="post-header">
 			<span class="post-icon" aria-hidden="true">📄</span>
 			<span class="header-text">
@@ -22,12 +26,20 @@ const { username, userTitle, postDate, postCount, joinedDate, location } = Astro
 
 		<div class="post-body">
 			<slot />
+			{
+				signature && (
+					<>
+						<hr />
+						<p>{signature}</p>
+					</>
+				)
+			}
 		</div>
 	</section>
 
 	<aside class="profile-sidebar">
 		<div class="profile-details">
-			<h3 class="profile-username">{username}</h3>
+			<h3 class=`profile-username ${admin ? 'is-admin' : ''}`>{username}</h3>
 			{userTitle && <p class="profile-rank">{userTitle}</p>}
 
 			<dl class="profile-stats">
@@ -42,7 +54,7 @@ const { username, userTitle, postDate, postCount, joinedDate, location } = Astro
 				{
 					location && (
 						<div>
-							<dt>Location:</dt>
+							<dt>Location: </dt>
 							<dd>{location}</dd>
 						</div>
 					)
@@ -61,7 +73,7 @@ const { username, userTitle, postDate, postCount, joinedDate, location } = Astro
 		border: 1px solid #cadceb;
 		border-radius: 7px;
 		display: grid;
-		grid-template-columns: 1fr 190px;
+		grid-template-columns: minmax(0, 1fr) 190px;
 		color: #333333;
 		margin-bottom: 1.25rem;
 		box-sizing: border-box;
@@ -76,12 +88,12 @@ const { username, userTitle, postDate, postCount, joinedDate, location } = Astro
 		flex-direction: column;
 		justify-content: space-between;
 		position: relative;
+		min-width: 0;
 	}
 
 	.post-header {
-		color: #536482;
 		margin: 0 !important;
-		padding: 10px 10px 0px 15px !important;
+		padding: 0px 10px !important;
 		display: flex;
 		align-items: center;
 		gap: 4px;
@@ -93,40 +105,58 @@ const { username, userTitle, postDate, postCount, joinedDate, location } = Astro
 	}
 
 	.author-highlight {
-		color: #bc2a4b;
+		color: #943130;
 		font-weight: bold;
+	}
+
+	.thread-title {
+		width: 100%;
+		padding-bottom: 0px !important;
+		color: #943130;
+		font-weight: bold;
+		font-size: 20px;
+		overflow-wrap: anywhere;
 	}
 
 	.post-body {
 		flex-grow: 1;
+		width: 100%;
+		box-sizing: border-box;
 		padding-top: 0 !important;
 		padding-bottom: 0 !important;
 		color: #333333;
+		overflow-wrap: anywhere;
+		word-break: break-word;
 	}
 
 	.profile-sidebar {
 		padding: 10px 10px 10px 15px;
 		border-left: 1px solid #ffffff;
 		font-size: 11px;
-		color: #536482;
+		color: #666666;
 	}
 
 	.profile-username {
 		font-size: 12px;
-		font-weight: bold;
+		font-weight: normal;
 		margin: 0 0 2px 0;
+		color: #105289;
+		&.is-admin {
+			color: #aa0000;
+		}
 	}
 
 	.profile-rank {
 		font-size: 12px;
-		margin: 0 0 8px 0;
-		color: #536482;
+		line-height: 1.2;
+		margin: 0 0 1.2em 0;
+		color: #666666;
 	}
 
 	.profile-stats {
 		margin: 0;
 		padding: 0;
-		line-height: 1.4;
+		line-height: 1.2;
 	}
 
 	.profile-stats div {
@@ -135,16 +165,18 @@ const { username, userTitle, postDate, postCount, joinedDate, location } = Astro
 
 	.profile-stats dt {
 		display: inline;
-		font-weight: bold;
+		color: black;
 	}
 
 	.profile-stats dd {
 		display: inline;
 		margin: 0;
+		overflow-wrap: anywhere;
+		word-break: break-word;
 	}
 
 	/* Responsive Mobile Layout Override */
-	@media (max-width: 768px) {
+	@media (max-width: 920px) {
 		.forum-post-prosilver {
 			grid-template-columns: 1fr;
 		}
@@ -164,9 +196,11 @@ const { username, userTitle, postDate, postCount, joinedDate, location } = Astro
 </style>
 
 <style is:global>
-	.post-body p, .post-body ul {
+	.post-body p,
+	.post-body ul {
 		line-height: 16.8px !important;
 		font-size: 12px !important;
+		margin: 0 0 10px 0;
 		font-family: Verdana, Helvetica, Arial, sans-serif !important;
 	}
 	.post-body .quote-content {

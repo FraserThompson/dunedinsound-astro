@@ -33,7 +33,7 @@ const series = await loadAndFormatCollection('series')
 			{series.map((serie) => <SeriesTile series={serie} />)}
 		</div>
 		{
-			gigs.map((gig) => (
+			gigs.filter((thing) => !thing.entry.data.draft).map((gig) => (
 				<GigTile gig={gig} containerHeight="480px" containerHeightMobile="250px" responsiveImageSizes="full" />
 			))
 		}

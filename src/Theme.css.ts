@@ -133,7 +133,7 @@ createGlobalTheme(':root', theme, {
 		contrast: `2px solid ${contrastColor}`,
 		contrast2: `1px solid ${contrastColor2}`,
 		background: `1px solid ${backgroundColor}`,
-		groove: '3px groove #585662',
+		groove: '3px groove #27262e',
 		shadow: '0 2px 12px black',
 		shadowLight: '0 2px 12px rgba(0,0,0,0.4)',
 		shadowTop: '0 -3px 12px black'

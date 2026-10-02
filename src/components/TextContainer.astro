@@ -17,16 +17,17 @@ interface Props {
 	fontSize?: string
 	containerWidth?: string
 	className?: string
+	stickyHeaders?: boolean
 	id?: string
 	light?: boolean
 }
 
-const { style, fontSize, containerWidth, className = '', id, light } = Astro.props
+const { style, fontSize, containerWidth, className = '', stickyHeaders, id, light } = Astro.props
 ---
 
 <article
 	id={id}
-	class={`${textContainer} ${light ? 'light' : ''} ${className}`}
+	class={`${textContainer} ${light ? 'light' : ''} ${className} ${stickyHeaders ? 'sticky-headers' : ''}`}
 	style={{
 		...style,
 		...assignInlineVars({

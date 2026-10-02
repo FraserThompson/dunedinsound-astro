@@ -9,8 +9,6 @@ import SocialLinks from '@src/components/SocialLinks.astro'
 import Divider from '@src/components/Divider.astro'
 import { theme } from '@src/Theme.css'
 import DropdownMenu from '@src/components/DropdownMenu.astro'
-import { seriesVenuePlayerThreshold } from '@src/util/constants'
-import ShortcutIcon from '@src/components/ShortcutIcon.astro'
 
 interface Props {
 	entry: ProcessedEntry<'series'>
@@ -31,7 +29,7 @@ const gigsYearDropdownItems = Object.entries(gigsByYear)
 	.reverse()
 	.map(([year, gigs]) => ({
 		year: year,
-		count: gigs?.length || 0
+	count: gigs?.length || 0
 	}))
 
 

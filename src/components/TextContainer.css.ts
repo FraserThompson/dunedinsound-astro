@@ -55,10 +55,6 @@ globalStyle(`${textContainer}.light h2, ${textContainer}.light h3, ${textContain
 	textShadow: 'none'
 })
 
-globalStyle(`${textContainer} a.active`, {
-	color: theme.color.lightContrast3
-})
-
 globalStyle(`${textContainer} .lightboxImage`, {
 	margin: '0 auto'
 })
@@ -67,5 +63,10 @@ globalStyle(`${textContainer}.sticky-headers h2`, {
 	background: theme.color.background,
 	borderBottom: theme.borders.secondary,
 	position: 'sticky',
+	zIndex: 3,
 	top: 0
+})
+
+globalStyle(`${textContainer}.light.sticky-headers h2`, {
+	background: "white",
 })

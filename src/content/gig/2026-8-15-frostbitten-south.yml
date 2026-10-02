@@ -3,6 +3,8 @@ date: 2026-8-15 08:30:00+13:00
 venue: crown_hotel
 artists:
   - id: avolvap
+    vid:
+      - link: Cs9tzJAM3yE
   - id: funeral_burner
     vid:
       - link: HJgrHeq0L0g

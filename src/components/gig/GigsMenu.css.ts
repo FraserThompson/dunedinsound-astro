@@ -3,11 +3,11 @@ import { theme } from '../../Theme.css'
 import { MenuLinkWrapper, MenuWrapper } from '../Menu.css'
 
 export const yearsMenuWrapper = style([
-	MenuWrapper['vertical']
+	MenuWrapper({ layout: 'vertical' })
 ])
 
 export const artistsMenuWrapper = style([
-	MenuWrapper['vertical'],
+	MenuWrapper({ layout: 'vertical' }),
 	{
 		borderLeft: `6px solid ${theme.color.secondary} !important`,
 		borderBottom: `6px solid ${theme.color.secondary} !important`
@@ -15,14 +15,14 @@ export const artistsMenuWrapper = style([
 ])
 
 export const gigLink = style([
-	MenuLinkWrapper['vertical'],
+	MenuLinkWrapper({ layout: 'vertical' }),
 	{
 		textOverflow: 'ellipsis'
 	}
 ])
 
 export const artistLink = style([
-	MenuLinkWrapper['vertical'],
+	MenuLinkWrapper({ layout: 'vertical' }),
 	{
 		backgroundColor: theme.color.darkSecondary,
 		paddingLeft: `calc(${theme.dimensions.basePadding}) !important`,
@@ -41,7 +41,7 @@ export const artistLink = style([
 ])
 
 export const monthLink = style([
-	MenuLinkWrapper['vertical'],
+	MenuLinkWrapper({ layout: 'vertical' }),
 	{
 		color: `${theme.color.darkText} !important`,
 		height: `${theme.dimensions.subheaderHeight} !important`,
@@ -58,7 +58,7 @@ export const monthLink = style([
 ])
 
 export const yearLink = style([
-	MenuLinkWrapper['vertical'],
+	MenuLinkWrapper({ layout: 'vertical' }),
 	{
 		color: `black !important`,
 		height: `${theme.dimensions.headerHeightMobile}`,
