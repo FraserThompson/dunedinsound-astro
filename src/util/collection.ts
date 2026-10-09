@@ -9,7 +9,7 @@ import { epochYear, monthMap, type Month } from './constants'
 import { getCollectionMetaDescription } from './seo'
 import { DIST_MEDIA_DIR } from './constants'
 import { existsSync } from 'node:fs'
-import { entryToMinimal, getEntryPath, getEntrySlug } from './helpers'
+import { entryToMinimal, getEntryPath, getEntrySlug, hasArtistPage } from './helpers'
 import { getPlayerAudioId } from './helpers'
 
 type EntryExtraCommon = {
@@ -28,6 +28,7 @@ interface Track {
 export interface MinimalEntryDefinition {
 	id: string
 	title: string
+	hidden?: boolean
 }
 
 export type PlayerAudio = {
@@ -206,6 +207,10 @@ export async function loadAndFormatEntry<C extends keyof DataEntryMap>(
 	}
 
 	const fullEntry = await getEntry(collection, id)
+
+	if (!fullEntry) {
+		throw new Error('No entry found for: ' + id)
+	}
 
 	//@ts-expect-error
 	const processedEntry: ProcessedEntry<C> = await processEntry(fullEntry)
@@ -714,10 +719,10 @@ export async function getGigMedia(entry: CollectionEntry<'gig'>): Promise<GigMed
 	const artistIds: string[] = entryData.artists.map((artist) => artist.id.id)
 
 	// Find artist subdirectories in this gig's dir
-	const artistDirs = await new fdir({
+	const crawled = await new fdir({
 		pathSeparator: '/',
 		includeBasePath: true,
-		maxDepth: 1
+		maxDepth: 0
 	})
 		.onlyDirs()
 		.crawl(`${DIST_MEDIA_DIR}/gig/${entry.id}`)
@@ -733,7 +738,12 @@ export async function getGigMedia(entry: CollectionEntry<'gig'>): Promise<GigMed
 	}
 	let audio: PlayerAudio[] = []
 
-	artistDirs.sort((a, b) => artistIds.indexOf(path.basename(a)) - artistIds.indexOf(path.basename(b)))
+	const artistDirs = crawled
+		.filter((dir) => {
+			const basename = path.basename(dir)
+			return basename !== 'cover' && basename !== '_uncategorized' && basename !== entry.id
+		})
+		.sort((a, b) => artistIds.indexOf(path.basename(a)) - artistIds.indexOf(path.basename(b)))
 
 	let imageCount = 0
 
@@ -742,9 +752,7 @@ export async function getGigMedia(entry: CollectionEntry<'gig'>): Promise<GigMed
 		artistDirs.map(async (artistDir) => {
 			const artistId = path.basename(artistDir);
 
-			if (artistId === 'cover' || artistId === entry.id) return;
-
-			const artistEntry = await getEntry("artist", artistId)
+			const artistEntry = await loadAndFormatEntry("artist", artistId)
 
 			const responsiveImages = await getResponsiveImagesByDir(artistDir, artistId);
 			artistImages[artistId] = responsiveImages ? Object.values(responsiveImages) : [];
@@ -763,8 +771,8 @@ export async function getGigMedia(entry: CollectionEntry<'gig'>): Promise<GigMed
 
 			if (audioFiles.length) {
 				const gig = entryToMinimal(entry)
-				const artist = artistEntry && entryToMinimal(artistEntry)
-				const venue = venueEntry && entryToMinimal(venueEntry)
+				const artist = artistEntry ? { ...entryToMinimal(artistEntry.entry), hidden: !hasArtistPage(artistEntry) } : undefined
+				const venue = venueEntry ? entryToMinimal(venueEntry) : undefined
 				const title = path.basename(audioFiles[0])
 				audio.push({
 					title,

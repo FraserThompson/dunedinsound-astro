@@ -67,6 +67,8 @@ export const dropdownMenu = style([
 		left: menuLeft,
 		scrollbarWidth: 'thin',
 		scrollbarColor: '#d5ceb1 black',
+		maxHeight: `80vh`,
+		overflowY: "auto",
 		visibility: 'hidden',
 		opacity: 0,
 		pointerEvents: 'none',

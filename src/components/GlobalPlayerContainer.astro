@@ -19,7 +19,9 @@ import CompactPlayerControls from './player/CompactPlayerControls'
 <player-wrapper class={playerWrapper}>
 	<div class={playerBarWrapper}>
 		<div class={playerBar}>
-			<CompactPlayerControls client:only="preact" />
+			<div style={{ marginRight: '28px', width: '100%' }}>
+				<CompactPlayerControls client:only="preact" />
+			</div>
 			<button
 				class={`${openButtonToggle} open-button`}
 				type="button"

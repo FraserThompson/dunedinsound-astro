@@ -61,6 +61,7 @@ class PlayerEngine {
 		this.currentTrackId = null
 		this.loadRequestId = null
 		this.pendingPlayRequestId = null
+		this.pendingSeekTime = undefined
 	}
 
 	/**
@@ -85,7 +86,10 @@ class PlayerEngine {
 				this.pendingSeekTime = undefined
 			}
 
-			if (this.pendingPlayRequestId === this.loadRequestId) {
+			if (
+				this.pendingPlayRequestId !== null &&
+				this.pendingPlayRequestId === this.loadRequestId
+			) {
 
 				this.play()
 
@@ -141,6 +145,10 @@ class PlayerEngine {
 		updatePlayerState({ playlist, selectedTrack: 0 })
 
 		if (!playlist || playlist.length === 0) {
+			this.currentTrackId = null
+			this.loadRequestId = null
+			this.pendingPlayRequestId = null
+			this.pendingSeekTime = undefined
 			this.ws?.stop()
 			this.ws?.empty()
 			this.init()

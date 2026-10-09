@@ -28,7 +28,7 @@ const GlobalPlayer: FunctionalComponent<Props> = ({ title = "PLAYLIST", playerAu
 
 	return (
 		<div className={CompactPlayerWrapper}>
-			<div className={WinampTitlebar} style={{ marginRight: '40px' }} data-title={title} />
+			<div className={WinampTitlebar} style={{ marginRight: '30px' }} data-title={title} />
 			<div className={CompactPlayerWaveWrapper}>
 				<div className={AudioWrapper}>
 					<PlayerTransport />

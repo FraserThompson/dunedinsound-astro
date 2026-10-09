@@ -45,87 +45,79 @@ const hasArtistMedia = galleryCount === 1 ? !uncategorizedImages.length : galler
 	height="70vh"
 >
 	<div slot="title" style={{ marginLeft: 'auto', display: 'flex', gap: '10px' }}>
-		{
-			entryExtra.venue && (
-				<h4 style={{ margin: 0 }}>
-					{!entryExtra.venue.data.hidden && (
-						<a
-							href={`/venues/${entryExtra.venue.id}`}
-							style={{ display: 'flex', alignItems: 'center' }}
-							class="highlighted"
-						>
-							<MapIcon />
-							<span>{entryExtra.venue.data.title}</span>
-						</a>
-					)}
-					{entryExtra.venue.data.hidden ? entryExtra.venue.data.title : ''}
-				</h4>
-			)
-		}
+		{entryExtra.venue && (
+			<h4 style={{ margin: 0 }}>
+				{!entryExtra.venue.data.hidden && (
+					<a
+						href={`/venues/${entryExtra.venue.id}`}
+						style={{ display: 'flex', alignItems: 'center' }}
+						class="highlighted"
+					>
+						<MapIcon />
+						<span>{entryExtra.venue.data.title}</span>
+					</a>
+				)}
+				{entryExtra.venue.data.hidden ? entryExtra.venue.data.title : ''}
+			</h4>
+		)}
 	</div>
 	<div slot={entryData.description ? 'subtitle' : ''}>
 		<p>
 			<Fragment set:html={entryData.description} />
 		</p>
 	</div>
-	{
-		!entry.next && (
-			<CornerLabel position="right" slot="customContent">
-				LATEST GIG
-			</CornerLabel>
-		)
-	}
-	{
-		entry.entry.id === '2026-8-29-dankfest-26-saturday' && (
-			<CornerLabel position="right" slot="customContent">
-				<span class="trippy2" style={{paddingTop: "20px"}}>500TH GIG WOW!!!!!</span>
-			</CornerLabel>
-		)
-	}
+	{!entry.next && (
+		<CornerLabel position="right" slot="customContent">
+			LATEST GIG
+		</CornerLabel>
+	)}
+	{entry.entry.id === '2026-8-29-dankfest-26-saturday' && (
+		<CornerLabel position="right" slot="customContent">
+			<span class="trippy2" style={{ paddingTop: '20px' }}>
+				500TH GIG WOW!!!!!
+			</span>
+		</CornerLabel>
+	)}
 	<CornerLabel position="left" slot="customContent">
-		{formattedDate(entryData.date)} 
+		{formattedDate(entryData.date)}
 	</CornerLabel>
-	{
-		entryExtra.series && (
-			<CornerLabel position="right" background={theme.color.transparentForeground} slot="customContent">
-				<a href={entryExtra.series.extra.absolutePath}>
-					<small style={{ color: theme.color.dullText }}>Series {' '}</small>
-					<em>{entryExtra.series.entry.data.title}</em>
-					<small>({entryExtra.series.extra.gigCount} gigs)</small>
-				</a>
-			</CornerLabel>
-		)
-	}
-	{
-		(!!entryMedia.audio?.length || entryData.feature_vid) && (
-			<Fragment slot="customContent">
-				{entryData.feature_vid && (
-					<div class={GigFeatureVid}>
-						<LiteYoutube videoid={entryData.feature_vid} loadAPI={true} />
-					</div>
-				)}
-				{!!entryMedia.audio?.length && (
-					<div class={GigBannerPlayer}>
-						<PlayerLibrary
-							playerAudio={entryMedia.audio}
-							columns={['artist']}
-							columnTemplate="minmax(0, 6fr)"
-							title="GIG AUDIO"
-							maxHeight="160px"
-							maxWidth="600px"
-							client:only="preact"
-						>
-							<div slot="fallback">
-								<div class={LibraryLoadingPlaceholder}>
-									<LoadingSpinner />
-								</div>
+	{entryExtra.series && (
+		<CornerLabel position="right" background={theme.color.transparentForeground} slot="customContent">
+			<a href={entryExtra.series.extra.absolutePath}>
+				<small style={{ color: theme.color.dullText }}>Series </small>
+				<em>{entryExtra.series.entry.data.title}</em>
+				<small>({entryExtra.series.extra.gigCount} gigs)</small>
+			</a>
+		</CornerLabel>
+	)}
+	{(!!entryMedia.audio?.length || entryData.feature_vid) && (
+		<Fragment slot="customContent">
+			{entryData.feature_vid && (
+				<div class={GigFeatureVid}>
+					<LiteYoutube videoid={entryData.feature_vid} loadAPI={true} />
+				</div>
+			)}
+			{!!entryMedia.audio?.length && (
+				<div class={GigBannerPlayer}>
+					<PlayerLibrary
+						playerAudio={entryMedia.audio}
+						columns={['artist']}
+						columnTemplate="minmax(0, 6fr)"
+						title="GIG AUDIO"
+						maxHeight="160px"
+						maxWidth="600px"
+						client:only="preact"
+					>
+						<div slot="fallback">
+							<div class={LibraryLoadingPlaceholder}>
+								<LoadingSpinner />
 							</div>
-						</PlayerLibrary>
-					</div>
-				)}
-			</Fragment>
-		)
-	}
+						</div>
+					</PlayerLibrary>
+				</div>
+			)}
+		</Fragment>
+	)}
 </Banner>
 <Divider
 	sticky={true}
@@ -139,33 +131,30 @@ const hasArtistMedia = galleryCount === 1 ? !uncategorizedImages.length : galler
 	<h3 style={{ marginBottom: 0 }}>{entryData.title}</h3>
 </Divider>
 {entryData.intro && <BigIntro text={entryData.intro} />}
-{
-	!!uncategorizedImages?.length && (
-		<ImageGallery images={uncategorizedImages} noLightbox={galleryCount === 1 ? false : true} />
-	)
-}
-{
-	hasArtistMedia && (
-		<>
+{!!uncategorizedImages?.length && (
+	<ImageGallery images={uncategorizedImages} noLightbox={galleryCount === 1 ? false : true} />
+)}
+{hasArtistMedia && (
+	<>
+		{entryData.artists.length > 1 ||
+		entryExtra.artists[0].entry.data.links || entryExtra.artists[0].extra.gigCount > 1 ? (
 			<ArtistDropdown entry={entry} />
-			<ArtistMedia entry={entry} artistImages={entryMedia.artistImages} />
-		</>
-	)
-}
-{
-	!!entryExtra.relatedBlogs?.length && (
-		<TextContainer light={true} containerWidth="none" className="padding-y">
-			<h3>Related articles...</h3>
-			<ul>
-				{entryExtra.relatedBlogs.map((entry) => (
-					<li>
-						<a href={`/blog/${getEntrySlug(entry.data.title, entry.collection)}`}>{entry.data.title}</a>
-					</li>
-				))}
-			</ul>
-		</TextContainer>
-	)
-}
+		) : null}
+		<ArtistMedia entry={entry} artistImages={entryMedia.artistImages} />
+	</>
+)}
+{!!entryExtra.relatedBlogs?.length && (
+	<TextContainer light={true} containerWidth="none" className="padding-y">
+		<h3>Related articles...</h3>
+		<ul>
+			{entryExtra.relatedBlogs.map((entry) => (
+				<li>
+					<a href={`/blog/${getEntrySlug(entry.data.title, entry.collection)}`}>{entry.data.title}</a>
+				</li>
+			))}
+		</ul>
+	</TextContainer>
+)}
 
 <script>
 	import { getHeaderHeight, debounce } from '@src/util/helpers'

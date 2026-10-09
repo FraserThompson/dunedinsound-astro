@@ -57,9 +57,6 @@ export const playerBarWrapper = style({
 })
 
 export const icon = style({
-	width: "30px",
-	paddingRight: '5px',
-	paddingLeft: '5px',
 	fontSize: '23px',
 	color: '#e7d1ab',
 })
@@ -95,6 +92,11 @@ export const playerBar = style([WinampBackground, {
 }])
 
 export const openButtonToggle = style({
+	position: 'absolute',
+	width: 'calc(100% - 90px)',
+	textAlign: 'right',
+	left: '90px',
+	zIndex: '2',
 	border: 0,
 	padding: 0,
 	background: 'transparent',
@@ -102,7 +104,13 @@ export const openButtonToggle = style({
 	color: '#e7d1ab',
 	flexGrow: 1,
 	minWidth: '18px',
-	cursor: 'pointer'
+	cursor: 'pointer',
+	selectors:
+	{
+		'&:hover': {
+			background: 'none'
+		}
+	}
 })
 
 export const player = style({

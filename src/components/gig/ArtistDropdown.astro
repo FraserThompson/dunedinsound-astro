@@ -1,7 +1,7 @@
 ---
 import type { ProcessedEntry } from '@src/util/collection'
 import DropdownMenu from '../DropdownMenu.astro'
-import { socialLinksToMenuItems } from '@src/util/helpers'
+import { hasArtistPage, socialLinksToMenuItems } from '@src/util/helpers'
 import { artistDropdownLink, artistDropdownLi, artistExtraWrapper } from './ArtistDropdown.css'
 import { theme } from '../../Theme.css'
 import { SocialLinkImage } from '../SocialLinks.css'
@@ -46,7 +46,7 @@ const entryExtra = entry.extra
 						))}
 					</ul>
 				)}
-				{artist.extra.gigCount - 1 > 0 && (
+				{hasArtistPage(artist) && (
 					<a class={`${artistDropdownLink} seeOther`} href={`${artist.extra.absolutePath}`}>
 						<small>
 							{artist.extra.gigCount - 1} OTHER GIG{artist.extra.gigCount - 1 === 1 ? '' : 'S'}

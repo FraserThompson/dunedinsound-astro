@@ -401,6 +401,7 @@ export function shuffleArray(array: any[]): any[] {
 export function entryToMinimal(entry: CollectionEntry<'artist'> | CollectionEntry<'gig'> | CollectionEntry<'venue'> | CollectionEntry<'vaultsession'>): MinimalEntryDefinition {
 	return {
 		id: entry.id,
+		hidden: 'hidden' in entry.data ? entry.data.hidden : undefined,
 		title: entry?.data?.title || entry.id
 	}
 }
@@ -413,3 +414,11 @@ export function entryToMinimal(entry: CollectionEntry<'artist'> | CollectionEntr
  */
 export const getPlayerAudioId = (files: string[]) =>
 	`${encodeURI(files[0]) || ''}`
+
+/**
+ * Return true if an artist has its own page.
+ * 
+ * @param artist 
+ * @returns 
+ */
+export const hasArtistPage = (artist: ProcessedEntry<'artist'>) => artist.extra.gigCount - 1 > 0

@@ -140,24 +140,24 @@ const PlayerTracklistTrackSubmenu: FunctionalComponent<Props> = ({
 					role='menu'
 					style={{ top: `${menuPosition.top}px`, left: `${menuPosition.left}px` }}
 				>
-					<a
+					{track.venue && !track.venue.hidden && <a
 						className={TrackActionMenuItem}
 						title={'Go to venue'}
-						href={track.venue && getEntryPath(track.venue?.title, 'venue')}
+						href={getEntryPath(track.venue?.title, 'venue')}
 						role='menuitem'
 					>
 						<MapIcon height={'1.25rem'} />
 						<span>Go to venue</span>
-					</a>
-					<a
+					</a>}
+					{track.artist && !track.artist.hidden && <a
 						className={TrackActionMenuItem}
 						title={'Go to artist'}
-						href={track.artist && getEntryPath(track.artist?.title, 'artist')}
+						href={getEntryPath(track.artist?.title, 'artist')}
 						role='menuitem'
 					>
 						<PersonIcon height={'1.25rem'} />
 						<span>Go to artist</span>
-					</a>
+					</a>}
 					{track.gig && getEntryPath(track.gig?.title, 'gig') !== window.location.pathname && <a
 						className={TrackActionMenuItem}
 						title={'Go to gig'}

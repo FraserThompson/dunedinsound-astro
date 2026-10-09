@@ -9,7 +9,7 @@ export const artistExtraWrapper = style({
 	height: 'auto !important',
 	width: 'auto !important',
 	right: theme.dimensions.basePaddingMobile,
-	top: '0px'
+	top: '3px'
 })
 
 export const artistDropdownLink = style([

@@ -28,5 +28,5 @@ const alt = props.responsiveImage?.alt || props.alt || props.caption
 	>
 		<Image2 {...props} alt={alt} />
 	</a>
-	{props.caption && <em>{props.caption}</em>}
+	{props.caption && <em set:html={props.caption} />}
 </div>
